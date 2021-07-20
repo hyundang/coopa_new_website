@@ -76,7 +76,7 @@ const DelIcon = styled.div`
   font-weight: 500;
   text-align: center;
   line-height: 1.7rem;
-  color: ${({ theme }) => theme.colors.gray_7};
+  color: var(--gray_7);
   &:hover {
     background-color: #f7f0ed;
   }
@@ -106,7 +106,7 @@ const Wrap = styled.div<IWrap>`
   align-items: center;
   justify-content: ${(props) => (props.isAddBtn ? "center" : "space-between")};
 
-  color: ${({ theme }) => theme.colors.gray_7};
+  color: var(--gray_7);
   font-weight: 500;
   font-size: 1rem;
   line-height: 1.5rem;
@@ -145,7 +145,7 @@ const Wrap = styled.div<IWrap>`
       font-weight: 500;
       font-size: 1rem;
       line-height: 1.2rem;
-      color: ${({ theme }) => theme.colors.gray_7};
+      color: var(--gray_7);
 
       text-overflow: ellipsis;
       white-space: nowrap;

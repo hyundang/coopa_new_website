@@ -76,33 +76,33 @@ const BtnWrap = styled.div<IBtnWrap>`
     props.isOrange
       ? props.isCookieDirBtn && !props.isAtvBtn
         ? css`
-            border: 0.2rem solid ${({ theme }) => theme.colors.gray_4};
-            background-color: ${({ theme }) => theme.colors.white};
-            color: ${({ theme }) => theme.colors.gray_4};
+            border: 0.2rem solid var(--gray_4);
+            background-color: var(--white);
+            color: var(--gray_4);
           `
         : css`
-            background-color: ${({ theme }) => theme.colors.orange};
-            color: ${({ theme }) => theme.colors.white};
+            background-color: var(--orange);
+            color: var(--white);
             &:hover {
-              background-color: ${({ theme }) => theme.colors.orange_hover};
+              background-color: var(--orange_hover);
             }
           `
       : props.isDirShare
       ? css`
-          border: 0.2rem solid ${({ theme }) => theme.colors.orange};
-          background-color: ${({ theme }) => theme.colors.white};
-          color: ${({ theme }) => theme.colors.orange};
+          border: 0.2rem solid var(--orange);
+          background-color: var(--white);
+          color: var(--orange);
           &:hover {
-            background-color: ${({ theme }) => theme.colors.orange_hover};
-            box-shadow: ${({ theme }) => theme.boxShadow};
-            color: ${({ theme }) => theme.colors.white};
+            background-color: var(--orange_hover);
+            box-shadow: var(--orange_box_shadow);
+            color: var(--white);
           }
         `
       : css`
-          background-color: ${({ theme }) => theme.colors.gray_2};
-          color: ${({ theme }) => theme.colors.gray_7};
+          background-color: var(--gray_2);
+          color: var(--gray_7);
           &:hover {
-            background-color: ${({ theme }) => theme.colors.gray_hover_2};
+            background-color: var(--gray_hover_2);
           }
         `};
 `;

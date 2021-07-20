@@ -30,7 +30,7 @@ const BtnWrap = styled.div`
   margin-top: 2rem;
   padding: 1.6rem 2.4rem;
   background: white;
-  border: 0.1rem solid ${({ theme }) => theme.colors.gray_6};
+  border: 0.1rem solid var(--gray_6);
   border-radius: 3rem;
   outline: none;
 
@@ -43,7 +43,7 @@ const BtnWrap = styled.div`
   transition: 0.3s;
   &:hover {
     transform: translate(-50%, -0.4rem);
-    border: 0.1rem solid ${({ theme }) => theme.colors.white};
+    border: 0.1rem solid var(--white);
     box-shadow: 0px 0.3rem 1.3rem rgba(0, 0, 0, 0.15);
   }
 
@@ -67,7 +67,7 @@ const BtnLogo = styled.img`
 const BtnText = styled.div`
   font-size: 1.5rem;
   font-weight: 500;
-  color: ${({ theme }) => theme.colors.black_2};
+  color: var(--black_2);
 
   @media screen and (min-width: 769px) {
     font-size: 1.7rem;

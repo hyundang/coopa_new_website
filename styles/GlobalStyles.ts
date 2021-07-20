@@ -1,8 +1,10 @@
-import { createGlobalStyle } from 'styled-components';
-import { normalize } from 'styled-normalize';
+import { createGlobalStyle } from "styled-components";
+import { normalize } from "styled-normalize";
+import colorSystems from "./colorSystems";
 
 export const GlobalStyle = createGlobalStyle`
   ${normalize};
+  ${colorSystems};
   @import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
 
   html,

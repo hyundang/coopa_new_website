@@ -1,9 +1,8 @@
-import ImgBox from "./ImgBox";
 // assets
 import plusIcon from "@assets/icons/common/plus_white.svg";
 // style
-import { theme } from "styles/theme";
 import { useState } from "react";
+import ImgBox from "./ImgBox";
 
 export default {
   title: "components | ImgBox",
@@ -29,7 +28,7 @@ export const cookieEditImgBox = () => {
         width: "270px",
         height: "136px",
         borderRadius: "10px",
-        border: `1px solid ${theme.colors.gray_4}`,
+        border: `1px solid var(--gray_4)`,
       }}
       url="https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
       setIsHover={setIsHover}
@@ -64,7 +63,7 @@ export const homeBoardEditImgBox = () => {
         width: "470px",
         height: "83px",
         borderRadius: "8px",
-        border: `1px solid ${theme.colors.gray_4}`,
+        border: `1px solid var(--gray_4)`,
       }}
       url="https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
       setIsHover={setIsHover}

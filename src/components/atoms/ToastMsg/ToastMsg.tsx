@@ -51,14 +51,14 @@ const Wrap = styled.div<IWrap>`
     margin-left: -11.5rem;
   `}
 
-  background: ${({ theme }) => theme.colors.white};
+  background: var(--white);
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.28);
 
   display: ${(props) => (props.isVisible ? "flex" : "none")};
   align-items: center;
   justify-content: center;
 
-  color: ${({ theme }) => theme.colors.black_1};
+  color: var(--black_1);
   font-size: 1.6rem;
   font-weight: 500;
 

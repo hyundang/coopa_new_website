@@ -1,9 +1,8 @@
-import Btn from "./Btn";
-// assets
 import { ReactComponent as Clip } from "@assets/icons/btn/clip_orange.svg";
 import cookie from "@assets/icons/common/cookie_white.svg";
 import styled from "styled-components";
 import { useState } from "react";
+import Btn from "./Btn";
 
 // type IconType = keyof typeof icons;
 // export const iconTypes: IconType[] = Object.keys(icons) as any[];
@@ -126,10 +125,7 @@ const Wrap = styled.div<IWrap>`
   .icon {
     path {
       transition: 0.2s;
-      fill: ${(props) =>
-        props.isHover
-          ? ({ theme }) => theme.colors.white
-          : ({ theme }) => theme.colors.orange};
+      fill: ${(props) => (props.isHover ? "var(--white)" : "var(--orange)")};
     }
   }
 `;
