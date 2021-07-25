@@ -91,6 +91,7 @@ const Container = styled.div<ContainerProps>`
 
   .img_box_form_img {
     &__label {
+      background-color: rgba(0, 0, 0, 0.4);
       width: 100%;
       height: 100%;
       display: flex;
@@ -99,7 +100,6 @@ const Container = styled.div<ContainerProps>`
       .plus_icon {
         width: ${(props) => props.plusSize}px;
         height: ${(props) => props.plusSize}px;
-        transform: scale(${(props) => props.plusSize / 24});
       }
     }
 
