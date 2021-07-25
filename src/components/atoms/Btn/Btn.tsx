@@ -11,7 +11,7 @@ export interface IProps {
   /**  버튼 클릭시 실행되는 함수 */
   onClick: React.MouseEventHandler<HTMLDivElement>;
   /** 버튼 색깔 판단 (true -> 주황색 버튼) */
-  isOrange: boolean;
+  isOrange?: boolean;
   /** '디렉토리 공유하기' 버튼의 경우 -> true */
   isDirShare?: boolean;
   /** '디렉토리 공유하기' 버튼의 경우 hover 여부 판단 */
@@ -54,7 +54,7 @@ export default Btn;
 interface IBtnWrap {
   pcStyle: React.CSSProperties;
   mobileStyle: React.CSSProperties;
-  isOrange: boolean;
+  isOrange?: boolean;
   isDirShare?: boolean;
   isCookieDirBtn?: boolean;
   isAtvBtn?: boolean;

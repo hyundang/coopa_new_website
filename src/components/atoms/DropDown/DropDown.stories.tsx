@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DropDown from "./DropDown";
 import List from "../List/List";
+import Btn from "../Btn/Btn";
 
 export default {
   title: "components | DropDown",
@@ -16,9 +17,30 @@ export const CookieDropDown = () => {
       isActive={isActive}
       setIsActive={setIsActive}
     >
-      <p>
+      <div>
         <List />
-      </p>
+        <div>
+          <Btn
+            pcStyle={{
+              width: "58px",
+              height: "36px",
+              borderRadius: "18px",
+              fontSize: "13px",
+            }}
+            mobileStyle={{
+              width: "70px",
+              height: "48px",
+              borderRadius: "24px",
+              fontSize: "16px",
+            }}
+            onClick={() => console.log("hi")}
+            isCookieDirBtn
+            isOrange
+          >
+            저장
+          </Btn>
+        </div>
+      </div>
     </DropDown>
   );
 };
