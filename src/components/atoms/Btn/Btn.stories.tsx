@@ -15,13 +15,7 @@ export default {
 export const btn = () => {
   return (
     <Btn
-      pcStyle={{
-        width: "70px",
-        height: "48px",
-        borderRadius: "24px",
-        fontSize: "16px",
-      }}
-      mobileStyle={{
+      Style={{
         width: "70px",
         height: "48px",
         borderRadius: "24px",
@@ -44,15 +38,9 @@ export const iconBtn = () => {
 
   return (
     <Btn
-      pcStyle={{
+      Style={{
         width: "191px",
         height: "50px",
-        borderRadius: "24px",
-        fontSize: "16px",
-      }}
-      mobileStyle={{
-        width: "70px",
-        height: "48px",
         borderRadius: "24px",
         fontSize: "16px",
       }}
@@ -82,15 +70,9 @@ export const dirShareBtn = () => {
 
   return (
     <Btn
-      pcStyle={{
+      Style={{
         width: "191px",
         height: "50px",
-        borderRadius: "24px",
-        fontSize: "16px",
-      }}
-      mobileStyle={{
-        width: "70px",
-        height: "48px",
         borderRadius: "24px",
         fontSize: "16px",
       }}

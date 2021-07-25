@@ -82,7 +82,7 @@ export const homeBoardEditImgBox = () => {
           <img
             src={plusIcon}
             alt="plus_icon"
-            style={{ width: "24px", height: "24px" }}
+            style={{ width: "18px", height: "18px" }}
           />
         </div>
       )}
