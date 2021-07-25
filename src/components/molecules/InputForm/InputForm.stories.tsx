@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import InputForm from "./InputForm";
 
 export default {
-  title: "components | InputForm",
+  title: "components/molecules/InputForm",
   component: InputForm,
 };
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import BookmarkAddModal from "./BookmarkAddModal";
 
 export default {
-  title: "components | BookmarkAddModal",
+  title: "components/organisms/BookmarkAddModal",
   component: BookmarkAddModal,
 };
 

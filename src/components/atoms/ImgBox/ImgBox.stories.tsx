@@ -5,7 +5,7 @@ import { useState } from "react";
 import ImgBox from "./ImgBox";
 
 export default {
-  title: "components | ImgBox",
+  title: "components/atoms/ImgBox",
   component: ImgBox,
 };
 

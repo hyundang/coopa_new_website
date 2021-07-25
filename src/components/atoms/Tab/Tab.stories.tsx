@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Tab from "./Tab";
 
 export default {
-  title: "components | Tab",
+  title: "components/atoms/Tab",
   component: Tab,
 };
 

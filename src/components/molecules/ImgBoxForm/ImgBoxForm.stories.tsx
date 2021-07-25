@@ -2,7 +2,7 @@ import { ChangeEvent, useRef, useState } from "react";
 import ImgBoxForm from "./ImgBoxForm";
 
 export default {
-  title: "components | ImgBoxForm",
+  title: "components/molecules/ImgBoxForm",
   component: ImgBoxForm,
 };
 

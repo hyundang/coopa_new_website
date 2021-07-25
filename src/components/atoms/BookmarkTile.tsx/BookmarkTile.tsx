@@ -3,7 +3,7 @@ import styled from "styled-components";
 // assets
 import plus_icon from "@assets/icons/common/plus_white.svg";
 
-export interface IProps {
+export interface BookmarkTileProps {
   /** 파비콘 url */
   url?: string;
   /** 사이트 이름 */
@@ -31,7 +31,7 @@ const BookmarkTile = ({
   setIsHover,
   isAddBtn,
   ref,
-}: IProps) => {
+}: BookmarkTileProps) => {
   return (
     <Wrap
       onMouseOver={setIsHover ? () => setIsHover(true) : undefined}
@@ -82,11 +82,11 @@ const DelIcon = styled.div`
   }
 `;
 
-interface IWrap {
+interface WrapProps {
   url?: string;
   isAddBtn?: boolean;
 }
-const Wrap = styled.div<IWrap>`
+const Wrap = styled.div<WrapProps>`
   cursor: pointer;
 
   position: relative;

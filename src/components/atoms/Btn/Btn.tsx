@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
-export interface IProps {
+export interface BtnProps {
   /** 버튼 안의 내용 */
   children: React.ReactNode;
   /** pc css (width, height, borderRadius, fontSize) */
@@ -28,7 +28,7 @@ const Btn = ({
   setIsHover,
   isCookieDirBtn,
   isAtvBtn,
-}: IProps) => {
+}: BtnProps) => {
   return (
     <BtnWrap
       Style={Style}
@@ -47,14 +47,14 @@ const Btn = ({
 
 export default Btn;
 
-interface IBtnWrap {
+interface BtnWrapProps {
   Style: React.CSSProperties;
   isOrange?: boolean;
   isDirShare?: boolean;
   isCookieDirBtn?: boolean;
   isAtvBtn?: boolean;
 }
-const BtnWrap = styled.button<IBtnWrap>`
+const BtnWrap = styled.button<BtnWrapProps>`
   all: unset;
   box-sizing: border-box;
   cursor: pointer;

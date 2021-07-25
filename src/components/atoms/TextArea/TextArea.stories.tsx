@@ -1,7 +1,7 @@
 import TextArea from "./TextArea";
 
 export default {
-  title: "components | TextArea",
+  title: "components/atoms/TextArea",
   component: TextArea,
 };
 

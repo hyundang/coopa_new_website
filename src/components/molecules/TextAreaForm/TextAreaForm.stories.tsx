@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import TextAreaForm from "./TextAreaForm";
 
 export default {
-  title: "components | TextAreaForm",
+  title: "components/molecules/TextAreaForm",
   component: TextAreaForm,
 };
 

@@ -1,31 +1,12 @@
-import BookmarkTile from "./BookmarkTile";
+import React from "react";
+import { Meta, Story } from "@storybook/react";
+import BookmarkTile, { BookmarkTileProps } from "./BookmarkTile";
 
 export default {
-  title: "components | BookmarkTile",
+  title: "components/atoms/BookmarkTile",
   component: BookmarkTile,
-};
+} as Meta;
 
-export const bookmarkTile = () => {
-  return (
-    <BookmarkTile
-      url="https://www.naver.com/favicon.ico?1"
-      siteName="네이버"
-      onClickTile={() => console.log("naver")}
-    />
-  );
-};
-
-bookmarkTile.story = {
-  name: "Default",
-};
-
-export const bookmarkAddTile = () => {
-  return (
-    <BookmarkTile
-      url="https://www.naver.com/favicon.ico?1"
-      siteName="네이버"
-      onClickTile={() => console.log("naver")}
-      isAddBtn
-    />
-  );
-};
+export const bookmarkTile: Story<BookmarkTileProps> = (props) => (
+  <BookmarkTile {...props} />
+);

@@ -2,7 +2,7 @@ import { useState } from "react";
 import CookieEditModal from "./CookieEditModal";
 
 export default {
-  title: "components | CookieEditModal",
+  title: "components/organisms/CookieEditModal",
   component: CookieEditModal,
 };
 

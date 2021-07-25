@@ -2,7 +2,7 @@ import { useState } from "react";
 import HomeboardEditModal from "./HomeboardEditModal";
 
 export default {
-  title: "components | HomeboardEditModal",
+  title: "components/organisms/HomeboardEditModal",
   component: HomeboardEditModal,
 };
 
