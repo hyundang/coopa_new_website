@@ -1,3 +1,4 @@
+import { RefObject, forwardRef } from "react";
 import styled from "styled-components";
 import Input from "@components/atoms/Input/Input";
 
@@ -22,17 +23,24 @@ export interface InputFormProps {
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 }
 
-const InputForm = ({
-  inputStyle,
-  text,
-  length,
-  maxLength,
-  placeholder,
-  value,
-  onChange,
-  onKeyPress,
-  onKeyDown,
-}: InputFormProps) => {
+const InputForm = (
+  {
+    inputStyle,
+    text,
+    length,
+    maxLength,
+    placeholder,
+    value,
+    onChange,
+    onKeyPress,
+    onKeyDown,
+  }: InputFormProps,
+  ref?:
+    | ((instance: HTMLInputElement | null) => void)
+    | RefObject<HTMLInputElement>
+    | null
+    | undefined,
+) => {
   return (
     <Container className="input_form_conatiner">
       <div className="input_form_wrap">
@@ -50,12 +58,13 @@ const InputForm = ({
         onChange={onChange}
         onKeyPress={onKeyPress}
         onKeyDown={onKeyDown}
+        ref={ref}
       />
     </Container>
   );
 };
 
-export default InputForm;
+export default forwardRef(InputForm);
 
 const Container = styled.div`
   display: flex;
