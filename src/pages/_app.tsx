@@ -3,8 +3,8 @@ import type { AppProps } from "next/app";
 import { RecoilRoot } from "recoil";
 // style
 import { ThemeProvider } from "styled-components";
-import { theme } from "styles/theme";
-import { GlobalStyle } from "styles/GlobalStyles";
+import { theme } from "src/styles/theme";
+import { GlobalStyle } from "src/styles/GlobalStyles";
 
 function App({ Component, pageProps }: AppProps) {
   return (

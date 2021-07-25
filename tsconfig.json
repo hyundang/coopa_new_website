@@ -22,11 +22,12 @@
     "baseUrl": ".",
     "paths": {
       "@components/*": ["src/components/*"],
-      "@pages/*": ["pages/*"],
+      "@pages/*": ["src/pages/*"],
       "@api/*": ["src/lib/api/*"],
-      "@assets/*": ["src/assets/*"]
+      "@assets/*": ["src/assets/*"],
+      "@styles/*": ["scr/styles/*"]
     }
   },
-  "include": ["src", "pages", "styles", "next.config.js", "next-env.d.ts"],
+  "include": ["src", "next.config.js", "next-env.d.ts"],
   "exclude": ["node_modules"]
 }
