@@ -1,45 +1,34 @@
 import styled from "styled-components";
 import defaultEmoji from "@assets/icons/card/cookiehover_icn_noicn.svg";
 
-const List = () => {
+export interface Dirtype {
+  emoji?: string;
+  name: string;
+}
+
+export interface IProps {
+  allDir: Dirtype[];
+}
+const List = ({ allDir }: IProps) => {
   return (
     <ListWrap>
-      <div className="list-div">
-        <img className="list-div__emoji" alt="" src={defaultEmoji} />
-        <p className="list-div__name">디렉토리 이름</p>
-      </div>
-      <div className="list-div">
-        <img className="list-div__emoji" alt="" src={defaultEmoji} />
-        <p className="list-div__name">디렉토리 이름</p>
-      </div>
-      <div className="list-div">
-        <img className="list-div__emoji" alt="" src={defaultEmoji} />
-        <p className="list-div__name">디렉토리 이름</p>
-      </div>
-      <div className="list-div">
-        <img className="list-div__emoji" alt="" src={defaultEmoji} />
-        <p className="list-div__name">디렉토리 이름</p>
-      </div>
-      <div className="list-div">
-        <img className="list-div__emoji" alt="" src={defaultEmoji} />
-        <p className="list-div__name">디렉토리 이름</p>
-      </div>
-      <div className="list-div">
-        <img className="list-div__emoji" alt="" src={defaultEmoji} />
-        <p className="list-div__name">디렉토리 이름</p>
-      </div>
-      <div className="list-div">
-        <img className="list-div__emoji" alt="" src={defaultEmoji} />
-        <p className="list-div__name">디렉토리 이름</p>
-      </div>
-      <div className="list-div">
-        <img className="list-div__emoji" alt="" src={defaultEmoji} />
-        <p className="list-div__name">디렉토리 이름</p>
-      </div>
-      <div className="list-div">
-        <img className="list-div__emoji" alt="" src={defaultEmoji} />
-        <p className="list-div__name">디렉토리 이름</p>
-      </div>
+      {allDir?.map((dir) => (
+        <div
+          className="list-div"
+          key={dir.name}
+          onClick={(e) => {
+            e.stopPropagation();
+            console.log(dir.name);
+          }}
+        >
+          {dir.emoji ? (
+            <p className="list-div__emoji">{dir.emoji}</p>
+          ) : (
+            <img className="list-div__emoji" alt="" src={defaultEmoji} />
+          )}
+          <p className="list-div__name">{dir.name}</p>
+        </div>
+      ))}
     </ListWrap>
   );
 };
@@ -77,7 +66,10 @@ const ListWrap = styled.div`
       }
     }
     &__emoji {
+      display: flex;
+      align-items: center;
       margin: 0 8px;
+      font-size: 14px;
     }
     &__name {
       font-style: normal;

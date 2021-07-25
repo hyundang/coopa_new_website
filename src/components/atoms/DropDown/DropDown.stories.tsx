@@ -3,6 +3,38 @@ import DropDown from "./DropDown";
 import List from "../List/List";
 import Btn from "../Btn/Btn";
 
+//mock data
+const allDir = [
+  {
+    name: "블라블라",
+    emoji: "😀",
+  },
+  {
+    name: "블라블라",
+    emoji: "",
+  },
+  {
+    name: "블라블라",
+    emoji: "😀",
+  },
+  {
+    name: "블라블라",
+    emoji: "😀",
+  },
+  {
+    name: "블라블라",
+    emoji: "😀",
+  },
+  {
+    name: "블라블라",
+    emoji: "😀",
+  },
+  {
+    name: "블라블라",
+    emoji: "😀",
+  },
+];
+
 export default {
   title: "components | DropDown",
   component: DropDown,
@@ -18,7 +50,7 @@ export const CookieDropDown = () => {
       setIsActive={setIsActive}
     >
       <div>
-        <List />
+        <List allDir={allDir} />
         <div>
           <Btn
             pcStyle={{
