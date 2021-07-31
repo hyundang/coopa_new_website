@@ -2,7 +2,7 @@ import { ReactComponent as Icon } from "@assets/icons/card/cookie_icn_fix.svg";
 import CardIcon from "./CardIcon";
 
 export default {
-  title: "components | CardIcon",
+  title: "components/atoms/CardIcon",
   component: CardIcon,
 };
 

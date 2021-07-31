@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
+import Input from "@components/atoms/Input/Input";
 import DropDown from "./DropDown";
 import List from "../List/List";
 import Btn from "../Btn/Btn";
@@ -36,12 +37,13 @@ const allDir = [
 ];
 
 export default {
-  title: "components | DropDown",
+  title: "components/atoms/DropDown",
   component: DropDown,
 };
 
 export const CookieDropDown = () => {
   const [isActive, setIsActive] = useState(false);
+  const [text, setText] = useState("");
   return (
     <DropDown
       selectedItem="디렉토리"
@@ -51,23 +53,41 @@ export const CookieDropDown = () => {
     >
       <div>
         <List allDir={allDir} />
-        <div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "2.8fr 1fr",
+            gridGap: "7px",
+            marginTop: "12px",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Input
+            style={{
+              fontWeight: 500,
+              fontSize: "11px",
+              lineHeight: "13px",
+              padding: "0px 8px",
+              letterSpacing: "-0.02em",
+            }}
+            placeholder="새 디렉토리 명을 입력하세요"
+            maxLength={13}
+            value={text}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              e.target.value.length < 46 ? setText(e.target.value) : () => {}
+            }
+          />
           <Btn
-            pcStyle={{
+            Style={{
               width: "58px",
               height: "36px",
               borderRadius: "18px",
               fontSize: "13px",
             }}
-            mobileStyle={{
-              width: "70px",
-              height: "48px",
-              borderRadius: "24px",
-              fontSize: "16px",
-            }}
             onClick={() => console.log("hi")}
-            isCookieDirBtn
             isOrange
+            isCookieDirBtn
+            isAtvBtn={!!text.length}
           >
             저장
           </Btn>
@@ -79,4 +99,67 @@ export const CookieDropDown = () => {
 
 CookieDropDown.story = {
   name: "Default",
+};
+
+export const NoScrollList = () => {
+  const [isActive, setIsActive] = useState(false);
+  const [text, setText] = useState("");
+  return (
+    <DropDown
+      selectedItem="디렉토리"
+      style={{ width: "270px", padding: "14px" }}
+      isActive={isActive}
+      setIsActive={setIsActive}
+    >
+      <div>
+        <List
+          allDir={[
+            {
+              name: "블라블라",
+              emoji: "😀",
+            },
+          ]}
+        />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "2.8fr 1fr",
+            gridGap: "7px",
+            marginTop: "12px",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Input
+            style={{
+              fontWeight: 500,
+              fontSize: "11px",
+              lineHeight: "13px",
+              padding: "0px 8px",
+              letterSpacing: "-0.02em",
+            }}
+            placeholder="새 디렉토리 명을 입력하세요"
+            maxLength={13}
+            value={text}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              e.target.value.length < 46 ? setText(e.target.value) : () => {}
+            }
+          />
+          <Btn
+            Style={{
+              width: "58px",
+              height: "36px",
+              borderRadius: "18px",
+              fontSize: "13px",
+            }}
+            onClick={() => console.log("hi")}
+            isOrange
+            isCookieDirBtn
+            isAtvBtn={!!text.length}
+          >
+            저장
+          </Btn>
+        </div>
+      </div>
+    </DropDown>
+  );
 };
