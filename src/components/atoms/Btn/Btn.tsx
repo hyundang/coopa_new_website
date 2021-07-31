@@ -1,15 +1,13 @@
 import { Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
-export interface IProps {
+export interface BtnProps {
   /** 버튼 안의 내용 */
   children: React.ReactNode;
   /** pc css (width, height, borderRadius, fontSize) */
-  pcStyle: React.CSSProperties;
-  /** mobile css (width, height, borderRadius, fontSize) */
-  mobileStyle: React.CSSProperties;
+  Style: React.CSSProperties;
   /**  버튼 클릭시 실행되는 함수 */
-  onClick: React.MouseEventHandler<HTMLDivElement>;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
   /** 버튼 색깔 판단 (true -> 주황색 버튼) */
   isOrange?: boolean;
   /** '디렉토리 공유하기' 버튼의 경우 -> true */
@@ -23,19 +21,17 @@ export interface IProps {
 }
 const Btn = ({
   children,
-  pcStyle,
-  mobileStyle,
+  Style,
   onClick,
   isOrange,
   isDirShare,
   setIsHover,
   isCookieDirBtn,
   isAtvBtn,
-}: IProps) => {
+}: BtnProps) => {
   return (
     <BtnWrap
-      pcStyle={pcStyle}
-      mobileStyle={mobileStyle}
+      Style={Style}
       onClick={onClick}
       isOrange={isOrange}
       isDirShare={isDirShare}
@@ -51,25 +47,27 @@ const Btn = ({
 
 export default Btn;
 
-interface IBtnWrap {
-  pcStyle: React.CSSProperties;
-  mobileStyle: React.CSSProperties;
+interface BtnWrapProps {
+  Style: React.CSSProperties;
   isOrange?: boolean;
   isDirShare?: boolean;
   isCookieDirBtn?: boolean;
   isAtvBtn?: boolean;
 }
-const BtnWrap = styled.div<IBtnWrap>`
+const BtnWrap = styled.button<BtnWrapProps>`
+  all: unset;
+  box-sizing: border-box;
   cursor: pointer;
 
-  width: ${(props) => props.pcStyle.width};
-  height: ${(props) => props.pcStyle.height};
-  border-radius: ${(props) => props.pcStyle.borderRadius};
+  width: ${(props) => props.Style.width};
+  height: ${(props) => props.Style.height};
+  border-radius: ${(props) => props.Style.borderRadius};
 
-  font-size: ${(props) => props.pcStyle.fontSize};
+  font-size: ${(props) => props.Style.fontSize};
   font-weight: 500;
   text-align: center;
-  line-height: ${(props) => props.pcStyle.height};
+  line-height: ${(props) => props.Style.height};
+  letter-spacing: -0.2px;
 
   transition: 0.2s;
   ${(props) =>

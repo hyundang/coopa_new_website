@@ -12,6 +12,7 @@ const colorSystems = css`
     --gray_5: #999999;
     --gray_6: #777777;
     --gray_7: #555555;
+    --gray_7_active: #555352;
     --gray_hover_1: #f5f3f2;
     --gray_hover_2: #f7f6f5;
     --gray_active: #555352;

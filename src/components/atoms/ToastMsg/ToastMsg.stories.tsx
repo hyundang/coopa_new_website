@@ -2,7 +2,7 @@ import { useState } from "react";
 import ToastMsg from "./ToastMsg";
 
 export default {
-  title: "components | ToastMsg",
+  title: "components/atoms/ToastMsg",
   component: ToastMsg,
 };
 
