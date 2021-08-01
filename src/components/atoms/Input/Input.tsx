@@ -1,4 +1,4 @@
-import { RefObject, forwardRef } from "react";
+import React, { RefObject, forwardRef } from "react";
 import styled from "styled-components";
 
 export interface InputProps {
@@ -24,6 +24,8 @@ export interface InputProps {
   onKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
   /** input key down */
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  /** input tag outside click*/
+  onBlur?: React.ChangeEventHandler<HTMLInputElement>;
 }
 const Input = (
   {
@@ -38,6 +40,7 @@ const Input = (
     onChange,
     onKeyPress,
     onKeyDown,
+    onBlur,
   }: InputProps,
   ref?:
     | ((instance: HTMLInputElement | null) => void)
@@ -57,6 +60,7 @@ const Input = (
       onChange={onChange}
       onKeyPress={onKeyPress}
       onKeyDown={onKeyDown}
+      onBlur={onBlur}
       ref={ref}
     >
       {children}
