@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 // assets
-import logo from "@assets/logo.svg";
-import login_img from "@assets/imgs/login/login_img.svg";
+import { LogoImg } from "@assets/imgs/common";
+import { LoginImg } from "@assets/imgs/login";
 // components
 import LoginBtn from "@components/atoms/LoginBtn";
 // google login
@@ -20,8 +20,8 @@ interface IProps {
 }
 const Login = ({ onSuccess, onFailure }: IProps) => {
   return (
-    <Container url={logo}>
-      <div className="logo" />
+    <Container>
+      <LogoImg className="logo" />
       <div className="login">
         <div className="login__content">
           {"성장하는 사람들을 위한\n가장 간편한 콘텐츠 파킹랏"}
@@ -41,24 +41,21 @@ const Login = ({ onSuccess, onFailure }: IProps) => {
           }
         </div>
       </div>
-      <LoginImg url={login_img} />
+      <LoginImg className="login_img" />
     </Container>
   );
 };
 
 export default Login;
 
-interface IStyled {
-  url: string;
-}
-
-const Container = styled.div<IStyled>`
+const Container = styled.div`
   position: absolute;
   width: 100%;
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+
   .logo {
     position: absolute;
     top: 2rem;
@@ -66,8 +63,8 @@ const Container = styled.div<IStyled>`
     transform: translate(-50%, 0);
     width: 16.3rem;
     height: 3rem;
-    background: url(${(props) => props.url}) center center / cover no-repeat;
   }
+
   .login {
     position: absolute;
     top: 50%;
@@ -111,22 +108,21 @@ const Container = styled.div<IStyled>`
       }
     }
   }
-`;
 
-const LoginImg = styled.div<IStyled>`
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 0);
-  width: 32rem;
-  height: 15.7rem;
-  background: url(${(props) => props.url}) center center / cover no-repeat;
-  @media screen and (min-width: 769px) and (max-width: 1599px) {
-    width: 49rem;
-    height: 24rem;
-  }
-  @media screen and (min-width: 1600px) {
-    width: 54rem;
-    height: 26.4rem;
+  .login_img {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 32rem;
+    height: 15.7rem;
+    @media screen and (min-width: 769px) and (max-width: 1599px) {
+      width: 49rem;
+      height: 24rem;
+    }
+    @media screen and (min-width: 1600px) {
+      width: 54rem;
+      height: 26.4rem;
+    }
   }
 `;

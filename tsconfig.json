@@ -24,6 +24,7 @@
       "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],
       "@api/*": ["src/lib/api/*"],
+      "@interfaces/*": ["src/lib/interfaces/*"],
       "@assets/*": ["src/assets/*"],
       "@styles/*": ["scr/styles/*"]
     }

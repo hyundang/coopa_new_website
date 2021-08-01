@@ -4,6 +4,8 @@ import styled from "styled-components";
 export interface InputProps {
   /** input id */
   id?: string;
+  /** className */
+  className?: string;
   /** input 안의 내용 */
   children?: React.ReactNode;
   /** css (width, height, borderRadius, fontSize) */
@@ -28,6 +30,7 @@ export interface InputProps {
 const Input = (
   {
     id,
+    className,
     children,
     style,
     placeholder,
@@ -48,6 +51,7 @@ const Input = (
   return (
     <Container
       id={id}
+      className={className}
       style={style}
       placeholder={placeholder}
       type={type}
@@ -80,8 +84,10 @@ const Container = styled.input`
   color: var(--black_1);
   letter-spacing: -0.2px;
 
-  &:hover {
-    border: 1px solid var(--gray_5);
+  @media (hover: hover) {
+    &:hover {
+      border: 1px solid var(--gray_5);
+    }
   }
 
   &:focus {

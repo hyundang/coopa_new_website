@@ -34,6 +34,7 @@ export const cookieEditModal = () => {
           onClickSave={() => {}}
           onClickDel={() => {}}
           setIsError={setIsError}
+          isOpen={isOpen}
           setIsOpen={setIsOpen}
           isLoading={isLoading}
         />

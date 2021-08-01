@@ -3,6 +3,10 @@ import styled from "styled-components";
 import Input from "@components/atoms/Input/Input";
 
 export interface InputFormProps {
+  /** id */
+  id?: string;
+  /** className */
+  className?: string;
   /** input의 css (width, height...) */
   inputStyle?: React.CSSProperties;
   /** label 텍스트 */
@@ -25,6 +29,8 @@ export interface InputFormProps {
 
 const InputForm = (
   {
+    id,
+    className,
     inputStyle,
     text,
     length,
@@ -42,7 +48,7 @@ const InputForm = (
     | undefined,
 ) => {
   return (
-    <Container className="input_form_conatiner">
+    <Container id={id} className={className}>
       <div className="input_form_wrap">
         <label className="input_form_wrap__label" htmlFor="input">
           {text}

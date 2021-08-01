@@ -16,6 +16,7 @@ export const homeboardEditModal = () => {
     <>
       {isOpen && (
         <HomeboardEditModal
+          isOpen={isOpen}
           setIsOpen={setIsOpen}
           setIsError={setIsError}
           value={value}

@@ -2,6 +2,10 @@ import { Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
 export interface BtnProps {
+  /** id */
+  id?: string;
+  /** className */
+  className?: string;
   /** 버튼 안의 내용 */
   children: React.ReactNode;
   /** pc css (width, height, borderRadius, fontSize) */
@@ -20,6 +24,8 @@ export interface BtnProps {
   isAtvBtn?: boolean;
 }
 const Btn = ({
+  id,
+  className,
   children,
   Style,
   onClick,
@@ -31,6 +37,8 @@ const Btn = ({
 }: BtnProps) => {
   return (
     <BtnWrap
+      id={id}
+      className={className}
       Style={Style}
       onClick={onClick}
       isOrange={isOrange}
@@ -81,8 +89,10 @@ const BtnWrap = styled.button<BtnWrapProps>`
         : css`
             background-color: var(--orange);
             color: var(--white);
-            &:hover {
-              background-color: var(--orange_hover);
+            @media (hover: hover) {
+              &:hover {
+                background-color: var(--orange_hover);
+              }
             }
           `
       : props.isDirShare
@@ -90,17 +100,21 @@ const BtnWrap = styled.button<BtnWrapProps>`
           border: 0.2rem solid var(--orange);
           background-color: var(--white);
           color: var(--orange);
-          &:hover {
-            background-color: var(--orange_hover);
-            box-shadow: var(--orange_box_shadow);
-            color: var(--white);
+          @media (hover: hover) {
+            &:hover {
+              background-color: var(--orange_hover);
+              box-shadow: var(--orange_box_shadow);
+              color: var(--white);
+            }
           }
         `
       : css`
           background-color: var(--gray_2);
           color: var(--gray_7);
-          &:hover {
-            background-color: var(--gray_hover_2);
+          @media (hover: hover) {
+            &:hover {
+              background-color: var(--gray_hover_2);
+            }
           }
         `};
 `;

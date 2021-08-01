@@ -2,6 +2,10 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import styled from "styled-components";
 
 export interface IProps {
+  /** id */
+  id?: string;
+  /** className */
+  className?: string;
   /** 토스트 메시지 */
   children: React.ReactNode;
   /** 토스트 메시지 렌더링 여부 */
@@ -12,6 +16,8 @@ export interface IProps {
   imgSizeOver?: boolean;
 }
 const ToastMsg = ({
+  id,
+  className,
   children,
   isVisible,
   setIsVisible,
@@ -22,7 +28,12 @@ const ToastMsg = ({
   }, []);
 
   return (
-    <Wrap isVisible={isVisible} isError={imgSizeOver}>
+    <Wrap
+      isVisible={isVisible}
+      isError={imgSizeOver}
+      id={id}
+      className={className}
+    >
       {children}
     </Wrap>
   );
