@@ -6,7 +6,7 @@ export default {
 };
 
 export const cookieHover = () => {
-  return <CookieImg />;
+  return <CookieImg cardState="normal" />;
 };
 
 cookieHover.story = {

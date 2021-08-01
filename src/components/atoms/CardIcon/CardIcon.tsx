@@ -24,7 +24,6 @@ const IconWrap = styled.button<IIconWrap>`
   height: 4rem;
   border-radius: 2rem;
   border: none;
-  z-index: 2;
   background-color: transparent;
   -webkit-filter: drop-shadow(0px 0px 12px rgba(0, 0, 0, 0.9));
   transition: 0.2s;

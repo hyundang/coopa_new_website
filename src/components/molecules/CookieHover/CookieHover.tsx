@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, SetStateAction, Dispatch } from "react";
 import Input from "@components/atoms/Input/Input";
 import DropDown from "@components/atoms/DropDown/DropDown";
 import List from "@components/atoms/List/List";
@@ -9,12 +9,19 @@ interface directory {
   emoji: string;
 }
 export interface IProps {
+  //모든 디렉토리
   allDir: directory[];
+  //cardState를 parking으로 변경
+  setCardState: Dispatch<SetStateAction<string>>;
 }
 
-const CookieHover = ({ allDir }: IProps) => {
+const CookieHover = ({ allDir, setCardState }: IProps) => {
   const [isActive, setIsActive] = useState(false);
   const [text, setText] = useState("");
+  const postHandler = () => {
+    setCardState("parking");
+    setTimeout(() => setCardState("normal"), 1500);
+  };
   return (
     <DropDown
       selectedItem="디렉토리"
@@ -25,6 +32,7 @@ const CookieHover = ({ allDir }: IProps) => {
       <div>
         <List allDir={allDir} />
         <div
+          className="form"
           style={{
             display: "grid",
             gridTemplateColumns: "2.8fr 1fr",
@@ -36,7 +44,7 @@ const CookieHover = ({ allDir }: IProps) => {
           <Input
             style={{
               fontWeight: 500,
-              fontSize: "11px",
+              fontSize: "12px",
               lineHeight: "13px",
               padding: "0px 8px",
               letterSpacing: "-0.02em",
@@ -44,8 +52,13 @@ const CookieHover = ({ allDir }: IProps) => {
             placeholder="새 디렉토리 명을 입력하세요"
             maxLength={13}
             value={text}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              e.target.value.length < 46 ? setText(e.target.value) : () => {}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              setText(e.target.value);
+              setCardState("input");
+            }}
+            onKeyPress={(e) => (e.key === "Enter" ? postHandler() : {})}
+            onBlur={(e) =>
+              e.target.className !== "form" && setCardState("normal")
             }
           />
           <Btn
@@ -55,7 +68,7 @@ const CookieHover = ({ allDir }: IProps) => {
               borderRadius: "18px",
               fontSize: "13px",
             }}
-            onClick={() => console.log("hi")}
+            onClick={() => postHandler()}
             isOrange
             isCookieDirBtn
             isAtvBtn={!!text.length}
