@@ -4,6 +4,7 @@ import Btn from "@components/atoms/Btn/Btn";
 import InputForm from "@components/molecules/InputForm/InputForm";
 import TextAreaForm from "@components/molecules/TextAreaForm/TextAreaForm";
 import ImgBoxForm from "@components/molecules/ImgBoxForm/ImgBoxForm";
+import Modal from "@components/atoms/Modal/Modal";
 
 /** !쿠키 1개에 대한 export interface 만들어서 사용하기! */
 interface ValueProps {
@@ -14,6 +15,10 @@ interface ValueProps {
   image?: File;
 }
 export interface CookieEditModalProps {
+  /** id */
+  id?: string;
+  /** className */
+  className?: string;
   /** 쿠키 제목, 쿠키 텍스트, 쿠키 썸네일, 쿠키 아이디, 쿠키 썸네일 파일 */
   value: ValueProps;
   /** 쿠키 제목, 쿠키 텍스트, 쿠키 썸네일 setState */
@@ -24,6 +29,8 @@ export interface CookieEditModalProps {
   onClickDel: React.MouseEventHandler<HTMLButtonElement>;
   /** img input 시 img size 에러 여부 setState */
   setIsError: Dispatch<SetStateAction<boolean>>;
+  /** 모달 open 여부 */
+  isOpen: boolean;
   /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   /** data post 시 loading 여부 */
@@ -31,11 +38,14 @@ export interface CookieEditModalProps {
 }
 
 const CookieEditModal = ({
+  id,
+  className,
   value,
   setValue,
   onClickSave,
   onClickDel,
   setIsError,
+  isOpen,
   setIsOpen,
   isLoading,
 }: CookieEditModalProps) => {
@@ -60,16 +70,35 @@ const CookieEditModal = ({
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     if (e.key === "Escape") {
       setIsOpen(false);
     }
   };
 
   return (
-    <>
-      <Background onClick={() => setIsOpen(false)} />
-      <Container className="cookie_edit_modal_container">
+    <Modal
+      id={id}
+      className={className}
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      pcStyle={{
+        alignItems: "flex-start",
+        padding: "34px 32px 38px 32px",
+        borderRadius: "16px",
+        width: "516px",
+        height: "631px",
+        color: "var(--black_1)",
+      }}
+      tabletStyle={{
+        padding: "32px 20px 28px 20px",
+        borderRadius: "20px 20px 0px 0px",
+        height: "95%",
+      }}
+    >
+      <Container id={id} className={className}>
         <div className="modal_title">쿠키 수정</div>
         <div className="modal_img_box_wrap">
           <div className="modal_img_box_wrap__text">쿠키 이미지 업로드</div>
@@ -132,7 +161,7 @@ const CookieEditModal = ({
           }
           onKeyDown={handleKeyDown}
         />
-        <div style={{ flex: 1 }} />
+        <div style={{ flexGrow: 1, width: "100%" }} />
         <div className="btn_wrap">
           <Btn
             Style={{
@@ -172,41 +201,17 @@ const CookieEditModal = ({
           </span>
         </div>
       </Container>
-    </>
+    </Modal>
   );
 };
 
 export default CookieEditModal;
 
-const Background = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 10;
-
-  background-color: rgba(0, 0, 0, 0.8);
-  width: 100vw;
-  height: 100vh;
-`;
-
 const Container = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 11;
-  transform: translate(-50%, -50%);
-
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-
-  padding: 34px 32px 38px 32px;
-  border-radius: 16px;
-  background-color: var(--white);
-  width: 516px;
-  height: 631px;
-
-  color: var(--black_1);
 
   .modal_title {
     margin-bottom: 16px;

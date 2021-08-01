@@ -2,6 +2,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import styled from "styled-components";
 import ImgBoxForm from "@components/molecules/ImgBoxForm/ImgBoxForm";
 import Tab from "@components/atoms/Tab/Tab";
+import Modal from "@components/atoms/Modal/Modal";
 
 const imgs = [
   "/theme_img/img_1_small.png",
@@ -15,12 +16,18 @@ const imgs = [
 ];
 
 export interface HomeboardEditModalProps {
+  /** id */
+  id?: string;
+  /** className */
+  className?: string;
   /** 모달 안의 홈보드 배경 이미지 */
   value: string;
   /** 모달 안의 홈보드 배경 이미지 setState */
   setValue: Dispatch<SetStateAction<string>>;
   /** img input 시 img size 에러 여부 setState */
   setIsError: Dispatch<SetStateAction<boolean>>;
+  /** 모달 open 여부 */
+  isOpen: boolean;
   /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   /** homeboard img setState */
@@ -30,9 +37,12 @@ export interface HomeboardEditModalProps {
 }
 
 const HomeboardEditModal = ({
+  id,
+  className,
   value,
   setValue,
   setIsError,
+  isOpen,
   setIsOpen,
   setHomeboardImg,
   postHomeboardImg,
@@ -69,9 +79,25 @@ const HomeboardEditModal = ({
   };
 
   return (
-    <>
-      <Background onClick={() => setIsOpen(false)} />
-      <Container className="modal_container">
+    <Modal
+      id={id}
+      className={className}
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      isHomeboardEditModal
+      isFixed={false}
+      locationX={50}
+      pcStyle={{
+        alignItems: "flex-start",
+        padding: " 24px 24px 0px 24px",
+        borderRadius: "20px",
+        boxShadow: "0px 0px 15px rgba(0, 0, 0, 0.13)",
+        width: "518px",
+        height: "264px",
+        color: "var(--black_1)",
+      }}
+    >
+      <Container>
         <span className="modal_title">홈보드 변경</span>
         <TabWrap className="tab_wrap">
           <Tab
@@ -88,14 +114,16 @@ const HomeboardEditModal = ({
         {tabValue === "기본 테마" ? (
           <div className="theme_wrap">
             {imgs.map((img: string, idx: number) => (
-              <img
-                src={img}
+              <div
                 id={`${idx + 1}`}
+                className="theme_wrap__img_wrap"
                 key={img}
-                alt="theme_img"
-                className="theme_wrap__img"
+                role="button"
                 onClick={handleClickThemeImg}
-              />
+                tabIndex={-1}
+              >
+                <img src={img} alt="theme_img" className="theme_img" />
+              </div>
             ))}
           </div>
         ) : (
@@ -117,41 +145,15 @@ const HomeboardEditModal = ({
           />
         )}
       </Container>
-    </>
+    </Modal>
   );
 };
 
 export default HomeboardEditModal;
 
-const Background = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 10;
-
-  width: 100vw;
-  height: 100vh;
-`;
-
 const Container = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 11;
-  transform: translate(-50%, -50%);
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
-  padding: 24px 24px 0px 24px;
-  border-radius: 20px;
-  background-color: var(--white);
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.13);
-  width: 518px;
-  height: 264px;
-
-  color: var(--black_1);
+  width: 100%;
+  height: 100%;
 
   .modal_title {
     width: 100%;
@@ -170,14 +172,18 @@ const Container = styled.div`
     justify-content: space-between;
     flex-wrap: wrap;
     width: 100%;
-    &__img {
-      cursor: pointer;
-      width: 11rem;
-      height: 5rem;
-      border-radius: 0.6rem;
-      margin-bottom: 1rem;
-      &:hover {
-        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+    &__img_wrap {
+      width: 110px;
+      height: 50px;
+      margin-bottom: 10px;
+      .theme_img {
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        border-radius: 6px;
+        &:hover {
+          background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+        }
       }
     }
   }

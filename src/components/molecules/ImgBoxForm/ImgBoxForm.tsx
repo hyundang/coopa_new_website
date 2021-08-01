@@ -4,6 +4,10 @@ import { CookieIcon, PlusIcon } from "@assets/icons/common";
 import { Dispatch, SetStateAction, LegacyRef } from "react";
 
 export interface ImgBoxFormProps {
+  /** id */
+  id?: string;
+  /** className */
+  className?: string;
   /** img box style */
   imgBoxStyle?: React.CSSProperties;
   /** img box 안에 들어가는 img url */
@@ -25,6 +29,8 @@ export interface ImgBoxFormProps {
 }
 
 const ImgBoxForm = ({
+  id,
+  className,
   imgBoxStyle,
   imgUrl,
   isHover,
@@ -37,7 +43,8 @@ const ImgBoxForm = ({
 }: ImgBoxFormProps) => {
   return (
     <Container
-      className="img_box_form_container"
+      id={id}
+      className={className}
       cookieSize={cookieSize}
       plusSize={plusSize}
     >

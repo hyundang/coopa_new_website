@@ -1,5 +1,5 @@
 // assets
-import plusIcon from "@assets/icons/common/plus_white.svg";
+import { PlusIcon } from "@assets/icons/common";
 // style
 import { useState } from "react";
 import ImgBox from "./ImgBox";
@@ -43,11 +43,7 @@ export const cookieEditImgBox = () => {
             justifyContent: "center",
           }}
         >
-          <img
-            src={plusIcon}
-            alt="plus_icon"
-            style={{ width: "24px", height: "24px" }}
-          />
+          <PlusIcon style={{ width: "24px", height: "24px" }} />
         </div>
       )}
     </ImgBox>
@@ -79,11 +75,7 @@ export const homeBoardEditImgBox = () => {
           }}
           onClick={() => console.log("hi")}
         >
-          <img
-            src={plusIcon}
-            alt="plus_icon"
-            style={{ width: "18px", height: "18px" }}
-          />
+          <PlusIcon style={{ width: "18px", height: "18px" }} />
         </div>
       )}
     </ImgBox>

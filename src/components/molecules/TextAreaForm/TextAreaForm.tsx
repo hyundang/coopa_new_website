@@ -2,6 +2,10 @@ import styled from "styled-components";
 import TextArea from "@components/atoms/TextArea/TextArea";
 
 export interface TextAreaFormProps {
+  /** id */
+  id?: string;
+  /** className */
+  className?: string;
   /** textarea의 css (width, height...) */
   textareaStyle?: React.CSSProperties;
   /** label 텍스트 */
@@ -23,6 +27,8 @@ export interface TextAreaFormProps {
 }
 
 const TextAreaForm = ({
+  id,
+  className,
   textareaStyle,
   text,
   length,
@@ -34,7 +40,7 @@ const TextAreaForm = ({
   onKeyDown,
 }: TextAreaFormProps) => {
   return (
-    <Container className="textarea_form_conatiner">
+    <Container id={id} className={className}>
       <div className="textarea_form_wrap">
         <label className="textarea_form_wrap__label" htmlFor="textarea">
           {text}

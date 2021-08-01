@@ -2,6 +2,8 @@ import { Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
 export interface IProps {
+  /** id */
+  id?: string;
   /** imgbox class name */
   className?: string;
   /** 내부에 들어가는 컴포넌트 */
@@ -16,6 +18,7 @@ export interface IProps {
   isLoading?: boolean;
 }
 const ImgBox = ({
+  id,
   className,
   children,
   style,
@@ -25,6 +28,7 @@ const ImgBox = ({
 }: IProps) => {
   return (
     <Wrap
+      id={id}
       className={className}
       url={url}
       style={style}

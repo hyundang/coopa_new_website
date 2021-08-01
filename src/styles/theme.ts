@@ -19,9 +19,13 @@ const theme: DefaultTheme = {
       label === "tablet" ||
       label === "mobile"
     ) {
-      acc[label] = (args: CSSObject | TemplateStringsArray) => css`
+      // @ts-ignore
+      acc[label] = (...args) => css`
         @media (max-width: ${sizes[label]}px) {
-          ${css(args)};
+          ${
+            // @ts-ignore
+            css(...args)
+          };
         }
       `;
     }

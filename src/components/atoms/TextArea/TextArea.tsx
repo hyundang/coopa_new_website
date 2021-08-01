@@ -3,6 +3,8 @@ import styled from "styled-components";
 export interface TextAreaProps {
   /** textarea의 id */
   id?: string;
+  /** className */
+  className?: string;
   /** textarea 안의 내용 */
   children?: React.ReactNode;
   /** css (width, height, borderRadius, fontSize) */
@@ -22,6 +24,7 @@ export interface TextAreaProps {
 }
 const TextArea = ({
   id,
+  className,
   children,
   style,
   placeholder,
@@ -34,6 +37,7 @@ const TextArea = ({
   return (
     <Container
       id={id}
+      className={className}
       style={style}
       placeholder={placeholder}
       maxLength={maxLength}

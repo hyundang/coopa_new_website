@@ -2,6 +2,10 @@ import { Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
 export interface TabProps {
+  /** id */
+  id?: string;
+  /** className */
+  className?: string;
   /** 탭 버튼 css */
   tabStyle?: React.CSSProperties;
   /** 탭 버튼 텍스트 */
@@ -12,10 +16,18 @@ export interface TabProps {
   setValue: Dispatch<SetStateAction<string>>;
 }
 
-const Tab = ({ tabStyle, options, value, setValue }: TabProps) => {
+const Tab = ({
+  id,
+  className,
+  tabStyle,
+  options,
+  value,
+  setValue,
+}: TabProps) => {
   return (
     <Container
-      className="tab_container"
+      id={id}
+      className={className}
       tabStyle={tabStyle}
       value={value}
       options={options}
@@ -55,9 +67,6 @@ const Container = styled.div<ContainerProps>`
     flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
-
-    /* position: relative;
-    z-index: 1; */
   }
 
   .tab_btn_under_bar {
@@ -94,7 +103,6 @@ const TabBtn = styled.button<TabBtnProps>`
       ? css`
           color: var(--black_2);
           font-weight: 500;
-          /* border-bottom: 2px solid var(--orange); */
         `
       : css`
           color: var(--gray_4);

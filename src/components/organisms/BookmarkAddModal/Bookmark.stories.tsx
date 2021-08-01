@@ -19,6 +19,7 @@ export const bookmarkAddModal = () => {
         <BookmarkAddModal
           value={value}
           setValue={setValue}
+          isOpen={isOpen}
           setIsOpen={setIsOpen}
           onClickSave={() => {}}
         />

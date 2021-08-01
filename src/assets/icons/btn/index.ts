@@ -1,1 +1,1 @@
-export { ReactComponent as ClipIcon } from "./clip_orange.svg";
+export { ReactComponent as ClipIcon } from "./icn_link_white_18px.svg";

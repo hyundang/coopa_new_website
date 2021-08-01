@@ -1,9 +1,13 @@
 import { Dispatch, SetStateAction, RefObject } from "react";
 import styled from "styled-components";
 // assets
-import plus_icon from "@assets/icons/common/plus_white.svg";
+import { PlusIcon } from "@assets/icons/common";
 
 export interface BookmarkTileProps {
+  /** id */
+  id?: string;
+  /** className */
+  className?: string;
   /** 파비콘 url */
   url?: string;
   /** 사이트 이름 */
@@ -24,6 +28,8 @@ export interface BookmarkTileProps {
     | undefined;
 }
 const BookmarkTile = ({
+  id,
+  className,
   url,
   siteName,
   onClickTile,
@@ -34,20 +40,17 @@ const BookmarkTile = ({
 }: BookmarkTileProps) => {
   return (
     <Wrap
+      id={id}
+      className={className}
       onMouseOver={setIsHover ? () => setIsHover(true) : undefined}
       onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
       url={url}
       onClick={onClickTile}
       isAddBtn={isAddBtn}
       ref={ref}
-      className="tile"
     >
       {isAddBtn ? (
-        <img
-          style={{ width: "2rem", height: "2rem" }}
-          src={plus_icon}
-          alt="plus_icon"
-        />
+        <PlusIcon style={{ width: "2rem", height: "2rem" }} />
       ) : (
         <div className="tile_content">
           <DelIcon onClick={onClickDelBtn}>×</DelIcon>

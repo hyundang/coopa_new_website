@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 // assets
-import google_icon from "@assets/icons/login/google_logo.svg";
+import { GoogleIcon } from "@assets/icons/login";
 
 export interface IProps {
   /** 로그인 버튼을 클릭했을 때 실행되는 함수 */
@@ -10,8 +10,8 @@ export interface IProps {
 const LoginBtn = ({ onClick }: IProps) => {
   return (
     <BtnWrap onClick={onClick}>
-      <BtnLogo src={google_icon} />
-      <BtnText>Google로 3초만에 로그인하기</BtnText>
+      <GoogleIcon className="google_icon" />
+      <span className="button_text">Google로 3초만에 로그인하기</span>
     </BtnWrap>
   );
 };
@@ -48,28 +48,28 @@ const BtnWrap = styled.div`
   }
 
   @media screen and (min-width: 769px) {
-    width: 30.7rem;
-    height: 5.4rem;
-    padding: 1.8rem 3rem;
+    width: 307px;
+    height: 54px;
+    padding: 18px 30px;
   }
-`;
 
-const BtnLogo = styled.img`
-  width: 2rem;
-  height: 1.8rem;
+  .google_icon {
+    width: 20px;
+    height: 20px;
 
-  @media screen and (min-width: 769px) {
-    width: 2.3rem;
-    height: 2.1rem;
+    @media screen and (min-width: 769px) {
+      width: 24px;
+      height: 24px;
+    }
   }
-`;
 
-const BtnText = styled.div`
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: var(--black_2);
+  .button_text {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--black_2);
 
-  @media screen and (min-width: 769px) {
-    font-size: 1.7rem;
+    @media screen and (min-width: 769px) {
+      font-size: 1.7rem;
+    }
   }
 `;

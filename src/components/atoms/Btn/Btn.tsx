@@ -2,6 +2,10 @@ import { Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
 export interface BtnProps {
+  /** id */
+  id?: string;
+  /** className */
+  className?: string;
   /** 버튼 안의 내용 */
   children: React.ReactNode;
   /** pc css (width, height, borderRadius, fontSize) */
@@ -20,6 +24,8 @@ export interface BtnProps {
   isAtvBtn?: boolean;
 }
 const Btn = ({
+  id,
+  className,
   children,
   Style,
   onClick,
@@ -31,6 +37,8 @@ const Btn = ({
 }: BtnProps) => {
   return (
     <BtnWrap
+      id={id}
+      className={className}
       Style={Style}
       onClick={onClick}
       isOrange={isOrange}

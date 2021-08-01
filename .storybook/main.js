@@ -10,13 +10,21 @@ module.exports = {
   webpackFinal: async (config) => {
     config.module.rules.unshift({
       test: /\.svg$/,
-      use: ["@svgr/webpack"],
+      use: [
+        {
+          loader: "@svgr/webpack",
+          options: {
+            svgoConfig: { plugins: { removeViewBox: false } },
+          },
+        },
+      ],
     });
+    // config.module.rules.unshift({
+    //   test: /\.svg$/,
+    //   use: ["@svgr/webpack"],
+    // });
 
-    config.resolve.modules = [
-      path.resolve(__dirname, ".."),
-      "node_modules",
-    ];
+    config.resolve.modules = [path.resolve(__dirname, ".."), "node_modules"];
 
     config.resolve.alias = {
       ...config.resolve.alias,
