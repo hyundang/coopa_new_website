@@ -172,15 +172,13 @@ const Container = styled.div`
     justify-content: space-between;
     flex-wrap: wrap;
     width: 100%;
-    &__img_wrap {
+    &__img {
+      cursor: pointer;
       width: 110px;
       height: 50px;
+      border-radius: 6px;
       margin-bottom: 10px;
-      .theme_img {
-        cursor: pointer;
-        width: 100%;
-        height: 100%;
-        border-radius: 6px;
+      @media (hover: hover) {
         &:hover {
           background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
         }

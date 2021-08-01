@@ -94,8 +94,10 @@ const TabBtn = styled.button<TabBtnProps>`
   text-align: center;
   transition: 0.2s;
 
-  &:hover {
-    color: var(--black_1);
+  @media (hover: hover) {
+    &:hover {
+      color: var(--black_1);
+    }
   }
 
   ${(props) =>

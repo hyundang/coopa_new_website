@@ -89,8 +89,10 @@ const BtnWrap = styled.button<BtnWrapProps>`
         : css`
             background-color: var(--orange);
             color: var(--white);
-            &:hover {
-              background-color: var(--orange_hover);
+            @media (hover: hover) {
+              &:hover {
+                background-color: var(--orange_hover);
+              }
             }
           `
       : props.isDirShare
@@ -98,17 +100,21 @@ const BtnWrap = styled.button<BtnWrapProps>`
           border: 0.2rem solid var(--orange);
           background-color: var(--white);
           color: var(--orange);
-          &:hover {
-            background-color: var(--orange_hover);
-            box-shadow: var(--orange_box_shadow);
-            color: var(--white);
+          @media (hover: hover) {
+            &:hover {
+              background-color: var(--orange_hover);
+              box-shadow: var(--orange_box_shadow);
+              color: var(--white);
+            }
           }
         `
       : css`
           background-color: var(--gray_2);
           color: var(--gray_7);
-          &:hover {
-            background-color: var(--gray_hover_2);
+          @media (hover: hover) {
+            &:hover {
+              background-color: var(--gray_hover_2);
+            }
           }
         `};
 `;

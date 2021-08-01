@@ -1,18 +1,16 @@
 import { DefaultTheme, css, CSSObject } from "styled-components";
 
 const sizes = {
-  desktop_1: 1919,
-  desktop_2: 1599,
-  desktop_3: 1365,
-  desktop_4: 1023,
-  tablet: 600,
-  mobile: 374,
+  desktop_2: 1919,
+  desktop_3: 1599,
+  desktop_4: 1365,
+  tablet: 1023,
+  mobile: 599,
 };
 
 const theme: DefaultTheme = {
   media: Object.keys(sizes).reduce((acc: any, label: string) => {
     if (
-      label === "desktop_1" ||
       label === "desktop_2" ||
       label === "desktop_3" ||
       label === "desktop_4" ||
@@ -21,7 +19,7 @@ const theme: DefaultTheme = {
     ) {
       // @ts-ignore
       acc[label] = (...args) => css`
-        @media (max-width: ${sizes[label]}px) {
+        @media (hover: hover) and (max-width: ${sizes[label]}px) {
           ${
             // @ts-ignore
             css(...args)

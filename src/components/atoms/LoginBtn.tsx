@@ -41,10 +41,12 @@ const BtnWrap = styled.div`
 
   transition-property: box-shadow;
   transition: 0.3s;
-  &:hover {
-    transform: translate(-50%, -0.4rem);
-    border: 0.1rem solid var(--white);
-    box-shadow: 0px 0.3rem 1.3rem rgba(0, 0, 0, 0.15);
+  @media (hover: hover) {
+    &:hover {
+      transform: translate(-50%, -0.4rem);
+      border: 0.1rem solid var(--white);
+      box-shadow: 0px 0.3rem 1.3rem rgba(0, 0, 0, 0.15);
+    }
   }
 
   @media screen and (min-width: 769px) {

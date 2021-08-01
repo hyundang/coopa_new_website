@@ -55,9 +55,11 @@ const Wrap = styled.div<IWrap>`
   ${(props) =>
     !props.isLoading &&
     css`
-      &:hover {
-        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-          url(${props.url}) center center/cover;
+      @media (hover: hover) {
+        &:hover {
+          background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+            url(${props.url}) center center/cover;
+        }
       }
     `}
 `;
