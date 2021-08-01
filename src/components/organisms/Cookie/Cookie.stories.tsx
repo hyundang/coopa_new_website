@@ -6,7 +6,11 @@ export default {
 };
 
 export const imgBox = () => {
-  return <Cookie />;
+  return (
+    <div>
+      <Cookie />
+    </div>
+  );
 };
 
 imgBox.story = {
