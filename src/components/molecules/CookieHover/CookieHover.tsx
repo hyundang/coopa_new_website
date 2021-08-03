@@ -34,7 +34,7 @@ const CookieHover = ({ allDir, setCardState }: IProps) => {
           className="form"
           style={{
             display: "grid",
-            gridTemplateColumns: "2.8fr 1fr",
+            gridTemplateColumns: "2.6fr 1fr",
             gridGap: "7px",
             marginTop: "12px",
           }}
@@ -62,7 +62,7 @@ const CookieHover = ({ allDir, setCardState }: IProps) => {
           />
           <Btn
             Style={{
-              width: "58px",
+              width: "100%",
               height: "36px",
               borderRadius: "18px",
               fontSize: "13px",

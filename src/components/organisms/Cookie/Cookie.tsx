@@ -22,7 +22,7 @@ const Cookie = ({ cookie }: IProps) => {
         if (cardState !== "input") setCardState("normal");
       }}
     >
-      <CookieImg cardState={cardState} />
+      <CookieImg cardState={cardState} content={cookie.content} />
       {(cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
           <CookieHover allDir={[]} setCardState={setCardState} />
