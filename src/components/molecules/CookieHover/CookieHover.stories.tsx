@@ -1,3 +1,4 @@
+import { useState } from "react";
 import CookieHover from ".";
 
 export default {
@@ -6,6 +7,7 @@ export default {
 };
 
 export const cookieHover = () => {
+  const [cardState, setCardState] = useState("normal");
   const allDir = [
     {
       name: "블라블라",
@@ -36,7 +38,12 @@ export const cookieHover = () => {
       emoji: "😀",
     },
   ];
-  return <CookieHover allDir={allDir} />;
+  return <CookieHover allDir={allDir} setCardState={setCardState} />;
+};
+
+export const cookieHoverEmpty = () => {
+  const [cardState, setCardState] = useState("normal");
+  return <CookieHover allDir={[]} setCardState={setCardState} />;
 };
 
 cookieHover.story = {
