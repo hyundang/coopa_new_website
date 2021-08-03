@@ -22,3 +22,11 @@ export interface CookieData {
   thumbnail: string;
   title: string;
 }
+
+export interface DirectoryData {
+  emoji: string;
+  id: number;
+  name: string;
+  thumbnail: string;
+  cookieCnt: number;
+}

@@ -13,23 +13,26 @@ export interface IProps {
   allDir: directory[];
   //cardState를 parking으로 변경
   setCardState: Dispatch<SetStateAction<string>>;
+  //현재 디렉토리
+  currDir: string;
+  //set currDir
+  setCurrDir: Dispatch<SetStateAction<string>>;
 }
 
-const CookieHover = ({ allDir, setCardState }: IProps) => {
+const CookieHover = ({ allDir, setCardState, currDir, setCurrDir }: IProps) => {
   const [isActive, setIsActive] = useState(false);
   const [text, setText] = useState("");
   const postHandler = () => {
-    setCardState("parking");
-    setTimeout(() => setCardState("normal"), 1500);
+    setCurrDir(text);
   };
   return (
     <DropDown
-      selectedItem="디렉토리"
+      selectedItem={currDir}
       isActive={isActive}
       setIsActive={setIsActive}
     >
       <div>
-        <List allDir={allDir} />
+        <List allDir={allDir} setCurrDir={setCurrDir} />
         <div
           className="form"
           style={{

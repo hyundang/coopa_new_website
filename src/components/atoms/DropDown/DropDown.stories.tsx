@@ -50,7 +50,7 @@ export const CookieDropDown = () => {
       setIsActive={setIsActive}
     >
       <div>
-        <List allDir={allDir} />
+        <List allDir={allDir} setCurrDir={setText} />
         <div
           style={{
             display: "grid",
@@ -111,6 +111,7 @@ export const NoScrollList = () => {
               emoji: "😀",
             },
           ]}
+          setCurrDir={setText}
         />
         <div
           style={{

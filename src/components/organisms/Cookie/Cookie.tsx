@@ -1,17 +1,28 @@
 import CookieImg from "@components/molecules/CookieImg/CookieImg";
 import CookieHover from "@components/molecules/CookieHover/CookieHover";
 import styled from "styled-components";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import fvcOnErrorImg from "@assets/icons/card/icn_favicon.svg";
-import { CookieData } from "src/lib/interfaces/user";
+import { CookieData, DirectoryData } from "src/lib/interfaces/user";
 
 export interface IProps {
   cookie: CookieData;
+  allDir: DirectoryData[];
 }
 
-const Cookie = ({ cookie }: IProps) => {
+const Cookie = ({ cookie, allDir }: IProps) => {
   //normal: 기본 | hover: 호버 | parking: 파킹중 | input: 인풋입력중
   const [cardState, setCardState] = useState("normal");
+  //현재 디렉토리
+  const [currDir, setCurrDir] = useState(
+    cookie.directoryInfo?.name === undefined
+      ? "모든 쿠키"
+      : cookie.directoryInfo.name,
+  );
+  useEffect(() => {
+    setCardState("parking");
+    setTimeout(() => setCardState("normal"), 1500);
+  }, [currDir]);
   return (
     <CookieWrap
       onClick={() => window.open(cookie.link)}
@@ -25,7 +36,12 @@ const Cookie = ({ cookie }: IProps) => {
       <CookieImg cardState={cardState} content={cookie.content} />
       {(cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
-          <CookieHover allDir={[]} setCardState={setCardState} />
+          <CookieHover
+            allDir={allDir}
+            setCardState={setCardState}
+            currDir={currDir}
+            setCurrDir={setCurrDir}
+          />
         </div>
       )}
       <div className="cookie--title">{cookie.title}</div>

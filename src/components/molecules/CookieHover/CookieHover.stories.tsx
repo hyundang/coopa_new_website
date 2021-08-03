@@ -8,6 +8,7 @@ export default {
 
 export const cookieHover = () => {
   const [cardState, setCardState] = useState("normal");
+  const [currDir, setCurrDir] = useState("모든쿠키");
   const allDir = [
     {
       name: "블라블라",
@@ -38,12 +39,27 @@ export const cookieHover = () => {
       emoji: "😀",
     },
   ];
-  return <CookieHover allDir={allDir} setCardState={setCardState} />;
+  return (
+    <CookieHover
+      allDir={allDir}
+      setCardState={setCardState}
+      currDir={currDir}
+      setCurrDir={setCurrDir}
+    />
+  );
 };
 
 export const cookieHoverEmpty = () => {
   const [cardState, setCardState] = useState("normal");
-  return <CookieHover allDir={[]} setCardState={setCardState} />;
+  const [currDir, setCurrDir] = useState("모든쿠키");
+  return (
+    <CookieHover
+      allDir={[]}
+      setCardState={setCardState}
+      currDir={currDir}
+      setCurrDir={setCurrDir}
+    />
+  );
 };
 
 cookieHover.story = {

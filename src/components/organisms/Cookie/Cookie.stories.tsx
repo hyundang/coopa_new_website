@@ -25,7 +25,7 @@ export const cookie270 = () => {
   };
   return (
     <div style={{ width: "270px" }}>
-      <Cookie cookie={cookie} />
+      <Cookie cookie={cookie} allDir={allDir} />
     </div>
   );
 };
@@ -53,7 +53,7 @@ export const cookie270NoContent = () => {
   };
   return (
     <div style={{ width: "270px" }}>
-      <Cookie cookie={cookie} />
+      <Cookie cookie={cookie} allDir={allDir} />
     </div>
   );
 };
@@ -78,7 +78,19 @@ export const cookie300 = () => {
   };
   return (
     <div style={{ width: "300px" }}>
-      <Cookie cookie={cookie} />
+      <Cookie cookie={cookie} allDir={allDir} />
     </div>
   );
 };
+
+//mockData
+
+const allDir = [
+  {
+    emoji: "😀",
+    id: 2543,
+    name: "3ps",
+    thumbnail: "https://www.notion.so/images/meta/default.png",
+    cookieCnt: 1,
+  },
+];
