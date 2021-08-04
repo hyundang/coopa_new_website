@@ -11,6 +11,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@storybook/react": "^6.3.5",
     "@svgr/webpack": "^5.5.0",
     "axios": "^0.21.1",
     "dotenv": "^10.0.0",
@@ -31,7 +32,6 @@
     "@storybook/addon-actions": "^6.3.4",
     "@storybook/addon-essentials": "^6.3.4",
     "@storybook/addon-links": "^6.3.4",
-    "@storybook/react": "^6.3.4",
     "@types/next": "^9.0.0",
     "@types/node": "^16.3.2",
     "@types/react": "^17.0.14",
