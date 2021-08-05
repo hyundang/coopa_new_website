@@ -1,4 +1,4 @@
-import Cookie from "./Cookie";
+import Cookie from ".";
 
 export default {
   title: "components/organisms/Cookie",

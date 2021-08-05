@@ -1,9 +1,8 @@
 import { css, keyframes } from "styled-components";
 
-/* stylelint-disable */
+// 위에서 내려오도록
 const homeboardFadeIn = keyframes`
     from {
-      // 위에서 내려오도록
       transform: translate(0, -5px);
       opacity: 0;
     }
@@ -12,25 +11,25 @@ const homeboardFadeIn = keyframes`
       opacity: 1;
     }
 `;
-// EQUIVALENT TO: css`${fadeIn} 0.4s linear;`
-export const homeboardFadeInRule = css(
-  ["", " 0.4s linear;"] as any as TemplateStringsArray,
+// ${homeboardFadeIn} 0.4s linear 이랑 같음
+const homeboardFadeInRule = css(
+  ["", " 0.4s linear"] as any as TemplateStringsArray,
   homeboardFadeIn,
 );
 
+// 위로 올라가도록
 const homeboardFadeOut = keyframes`
     from {
       transform: translate(0, 0);
       opacity: 1;
     }
     to {
-      // 위로 올라가도록
       transform: translate(0, -5px);
       opacity: 0;
     }
 `;
-export const homeboardFadeOutRule = css(
-  ["", " 0.4s linear;"] as any as TemplateStringsArray,
+const homeboardFadeOutRule = css(
+  ["", " 0.4s linear"] as any as TemplateStringsArray,
   homeboardFadeOut,
 );
 
@@ -44,8 +43,8 @@ const tabletFadeIn = keyframes`
     opacity: 1;
   }
 `;
-export const tabletFadeInRule = css(
-  ["", " 0.3s linear;"] as any as TemplateStringsArray,
+const tabletFadeInRule = css(
+  ["", " 0.4s linear"] as any as TemplateStringsArray,
   tabletFadeIn,
 );
 
@@ -59,8 +58,16 @@ const tabletFadeOut = keyframes`
     opacity: 0;
   }
 `;
-export const tabletFadeOutRule = css(
-  ["", " 0.3s linear;"] as any as TemplateStringsArray,
+const tabletFadeOutRule = css(
+  ["", " 0.4s linear"] as any as TemplateStringsArray,
   tabletFadeOut,
 );
-/* stylelint-enable */
+
+const modalAnimation = {
+  homeboardFadeInRule,
+  homeboardFadeOutRule,
+  tabletFadeInRule,
+  tabletFadeOutRule,
+};
+
+export default modalAnimation;

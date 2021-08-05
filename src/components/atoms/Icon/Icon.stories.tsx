@@ -1,6 +1,6 @@
 import { NotiIcon } from "@assets/icons/Header";
 import { Story, Meta } from "@storybook/react";
-import Icon, { IconProps } from "./Icon";
+import Icon, { IconProps } from ".";
 // assets
 
 export default {

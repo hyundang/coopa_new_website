@@ -1,5 +1,5 @@
 import { useState } from "react";
-import HomeboardEditModal from "./HomeboardEditModal";
+import HomeboardEditModal from ".";
 
 export default {
   title: "components/organisms/HomeboardEditModal",

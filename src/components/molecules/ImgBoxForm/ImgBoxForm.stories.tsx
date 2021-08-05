@@ -1,5 +1,5 @@
 import { ChangeEvent, useRef, useState } from "react";
-import ImgBoxForm from "./ImgBoxForm";
+import ImgBoxForm from ".";
 
 export default {
   title: "components/molecules/ImgBoxForm",

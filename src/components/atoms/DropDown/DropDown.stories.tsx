@@ -1,8 +1,6 @@
 import { useState, ChangeEvent } from "react";
-import Input from "@components/atoms/Input/Input";
-import DropDown from "./DropDown";
-import List from "../List/List";
-import Btn from "../Btn/Btn";
+import { Btn, Input, List } from "@components/atoms";
+import DropDown from ".";
 
 //mock data
 const allDir = [
@@ -78,12 +76,6 @@ export const CookieDropDown = () => {
             }
           />
           <Btn
-            Style={{
-              width: "58px",
-              height: "36px",
-              borderRadius: "18px",
-              fontSize: "13px",
-            }}
             onClick={() => console.log("hi")}
             isOrange
             isCookieDirBtn
@@ -145,12 +137,6 @@ export const NoScrollList = () => {
             }
           />
           <Btn
-            Style={{
-              width: "58px",
-              height: "36px",
-              borderRadius: "18px",
-              fontSize: "13px",
-            }}
             onClick={() => console.log("hi")}
             isOrange
             isCookieDirBtn

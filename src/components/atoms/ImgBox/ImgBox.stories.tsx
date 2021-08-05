@@ -2,7 +2,7 @@
 import { PlusIcon } from "@assets/icons/common";
 // style
 import { useState } from "react";
-import ImgBox from "./ImgBox";
+import ImgBox from ".";
 
 export default {
   title: "components/atoms/ImgBox",
@@ -10,8 +10,13 @@ export default {
 };
 
 export const imgBox = () => {
+  const [isHover, setIsHover] = useState(false);
   return (
-    <ImgBox style={{ width: "270px", height: "136px", borderRadius: "16px" }} />
+    <ImgBox
+      style={{ width: "270px", height: "136px", borderRadius: "16px" }}
+      isHover={isHover}
+      setIsHover={setIsHover}
+    />
   );
 };
 
@@ -32,6 +37,7 @@ export const cookieEditImgBox = () => {
       }}
       url="https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
       setIsHover={setIsHover}
+      isHover={isHover}
     >
       {isHover && (
         <div
@@ -63,6 +69,7 @@ export const homeBoardEditImgBox = () => {
       }}
       url="https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
       setIsHover={setIsHover}
+      isHover={isHover}
     >
       {isHover && (
         <div

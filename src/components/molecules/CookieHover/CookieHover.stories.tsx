@@ -1,4 +1,4 @@
-import CookieHover from "./CookieHover";
+import CookieHover from ".";
 
 export default {
   title: "components/molecules/cookieHover",

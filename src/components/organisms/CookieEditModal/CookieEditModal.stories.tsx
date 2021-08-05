@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CookieEditModal from "./CookieEditModal";
+import CookieEditModal from ".";
 
 export default {
   title: "components/organisms/CookieEditModal",

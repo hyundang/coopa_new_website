@@ -1,4 +1,4 @@
-import CookieImg from "./CookieImg";
+import CookieImg from ".";
 
 export default {
   title: "components/molecules/cookieImg",
@@ -6,7 +6,7 @@ export default {
 };
 
 export const cookieHover = () => {
-  return <CookieImg cardState="normal" />;
+  return <CookieImg cardState="hover" />;
 };
 
 cookieHover.story = {

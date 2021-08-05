@@ -1,5 +1,5 @@
 import { useState } from "react";
-import BookmarkAddModal from "./BookmarkAddModal";
+import BookmarkAddModal from ".";
 
 export default {
   title: "components/organisms/BookmarkAddModal",
@@ -17,6 +17,7 @@ export const bookmarkAddModal = () => {
     <>
       {isOpen && (
         <BookmarkAddModal
+          className="bookmark-add-modal"
           value={value}
           setValue={setValue}
           isOpen={isOpen}

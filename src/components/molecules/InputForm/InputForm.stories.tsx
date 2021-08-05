@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import InputForm from "./InputForm";
+import InputForm from ".";
 
 export default {
   title: "components/molecules/InputForm",

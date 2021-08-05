@@ -1,8 +1,8 @@
-import { ClipIcon } from "@assets/icons/btn";
-import { CookieIcon } from "@assets/icons/common";
+import { LinkIcon, CookieIcon } from "@assets/icons/common";
+
 import styled from "styled-components";
 import { useState } from "react";
-import Btn from "./Btn";
+import Btn from ".";
 
 export default {
   title: "components/atoms/Btn",
@@ -77,7 +77,7 @@ export const dirShareBtn = () => {
       setIsHover={setIsHover}
     >
       <Wrap isHover={isHover}>
-        <ClipIcon
+        <LinkIcon
           style={{
             width: "19px",
             height: "19px",

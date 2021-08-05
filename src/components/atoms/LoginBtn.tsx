@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 // assets
-import { GoogleIcon } from "@assets/icons/login";
+import { GoogleIcon } from "@assets/icons/btn";
 
 export interface IProps {
   /** 로그인 버튼을 클릭했을 때 실행되는 함수 */
