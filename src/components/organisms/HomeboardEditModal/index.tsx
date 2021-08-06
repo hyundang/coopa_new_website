@@ -142,7 +142,7 @@ interface ModalWrapProps {
   isLoading: boolean;
 }
 const ModalWrap = styled(MoveModal)<ModalWrapProps>`
-  top: 73px;
+  top: 133px;
   left: ${(props) => props.locationX}px;
   z-index: 3;
 
