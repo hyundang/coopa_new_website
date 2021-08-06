@@ -1,7 +1,6 @@
 import { BookmarkTile, Bubble } from "@components/atoms";
 import { BookmarkDataProps } from "@interfaces/homeboard";
-import { useEffect, useRef, useState } from "react";
-import { useWindowSize } from "src/hooks";
+import { useState } from "react";
 import styled, { css } from "styled-components";
 import { BookmarkAddModal } from "..";
 import { NewBookmarkProps } from "../BookmarkAddModal";
@@ -27,10 +26,6 @@ const Bookmark = ({
 }: BookmarkProps) => {
   // add tile hover 여부
   const [isHover, setIsHover] = useState(false);
-  // homeboard edit modal x좌표
-  const [locationX, setLocationX] = useState(0);
-  const windowSize = useWindowSize();
-  const addTileLocation = useRef<HTMLDivElement>(null);
   // bookmark add modal open 여부
   const [isOpen, setIsOpen] = useState(false);
   // 추가할 bookmark data
@@ -39,20 +34,15 @@ const Bookmark = ({
     link: "",
   });
 
-  useEffect(() => {
-    addTileLocation.current &&
-      setLocationX(addTileLocation.current.getBoundingClientRect().x);
-  }, [windowSize.width]);
-
   return (
     <>
-      {datas.length === 0 && (
+      {datas?.length === 0 && (
         <StyledBubble isHover={isHover}>
           ⭐️자주 가는 사이트를 추가해보세요
         </StyledBubble>
       )}
       <BookmarkWrap id={id} className={className}>
-        {datas.map((bookmark: BookmarkDataProps) => (
+        {datas?.map((bookmark: BookmarkDataProps) => (
           <BookmarkTile
             id={`${bookmark.id}`}
             className="bookmark-tile"
@@ -66,7 +56,6 @@ const Bookmark = ({
           />
         ))}
         <BookmarkTile
-          ref={addTileLocation}
           isAddBtn
           onClickAddBtn={() => setIsOpen(true)}
           setIsHover={setIsHover}
@@ -77,7 +66,7 @@ const Bookmark = ({
           onClickSave={() => onClickSave(newBookmark)}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          locationX={locationX - 150 + 40}
+          locationX={-150 + 40}
         />
       </BookmarkWrap>
     </>
@@ -90,17 +79,18 @@ const StyledBubble = styled(Bubble)`
   position: absolute;
   z-index: 2;
   top: 13px;
+  left: 50%;
   opacity: 0;
 
   transition: opacity 0.3s, transform 0.3s;
   ${({ isHover }) =>
     isHover
       ? css`
-          transform: translate(0, -3px);
+          transform: translate(-50%, -3px);
           opacity: 1;
         `
       : css`
-          transform: translate(0, 0px);
+          transform: translate(-50%, 0px);
           opacity: 0;
         `};
 
