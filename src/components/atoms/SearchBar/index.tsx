@@ -63,10 +63,14 @@ export default function SearchBar({
       </span>
       <Icon
         className="search-close"
-        onClick={() => {
-          setPreventFadeout(false);
-          setVisible(false);
-        }}
+        onClick={
+          visible
+            ? () => {
+                setPreventFadeout(false);
+                setVisible(false);
+              }
+            : undefined
+        }
       >
         <CloseIcon className="search-close__icon" />
       </Icon>
@@ -159,6 +163,11 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
 
     &__input {
       all: unset;
+      ${({ visible }) =>
+        !visible &&
+        css`
+          cursor: default;
+        `}
       font-family: Spoqa Han Sans Neo;
       letter-spacing: -0.2px;
       font-style: normal;
@@ -206,6 +215,11 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
   }
 
   .search-close {
+    ${({ visible }) =>
+      !visible &&
+      css`
+        cursor: auto;
+      `}
     width: 56px;
     height: 56px;
     border-radius: 28px;
