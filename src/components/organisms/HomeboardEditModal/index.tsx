@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { ImgBoxForm } from "@components/molecules";
-import { Modal, Tab } from "@components/atoms";
+import { MoveModal, Tab } from "@components/atoms";
 import { modalAnimation } from "@components/animations";
 
 const imgs = [
@@ -25,7 +25,7 @@ export interface HomeboardEditModalProps {
   /** 모달 안의 홈보드 배경 이미지 setState */
   setValue: Dispatch<SetStateAction<string>>;
   /** img input 시 img size 에러 여부 setState */
-  setIsError: Dispatch<SetStateAction<boolean>>;
+  setIsError?: Dispatch<SetStateAction<boolean>>;
   /** 모달 open 여부 */
   isOpen: boolean;
   /** 모달 open 여부 setState */
@@ -34,6 +34,8 @@ export interface HomeboardEditModalProps {
   setHomeboardImg: Dispatch<SetStateAction<string>>;
   /** input img post */
   postHomeboardImg: (e: File) => string;
+  /** location x좌표 */
+  locationX: number;
 }
 
 const HomeboardEditModal = ({
@@ -46,6 +48,7 @@ const HomeboardEditModal = ({
   setIsOpen,
   setHomeboardImg,
   postHomeboardImg,
+  locationX,
 }: HomeboardEditModalProps) => {
   // 탭 선택값
   const [tabValue, setTabValue] = useState("기본 테마");
@@ -72,7 +75,7 @@ const HomeboardEditModal = ({
         setHomeboardImg(imgUrl);
         setIsLoading(false);
       } else {
-        setIsError(true);
+        // setIsError(true);
         img_input.current.value = "";
       }
     }
@@ -84,9 +87,8 @@ const HomeboardEditModal = ({
       className={className}
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      locationX={50}
+      locationX={locationX}
       isLoading={isLoading}
-      backgroundColor="white"
     >
       <span className="title">홈보드 변경</span>
       <div className="tab-wrap">
@@ -139,26 +141,34 @@ interface ModalWrapProps {
   locationX: number;
   isLoading: boolean;
 }
-const ModalWrap = styled(Modal)<ModalWrapProps>`
-  position: absolute;
+const ModalWrap = styled(MoveModal)<ModalWrapProps>`
   top: 73px;
   left: ${(props) => props.locationX}px;
-  z-index: 11;
+  z-index: 3;
 
   width: 518px;
   height: 264px;
   padding: 24px 24px 0px 24px;
   border-radius: 20px;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.13);
-  align-items: flex-start;
-  color: var(--black_1);
 
-  transition: visibility 0.4s;
-  visibility: ${(props) => (props.isOpen ? `visible` : `hidden`)};
-  animation: ${(props) =>
-    props.isOpen
-      ? modalAnimation.homeboardFadeInRule
-      : modalAnimation.homeboardFadeOutRule};
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  transition: 0.4s all;
+  ${({ isOpen }) =>
+    isOpen
+      ? css`
+          opacity: 1;
+          visibility: visible;
+          animation: ${modalAnimation.homeboardFadeInRule};
+        `
+      : css`
+          opacity: 0;
+          visibility: hidden;
+          animation: ${modalAnimation.homeboardFadeOutRule};
+        `}
 
   .title {
     width: 100%;

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, RefObject } from "react";
+import { Dispatch, SetStateAction, RefObject, forwardRef } from "react";
 import styled from "styled-components";
 // assets
 import { PlusIcon } from "@assets/icons/common";
@@ -11,46 +11,47 @@ export interface BookmarkTileProps {
   /** 파비콘 url */
   url?: string;
   /** 사이트 이름 */
-  siteName: string;
+  siteName?: string;
   /** 즐겨찾기 타일 클릭 시 */
-  onClickTile: React.MouseEventHandler<HTMLDivElement>;
+  onClickAddBtn?: React.MouseEventHandler<HTMLSpanElement>;
   /** 삭제 버튼(x) 클릭 시 */
-  onClickDelBtn?: React.MouseEventHandler<HTMLDivElement>;
+  onClickDelBtn?: React.MouseEventHandler<HTMLSpanElement>;
   /** 즐겨찾기 타일 hover 판단 */
   setIsHover?: Dispatch<SetStateAction<boolean>>;
   /** 즐겨찾기 추가 타일의 경우 -> true */
   isAddBtn?: boolean;
-  /** ref */
+}
+const BookmarkTile = (
+  {
+    id,
+    className = "tile",
+    url,
+    siteName,
+    onClickAddBtn,
+    onClickDelBtn,
+    setIsHover,
+    isAddBtn,
+  }: BookmarkTileProps,
   ref?:
     | ((instance: HTMLDivElement | null) => void)
     | RefObject<HTMLDivElement>
     | null
-    | undefined;
-}
-const BookmarkTile = ({
-  id,
-  className = "tile",
-  url,
-  siteName,
-  onClickTile,
-  onClickDelBtn,
-  setIsHover,
-  isAddBtn,
-  ref,
-}: BookmarkTileProps) => {
+    | undefined,
+) => {
   return (
     <Wrap
       id={id}
       className={className}
+      role="button"
       onMouseOver={setIsHover ? () => setIsHover(true) : undefined}
       onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
       url={url}
-      onClick={onClickTile}
+      onClick={isAddBtn ? onClickAddBtn : () => window.open(url, "__blank")}
       isAddBtn={isAddBtn}
       ref={ref}
     >
       {isAddBtn ? (
-        <PlusIcon style={{ width: "2rem", height: "2rem" }} />
+        <PlusIcon className="plus-icon" />
       ) : (
         <div className="content">
           <DelIcon onClick={onClickDelBtn}>×</DelIcon>
@@ -62,9 +63,9 @@ const BookmarkTile = ({
   );
 };
 
-export default BookmarkTile;
+export default forwardRef(BookmarkTile);
 
-const DelIcon = styled.div`
+const DelIcon = styled.span`
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
@@ -81,7 +82,7 @@ const DelIcon = styled.div`
   line-height: 1.7rem;
   color: var(--gray_7);
   &:hover {
-    background-color: #f7f0ed;
+    background-color: var(--gray_hover_1);
   }
 `;
 
@@ -89,7 +90,7 @@ interface WrapProps {
   url?: string;
   isAddBtn?: boolean;
 }
-const Wrap = styled.div<WrapProps>`
+const Wrap = styled.span<WrapProps>`
   cursor: pointer;
 
   position: relative;
@@ -125,6 +126,11 @@ const Wrap = styled.div<WrapProps>`
     ${DelIcon} {
       display: block;
     }
+  }
+
+  .plus-icon {
+    width: 20px;
+    height: 20px;
   }
 
   .content {

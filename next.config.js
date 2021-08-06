@@ -1,5 +1,3 @@
-const Dotenv = require("dotenv-webpack");
-
 module.exports = {
   reactStrictMode: true,
   webpack(config, { dev, webpack }) {
@@ -16,9 +14,11 @@ module.exports = {
             : JSON.stringify(process.env.DEV_API_URL),
       }),
       new webpack.EnvironmentPlugin(["NODE_ENV"]),
-      new Dotenv({ silent: true }),
     );
 
     return config;
   },
+  env: {
+    NOTICE_URL: process.env.NOTICE_URL,
+  }
 };

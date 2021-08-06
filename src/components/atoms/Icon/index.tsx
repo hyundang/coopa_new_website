@@ -1,4 +1,4 @@
-// import { Dispatch, SetStateAction } from "react";
+import { RefObject, forwardRef } from "react";
 import styled from "styled-components";
 
 export interface IconProps {
@@ -15,18 +15,19 @@ export interface IconProps {
   /** icon css (width, height, borderRadius...) */
   style?: React.CSSProperties;
 }
-const Icon = ({
-  id,
-  className,
-  children,
-  role = "button",
-  style,
-  onClick,
-}: IconProps) => {
+const Icon = (
+  { id, className, children, role = "button", style, onClick }: IconProps,
+  ref?:
+    | ((instance: HTMLButtonElement | null) => void)
+    | RefObject<HTMLButtonElement>
+    | null
+    | undefined,
+) => {
   return (
     <IconWrap
       id={id}
       className={className}
+      ref={ref}
       role={role}
       style={style}
       onClick={onClick}
@@ -36,7 +37,7 @@ const Icon = ({
   );
 };
 
-export default Icon;
+export default forwardRef(Icon);
 
 const IconWrap = styled.button`
   all: unset;

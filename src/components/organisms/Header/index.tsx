@@ -1,9 +1,12 @@
 import { SearchIcon } from "@assets/icons/common";
 import { InfoIcon, NotiIcon } from "@assets/icons/Header";
 import { LogoImg } from "@assets/imgs/common";
-import { Icon } from "@components/atoms";
+import { Bubble, Icon } from "@components/atoms";
 import { useRouter } from "next/dist/client/router";
+import { useEffect, useRef, useState } from "react";
+import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
+import NotiModal from "../NotiModal";
 
 export interface HeaderProps {
   /** id */
@@ -14,14 +17,10 @@ export interface HeaderProps {
   onClickSearch: React.MouseEventHandler<HTMLButtonElement>;
   /** click info icon event handler */
   onClickInfo: React.MouseEventHandler<HTMLButtonElement>;
-  /** click noti icon event handler */
-  onClickNoti: React.MouseEventHandler<HTMLButtonElement>;
   /** search icon active 여부 */
   isSearchIconAtv: boolean;
   /** info icon active 여부 */
   isInfoIconAtv: boolean;
-  /** noti icon active 여부 */
-  isNotiIconAtv: boolean;
   /** profile img url */
   imgUrl?: string;
 }
@@ -30,13 +29,22 @@ const Header = ({
   className,
   onClickSearch,
   onClickInfo,
-  onClickNoti,
   isSearchIconAtv,
   isInfoIconAtv,
-  isNotiIconAtv,
   imgUrl,
 }: HeaderProps) => {
   const router = useRouter();
+  const [isNotiOpen, setIsNotiOpen] = useState(false);
+
+  // noti modal x좌표
+  const [locationX, setLocationX] = useState(0);
+  const windowSize = useWindowSize();
+  const notiIconLocation = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    notiIconLocation.current &&
+      setLocationX(notiIconLocation.current.getBoundingClientRect().x);
+  }, [windowSize.width]);
 
   return (
     <HeaderWrap
@@ -44,38 +52,47 @@ const Header = ({
       className={className}
       isSearchIconAtv={isSearchIconAtv}
       isInfoIconAtv={isInfoIconAtv}
-      isNotiIconAtv={isNotiIconAtv}
+      isNotiIconAtv={isNotiOpen}
       isMypageIconAtv={router?.pathname === "mypage"}
     >
-      <div className="inner_wrap">
+      <div className="content">
         <Icon
-          className="inner_wrap__logo"
+          className="content__logo"
           role="link"
           onClick={() => router.push("/")}
         >
           <LogoImg className="logo_img" />
         </Icon>
         <div style={{ flexGrow: 1 }} />
-        <Icon
-          className="inner_wrap__search"
-          role="button"
-          onClick={onClickSearch}
-        >
+        {/* <div> */}
+        <Icon className="content__search" role="button" onClick={onClickSearch}>
           <SearchIcon className="search_icon" />
         </Icon>
-        <Icon className="inner_wrap__info" role="button" onClick={onClickInfo}>
+        {/* <Bubble className="search-bubble">검색</Bubble>
+        </div> */}
+        <Icon className="content__info" role="button" onClick={onClickInfo}>
           <InfoIcon className="info_icon" />
         </Icon>
-        <Icon className="inner_wrap__noti" role="button" onClick={onClickNoti}>
+        <Icon
+          className="content__noti"
+          role="button"
+          ref={notiIconLocation}
+          onClick={() => setIsNotiOpen(true)}
+        >
           <NotiIcon className="noti_icon" />
         </Icon>
         <Icon
-          className="inner_wrap__mypage"
+          className="content__mypage"
           role="link"
           onClick={() => router.push("/mypage")}
         >
           <img src={imgUrl} alt="profile_img" className="profile_img" />
         </Icon>
+        <NotiModal
+          isOpen={isNotiOpen}
+          setIsOpen={setIsNotiOpen}
+          locationX={locationX - 335}
+        />
       </div>
     </HeaderWrap>
   );
@@ -109,7 +126,7 @@ const HeaderWrap = styled.header<HeaderWrapProps>`
   flex-direction: row;
   justify-content: center;
 
-  .inner_wrap {
+  .content {
     width: 159.6rem;
     display: flex;
     flex-direction: row;
@@ -185,6 +202,19 @@ const HeaderWrap = styled.header<HeaderWrapProps>`
               }
             `}
     }
+    /* .search-bubble {
+      position: absolute;
+      top: 50px;
+      &::after {
+        top: 0;
+        border: 6px solid transparent;
+        border-top: 0;
+        border-bottom-color: var(--white);
+        border-width: 6px;
+        margin-top: -6px;
+        margin-left: -6px;
+      }
+    } */
 
     &__info {
       width: 40px;

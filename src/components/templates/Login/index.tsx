@@ -12,13 +12,13 @@ import {
   GoogleLoginResponseOffline,
 } from "react-google-login";
 
-interface IProps {
+export interface LoginProps {
   onSuccess: (
     response: GoogleLoginResponse | GoogleLoginResponseOffline,
   ) => void;
   onFailure: (error: any) => void;
 }
-const Login = ({ onSuccess, onFailure }: IProps) => {
+const Login = ({ onSuccess, onFailure }: LoginProps) => {
   return (
     <Container>
       <LogoImg className="logo" />

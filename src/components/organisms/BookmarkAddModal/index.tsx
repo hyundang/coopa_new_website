@@ -5,31 +5,34 @@ import React, {
   useRef,
   useState,
 } from "react";
-import styled from "styled-components";
-import { Btn, Input, Modal } from "@components/atoms";
+import styled, { css } from "styled-components";
+import { Btn, Input, MoveModal } from "@components/atoms";
+import { modalAnimation } from "@components/animations";
 
-interface ValueProps {
+export interface NewBookmarkProps {
   name: string;
   link: string;
 }
-export interface CookieEditModalProps {
+export interface BookmarkAddModalProps {
   /** id */
   id?: string;
   /** className */
   className?: string;
   /** 즐겨찾기 제목, 즐겨찾기 링크 */
-  value: ValueProps;
+  value: NewBookmarkProps;
   /** 즐겨찾기 제목, 즐겨찾기 링크 setState */
-  setValue: Dispatch<SetStateAction<ValueProps>>;
+  setValue: Dispatch<SetStateAction<NewBookmarkProps>>;
   /** '저장' 버튼 클릭 시 event handling 함수 */
   onClickSave: () => void;
   /** 모달 open 여부 */
   isOpen: boolean;
   /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  /** x 좌표 */
+  locationX: number;
 }
 
-const CookieEditModal = ({
+const BookmarkAddModal = ({
   id,
   className,
   value,
@@ -37,7 +40,8 @@ const CookieEditModal = ({
   onClickSave,
   isOpen,
   setIsOpen,
-}: CookieEditModalProps) => {
+  locationX,
+}: BookmarkAddModalProps) => {
   // for input refs
   const link_input = useRef<HTMLInputElement>(null);
   const name_input = useRef<HTMLInputElement>(null);
@@ -82,8 +86,7 @@ const CookieEditModal = ({
       className={className}
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      locationX={50}
-      backgroundColor="white"
+      locationX={locationX}
     >
       <div className="title">즐겨찾기 추가</div>
       <Input
@@ -127,24 +130,39 @@ const CookieEditModal = ({
   );
 };
 
-export default CookieEditModal;
+export default BookmarkAddModal;
 
 interface ModalWrapProps {
   locationX: number;
 }
-const ModalWrap = styled(Modal)<ModalWrapProps>`
-  position: absolute;
+const ModalWrap = styled(MoveModal)<ModalWrapProps>`
   top: 149px;
   left: ${(props) => props.locationX}px;
   z-index: 11;
 
   width: 300px;
   height: 200px;
-  align-items: flex-start;
   padding: 20px 16px;
   border-radius: 20px;
   box-shadow: 0px 0px 13px rgba(0, 0, 0, 0.15);
-  color: var(--black_1);
+
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+
+  transition: 0.4s all;
+  ${({ isOpen }) =>
+    isOpen
+      ? css`
+          opacity: 1;
+          visibility: visible;
+          animation: ${modalAnimation.homeboardFadeInRule};
+        `
+      : css`
+          opacity: 0;
+          visibility: hidden;
+          animation: ${modalAnimation.homeboardFadeOutRule};
+        `}
 
   .title {
     margin-bottom: 12px;

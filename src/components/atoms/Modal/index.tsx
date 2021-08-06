@@ -1,5 +1,6 @@
+import { modalAnimation } from "@components/animations";
 import { Dispatch, SetStateAction } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export interface ModalProps {
   /** id */
@@ -25,13 +26,17 @@ const Modal = ({
 }: ModalProps) => {
   return (
     <>
-      <Background
-        onClick={() => setIsOpen(false)}
-        backgroundColor={backgroundColor}
-      />
-      <ModalWrap id={id} className={className} isOpen={isOpen}>
-        {children}
-      </ModalWrap>
+      {isOpen && (
+        <>
+          <Background
+            onClick={() => setIsOpen(false)}
+            backgroundColor={backgroundColor}
+          />
+          <ModalWrap id={id} className={className} isOpen={isOpen}>
+            {children}
+          </ModalWrap>
+        </>
+      )}
     </>
   );
 };
@@ -55,14 +60,30 @@ const Background = styled.div<BackgroundProps>`
 `;
 
 interface ModalWrapProps {
-  /** 모달 오픈 여부 */
   isOpen: boolean;
 }
 const ModalWrap = styled.div<ModalWrapProps>`
-  width: 100%;
-  height: 100%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 11;
+  transform: translate(-50%, -50%);
   background-color: var(--white);
 
-  display: ${(props) => (props.isOpen ? "flex" : "none")};
+  display: flex;
   flex-direction: column;
+  color: var(--black_1);
+
+  ${(props) =>
+    props.isOpen
+      ? css`
+          ${({ theme }) => theme.media.tablet`
+                animation: ${modalAnimation.tabletFadeInRule};
+            `}
+        `
+      : css`
+          ${({ theme }) => theme.media.tablet`
+                animation: ${modalAnimation.tabletFadeOutRule};
+            `}
+        `}
 `;

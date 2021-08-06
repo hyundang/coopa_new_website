@@ -63,11 +63,45 @@ const tabletFadeOutRule = css(
   tabletFadeOut,
 );
 
+// 위에서 내려오도록
+const notiFadeIn = keyframes`
+    from {
+      transform: translate(0, -5px);
+      opacity: 0;
+    }
+    to {
+      transform: translate(0, 0);
+      opacity: 1;
+    }
+`;
+const notiFadeInRule = css(
+  ["", " 0.4s linear"] as any as TemplateStringsArray,
+  notiFadeIn,
+);
+
+// 위로 올라가도록
+const notiFadeOut = keyframes`
+    from {
+      transform: translate(0, 0);
+      opacity: 1;
+    }
+    to {
+      transform: translate(0, -5px);
+      opacity: 0;
+    }
+`;
+const notiFadeOutRule = css(
+  ["", " 0.4s linear"] as any as TemplateStringsArray,
+  notiFadeOut,
+);
+
 const modalAnimation = {
   homeboardFadeInRule,
   homeboardFadeOutRule,
   tabletFadeInRule,
   tabletFadeOutRule,
+  notiFadeInRule,
+  notiFadeOutRule,
 };
 
 export default modalAnimation;

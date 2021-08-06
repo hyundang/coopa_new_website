@@ -1,164 +1,232 @@
 import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-import {
-  HomeBoardSearch,
-  HomeBoardSearchActive,
-  HomeBoardSearchClose,
-  HomeBoardSearchCloseHover,
-} from "src/assets/icons/searchbar";
-import useInput from "src/hooks/useInput";
+import { CloseIcon } from "src/assets/icons/searchbar";
+import { SearchIcon } from "@assets/icons/common";
+import { useInput } from "src/hooks";
 import { searchbarAnimation } from "@components/animations";
+import { Icon } from "@components/atoms";
 
 export interface SearchBarProps {
+  /** id */
+  id?: string;
+  /** className */
+  className?: string;
+  /** 검색창 표시 여부 */
   visible: boolean;
+  /** 검색창 표시 여부 setState */
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  /** 검색 여부 */
   isSearched: boolean;
+  /** 검색 여부 setState */
   setIsSearched: React.Dispatch<React.SetStateAction<boolean>>;
+  /** onKeyPress event handler */
+  onKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
 }
 
 export default function SearchBar({
+  id,
+  className,
   visible,
   setVisible,
   isSearched,
   setIsSearched,
+  onKeyPress,
 }: SearchBarProps) {
-  const { value: searchValue, onChange: onChangeValue } = useInput<string>("");
-  const [isFocus, setIsFocus] = useState<boolean>(false);
-  const [isHover, setIsHover] = useState<boolean>(false);
-  const onFocus = () => {
-    setIsFocus(true);
-  };
-  const onBlur = () => {
-    setIsFocus(false);
-  };
-  const onMouseOver = () => {
-    setIsHover(true);
-  };
-  const onMouseLeave = () => {
-    setIsHover(false);
-  };
-  const onClickClose = () => {
-    setVisible(false);
-  };
-
-  useEffect(() => {
-    if (!visible) {
-      setTimeout(() => {
-        setVisible(true);
-      }, 200);
-    } else {
-      setTimeout(() => {
-        setVisible(false);
-      }, 200);
-    }
-  }, [visible]);
+  const { value: searchValue, onChange: onChangeValue } = useInput("");
+  const [isFocus, setIsFocus] = useState(false);
+  const [isFirst, setIsFirst] = useState(true);
 
   return (
-    <>
-      {!visible && <div> 없지롱 </div>}
-      {visible && (
-        <Container visible={visible}>
-          <SearchBarWrapper isSearched={isSearched}>
-            {isFocus ? (
-              <SearchIcon src={HomeBoardSearchActive} alt="search_icon_hover" />
-            ) : (
-              <SearchIcon src={HomeBoardSearch} alt="search_icon" />
-            )}
-            <Input
-              placeholder="무엇을 찾아드릴까요?"
-              value={searchValue}
-              onChange={onChangeValue}
-              onFocus={onFocus}
-              onBlur={onBlur}
-            />
-          </SearchBarWrapper>
-          <SearchCloseWrapper
-            onMouseOver={onMouseOver}
-            onMouseLeave={onMouseLeave}
-            onClick={onClickClose}
-          >
-            {isHover ? (
-              <SearchClose
-                src={HomeBoardSearchCloseHover}
-                alt="search_close_hover"
-              />
-            ) : (
-              <SearchClose src={HomeBoardSearchClose} alt="search_close" />
-            )}
-          </SearchCloseWrapper>
-        </Container>
-      )}
-    </>
+    <SearchBarWrap
+      id={id}
+      className={className}
+      visible={visible}
+      isFirst={isFirst}
+      isSearched={isSearched}
+      isFocus={isFocus}
+    >
+      <span className="search-bar">
+        <SearchIcon className="search-bar__icon" />
+        <input
+          className="search-bar__input"
+          placeholder="무엇을 찾아드릴까요?"
+          value={searchValue}
+          onChange={onChangeValue}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onKeyPress={onKeyPress}
+        />
+      </span>
+      <Icon
+        className="search-close"
+        onClick={() => {
+          setVisible(false);
+          setIsFirst(false);
+        }}
+      >
+        <CloseIcon className="search-close__icon" />
+      </Icon>
+    </SearchBarWrap>
   );
 }
 
-interface ContainerProps {
+interface SearchBarWrapProps {
   visible: boolean;
-}
-const Container = styled.div<ContainerProps>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: ${({ visible }) =>
-    visible ? searchbarAnimation.fadeInRule : searchbarAnimation.fadeOutRule};
-`;
-
-interface SearchBarWrapperProps {
   isSearched: boolean;
+  isFocus: boolean;
+  isFirst: boolean;
 }
-const SearchBarWrapper = styled.div<SearchBarWrapperProps>`
-  width: 84rem;
-  height: 7.6rem;
-  padding: 2.4rem 4.8rem;
+const SearchBarWrap = styled.div<SearchBarWrapProps>`
   display: flex;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
-  background: rgba(255, 255, 255, 0.88);
-  border-radius: 5.4rem;
-  transition: box-shadow 0.3s;
-  &:hover {
-    box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.15);
-  }
-  ${({ isSearched }) =>
-    isSearched &&
-    css`
-      border-radius: 0rem;
-      border-bottom: 0.15rem solid var(--orange);
-      padding: 0.7rem 1.1rem;
-      &:hover {
-        box-shadow: none;
+  justify-content: center;
+  ${({ visible, isFirst }) =>
+    visible
+      ? css`
+          animation: ${searchbarAnimation.fadeInRule};
+          opacity: 1;
+        `
+      : css`
+          animation: ${!isFirst ? searchbarAnimation.fadeOutRule : undefined};
+          opacity: 0;
+        `}
+
+  .search-bar {
+    width: 840px;
+    height: 76px;
+    padding: 24px 48px;
+    margin-right: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.88);
+    border-radius: 54px;
+    transition: box-shadow 0.3s;
+    &:hover {
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    }
+    ${({ isSearched }) =>
+      isSearched &&
+      css`
+        border-radius: 0;
+        border-bottom: 1.5px solid var(--orange);
+        padding: 7px 11px;
+        &:hover {
+          box-shadow: none;
+        }
+      `}
+
+    &__icon {
+      width: 23.7px;
+      height: 23.7px;
+      margin-right: 18px;
+      ${({ isFocus }) =>
+        isFocus &&
+        css`
+          transition: 0.2s;
+          path {
+            fill: var(--orange);
+          }
+        `};
+    }
+
+    &__input {
+      all: unset;
+      font-family: Spoqa Han Sans Neo;
+      letter-spacing: -0.2px;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 2.4rem;
+      line-height: 2.9rem;
+      color: var(--black_2);
+      background-color: inherit;
+      width: 100%;
+      &::placeholder {
+        color: var(--gray_4);
+      }
+    }
+
+    ${({ theme }) => theme.media.tablet`
+      width: 522px;
+      height: 48px;
+      padding: 15px 21px;
+      margin-right: 10px;
+      background-color: var(--gray_2);
+      border-radius: 24px;
+      @media (hover:hover){
+        &:hover{
+          box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+      }
+      &__input {
+        font-size: 16px;
+      }
+      &__icon {
+        width: 18px;
+        height: 18px;
+        margin-right: 13px;
       }
     `}
-`;
-
-const SearchIcon = styled.img``;
-
-const Input = styled.input`
-  outline: none;
-  border: none;
-  margin-left: 1.4rem;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 2.4rem;
-  line-height: 2.9rem;
-  width: 100%;
-  &::placeholder {
-    color: var(--gray_4);
+    ${({ isFocus, theme }) =>
+      isFocus &&
+      theme.media.tablet`
+      background-color: var(--white);
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+    `}
+    ${({ theme }) => theme.media.mobile`
+      width: 100%;
+    `}
   }
-  &:focus {
-    color: var(--black_2);
+
+  .search-close {
+    width: 56px;
+    height: 56px;
+    border-radius: 28px;
+    box-shadow: 0 5px 13px rgba(0, 0, 0, 0.15);
+    background-color: rgba(255, 255, 255, 0.2);
+    &__icon {
+      width: 24px;
+      height: 24px;
+    }
+    transition: 0.2s;
+    @media (hover: hover) {
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+        .search-close__icon {
+          width: 24px;
+          height: 24px;
+          path {
+            fill: var(--gray_4);
+          }
+        }
+      }
+    }
+    ${({ theme }) => theme.media.tablet`
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      background-color: var(--gray_2);
+      box-shadow: none;
+      &__icon {
+        width: 12px;
+        height: 12px;
+        path {
+          fill: var(--gray_6);
+        }
+      }
+      &:hover {
+        background-color: var(--gray_2);
+        box-shadow: none;
+        .search-close__icon {
+          width: 12px;
+          height: 12px;
+          path {
+            fill: var(--gray_6);
+          }
+        }
+      }
+    `}
   }
 `;
-
-const SearchCloseWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 1.4rem;
-  cursor: pointer;
-  object-fit: cover;
-  object-position: center;
-  width: 5.6rem;
-  height: 5.6rem;
-`;
-const SearchClose = styled.img``;

@@ -156,18 +156,11 @@ interface ModalWrapProps {
   isLoading: boolean;
 }
 const ModalWrap = styled(Modal)<ModalWrapProps>`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 11;
-  transform: translate(-50%, -50%);
-
   width: 516px;
   height: 631px;
   padding: 34px 32px 38px 32px;
   border-radius: 16px;
   align-items: flex-start;
-  color: var(--black_1);
 
   ${({ theme }) => theme.media.tablet`
     top: 100%;
@@ -178,18 +171,6 @@ const ModalWrap = styled(Modal)<ModalWrapProps>`
     padding: 32px 20px 28px 20px;
     border-radius: 20px 20px 0px 0px;
   `}
-  ${(props) =>
-    props.isOpen
-      ? css`
-          ${({ theme }) => theme.media.tablet`
-                animation: ${modalAnimation.tabletFadeInRule};
-            `}
-        `
-      : css`
-          ${({ theme }) => theme.media.tablet`
-                animation: ${modalAnimation.tabletFadeOutRule};
-            `}
-        `}
 
   .title {
     margin-bottom: 16px;

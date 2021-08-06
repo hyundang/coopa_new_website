@@ -55,7 +55,7 @@ const Cookie = ({ id, className }: CookieProps) => {
   );
 };
 
-const CookieWrap = styled.section`
+const CookieWrap = styled.article`
   position: relative;
   width: 100%;
   .hover-div {

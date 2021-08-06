@@ -4,7 +4,7 @@ import Header, { HeaderProps } from ".";
 export default {
   title: "components/organisms/Header",
   component: Header,
-};
+} as Meta;
 
 const Template: Story<HeaderProps> = (args) => <Header {...args} />;
 
