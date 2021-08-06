@@ -25,7 +25,7 @@ const Tab = ({
   setValue,
 }: TabProps) => {
   return (
-    <Container
+    <TabWrap
       id={id}
       className={className}
       tabStyle={tabStyle}
@@ -48,18 +48,18 @@ const Tab = ({
         })}
       </div>
       <span className="tab-under_bar" />
-    </Container>
+    </TabWrap>
   );
 };
 
 export default Tab;
 
-interface ContainerProps {
+interface TabWrapProps {
   tabStyle?: React.CSSProperties;
   value?: string;
   options?: string[];
 }
-const Container = styled.div<ContainerProps>`
+const TabWrap = styled.div<TabWrapProps>`
   width: 100%;
 
   .tab-list {
