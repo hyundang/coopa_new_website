@@ -18,6 +18,8 @@ export interface IProps {
   setIsHover?: Dispatch<SetStateAction<boolean>>;
   /** post시 loading 여부 */
   isLoading?: boolean;
+  /** click event handler */
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 const ImgBox = ({
   id,
@@ -28,6 +30,7 @@ const ImgBox = ({
   isHover,
   setIsHover,
   isLoading,
+  onClick,
 }: IProps) => {
   return (
     <Wrap
@@ -40,6 +43,7 @@ const ImgBox = ({
       onMouseEnter={setIsHover ? () => setIsHover(true) : undefined}
       onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
       isLoading={isLoading}
+      onClick={onClick}
     >
       {children}
     </Wrap>
