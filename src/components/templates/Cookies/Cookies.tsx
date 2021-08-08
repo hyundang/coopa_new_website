@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { CookieData } from "src/lib/interfaces/user";
-import Cookie from "@components/organisms/Cookie/Cookie";
+import { Cookie } from "@components/organisms";
 
 export interface IProps {
   data: CookieData[];

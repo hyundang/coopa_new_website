@@ -33,13 +33,16 @@ const DropDown = ({
       id={id}
       className={className}
       style={style}
-      onClick={() => setIsActive(!isActive)}
+      onClick={(e) => {
+        e.stopPropagation();
+        setIsActive(!isActive);
+      }}
       isActive={isActive}
     >
       <details className="dropdown-details">
         <summary className="current">
           <p>{selectedItem}</p>
-          <DropDownIcon />
+          <DropDownIcon style={{ position: "absolute", right: "13px" }} />
         </summary>
         <div className="content">{children}</div>
       </details>
