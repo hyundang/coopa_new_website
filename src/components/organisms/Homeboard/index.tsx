@@ -242,7 +242,7 @@ const HomeboardWrap = styled.section<HomeboardWrapProps>`
       position: absolute;
       z-index: 3;
       left: 50%;
-      top: 73px;
+      top: 63px;
       transform: translateX(-50%);
     }
 

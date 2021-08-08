@@ -136,7 +136,7 @@ interface ModalWrapProps {
   locationX: number;
 }
 const ModalWrap = styled(MoveModal)<ModalWrapProps>`
-  top: 76px;
+  top: 86px;
   right: ${(props) => props.locationX}px;
   z-index: 3;
 
