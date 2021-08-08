@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { CookieIcon } from "@assets/icons/common";
 import { DirectoryData } from "src/lib/interfaces/user";
@@ -7,7 +6,7 @@ export interface DirectoryProps {
   dir: DirectoryData;
 }
 
-const DirCard = ({ dir }: DirectoryProps) => {
+const Directory = ({ dir }: DirectoryProps) => {
   return (
     <Container thumbnail={dir.thumbnail}>
       <div className="content">
@@ -24,7 +23,7 @@ const DirCard = ({ dir }: DirectoryProps) => {
   );
 };
 
-export default DirCard;
+export default Directory;
 
 export interface ContainerProps {
   thumbnail: string;
