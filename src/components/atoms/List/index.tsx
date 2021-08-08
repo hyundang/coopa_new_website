@@ -11,12 +11,14 @@ export interface ListProps {
   id?: string;
   /** className */
   className?: string;
+  /** 현재 디렉토리 변경 setState */
+  setCurrDir: Dispatch<SetStateAction<string>>;
   /** directory list data */
   allDir: Dirtype[];
   /** 하단 블러 처리 표시 여부 setState */
   setIsBlur?: Dispatch<SetStateAction<boolean>>;
 }
-const List = ({ id, className, allDir, setIsBlur }: ListProps) => {
+const List = ({ id, className, allDir, setCurrDir, setIsBlur }: ListProps) => {
   const viewport = useRef<HTMLDivElement>(null);
   const [target, setTarget] = useState<HTMLDivElement>();
 
@@ -44,7 +46,7 @@ const List = ({ id, className, allDir, setIsBlur }: ListProps) => {
           key={dir.name}
           onClick={(e) => {
             e.stopPropagation();
-            console.log(dir.name);
+            setCurrDir(dir.name);
           }}
         >
           {dir.emoji ? (

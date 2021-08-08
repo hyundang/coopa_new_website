@@ -17,6 +17,10 @@ export interface CookieHoverProps {
   setCardState: Dispatch<
     SetStateAction<"hover" | "normal" | "parking" | "input">
   >;
+  //현재 디렉토리
+  currDir: string;
+  //set currDir
+  setCurrDir: Dispatch<SetStateAction<string>>;
 }
 
 const CookieHover = ({
@@ -24,14 +28,15 @@ const CookieHover = ({
   className,
   allDir,
   setCardState,
+  currDir,
+  setCurrDir,
 }: CookieHoverProps) => {
   // 버튼 활성화 여부
   const [isActive, setIsActive] = useState(false);
   // 디렉토리명 입력 input
   const [text, setText] = useState("");
   const postHandler = () => {
-    setCardState("parking");
-    setTimeout(() => setCardState("normal"), 1500);
+    setCurrDir(text);
   };
   // 리스트 하단 블러 표시 여부
   const [isBlur, setIsBlur] = useState(true);
@@ -40,7 +45,7 @@ const CookieHover = ({
     <CookieHoverWrap
       id={id}
       className={className}
-      selectedItem="디렉토리"
+      selectedItem={currDir}
       isActive={isActive}
       setIsActive={setIsActive}
       isBlur={isBlur}
@@ -50,6 +55,7 @@ const CookieHover = ({
           className="directory-list"
           allDir={allDir}
           setIsBlur={setIsBlur}
+          setCurrDir={setCurrDir}
         />
         <div className="directory-form" onClick={(e) => e.stopPropagation()}>
           <Input
