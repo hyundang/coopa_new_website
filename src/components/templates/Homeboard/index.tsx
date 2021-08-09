@@ -7,7 +7,7 @@ import { HomeboardEditModal, Bookmark } from "@components/organisms";
 import { homeboardAnimation } from "@components/animations";
 import { useWindowSize } from "src/hooks";
 import { BookmarkDataProps } from "@interfaces/homeboard";
-import { NewBookmarkProps } from "../BookmarkAddModal";
+import { NewBookmarkProps } from "@components/organisms/BookmarkAddModal";
 
 export interface HomeboardProps {
   /** id */

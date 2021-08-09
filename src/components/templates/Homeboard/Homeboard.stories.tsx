@@ -3,7 +3,7 @@ import { useState } from "react";
 import Homeboard, { HomeboardProps } from ".";
 
 export default {
-  title: "components/organisms/Homeboard",
+  title: "components/templates/Homeboard",
   component: Homeboard,
 } as Meta;
 

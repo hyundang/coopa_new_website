@@ -1,6 +1,7 @@
 import { SearchBar, Tab } from "@components/atoms";
-import { Header, Homeboard } from "@components/organisms";
+import { Header } from "@components/organisms";
 import { NewBookmarkProps } from "@components/organisms/BookmarkAddModal";
+import { Homeboard } from "@components/templates";
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components";
