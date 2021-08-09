@@ -1,4 +1,4 @@
-import Cookies from "./Cookies";
+import Cookies from ".";
 
 export default {
   title: "components/templates/cookies",
