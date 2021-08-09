@@ -13,15 +13,18 @@ export interface CookieImgProps {
   cardState: "hover" | "parking" | "normal" | "input";
   /** cookie thumbnail url */
   url?: string;
+  /** cookie content */
+  content: string;
 }
-const CookieImg = ({ id, className, cardState }: CookieImgProps) => {
+const CookieImg = ({ id, className, cardState, content }: CookieImgProps) => {
   return (
     <ImgBox
       id={id}
       className={className}
       style={{
-        width: "270px",
-        height: "136px",
+        width: "100%",
+        paddingBottom:
+          content === "" ? "calc(180/270*100%)" : "calc(136/270*100%)",
         borderRadius: "10px",
         border: `1px solid var(--gray_4)`,
       }}

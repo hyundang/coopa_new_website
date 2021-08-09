@@ -1,23 +1,40 @@
 import { CookieHover, CookieImg } from "@components/molecules";
 import styled from "styled-components";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useState, useEffect } from "react";
 import fvcOnErrorImg from "@assets/icons/card/icn_favicon.svg";
+import { CookieData, DirectoryData } from "src/lib/interfaces/user";
 
 export interface CookieProps {
   /** id */
   id?: string;
   /** className */
   className?: string;
+  /** cookie */
+  cookie: CookieData;
+  /** all directory */
+  allDir: DirectoryData[];
 }
-const Cookie = ({ id, className }: CookieProps) => {
+const Cookie = ({ id, className, cookie, allDir }: CookieProps) => {
   //normal: 기본 | hover: 호버 | parking: 파킹중 | input: 인풋입력중
   const [cardState, setCardState] = useState<
     "hover" | "normal" | "parking" | "input"
   >("normal");
+
+  //현재 디렉토리
+  const [currDir, setCurrDir] = useState(
+    cookie.directoryInfo?.name === undefined
+      ? "모든 쿠키"
+      : cookie.directoryInfo.name,
+  );
+  useEffect(() => {
+    setCardState("parking");
+    setTimeout(() => setCardState("normal"), 1500);
+  }, [currDir]);
   return (
     <CookieWrap
       id={id}
       className={className}
+      onClick={() => window.open(cookie.link)}
       onMouseEnter={() => {
         if (cardState !== "input") setCardState("hover");
       }}
@@ -25,31 +42,30 @@ const Cookie = ({ id, className }: CookieProps) => {
         if (cardState !== "input") setCardState("normal");
       }}
     >
-      <CookieImg cardState={cardState} />
+      <CookieImg cardState={cardState} content={cookie.content} />
       {(cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
-          <CookieHover allDir={[]} setCardState={setCardState} />
+          <CookieHover
+            allDir={allDir}
+            setCardState={setCardState}
+            currDir={currDir}
+            setCurrDir={setCurrDir}
+          />
         </div>
       )}
-      <div className="title">
-        타이틀이 한 줄이고 텍스트가 없는 경우에는 어떻게 될까 타이틀이 한
-        카드카드카드카드 카드
-      </div>
-      <div className="content">
-        5년 전, 트위터가 동영상에 미래를 맡겼었다는 사실은 꽤 놀라운 사실일
-        거다. 오늘날 트위터는 주로...
-      </div>
+      <div className="cookie--title">{cookie.title}</div>
+      <div className="cookie--content">{cookie.content}</div>
 
-      <div className="profile">
+      <div className="cookie--profile">
         <img
-          className="profile__favicon"
-          src="https://www.youtube.com/s/desktop/0c58a82c/img/favicon_32x32.png"
+          className="cookie--profile__favicon"
+          src={cookie.favicon}
           alt={fvcOnErrorImg}
           onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
             e.currentTarget.src = fvcOnErrorImg;
           }}
         />
-        <div className="profile__author">작성자 이름</div>
+        <div className="cookie--profile__author">{cookie.provider}</div>
       </div>
     </CookieWrap>
   );
@@ -62,7 +78,7 @@ const CookieWrap = styled.article`
     position: absolute;
     top: 0;
   }
-  .title {
+  .cookie--title {
     color: var(--black_1);
     line-height: 2.6rem;
     font-size: 1.7rem;
@@ -78,7 +94,7 @@ const CookieWrap = styled.article`
     word-break: break-all;
   }
 
-  .content {
+  .cookie--content {
     font-weight: 400;
     line-height: 2.2rem;
     font-size: 1.4rem;
@@ -94,7 +110,7 @@ const CookieWrap = styled.article`
     color: var(--gray_5);
   }
 
-  .profile {
+  .cookie--profile {
     margin-top: auto;
     line-height: normal;
     display: flex;
