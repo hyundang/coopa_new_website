@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { CookieIcon } from "@assets/icons/common";
+import { EmptyCookieIcon } from "@assets/icons/common";
 import { DirectoryData } from "src/lib/interfaces/user";
 
 export interface DirectoryProps {
@@ -8,28 +8,28 @@ export interface DirectoryProps {
 
 const Directory = ({ dir }: DirectoryProps) => {
   return (
-    <Container thumbnail={dir.thumbnail}>
+    <DirectoryWrap thumbnail={dir.thumbnail}>
       <div className="content">
         <div className="content__title">
           <p className="content__title--emoji">{dir.emoji}</p>
           {dir.name}
         </div>
         <div className="content__num">
-          <CookieIcon />
+          <EmptyCookieIcon className="cookie-icon" />
           <div className="content__num--text">{dir.cookieCnt}개</div>
         </div>
       </div>
-    </Container>
+    </DirectoryWrap>
   );
 };
 
 export default Directory;
 
-export interface ContainerProps {
+export interface DirectoryWrapProps {
   thumbnail: string;
 }
 
-const Container = styled.div<ContainerProps>`
+const DirectoryWrap = styled.div<DirectoryWrapProps>`
   cursor: pointer;
 
   position: relative;
@@ -55,6 +55,15 @@ const Container = styled.div<ContainerProps>`
   &:hover {
     background: rgba(0, 0, 0, 0.7);
     color: var(--white);
+    .content {
+      &__num {
+        .cookie-icon {
+          path {
+            fill: var(--white);
+          }
+        }
+      }
+    }
   }
   ${(props) =>
     props.thumbnail !== null &&
@@ -142,6 +151,11 @@ const Container = styled.div<ContainerProps>`
           height: 1.3rem;
           line-height: 1.3rem;
       `}
+      }
+    }
+    .cookie-icon {
+      path {
+        fill: var(--gray_7_active);
       }
     }
   }
