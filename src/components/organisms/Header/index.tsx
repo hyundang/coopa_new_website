@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
 import NotiModal from "../NotiModal";
+import Onboarding from "../Onboarding";
 
 export interface HeaderProps {
   /** id */
@@ -35,6 +36,7 @@ const Header = ({
 }: HeaderProps) => {
   const router = useRouter();
   const [isNotiOpen, setIsNotiOpen] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   // noti modal x좌표
   const [locationX, setLocationX] = useState(0);
@@ -70,7 +72,11 @@ const Header = ({
         </Icon>
         {/* <Bubble className="search-bubble">검색</Bubble>
         </div> */}
-        <Icon className="content__info" role="button" onClick={onClickInfo}>
+        <Icon
+          className="content__info"
+          role="button"
+          onClick={() => setIsInfoOpen(true)}
+        >
           <InfoIcon className="info_icon" />
         </Icon>
         <Icon
@@ -93,6 +99,7 @@ const Header = ({
           setIsOpen={setIsNotiOpen}
           locationX={locationX - 335}
         />
+        <Onboarding isOpen={isInfoOpen} setIsOpen={setIsInfoOpen} />
       </div>
     </HeaderWrap>
   );
