@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Onboarding from ".";
 
 export default {
@@ -6,7 +7,8 @@ export default {
 };
 
 export const onboarding = () => {
-  return <Onboarding />;
+  const [isOpen, setIsOpen] = useState(true);
+  return <Onboarding isOpen={isOpen} setIsOpen={setIsOpen} />;
 };
 
 onboarding.story = {

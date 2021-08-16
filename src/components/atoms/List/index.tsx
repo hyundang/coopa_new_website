@@ -19,7 +19,7 @@ export interface ListProps {
   setIsBlur?: Dispatch<SetStateAction<boolean>>;
 }
 const List = ({ id, className, allDir, setCurrDir, setIsBlur }: ListProps) => {
-  const viewport = useRef<HTMLDivElement>(null);
+  const viewport = useRef<HTMLUListElement>(null);
   const [target, setTarget] = useState<HTMLDivElement>();
 
   useEffect(() => {
@@ -39,26 +39,27 @@ const List = ({ id, className, allDir, setCurrDir, setIsBlur }: ListProps) => {
   }, [target]);
 
   return (
-    <ListWrap id={id} className={className} ref={viewport}>
+    <ListWrap id={id} className={className} ref={viewport} role="menu">
       {allDir?.map((dir) => (
-        <div
-          className="list-div"
+        <li
+          className="list-item"
           key={dir.name}
+          role="menuitem"
           onClick={(e) => {
             e.stopPropagation();
             setCurrDir(dir.name);
           }}
         >
           {dir.emoji ? (
-            <p className="list-div__emoji">{dir.emoji}</p>
+            <span className="list-item__emoji">{dir.emoji}</span>
           ) : (
-            <DefaultEmojiIcon className="list-div__emoji" />
+            <DefaultEmojiIcon className="list-item__emoji" />
           )}
-          <p className="list-div__name">{dir.name}</p>
-        </div>
+          <span className="list-item__name">{dir.name}</span>
+        </li>
       ))}
       <div
-        style={{ marginTop: "1rem", height: "1px" }}
+        style={{ marginTop: "1px", height: "1px" }}
         ref={(e: HTMLDivElement) => setTarget(e)}
       />
     </ListWrap>
@@ -67,8 +68,10 @@ const List = ({ id, className, allDir, setCurrDir, setIsBlur }: ListProps) => {
 
 export default List;
 
-const ListWrap = styled.div`
+const ListWrap = styled.ul`
   height: 184px;
+  padding: 0;
+  margin: 0;
   overflow: auto;
   ::-webkit-scrollbar {
     width: 8px;
@@ -81,7 +84,7 @@ const ListWrap = styled.div`
     border-radius: 5px;
     box-sizing: border-box;
   }
-  .list-div {
+  .list-item {
     display: flex;
     align-items: center;
     width: 100%;
