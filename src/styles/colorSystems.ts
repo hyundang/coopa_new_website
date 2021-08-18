@@ -21,7 +21,7 @@ const colorSystems = css`
     --black_3: #000000;
     --title_strong: #222222;
     --white: #ffffff;
-    --orange_box_shadow: '0 0.4rem 1rem rgba(0, 0, 0, 0.25)';
+    --orange_box_shadow: "0 0.4rem 1rem rgba(0, 0, 0, 0.25)";
   }
 `;
 

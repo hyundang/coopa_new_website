@@ -1,6 +1,7 @@
 export interface UserData {
+  name: string;
   email: string;
-  profileImage?: string | null;
+  profileImage?: string;
   introduction?: string;
   allCookies: number;
   readCount: number;

@@ -12,7 +12,7 @@ export interface BubbleProps {
 }
 const Bubble = ({ id, className, isHover, children }: BubbleProps) => {
   return (
-    <BubbleWrap id={id} className={className} isHover={isHover}>
+    <BubbleWrap id={id} className={className} isHover={isHover} role="tooltip">
       {children}
     </BubbleWrap>
   );
