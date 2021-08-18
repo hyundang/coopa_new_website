@@ -1,8 +1,9 @@
 import { CookieHover, CookieImg } from "@components/molecules";
 import styled from "styled-components";
 import { SyntheticEvent, useState, useEffect } from "react";
-import fvcOnErrorImg from "@assets/icons/card/icn_favicon.svg";
-import { CookieData, DirectoryData } from "src/lib/interfaces/user";
+import { fvcOnErrorImg } from "@assets/icons/card";
+import { CookieData } from "src/lib/interfaces/cookie";
+import { DirectoryData } from "src/lib/interfaces/directory";
 
 export interface CookieProps {
   /** id */
@@ -42,7 +43,7 @@ const Cookie = ({ id, className, cookie, allDir }: CookieProps) => {
         if (cardState !== "input") setCardState("normal");
       }}
     >
-      <CookieImg cardState={cardState} content={cookie.content} />
+      <CookieImg cardState={cardState} cookie={cookie} />
       {(cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
           <CookieHover
@@ -53,19 +54,21 @@ const Cookie = ({ id, className, cookie, allDir }: CookieProps) => {
           />
         </div>
       )}
-      <div className="cookie--title">{cookie.title}</div>
-      <div className="cookie--content">{cookie.content}</div>
-
-      <div className="cookie--profile">
-        <img
-          className="cookie--profile__favicon"
-          src={cookie.favicon}
-          alt={fvcOnErrorImg}
-          onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-            e.currentTarget.src = fvcOnErrorImg;
-          }}
-        />
-        <div className="cookie--profile__author">{cookie.provider}</div>
+      <div className="cookie--desc">
+        <div className="cookie--title">{cookie.title}</div>
+        <div className="cookie--content">{cookie.content}</div>
+        <div style={{ flexGrow: 1 }} />
+        <div className="cookie--profile">
+          <img
+            className="cookie--profile__favicon"
+            src={cookie.favicon}
+            alt={fvcOnErrorImg}
+            onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
+              e.currentTarget.src = fvcOnErrorImg;
+            }}
+          />
+          <div className="cookie--profile__author">{cookie.provider}</div>
+        </div>
       </div>
     </CookieWrap>
   );
@@ -74,65 +77,71 @@ const Cookie = ({ id, className, cookie, allDir }: CookieProps) => {
 const CookieWrap = styled.article`
   position: relative;
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   .hover-div {
     position: absolute;
     top: 0;
-  }
-  .cookie--title {
-    color: var(--black_1);
-    line-height: 2.6rem;
-    font-size: 1.7rem;
-    font-weight: 500;
-    margin-top: 1.2rem;
-    margin-left: 1rem;
-    margin-right: 1rem;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
-    word-wrap: normal;
-    word-break: break-all;
-  }
-
-  .cookie--content {
-    font-weight: 400;
-    line-height: 2.2rem;
-    font-size: 1.4rem;
-    margin-top: 0.7rem;
-    margin-left: 1rem;
-    margin-right: 1rem;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
-    word-wrap: normal;
-    word-break: break-all;
-    color: var(--gray_5);
-  }
-
-  .cookie--profile {
-    margin-top: auto;
-    line-height: normal;
+    width: 100%;
     display: flex;
-    align-items: center;
-    margin-bottom: 4.6rem;
-    margin-left: 1rem;
-    &__author {
-      margin-left: 1rem;
-      font-size: 1.3rem;
-      color: var(--gray_5);
+    justify-content: center;
+  }
+  .cookie--desc {
+    padding: 12px 10px 46px 10px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    .cookie--title {
+      color: var(--black_1);
+      line-height: 26px;
+      font-size: 17px;
+      font-weight: 500;
+      margin-bottom: 7px;
       display: -webkit-box;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 1;
+      -webkit-line-clamp: 2;
       overflow: hidden;
       word-wrap: normal;
       word-break: break-all;
     }
-    &__favicon {
-      width: 2.2rem;
-      height: 2.2rem;
-      border-radius: 0.4rem;
-      object-fit: cover;
+
+    .cookie--content {
+      font-weight: 400;
+      line-height: 22px;
+      font-size: 14px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+      word-wrap: normal;
+      word-break: break-all;
+      color: var(--gray_5);
+    }
+
+    .cookie--profile {
+      /* margin-top: auto; */
+      line-height: normal;
+      display: flex;
+      align-items: center;
+      &__author {
+        font-size: 13px;
+        color: var(--gray_5);
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        word-wrap: normal;
+        word-break: break-all;
+      }
+      &__favicon {
+        margin-right: 8px;
+        width: 22px;
+        height: 22px;
+        border-radius: 4px;
+        object-fit: cover;
+      }
     }
   }
 `;

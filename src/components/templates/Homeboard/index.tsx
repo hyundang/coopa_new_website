@@ -1,12 +1,13 @@
 import { SettingIcon } from "@assets/icons/homeboard";
 import { DuribunLImg, DuribunRImg, SearchImg } from "@assets/imgs/homeboard";
-import { Icon, SearchBar } from "@components/atoms";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { Icon, SearchBar } from "@components/atoms";
 import { HomeboardEditModal, Bookmark } from "@components/organisms";
+import { homeboardAnimation } from "@components/animations";
 import { useWindowSize } from "src/hooks";
 import { BookmarkDataProps } from "@interfaces/homeboard";
-import { NewBookmarkProps } from "../BookmarkAddModal";
+import { NewBookmarkProps } from "@components/organisms/BookmarkAddModal";
 
 export interface HomeboardProps {
   /** id */
@@ -35,6 +36,9 @@ export interface HomeboardProps {
   onClickBookmarkSave: (newBookmark: NewBookmarkProps) => void;
   /** bookmark 삭제 함수 */
   onClickBookmarkDel: (bookmarkID: number) => void;
+  /** 검색창 불필요한 fadeout 방지 */
+  preventFadeout: boolean;
+  setPreventFadeout: Dispatch<SetStateAction<boolean>>;
 }
 const Homeboard = ({
   id,
@@ -50,6 +54,8 @@ const Homeboard = ({
   bookmarkDatas,
   onClickBookmarkDel,
   onClickBookmarkSave,
+  preventFadeout,
+  setPreventFadeout,
 }: HomeboardProps) => {
   // homeboard edit modal open 여부
   const [isOpen, setIsOpen] = useState(false);
@@ -64,7 +70,12 @@ const Homeboard = ({
   }, [windowSize.width]);
 
   return (
-    <HomeboardWrap id={id} className={className}>
+    <HomeboardWrap
+      id={id}
+      className={className}
+      isSettingIconAtv={isOpen}
+      visible={visible}
+    >
       <div className="inner-wrap">
         {!visible && <DuribunLImg role="img" className="duribun-left" />}
         {!visible && <DuribunRImg role="img" className="duribun-right" />}
@@ -74,7 +85,7 @@ const Homeboard = ({
             className="setting"
             ref={settingIconLocation}
             onClick={() => {
-              setIsOpen(true);
+              setIsOpen(!isOpen);
             }}
           >
             <SettingIcon className="setting__icon" />
@@ -86,6 +97,8 @@ const Homeboard = ({
           setVisible={setVisible}
           isSearched={isSearched}
           setIsSearched={setIsSearched}
+          preventFadeout={preventFadeout}
+          setPreventFadeout={setPreventFadeout}
         />
         {!visible && (
           <Bookmark
@@ -111,9 +124,14 @@ const Homeboard = ({
 
 export default Homeboard;
 
-const HomeboardWrap = styled.section`
+interface HomeboardWrapProps {
+  isSettingIconAtv: boolean;
+  visible: boolean;
+}
+const HomeboardWrap = styled.section<HomeboardWrapProps>`
   width: 100%;
   height: 210px;
+  background-color: var(--gray_4);
 
   display: flex;
   align-items: center;
@@ -148,9 +166,31 @@ const HomeboardWrap = styled.section`
       position: absolute;
       z-index: 3;
       bottom: 0;
+      left: 198px;
       width: 200px;
       height: 168px;
     }
+    ${({ visible }) =>
+      visible
+        ? css`
+            .duribun-search {
+              animation: ${homeboardAnimation.fadeInRule};
+            }
+          `
+        : css`
+            .duribun-left {
+              animation: ${homeboardAnimation.fadeInRule};
+            }
+            .duribun-right {
+              animation: ${homeboardAnimation.fadeInRule};
+            }
+            .setting {
+              animation: ${homeboardAnimation.fadeInRule};
+            }
+            .bookmark {
+              animation: ${homeboardAnimation.fadeInRule};
+            }
+          `};
 
     .setting {
       position: absolute;
@@ -161,15 +201,32 @@ const HomeboardWrap = styled.section`
       height: 40px;
       border-radius: 20px;
       background: rgba(243, 243, 243, 0.5);
-      &:hover {
-        top: 17px;
-        right: -1px;
-        width: 42px;
-        height: 42px;
-        border-radius: 21px;
-        background: rgba(85, 83, 82, 0.35);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-      }
+      transition: 0.2s all;
+
+      ${({ isSettingIconAtv }) =>
+        isSettingIconAtv
+          ? css`
+              top: 17px;
+              right: -1px;
+              width: 42px;
+              height: 42px;
+              border-radius: 21px;
+              background: rgba(85, 83, 82, 0.55);
+              border: 1px solid rgba(255, 255, 255, 0.3);
+            `
+          : css`
+              @media (hover: hover) {
+                &:hover {
+                  top: 17px;
+                  right: -1px;
+                  width: 42px;
+                  height: 42px;
+                  border-radius: 21px;
+                  background: rgba(85, 83, 82, 0.35);
+                  border: 1px solid rgba(255, 255, 255, 0.3);
+                }
+              }
+            `}
     }
 
     .search {
@@ -177,6 +234,7 @@ const HomeboardWrap = styled.section`
       z-index: 2;
       top: 67px;
       left: 50%;
+      margin-left: 35px;
       transform: translateX(-50%);
     }
 
@@ -184,7 +242,7 @@ const HomeboardWrap = styled.section`
       position: absolute;
       z-index: 3;
       left: 50%;
-      top: 73px;
+      top: 63px;
       transform: translateX(-50%);
     }
 
@@ -193,6 +251,7 @@ const HomeboardWrap = styled.section`
       .duribun-search {
         width: 180px;
         height: 152px;
+        left: 55px;
       }
     `};
     ${({ theme }) => theme.media.desktop_3`
@@ -208,6 +267,7 @@ const HomeboardWrap = styled.section`
       .duribun-search {
         width: 168px;
         height: 142px;
+        left: 3px;
       }
     `};
     ${({ theme }) => theme.media.desktop_4`

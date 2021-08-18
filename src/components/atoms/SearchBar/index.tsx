@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import { CloseIcon } from "src/assets/icons/searchbar";
 import { SearchIcon } from "@assets/icons/common";
@@ -21,6 +21,9 @@ export interface SearchBarProps {
   setIsSearched: React.Dispatch<React.SetStateAction<boolean>>;
   /** onKeyPress event handler */
   onKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
+  /** 검색창 불필요한 fadeout 방지 */
+  preventFadeout: boolean;
+  setPreventFadeout: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function SearchBar({
@@ -31,17 +34,18 @@ export default function SearchBar({
   isSearched,
   setIsSearched,
   onKeyPress,
+  preventFadeout,
+  setPreventFadeout,
 }: SearchBarProps) {
   const { value: searchValue, onChange: onChangeValue } = useInput("");
   const [isFocus, setIsFocus] = useState(false);
-  const [isFirst, setIsFirst] = useState(true);
 
   return (
     <SearchBarWrap
       id={id}
       className={className}
       visible={visible}
-      isFirst={isFirst}
+      preventFadeout={preventFadeout}
       isSearched={isSearched}
       isFocus={isFocus}
     >
@@ -59,10 +63,14 @@ export default function SearchBar({
       </span>
       <Icon
         className="search-close"
-        onClick={() => {
-          setVisible(false);
-          setIsFirst(false);
-        }}
+        onClick={
+          visible
+            ? () => {
+                setPreventFadeout(false);
+                setVisible(false);
+              }
+            : undefined
+        }
       >
         <CloseIcon className="search-close__icon" />
       </Icon>
@@ -74,21 +82,37 @@ interface SearchBarWrapProps {
   visible: boolean;
   isSearched: boolean;
   isFocus: boolean;
-  isFirst: boolean;
+  preventFadeout: boolean;
 }
 const SearchBarWrap = styled.div<SearchBarWrapProps>`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  ${({ visible, isFirst }) =>
+  ${({ visible, preventFadeout }) =>
     visible
       ? css`
           animation: ${searchbarAnimation.fadeInRule};
           opacity: 1;
         `
       : css`
-          animation: ${!isFirst ? searchbarAnimation.fadeOutRule : undefined};
+          animation: ${!preventFadeout
+            ? searchbarAnimation.fadeOutRule
+            : undefined};
+          opacity: 0;
+        `}
+  ${({ visible, preventFadeout, theme }) =>
+    visible
+      ? theme.media.tablet`
+          animation: ${searchbarAnimation.tabletFadeInRule};
+          opacity: 1;
+        `
+      : preventFadeout
+      ? theme.media.tablet`
+          opacity: 0;
+        `
+      : theme.media.tablet`
+          animation: ${searchbarAnimation.fadeOutRule};
           opacity: 0;
         `}
 
@@ -100,12 +124,18 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(255, 255, 255, 0.88);
+    background-color: rgba(255, 255, 255, 0.88);
     border-radius: 54px;
     transition: box-shadow 0.3s;
     &:hover {
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     }
+    ${({ isFocus }) =>
+      isFocus &&
+      css`
+        background-color: var(--white);
+        box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.15);
+      `}
     ${({ isSearched }) =>
       isSearched &&
       css`
@@ -133,6 +163,11 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
 
     &__input {
       all: unset;
+      ${({ visible }) =>
+        !visible &&
+        css`
+          cursor: default;
+        `}
       font-family: Spoqa Han Sans Neo;
       letter-spacing: -0.2px;
       font-style: normal;
@@ -140,7 +175,7 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
       font-size: 2.4rem;
       line-height: 2.9rem;
       color: var(--black_2);
-      background-color: inherit;
+      background-color: none;
       width: 100%;
       &::placeholder {
         color: var(--gray_4);
@@ -171,15 +206,20 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
     ${({ isFocus, theme }) =>
       isFocus &&
       theme.media.tablet`
-      background-color: var(--white);
-      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
-    `}
+        background-color: var(--white);
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+      `}
     ${({ theme }) => theme.media.mobile`
       width: 100%;
     `}
   }
 
   .search-close {
+    ${({ visible }) =>
+      !visible &&
+      css`
+        cursor: auto;
+      `}
     width: 56px;
     height: 56px;
     border-radius: 28px;

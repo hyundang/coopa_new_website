@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import { DirectoryData } from "src/lib/interfaces/user";
+import { DirectoryData } from "src/lib/interfaces/directory";
 import Directory from "@components/organisms/Directory";
 
-export interface IProps {
+export interface DirectoriesProps {
   data: DirectoryData[];
 }
 
-const Directories = ({ data }: IProps) => {
+const Directories = ({ data }: DirectoriesProps) => {
   return (
     <DirectoiresWrap>
       {data.map((dir) => (
@@ -15,7 +15,7 @@ const Directories = ({ data }: IProps) => {
     </DirectoiresWrap>
   );
 };
-const DirectoiresWrap = styled.div`
+const DirectoiresWrap = styled.section`
   display: grid;
   justify-content: center;
   grid-gap: 24px;
@@ -39,7 +39,8 @@ const DirectoiresWrap = styled.div`
   `}
   /* -599 */
    ${({ theme }) => theme.media.mobile`
-    grid-template-columns: repeat(1, auto);
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 12px;
   `}
 `;
 export default Directories;

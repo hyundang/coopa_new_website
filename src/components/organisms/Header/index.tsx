@@ -16,12 +16,8 @@ export interface HeaderProps {
   className?: string;
   /** click search icon event handler */
   onClickSearch: React.MouseEventHandler<HTMLButtonElement>;
-  /** click info icon event handler */
-  onClickInfo: React.MouseEventHandler<HTMLButtonElement>;
   /** search icon active 여부 */
   isSearchIconAtv: boolean;
-  /** info icon active 여부 */
-  isInfoIconAtv: boolean;
   /** profile img url */
   imgUrl?: string;
 }
@@ -29,14 +25,12 @@ const Header = ({
   id,
   className,
   onClickSearch,
-  onClickInfo,
   isSearchIconAtv,
-  isInfoIconAtv,
   imgUrl,
 }: HeaderProps) => {
   const router = useRouter();
   const [isNotiOpen, setIsNotiOpen] = useState(false);
-  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [isOnboardOpen, setIsOnboardOpen] = useState(false);
 
   // noti modal x좌표
   const [locationX, setLocationX] = useState(0);
@@ -53,7 +47,7 @@ const Header = ({
       id={id}
       className={className}
       isSearchIconAtv={isSearchIconAtv}
-      isInfoIconAtv={isInfoIconAtv}
+      isInfoIconAtv={isOnboardOpen}
       isNotiIconAtv={isNotiOpen}
       isMypageIconAtv={router?.pathname === "mypage"}
     >
@@ -75,7 +69,7 @@ const Header = ({
         <Icon
           className="content__info"
           role="button"
-          onClick={() => setIsInfoOpen(true)}
+          onClick={() => setIsOnboardOpen(true)}
         >
           <InfoIcon className="info_icon" />
         </Icon>
@@ -99,7 +93,7 @@ const Header = ({
           setIsOpen={setIsNotiOpen}
           locationX={locationX - 335}
         />
-        <Onboarding isOpen={isInfoOpen} setIsOpen={setIsInfoOpen} />
+        <Onboarding isOpen={isOnboardOpen} setIsOpen={setIsOnboardOpen} />
       </div>
     </HeaderWrap>
   );

@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, RefObject, forwardRef } from "react";
 import styled from "styled-components";
 // assets
 import { PlusIcon } from "@assets/icons/common";
+import bookmarkAnimation from "@components/animations/bookmark";
 
 export interface BookmarkTileProps {
   /** id */
@@ -39,27 +40,29 @@ const BookmarkTile = (
     | undefined,
 ) => {
   return (
-    <Wrap
-      id={id}
-      className={className}
-      role="button"
-      onMouseOver={setIsHover ? () => setIsHover(true) : undefined}
-      onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
-      url={url}
-      onClick={isAddBtn ? onClickAddBtn : () => window.open(url, "__blank")}
-      isAddBtn={isAddBtn}
-      ref={ref}
-    >
-      {isAddBtn ? (
-        <PlusIcon className="plus-icon" />
-      ) : (
-        <div className="content">
-          <DelIcon onClick={onClickDelBtn}>×</DelIcon>
-          <div className="content__favicon" />
-          <div className="content__text">{siteName}</div>
-        </div>
-      )}
-    </Wrap>
+    <HoverWrap className={className} isAddBtn={isAddBtn}>
+      <Wrap
+        id={id}
+        className="tile-wrap"
+        role="button"
+        onMouseOver={setIsHover ? () => setIsHover(true) : undefined}
+        onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
+        url={url}
+        onClick={isAddBtn ? onClickAddBtn : () => window.open(url, "__blank")}
+        isAddBtn={isAddBtn}
+        ref={ref}
+      >
+        {isAddBtn ? (
+          <PlusIcon className="plus-icon" />
+        ) : (
+          <div className="content">
+            <DelIcon onClick={onClickDelBtn}>×</DelIcon>
+            <div className="content__favicon" />
+            <div className="content__text">{siteName}</div>
+          </div>
+        )}
+      </Wrap>
+    </HoverWrap>
   );
 };
 
@@ -67,22 +70,44 @@ export default forwardRef(BookmarkTile);
 
 const DelIcon = styled.span`
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 5px;
+  right: 5px;
 
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
 
   display: none;
 
-  font-size: 1rem;
+  font-size: 10px;
   font-weight: 500;
   text-align: center;
-  line-height: 1.7rem;
+  line-height: 17px;
   color: var(--gray_7);
   &:hover {
     background-color: var(--gray_hover_1);
+  }
+`;
+
+interface HoverWrapProps {
+  isAddBtn?: boolean;
+}
+const HoverWrap = styled.div<HoverWrapProps>`
+  position: relative;
+  width: 80px;
+  transition: 0.3s;
+  &:hover {
+    .tile-wrap {
+      margin-top: 0;
+      margin-bottom: 10px;
+      box-shadow: 0 5px 13px rgba(0, 0, 0, 0.15);
+      background-color: ${(props) =>
+        props.isAddBtn ? "rgba(243,243,243,0.7)" : "rgba(255,255,255,0.95)"};
+    }
+    ${DelIcon} {
+      display: block;
+      animation: ${bookmarkAnimation.TileHoverRule};
+    }
   }
 `;
 
@@ -92,13 +117,10 @@ interface WrapProps {
 }
 const Wrap = styled.span<WrapProps>`
   cursor: pointer;
-
-  position: relative;
-  z-index: 4;
-
   box-sizing: border-box;
   width: 80px;
   height: 64px;
+  margin-top: 10px;
   padding-top: 13px;
   padding-bottom: 11px;
   border-radius: 8px;
@@ -116,17 +138,6 @@ const Wrap = styled.span<WrapProps>`
   line-height: 15px;
   text-align: center;
   transition: 0.3s;
-
-  &:hover {
-    transition: 0.3s;
-    margin-bottom: 10px;
-    background-color: ${(props) =>
-      props.isAddBtn ? "rgba(243,243,243,0.7)" : "rgba(255, 255, 255, 0.95)"};
-    box-shadow: 0 5px 13px rgba(0, 0, 0, 0.15);
-    ${DelIcon} {
-      display: block;
-    }
-  }
 
   .plus-icon {
     width: 20px;

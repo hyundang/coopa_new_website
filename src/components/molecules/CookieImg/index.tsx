@@ -3,6 +3,7 @@ import { ImgBox, Icon } from "@components/atoms";
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { DeleteIcon } from "@assets/icons/card";
 import { cookieimgAnimation } from "@components/animations";
+import { CookieData } from "@interfaces/cookie";
 
 export interface CookieImgProps {
   /** id */
@@ -11,24 +12,16 @@ export interface CookieImgProps {
   className?: string;
   /** cookie card state */
   cardState: "hover" | "parking" | "normal" | "input";
-  /** cookie thumbnail url */
-  url?: string;
-  /** cookie content */
-  content: string;
+  /** cookie */
+  cookie: CookieData;
 }
-const CookieImg = ({ id, className, cardState, content }: CookieImgProps) => {
+const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
   return (
-    <ImgBox
+    <StyledImgBox
       id={id}
       className={className}
-      style={{
-        width: "100%",
-        paddingBottom:
-          content === "" ? "calc(180/270*100%)" : "calc(136/270*100%)",
-        borderRadius: "10px",
-        border: `1px solid var(--gray_4)`,
-      }}
-      url="https://i.ytimg.com/vi/C7sLwDOL1Vo/hqdefault.jpg"
+      cookieContent={cookie?.content}
+      url={cookie?.thumbnail}
       isHover={cardState === "hover"}
     >
       {cardState === "hover" && (
@@ -49,25 +42,37 @@ const CookieImg = ({ id, className, cardState, content }: CookieImgProps) => {
       {cardState === "parking" && (
         <ParkingDiv>
           <div className="parking--title">
-            {/* {cookies.directoryInfo?.emoji && (
+            {cookie.directoryInfo?.emoji && (
               <div className="parking--title__emoji">
-                {cookies.directoryInfo.emoji}
+                {cookie.directoryInfo.emoji}
               </div>
-            )} */}
-            <div className="parking--title__emoji">😀</div>
-            <div className="parking--title__name">유저 인터페이스</div>
+            )}
+            <div className="parking--title__name">
+              {cookie.directoryInfo?.name}
+            </div>
           </div>
           <div className="parking--desc">에 파킹했어요!</div>
         </ParkingDiv>
       )}
-    </ImgBox>
+    </StyledImgBox>
   );
 };
 
 export default CookieImg;
 
-const HoverDiv = styled.div`
+interface StyledImgBoxProps {
+  cookieContent: string;
+}
+const StyledImgBox = styled(ImgBox)<StyledImgBoxProps>`
   position: relative;
+  width: 100%;
+  padding-bottom: ${({ cookieContent }) =>
+    cookieContent === "" ? "calc(180/270*100%)" : "calc(136/270*100%)"};
+  border-radius: 10px;
+`;
+
+const HoverDiv = styled.div`
+  position: absolute;
   width: 100%;
   height: 100%;
   .hover_icon_wrap {
@@ -93,8 +98,8 @@ const ParkingDiv = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
   border-radius: 12px;
+  position: absolute;
   z-index: 5;
   background: rgba(0, 0, 0, 0.55);
   width: 100%;

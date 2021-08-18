@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import { ImgBoxForm } from "@components/molecules";
-import { MoveModal, Tab } from "@components/atoms";
+import { ImgBox, MoveModal, Tab } from "@components/atoms";
 import { modalAnimation } from "@components/animations";
 
 const imgs = [
@@ -106,16 +106,12 @@ const HomeboardEditModal = ({
       {tabValue === "기본 테마" ? (
         <div className="theme">
           {imgs.map((img: string, idx: number) => (
-            <div
-              id={`${idx + 1}`}
-              className="theme__img-wrap"
+            <ThemeImg
+              id={idx + 1}
               key={img}
-              role="button"
               onClick={handleClickThemeImg}
-              tabIndex={-1}
-            >
-              <img src={img} alt="theme-img" className="theme__img" />
-            </div>
+              url={img}
+            />
           ))}
         </div>
       ) : (
@@ -137,12 +133,31 @@ const HomeboardEditModal = ({
 
 export default HomeboardEditModal;
 
+interface ThemeImgProps {
+  id: number;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
+  url: string;
+}
+const ThemeImg = ({ id, onClick, url }: ThemeImgProps) => {
+  const [isHover, setIsHover] = useState(false);
+  return (
+    <ImgBox
+      id={`${id}`}
+      className="theme__img"
+      onClick={onClick}
+      url={url}
+      isHover={isHover}
+      setIsHover={setIsHover}
+    />
+  );
+};
+
 interface ModalWrapProps {
   locationX: number;
   isLoading: boolean;
 }
 const ModalWrap = styled(MoveModal)<ModalWrapProps>`
-  top: 73px;
+  top: 133px;
   left: ${(props) => props.locationX}px;
   z-index: 3;
 
@@ -200,11 +215,6 @@ const ModalWrap = styled(MoveModal)<ModalWrapProps>`
       height: 50px;
       border-radius: 6px;
       margin-bottom: 10px;
-      @media (hover: hover) {
-        &:hover {
-          background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
-        }
-      }
     }
   }
 

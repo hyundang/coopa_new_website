@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
+import { NoThumbImg } from "@assets/imgs/card";
 
 export interface IProps {
   /** id */
@@ -18,6 +19,8 @@ export interface IProps {
   setIsHover?: Dispatch<SetStateAction<boolean>>;
   /** post시 loading 여부 */
   isLoading?: boolean;
+  /** click event handler */
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 const ImgBox = ({
   id,
@@ -28,6 +31,7 @@ const ImgBox = ({
   isHover,
   setIsHover,
   isLoading,
+  onClick,
 }: IProps) => {
   return (
     <Wrap
@@ -40,6 +44,7 @@ const ImgBox = ({
       onMouseEnter={setIsHover ? () => setIsHover(true) : undefined}
       onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
       isLoading={isLoading}
+      onClick={onClick}
     >
       {children}
     </Wrap>
@@ -56,13 +61,15 @@ interface IWrap {
 const Wrap = styled.div<IWrap>`
   cursor: pointer;
   overflow: hidden;
-  background: url(${(props) => props.url}) center center/cover;
+  background: url(${(props) => props.url}) center center/cover,
+    url(${NoThumbImg}) center center/cover;
 
   ${(props) =>
     !props.isLoading &&
     props.isHover &&
     css`
       background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-        url(${props.url}) center center/cover;
+        url(${props.url}) center center/cover,
+        url(${NoThumbImg}) center center/cover;
     `}
 `;
