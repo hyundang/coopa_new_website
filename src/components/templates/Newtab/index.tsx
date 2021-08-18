@@ -1,10 +1,14 @@
+// components
 import { SearchBar, Tab } from "@components/atoms";
 import { Header } from "@components/organisms";
-import { NewBookmarkProps } from "@components/organisms/BookmarkAddModal";
-import { Homeboard } from "@components/templates";
+import { Homeboard, Cookies, Directories } from "@components/templates";
+// interfaces
 import { BookmarkDataProps } from "@interfaces/homeboard";
+import { NewBookmarkProps } from "@components/organisms/BookmarkAddModal";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components";
+import { CookieDataProps } from "@interfaces/cookie";
+import { DirectoryDataProps } from "@interfaces/directory";
 
 export interface NewtablProps {
   /** 검색 여부 */
@@ -29,6 +33,10 @@ export interface NewtablProps {
   onClickBookmarkSave: (newBookmark: NewBookmarkProps) => void;
   /** bookmark 삭제 함수 */
   onClickBookmarkDel: (bookmarkID: number) => void;
+  /** cookie data */
+  cookieData: CookieDataProps[];
+  /** directory data */
+  dirData: DirectoryDataProps[];
 }
 const Newtab = ({
   isSearched,
@@ -42,6 +50,8 @@ const Newtab = ({
   bookmarkDatas,
   onClickBookmarkSave,
   onClickBookmarkDel,
+  cookieData,
+  dirData,
 }: NewtablProps) => {
   // 검색창 불필요한 fadeout 방지
   const [preventFadeout, setPreventFadeout] = useState(true);
@@ -105,7 +115,13 @@ const Newtab = ({
           setValue={setTabValue}
         />
       </nav>
-      <main className="cookie-list">cookie card list</main>
+      <main className="card-list">
+        {tabValue === "모든 쿠키" ? (
+          <Cookies data={cookieData} />
+        ) : (
+          <Directories data={dirData} />
+        )}
+      </main>
     </Container>
   );
 };
