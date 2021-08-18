@@ -201,7 +201,7 @@ const HomeboardWrap = styled.section<HomeboardWrapProps>`
       height: 40px;
       border-radius: 20px;
       background: rgba(243, 243, 243, 0.5);
-      transition: 0.2s all;
+      transition: unset;
 
       ${({ isSettingIconAtv }) =>
         isSettingIconAtv
