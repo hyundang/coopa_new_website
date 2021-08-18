@@ -77,8 +77,8 @@ const BookmarkAddModal = ({
 
   // 제일 처음에 link input focus 상태로 설정
   useEffect(() => {
-    link_input.current?.focus();
-  }, []);
+    isOpen && link_input.current?.focus();
+  }, [isOpen]);
 
   return (
     <ModalWrap

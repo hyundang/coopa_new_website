@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled, { css } from "styled-components";
 import { CloseIcon } from "src/assets/icons/searchbar";
 import { SearchIcon } from "@assets/icons/common";
@@ -40,6 +46,14 @@ export default function SearchBar({
   const { value: searchValue, onChange: onChangeValue } = useInput("");
   const [isFocus, setIsFocus] = useState(false);
 
+  // for input refs
+  const search_input = useRef<HTMLInputElement>(null);
+
+  // 제일 처음에 search bar focus 상태로 설정
+  useEffect(() => {
+    visible && search_input.current?.focus();
+  }, [visible]);
+
   return (
     <SearchBarWrap
       id={id}
@@ -59,6 +73,7 @@ export default function SearchBar({
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onKeyPress={onKeyPress}
+          ref={search_input}
         />
       </span>
       <Icon
