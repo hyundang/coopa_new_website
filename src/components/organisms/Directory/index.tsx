@@ -1,9 +1,9 @@
 import styled, { css } from "styled-components";
 import { EmptyCookieIcon } from "@assets/icons/common";
-import { DirectoryData } from "src/lib/interfaces/directory";
+import { DirectoryDataProps } from "src/lib/interfaces/directory";
 
 export interface DirectoryProps {
-  dir: DirectoryData;
+  dir: DirectoryDataProps;
 }
 const Directory = ({ dir }: DirectoryProps) => {
   return (
@@ -24,7 +24,7 @@ const Directory = ({ dir }: DirectoryProps) => {
 export default Directory;
 
 export interface DirectoryWrapProps {
-  thumbnail: string;
+  thumbnail?: string;
 }
 
 const DirectoryWrap = styled.article<DirectoryWrapProps>`
@@ -66,7 +66,7 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
     }
   }
   ${(props) =>
-    props.thumbnail !== null &&
+    props.thumbnail &&
     css`
       ::after {
         content: "";

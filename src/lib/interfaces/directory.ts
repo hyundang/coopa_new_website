@@ -1,7 +1,12 @@
-export interface DirectoryData {
-  emoji: string;
+export interface DirectoryDataProps {
+  emoji?: string;
   id: number;
   name: string;
-  thumbnail: string;
+  thumbnail?: string;
   cookieCnt: number;
+}
+
+export interface PostDirectoryProps {
+  name: string;
+  emoji?: string;
 }

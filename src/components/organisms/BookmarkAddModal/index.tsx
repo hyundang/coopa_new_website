@@ -88,7 +88,7 @@ const BookmarkAddModal = ({
       setIsOpen={setIsOpen}
       locationX={locationX}
     >
-      <div className="title">즐겨찾기 추가</div>
+      <h1 className="modal-title">즐겨찾기 추가</h1>
       <Input
         className="input"
         placeholder="URL을 입력해주세요"
@@ -104,7 +104,7 @@ const BookmarkAddModal = ({
         onKeyPress={handleKeyPress}
       />
       <Input
-        id="input_title"
+        id="input-title"
         className="input"
         placeholder="제목을 입력해주세요"
         value={value.name}
@@ -164,7 +164,7 @@ const ModalWrap = styled(MoveModal)<ModalWrapProps>`
           animation: ${modalAnimation.homeboardFadeOutRule};
         `}
 
-  .title {
+  .modal-title {
     margin-bottom: 12px;
     width: 100%;
     height: 18px;

@@ -2,8 +2,8 @@ import { CookieHover, CookieImg } from "@components/molecules";
 import styled from "styled-components";
 import { SyntheticEvent, useState, useEffect } from "react";
 import { fvcOnErrorImg } from "@assets/icons/card";
-import { CookieData } from "src/lib/interfaces/cookie";
-import { DirectoryData } from "src/lib/interfaces/directory";
+import { CookieDataProps } from "src/lib/interfaces/cookie";
+import { DirectoryDataProps } from "src/lib/interfaces/directory";
 
 export interface CookieProps {
   /** id */
@@ -11,9 +11,9 @@ export interface CookieProps {
   /** className */
   className?: string;
   /** cookie */
-  cookie: CookieData;
+  cookie: CookieDataProps;
   /** all directory */
-  allDir: DirectoryData[];
+  allDir: DirectoryDataProps[];
 }
 const Cookie = ({ id, className, cookie, allDir }: CookieProps) => {
   //normal: 기본 | hover: 호버 | parking: 파킹중 | input: 인풋입력중

@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { DirectoryData } from "src/lib/interfaces/directory";
+import { DirectoryDataProps } from "src/lib/interfaces/directory";
 import Directory from "@components/organisms/Directory";
 
 export interface DirectoriesProps {
-  data: DirectoryData[];
+  data: DirectoryDataProps[];
 }
 
 const Directories = ({ data }: DirectoriesProps) => {

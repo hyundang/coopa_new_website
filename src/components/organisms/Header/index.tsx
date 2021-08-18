@@ -15,9 +15,9 @@ export interface HeaderProps {
   /** className */
   className?: string;
   /** click search icon event handler */
-  onClickSearch: React.MouseEventHandler<HTMLButtonElement>;
+  onClickSearch?: React.MouseEventHandler<HTMLButtonElement>;
   /** search icon active 여부 */
-  isSearchIconAtv: boolean;
+  isSearchIconAtv?: boolean;
   /** profile img url */
   imgUrl?: string;
   /** mypage 여부 */

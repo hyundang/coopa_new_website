@@ -9,13 +9,13 @@ import {
 import { mypageAnimation } from "@components/animations";
 import { Btn, Bubble, Icon } from "@components/atoms";
 import { Header } from "@components/organisms";
-import { UserData } from "@interfaces/user";
+import { UserDataProps } from "@interfaces/user";
 import { useState } from "react";
 import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
 
 export interface MyProps {
-  userData: UserData;
+  userData: UserDataProps;
   /** 로그아웃 버튼 클릭 이벤트 핸들러 */
   onClickLogout: React.MouseEventHandler<HTMLButtonElement>;
 }

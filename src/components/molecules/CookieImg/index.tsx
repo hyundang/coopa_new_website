@@ -3,7 +3,7 @@ import { ImgBox, Icon } from "@components/atoms";
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { DeleteIcon } from "@assets/icons/card";
 import { cookieimgAnimation } from "@components/animations";
-import { CookieData } from "@interfaces/cookie";
+import { CookieDataProps } from "@interfaces/cookie";
 
 export interface CookieImgProps {
   /** id */
@@ -13,7 +13,7 @@ export interface CookieImgProps {
   /** cookie card state */
   cardState: "hover" | "parking" | "normal" | "input";
   /** cookie */
-  cookie: CookieData;
+  cookie: CookieDataProps;
 }
 const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
   return (

@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { CookieData } from "src/lib/interfaces/cookie";
+import { CookieDataProps } from "src/lib/interfaces/cookie";
 import { Cookie } from "@components/organisms";
 
 export interface IProps {
-  data: CookieData[];
+  data: CookieDataProps[];
 }
 
 const Cookies = ({ data }: IProps) => {

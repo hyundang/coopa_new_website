@@ -3,7 +3,7 @@ interface directoryInfoType {
   id: number;
   name: string;
 }
-export interface CookieData {
+export interface CookieDataProps {
   content: string;
   directoryInfo?: directoryInfoType;
   favicon: string;

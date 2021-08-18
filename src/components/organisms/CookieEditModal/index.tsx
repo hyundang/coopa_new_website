@@ -84,21 +84,19 @@ const CookieEditModal = ({
       setIsOpen={setIsOpen}
       isLoading={isLoading}
     >
-      <div className="title">쿠키 수정</div>
-      <div className="input-img">
-        <div className="input-img__label">쿠키 이미지 업로드</div>
-        <ImgBoxForm
-          className="input-img__form"
-          imgUrl={value.thumbnail}
-          isHover={isHover}
-          setIsHover={setIsHover}
-          isLoading={isLoading}
-          plusSize={24}
-          cookieSize={40}
-          ref={img_input}
-          onChangeImg={handleChangeImg}
-        />
-      </div>
+      <h1 className="modal-title">쿠키 수정</h1>
+      <span className="input-img__label">쿠키 이미지 업로드</span>
+      <ImgBoxForm
+        className="input-img"
+        imgUrl={value.thumbnail}
+        isHover={isHover}
+        setIsHover={setIsHover}
+        isLoading={isLoading}
+        plusSize={24}
+        cookieSize={40}
+        ref={img_input}
+        onChangeImg={handleChangeImg}
+      />
       <InputForm
         className="input-title"
         text="쿠키 제목"
@@ -114,6 +112,7 @@ const CookieEditModal = ({
               })
             : () => {}
         }
+        onKeyDown={handleKeyDown}
       />
       <TextAreaForm
         className="input-text"
@@ -162,7 +161,7 @@ const ModalWrap = styled(Modal)<ModalWrapProps>`
   border-radius: 16px;
   align-items: flex-start;
 
-  ${({ theme }) => theme.media.tablet`
+  ${({ theme }) => theme.media.mobile`
     top: 100%;
     transform: translate(-50%, -100%);
     width: 100%;
@@ -172,7 +171,7 @@ const ModalWrap = styled(Modal)<ModalWrapProps>`
     border-radius: 20px 20px 0px 0px;
   `}
 
-  .title {
+  .modal-title {
     margin-bottom: 16px;
     width: 100%;
     height: 36px;
@@ -182,27 +181,24 @@ const ModalWrap = styled(Modal)<ModalWrapProps>`
     line-height: 36px;
   }
 
+  .input-img__label {
+    margin-bottom: 10px;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+  }
   .input-img {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 25px;
     width: 100%;
-    &__label {
-      margin-bottom: 10px;
-      width: 100%;
-      font-weight: 400;
-      font-size: 13px;
-      line-height: 16px;
-    }
-    &__form {
-      .img-box {
-        width: 270px;
-        height: 136px;
-        border-radius: 16px;
-        border: ${(props) =>
-          props.isLoading ? undefined : "1px solid var(--gray_4)"};
-      }
+    .img-box {
+      width: 270px;
+      height: 136px;
+      border-radius: 16px;
+      border: ${(props) =>
+        props.isLoading ? undefined : "1px solid var(--gray_4)"};
     }
   }
 
