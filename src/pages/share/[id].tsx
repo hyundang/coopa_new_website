@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Header } from "@components/organisms";
-import { CookieIcon } from "@assets/icons/common";
+import { BlackCookieIcon, FilterIcon } from "@assets/icons/common";
 import Cookies from "@components/templates/Cookies";
 
 const Share = () => {
@@ -16,17 +16,20 @@ const Share = () => {
         <Title>
           <p className="name">playlist</p>
           <p className="info">
-            <CookieIcon fill="#000000" />
+            <BlackCookieIcon style={{ marginRight: "6px" }} />
             8개
           </p>
         </Title>
-        <User>
-          <img
-            alt=""
-            src="https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg"
-          />
-          <p>희수 친구 채린</p>
-        </User>
+        <Middle>
+          <User>
+            <img
+              alt=""
+              src="https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg"
+            />
+            <p>희수 친구 채린</p>
+          </User>
+          <FilterIcon />
+        </Middle>
         <Cookies isShared data={cookies} />
       </ShareCntnr>
     </div>
@@ -82,6 +85,10 @@ const Title = styled.article`
 
     color: var(--black_1);
   }
+`;
+const Middle = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 const User = styled.article`
   margin-bottom: 3rem;
