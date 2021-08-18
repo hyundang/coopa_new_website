@@ -14,8 +14,10 @@ export interface CookieProps {
   cookie: CookieDataProps;
   /** all directory */
   allDir: DirectoryDataProps[];
+  /** share cookie */
+  isShared?: boolean;
 }
-const Cookie = ({ id, className, cookie, allDir }: CookieProps) => {
+const Cookie = ({ id, className, cookie, allDir, isShared }: CookieProps) => {
   //normal: 기본 | hover: 호버 | parking: 파킹중 | input: 인풋입력중
   const [cardState, setCardState] = useState<
     "hover" | "normal" | "parking" | "input"
@@ -43,11 +45,14 @@ const Cookie = ({ id, className, cookie, allDir }: CookieProps) => {
         if (cardState !== "input") setCardState("normal");
       }}
     >
-      <CookieImg cardState={cardState} cookie={cookie} />
-      {(cardState === "hover" || cardState === "input") && (
+      <CookieImg
+        cardState={isShared ? "normal" : cardState}
+        content={cookie.content}
+      />
+      {!isShared && (cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
           <CookieHover
-            allDir={allDir}
+            allDir={allDir || []}
             setCardState={setCardState}
             currDir={currDir}
             setCurrDir={setCurrDir}

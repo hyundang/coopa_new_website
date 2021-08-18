@@ -4,13 +4,19 @@ import { Cookie } from "@components/organisms";
 
 export interface IProps {
   data: CookieDataProps[];
+  isShared?: boolean;
 }
 
-const Cookies = ({ data }: IProps) => {
+const Cookies = ({ data, isShared }: IProps) => {
   return (
     <CookiesWrap>
       {data.map((cookie) => (
-        <Cookie cookie={cookie} key={cookie.id} allDir={[]} />
+        <Cookie
+          cookie={cookie}
+          key={cookie.id}
+          allDir={[]}
+          isShared={isShared}
+        />
       ))}
     </CookiesWrap>
   );
