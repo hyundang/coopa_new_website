@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
 import NotiModal from "../NotiModal";
+import Onboarding from "../Onboarding";
 
 export interface HeaderProps {
   /** id */
@@ -14,11 +15,13 @@ export interface HeaderProps {
   /** className */
   className?: string;
   /** click search icon event handler */
-  onClickSearch: React.MouseEventHandler<HTMLButtonElement>;
+  onClickSearch?: React.MouseEventHandler<HTMLButtonElement>;
   /** search icon active 여부 */
-  isSearchIconAtv: boolean;
+  isSearchIconAtv?: boolean;
   /** profile img url */
   imgUrl?: string;
+  /** mypage 여부 */
+  isMypage?: boolean;
 }
 const Header = ({
   id,
@@ -26,6 +29,7 @@ const Header = ({
   onClickSearch,
   isSearchIconAtv,
   imgUrl,
+  isMypage = false,
 }: HeaderProps) => {
   const router = useRouter();
   const [isNotiOpen, setIsNotiOpen] = useState(false);
@@ -48,7 +52,8 @@ const Header = ({
       isSearchIconAtv={isSearchIconAtv}
       isInfoIconAtv={isOnboardOpen}
       isNotiIconAtv={isNotiOpen}
-      isMypageIconAtv={router?.pathname === "mypage"}
+      isMypageIconAtv={isMypage}
+      imgUrl={imgUrl}
     >
       <div className="content">
         <Icon
@@ -60,9 +65,15 @@ const Header = ({
         </Icon>
         <div style={{ flexGrow: 1 }} />
         {/* <div> */}
-        <Icon className="content__search" role="button" onClick={onClickSearch}>
-          <SearchIcon className="search_icon" />
-        </Icon>
+        {!isMypage && (
+          <Icon
+            className="content__search"
+            role="button"
+            onClick={onClickSearch}
+          >
+            <SearchIcon className="search_icon" />
+          </Icon>
+        )}
         {/* <Bubble className="search-bubble">검색</Bubble>
         </div> */}
         <Icon
@@ -83,15 +94,16 @@ const Header = ({
         <Icon
           className="content__mypage"
           role="link"
-          onClick={() => router.push("/mypage")}
+          onClick={isMypage ? undefined : () => router.push("/mypage")}
         >
-          <img src={imgUrl} alt="profile_img" className="profile_img" />
+          <div className="profile_img" />
         </Icon>
         <NotiModal
           isOpen={isNotiOpen}
           setIsOpen={setIsNotiOpen}
           locationX={locationX - 335}
         />
+        <Onboarding isOpen={isOnboardOpen} setIsOpen={setIsOnboardOpen} />
       </div>
     </HeaderWrap>
   );
@@ -101,13 +113,14 @@ export default Header;
 
 interface HeaderWrapProps {
   /** search icon active 여부 */
-  isSearchIconAtv: boolean;
+  isSearchIconAtv?: boolean;
   /** info icon active 여부 */
   isInfoIconAtv: boolean;
   /** noti icon active 여부 */
   isNotiIconAtv: boolean;
   /** mypage icon active 여부 */
   isMypageIconAtv: boolean;
+  imgUrl?: string;
 }
 const HeaderWrap = styled.header<HeaderWrapProps>`
   all: unset;
@@ -177,6 +190,7 @@ const HeaderWrap = styled.header<HeaderWrapProps>`
     &__search {
       width: 40px;
       height: 40px;
+      margin-right: 3px;
       border-radius: 20px;
       ${(props) =>
         props.isSearchIconAtv
@@ -218,6 +232,7 @@ const HeaderWrap = styled.header<HeaderWrapProps>`
     &__info {
       width: 40px;
       height: 40px;
+      margin-right: 3px;
       border-radius: 20px;
       ${(props) =>
         props.isInfoIconAtv
@@ -246,6 +261,7 @@ const HeaderWrap = styled.header<HeaderWrapProps>`
     &__noti {
       width: 40px;
       height: 40px;
+      margin-right: 3px;
       border-radius: 20px;
       ${(props) =>
         props.isNotiIconAtv
@@ -275,26 +291,26 @@ const HeaderWrap = styled.header<HeaderWrapProps>`
       width: 40px;
       height: 40px;
       border-radius: 20px;
-      border: 5px solid var(--white);
-
-      ${(props) =>
-        props.isMypageIconAtv
-          ? css`
-              border: 5px solid var(--gray_active);
-            `
-          : css`
-              @media (hover: hover) {
-                &:hover {
-                  border: 5px solid var(--gray_hover_1);
-                }
-              }
-            `};
 
       .profile_img {
-        width: 30px;
-        height: 30px;
-        border-radius: 15px;
-        object-fit: cover;
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        border: 5px solid var(--white);
+        background: url(${(props) => props.imgUrl}) center center / cover;
+
+        ${(props) =>
+          props.isMypageIconAtv
+            ? css`
+                border: 5px solid var(--gray_active);
+              `
+            : css`
+                @media (hover: hover) {
+                  &:hover {
+                    border: 5px solid var(--gray_hover_1);
+                  }
+                }
+              `};
       }
     }
   }

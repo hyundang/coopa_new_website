@@ -1,0 +1,9 @@
+export { default as page1 } from "./onboarding_1.gif";
+export { default as page2 } from "./onboarding_2.gif";
+export { default as page3 } from "./onboarding_3.gif";
+export { default as page4 } from "./onboarding_4.gif";
+export { default as page5 } from "./onboarding_5.gif";
+export { default as duribun1 } from "./onboarding_duribun_1.svg";
+export { default as duribun3 } from "./onboarding_duribun_3.svg";
+export { default as duribun4 } from "./onboarding_duribun_4.svg";
+export { default as duribun5 } from "./onboarding_duribun_5.svg";

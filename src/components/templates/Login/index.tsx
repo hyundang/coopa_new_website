@@ -21,11 +21,11 @@ export interface LoginProps {
 const Login = ({ onSuccess, onFailure }: LoginProps) => {
   return (
     <Container>
-      <LogoImg className="logo" />
-      <div className="login">
-        <div className="login__content">
+      <LogoImg className="logo" role="img" />
+      <main className="login">
+        <h1 className="login__content">
           {"성장하는 사람들을 위한\n가장 간편한 콘텐츠 파킹랏"}
-        </div>
+        </h1>
         <GoogleLogin
           clientId={String(process.env.REACT_APP_CLIENTID)}
           responseType="id_token"
@@ -35,20 +35,20 @@ const Login = ({ onSuccess, onFailure }: LoginProps) => {
           onSuccess={onSuccess}
           onFailure={onFailure}
         />
-        <div className="login__policy">
+        <h3 className="login__policy">
           {
             "로그인은 개인 정보 보호 정책 및 서비스 약관에 동의하는 것을 의미하며,\n서비스 이용을 위해 이메일과 이름, 프로필 이미지를 수집합니다."
           }
-        </div>
-      </div>
-      <LoginImg className="login_img" />
+        </h3>
+      </main>
+      <LoginImg className="login_img" role="img" />
     </Container>
   );
 };
 
 export default Login;
 
-const Container = styled.div`
+const Container = styled.section`
   position: absolute;
   width: 100%;
   height: 100vh;
@@ -78,7 +78,6 @@ const Container = styled.div`
       width: 47.3rem;
     }
     &__content {
-      cursor: none;
       font-weight: 700;
       font-size: 2.6rem;
       line-height: 3.9rem;

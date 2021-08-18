@@ -1,22 +1,20 @@
 import styled, { css } from "styled-components";
 import { EmptyCookieIcon } from "@assets/icons/common";
-import { DirectoryData } from "src/lib/interfaces/user";
+import { DirectoryDataProps } from "src/lib/interfaces/directory";
 
 export interface DirectoryProps {
-  dir: DirectoryData;
+  dir: DirectoryDataProps;
 }
-
 const Directory = ({ dir }: DirectoryProps) => {
   return (
     <DirectoryWrap thumbnail={dir.thumbnail}>
       <div className="content">
         <div className="content__title">
-          <p className="content__title--emoji">{dir.emoji}</p>
-          {dir.name}
+          {dir.emoji ? `${dir.emoji} ${dir.name}` : dir.name}
         </div>
         <div className="content__num">
           <EmptyCookieIcon className="cookie-icon" />
-          <div className="content__num--text">{dir.cookieCnt}개</div>
+          <span>{dir.cookieCnt}개</span>
         </div>
       </div>
     </DirectoryWrap>
@@ -26,35 +24,37 @@ const Directory = ({ dir }: DirectoryProps) => {
 export default Directory;
 
 export interface DirectoryWrapProps {
-  thumbnail: string;
+  thumbnail?: string;
 }
 
-const DirectoryWrap = styled.div<DirectoryWrapProps>`
+const DirectoryWrap = styled.article<DirectoryWrapProps>`
   cursor: pointer;
 
   position: relative;
   z-index: 1;
 
   width: 100%;
-  height: 0;
-  padding-top: 13.4rem;
-  ${({ theme }) => theme.media.desktop_2`
-    padding-top: 12rem;
+  height: 134px;
+  ${({ theme }) => theme.media.desktop_3`
+    height: 120px;
   `}
-  ${({ theme }) => theme.media.tablet`
-    padding-top: 7.2rem;
+  ${({ theme }) => theme.media.mobile`
+    height: 73px;
   `}
   background-color: var(--gray_1);
-  border-radius: 1.2rem;
+  border-radius: 12px;
   color: var(--black_2);
 
   display: flex;
   justify-content: center;
   align-items: center;
 
+  transition: 0.2s;
   &:hover {
     background: rgba(0, 0, 0, 0.7);
-    color: var(--white);
+    .content > * {
+      color: var(--white);
+    }
     .content {
       &__num {
         .cookie-icon {
@@ -66,13 +66,13 @@ const DirectoryWrap = styled.div<DirectoryWrapProps>`
     }
   }
   ${(props) =>
-    props.thumbnail !== null &&
+    props.thumbnail &&
     css`
       ::after {
         content: "";
         display: block;
         position: absolute;
-        border-radius: 1.2rem;
+        border-radius: 12px;
         top: 0;
         left: 0;
         background: url(${props.thumbnail}) center center / cover no-repeat;
@@ -82,75 +82,74 @@ const DirectoryWrap = styled.div<DirectoryWrapProps>`
         z-index: -1;
       }
     `}
-  ${({ theme }) => theme.media.desktop_4`
-      background-color:var(--gray_1);
-      color: var(black_2);
-  `}
   .content {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2.4rem;
-    font-weight: 500;
-    line-height: 3.6rem;
-    letter-spacing: -0.02em;
+    top: 46px;
+    ${({ theme }) => theme.media.desktop_3`
+      top: 40px;
+    `}
+    ${({ theme }) => theme.media.mobile`
+      top: 20px;
+    `}
+
     display: flex;
     flex-direction: column;
     align-items: center;
-    ${({ theme }) => theme.media.tablet`
-        width: 100%;
-    `}
+    gap: 8px;
 
     &__title {
-      max-width: 22.7rem;
-      line-height: 1.7rem;
-      white-space: nowrap;
-      font-size: 1.7rem;
-      display: flex;
+      max-width: 254px;
+      height: 19px;
+      line-height: 19px;
+
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--black_2);
+
+      display: inline-block;
       align-items: center;
+      gap: 6px;
+
+      white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
 
-      /* ${({ theme }) => theme.media.desktop_2`
-        font-size: 1.6rem;
-        max-width: 20rem;
+      ${({ theme }) => theme.media.desktop_3`
+        max-width: 225px;
+        font-size: 16px;
       `}
-      ${({ theme }) => theme.media.tablet`
-        font-size: 1.3rem;
-        height: 1.6rem;
-        width: 80%;
-        line-height: 1.6rem;
-      `} */
-
-      &--emoji {
-        margin-right: 0.6rem;
-        font-size: 1.6rem;
-
-        /* ${({ theme }) => theme.media.tablet`
-        font-size: 1.2rem;
-        margin-right: 0.4rem;
-      `} */
-      }
+      ${({ theme }) => theme.media.mobile`
+        max-width: 136px;
+        font-size: 13px;
+        height: 16px;
+        line-height: 16px;
+      `}
     }
     &__num {
-      height: 1.7rem;
+      font-size: 15px;
+      font-weight: 500;
+
       display: flex;
       align-items: center;
-      font-size: 1.4rem;
+      gap: 6px;
 
-      ${({ theme }) => theme.media.tablet`
-        font-size: 1.1rem;
-        height: 1.3rem;
+      color: var(--gray_7);
+
+      ${({ theme }) => theme.media.desktop_3`
+        font-size: 14px;
       `}
-      &--text {
-        height: 1.8rem;
-        line-height: 1.8rem;
-        ${({ theme }) => theme.media.tablet`
-          max-width: 3.6rem;
-          height: 1.3rem;
-          line-height: 1.3rem;
+      ${({ theme }) => theme.media.mobile`
+        font-size: 11px;
+        gap: 4px;
       `}
+
+      .cookie-icon {
+        ${({ theme }) => theme.media.mobile`
+          width: 11px;
+        `}
+        path {
+          fill: var(--gray_7_active);
+        }
       }
     }
     .cookie-icon {

@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { CookieData } from "src/lib/interfaces/user";
+import { CookieDataProps } from "src/lib/interfaces/cookie";
 import { Cookie } from "@components/organisms";
 
 export interface IProps {
-  data: CookieData[];
+  data: CookieDataProps[];
 }
 
 const Cookies = ({ data }: IProps) => {
@@ -15,12 +15,16 @@ const Cookies = ({ data }: IProps) => {
     </CookiesWrap>
   );
 };
-const CookiesWrap = styled.div`
+
+export default Cookies;
+
+const CookiesWrap = styled.section`
   display: grid;
   justify-content: center;
   grid-gap: 5px 24px;
   /* 1920- */
   grid-template-columns: repeat(5, 30rem);
+  grid-auto-rows: 368px;
   /* 1600- 1919*/
   ${({ theme }) => theme.media.desktop_2`
     grid-template-columns: repeat(4, 30rem);
@@ -28,6 +32,7 @@ const CookiesWrap = styled.div`
   /* 1366- 1599*/
   ${({ theme }) => theme.media.desktop_3`
     grid-template-columns: repeat(4, 27rem);
+    grid-auto-rows: 334px;
   `}  
   /* 1024-1365 */
   ${({ theme }) => theme.media.desktop_4`
@@ -42,4 +47,3 @@ const CookiesWrap = styled.div`
     grid-template-columns: repeat(1, auto);
   `}
 `;
-export default Cookies;

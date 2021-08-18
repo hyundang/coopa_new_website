@@ -18,7 +18,7 @@ const allDir = [
     cookieCnt: 1,
   },
   {
-    emoji: "😀",
+    emoji: "",
     id: 2543,
     name: "3ps2",
     thumbnail: "https://www.notion.so/images/meta/default.png",

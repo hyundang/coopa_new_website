@@ -12,7 +12,7 @@ export const directory = () => {
         dir={{
           emoji: "😀",
           id: 2543,
-          name: "3ps",
+          name: "디렉토리디렉토리디렉토리디렉토리디렉토리디렉토리",
           thumbnail: "https://www.notion.so/images/meta/default.png",
           cookieCnt: 1,
         }}

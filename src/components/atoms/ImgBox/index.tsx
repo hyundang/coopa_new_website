@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
+import { NoThumbImg } from "@assets/imgs/card";
 
 export interface IProps {
   /** id */
@@ -60,13 +61,15 @@ interface IWrap {
 const Wrap = styled.div<IWrap>`
   cursor: pointer;
   overflow: hidden;
-  background: url(${(props) => props.url}) center center/cover;
+  background: url(${(props) => props.url}) center center/cover,
+    url(${NoThumbImg}) center center/cover;
 
   ${(props) =>
     !props.isLoading &&
     props.isHover &&
     css`
       background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-        url(${props.url}) center center/cover;
+        url(${props.url}) center center/cover,
+        url(${NoThumbImg}) center center/cover;
     `}
 `;

@@ -1,32 +1,13 @@
-export interface UserData {
+export interface UserDataProps {
+  name: string;
   email: string;
-  profileImage?: string | null;
+  profileImage?: string;
   introduction?: string;
   allCookies: number;
   readCount: number;
 }
 
-interface directoryInfoType {
-  emoji?: string | null;
-  id: number;
+export interface PostUserDataProps {
   name: string;
-}
-export interface CookieData {
-  content: string;
-  directoryInfo?: directoryInfoType;
-  favicon: string;
-  id: number;
-  link: string;
-  provider: string;
-  readCnt: number;
-  thumbnail: string;
-  title: string;
-}
-
-export interface DirectoryData {
-  emoji: string;
-  id: number;
-  name: string;
-  thumbnail: string;
-  cookieCnt: number;
+  introduction?: string;
 }

@@ -1,14 +1,14 @@
-import CookieImg from ".";
+import { Story, Meta } from "@storybook/react";
+import CookieImg, { CookieImgProps } from ".";
 
 export default {
   title: "components/molecules/cookieImg",
   component: CookieImg,
-};
+} as Meta;
 
-export const cookieHover = () => {
-  return <CookieImg cardState="hover" content="" />;
-};
+const Template: Story<CookieImgProps> = (args) => <CookieImg {...args} />;
 
-cookieHover.story = {
-  name: "Default",
+export const cookieHover = Template.bind({});
+cookieHover.args = {
+  cardState: "hover",
 };

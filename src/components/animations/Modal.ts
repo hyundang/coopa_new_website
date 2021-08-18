@@ -33,7 +33,7 @@ const homeboardFadeOutRule = css(
   homeboardFadeOut,
 );
 
-const tabletFadeIn = keyframes`
+const mobileFadeIn = keyframes`
   from {
     transform: translate(-50%,0);
     opacity: 0;
@@ -43,12 +43,12 @@ const tabletFadeIn = keyframes`
     opacity: 1;
   }
 `;
-const tabletFadeInRule = css(
+const mobileFadeInRule = css(
   ["", " 0.4s linear"] as any as TemplateStringsArray,
-  tabletFadeIn,
+  mobileFadeIn,
 );
 
-const tabletFadeOut = keyframes`
+const mobileFadeOut = keyframes`
   from {
     transform: translate(-50%,-100%);
     opacity: 1;
@@ -58,9 +58,9 @@ const tabletFadeOut = keyframes`
     opacity: 0;
   }
 `;
-const tabletFadeOutRule = css(
+const mobileFadeOutRule = css(
   ["", " 0.4s linear"] as any as TemplateStringsArray,
-  tabletFadeOut,
+  mobileFadeOut,
 );
 
 // 위에서 내려오도록
@@ -98,8 +98,8 @@ const notiFadeOutRule = css(
 const modalAnimation = {
   homeboardFadeInRule,
   homeboardFadeOutRule,
-  tabletFadeInRule,
-  tabletFadeOutRule,
+  mobileFadeInRule,
+  mobileFadeOutRule,
   notiFadeInRule,
   notiFadeOutRule,
 };

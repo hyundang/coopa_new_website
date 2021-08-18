@@ -13,8 +13,8 @@ export interface ModalProps {
   isOpen: boolean;
   /** 모달 오픈 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  /** background color */
-  backgroundColor?: "black" | "white";
+  /** 모달 wrap click event handler */
+  onClick?: React.MouseEventHandler<HTMLDialogElement>;
 }
 const Modal = ({
   id,
@@ -22,17 +22,19 @@ const Modal = ({
   children,
   isOpen,
   setIsOpen,
-  backgroundColor = "black",
+  onClick,
 }: ModalProps) => {
   return (
     <>
       {isOpen && (
         <>
-          <Background
-            onClick={() => setIsOpen(false)}
-            backgroundColor={backgroundColor}
-          />
-          <ModalWrap id={id} className={className} isOpen={isOpen}>
+          <Background onClick={() => setIsOpen(false)} />
+          <ModalWrap
+            id={id}
+            className={className}
+            isOpen={isOpen}
+            onClick={onClick}
+          >
             {children}
           </ModalWrap>
         </>
@@ -43,10 +45,7 @@ const Modal = ({
 
 export default Modal;
 
-interface BackgroundProps {
-  backgroundColor: "black" | "white";
-}
-const Background = styled.div<BackgroundProps>`
+const Background = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -55,14 +54,15 @@ const Background = styled.div<BackgroundProps>`
   width: 100vw;
   height: 100vh;
 
-  background-color: ${(props) =>
-    props.backgroundColor === "white" ? undefined : "rgba(0, 0, 0, 0.4)"};
+  background-color: rgba(0, 0, 0, 0.4);
 `;
 
 interface ModalWrapProps {
   isOpen: boolean;
 }
-const ModalWrap = styled.div<ModalWrapProps>`
+const ModalWrap = styled.dialog<ModalWrapProps>`
+  all: unset;
+  box-sizing: border-box;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -77,13 +77,13 @@ const ModalWrap = styled.div<ModalWrapProps>`
   ${(props) =>
     props.isOpen
       ? css`
-          ${({ theme }) => theme.media.tablet`
-                animation: ${modalAnimation.tabletFadeInRule};
+          ${({ theme }) => theme.media.mobile`
+                animation: ${modalAnimation.mobileFadeInRule};
             `}
         `
       : css`
-          ${({ theme }) => theme.media.tablet`
-                animation: ${modalAnimation.tabletFadeOutRule};
+          ${({ theme }) => theme.media.mobile`
+                animation: ${modalAnimation.mobileFadeOutRule};
             `}
         `}
 `;

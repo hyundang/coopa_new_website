@@ -1,18 +1,15 @@
 import { useState, ChangeEvent, SetStateAction, Dispatch } from "react";
 import styled from "styled-components";
 import { Btn, Input, List, DropDown } from "@components/atoms";
+import { DirectoryDataProps } from "@interfaces/directory";
 
-interface directory {
-  name: string;
-  emoji: string;
-}
 export interface CookieHoverProps {
   /** id */
   id?: string;
   /** className */
   className?: string;
   /** 모든 디렉토리 data */
-  allDir: directory[];
+  allDir: DirectoryDataProps[];
   /** cardState를 parking으로 변경 */
   setCardState: Dispatch<
     SetStateAction<"hover" | "normal" | "parking" | "input">

@@ -1,4 +1,4 @@
-import { RefObject, forwardRef } from "react";
+import { RefObject, forwardRef, Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 
 export interface IconProps {
@@ -10,13 +10,23 @@ export interface IconProps {
   children?: React.ReactNode;
   /** button role */
   role?: string;
+  /** hover 여부 */
+  setIsHover?: Dispatch<SetStateAction<boolean>>;
   /** click event handler */
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   /** icon css (width, height, borderRadius...) */
   style?: React.CSSProperties;
 }
 const Icon = (
-  { id, className, children, role = "button", style, onClick }: IconProps,
+  {
+    id,
+    className,
+    children,
+    role = "button",
+    style,
+    onClick,
+    setIsHover,
+  }: IconProps,
   ref?:
     | ((instance: HTMLButtonElement | null) => void)
     | RefObject<HTMLButtonElement>
@@ -31,6 +41,8 @@ const Icon = (
       role={role}
       style={style}
       onClick={onClick}
+      onMouseOver={setIsHover ? () => setIsHover(true) : undefined}
+      onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
     >
       {children}
     </IconWrap>
