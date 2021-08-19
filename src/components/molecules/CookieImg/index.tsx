@@ -4,6 +4,8 @@ import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { DeleteIcon } from "@assets/icons/card";
 import { cookieimgAnimation } from "@components/animations";
 import { CookieDataProps } from "@interfaces/cookie";
+import { CookieEditModal } from "@components/organisms";
+import { useState } from "react";
 
 export interface CookieImgProps {
   /** id */
@@ -15,46 +17,76 @@ export interface CookieImgProps {
   /** cookie */
   cookie: CookieDataProps;
 }
+
 const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
+  const [value, setValue] = useState<CookieDataProps>(cookie);
+  const [isError, setIsError] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const isLoading = false;
+
+  const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> = (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    e.stopPropagation();
+    setIsEditOpen(true);
+  };
+
   return (
-    <StyledImgBox
-      id={id}
-      className={className}
-      cookieContent={cookie?.content}
-      url={cookie?.thumbnail}
-      isHover={cardState === "hover"}
-    >
-      {cardState === "hover" && (
-        <HoverDiv>
-          <div className="hover_icon_wrap">
-            <Icon className="hover_icon">
-              <EditIcon className="hover_icon__edit" />
-            </Icon>
-            <Icon className="hover_icon">
-              <LinkIcon32 className="hover_icon__link" />
-            </Icon>
-            <Icon className="hover_icon">
-              <DeleteIcon className="hover_icon__delete" />
-            </Icon>
-          </div>
-        </HoverDiv>
-      )}
-      {cardState === "parking" && (
-        <ParkingDiv>
-          <div className="parking--title">
-            {cookie.directoryInfo?.emoji && (
-              <div className="parking--title__emoji">
-                {cookie.directoryInfo.emoji}
-              </div>
-            )}
-            <div className="parking--title__name">
-              {cookie.directoryInfo?.name}
+    <>
+      <StyledImgBox
+        id={id}
+        className={className}
+        cookieContent={cookie?.content}
+        url={cookie?.thumbnail}
+        isHover={cardState === "hover"}
+      >
+        {cardState === "hover" && (
+          <HoverDiv>
+            <div className="hover_icon_wrap">
+              <Icon
+                className="hover_icon"
+                onClick={(e) => editIconClickHandler(e)}
+              >
+                <EditIcon className="hover_icon__edit" />
+              </Icon>
+              <Icon className="hover_icon">
+                <LinkIcon32 className="hover_icon__link" />
+              </Icon>
+              <Icon className="hover_icon">
+                <DeleteIcon className="hover_icon__delete" />
+              </Icon>
             </div>
-          </div>
-          <div className="parking--desc">에 파킹했어요!</div>
-        </ParkingDiv>
+          </HoverDiv>
+        )}
+        {cardState === "parking" && (
+          <ParkingDiv>
+            <div className="parking--title">
+              {cookie.directoryInfo?.emoji && (
+                <div className="parking--title__emoji">
+                  {cookie.directoryInfo.emoji}
+                </div>
+              )}
+              <div className="parking--title__name">
+                {cookie.directoryInfo?.name}
+              </div>
+            </div>
+            <div className="parking--desc">에 파킹했어요!</div>
+          </ParkingDiv>
+        )}
+      </StyledImgBox>
+      {isEditOpen && (
+        <CookieEditModal
+          value={value}
+          setValue={setValue}
+          onClickSave={() => {}}
+          onClickDel={() => {}}
+          setIsError={setIsError}
+          isOpen={isEditOpen}
+          setIsOpen={setIsEditOpen}
+          isLoading={isLoading}
+        />
       )}
-    </StyledImgBox>
+    </>
   );
 };
 
