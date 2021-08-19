@@ -4,9 +4,8 @@ import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { DeleteIcon } from "@assets/icons/card";
 import { cookieimgAnimation } from "@components/animations";
 import { CookieDataProps } from "@interfaces/cookie";
-import { CookieEditModal } from "@components/organisms";
+import { CookieEditModal, DelModal } from "@components/organisms";
 import { Dispatch, SetStateAction, useState } from "react";
-import DelModal from "@components/organisms/DelModal";
 
 export interface CookieImgProps {
   /** id */
