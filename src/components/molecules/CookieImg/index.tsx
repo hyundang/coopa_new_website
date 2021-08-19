@@ -82,7 +82,10 @@ const CookieImg = ({
         <CookieEditModal
           value={cookie}
           setValue={setCookie}
-          onClickSave={() => {}}
+          onClickSave={() => {
+            //data 처리 내용
+            setIsEditOpen(false);
+          }}
           onClickDel={() => {}}
           setIsError={setIsError}
           isOpen={isEditOpen}

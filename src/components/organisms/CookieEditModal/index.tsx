@@ -40,6 +40,7 @@ const CookieEditModal = ({
   setIsOpen,
   isLoading,
 }: CookieEditModalProps) => {
+  const [fixes, setFixes] = useState(value);
   // img box hover 여부
   const [isHover, setIsHover] = useState(false);
   // file input 시 file value 초기화를 위해 사용
@@ -49,8 +50,8 @@ const CookieEditModal = ({
   const handleChangeImg = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       if (e.target.files[0].size < 5000001) {
-        setValue({
-          ...value,
+        setFixes({
+          ...fixes,
           thumbnail: URL.createObjectURL(e.target.files[0]),
         });
       } else {
@@ -80,7 +81,7 @@ const CookieEditModal = ({
       <span className="input-img__label">쿠키 이미지 업로드</span>
       <ImgBoxForm
         className="input-img"
-        imgUrl={value.thumbnail}
+        imgUrl={fixes.thumbnail}
         isHover={isHover}
         setIsHover={setIsHover}
         isLoading={isLoading}
@@ -92,14 +93,14 @@ const CookieEditModal = ({
       <InputForm
         className="input-title"
         text="쿠키 제목"
-        length={value.title.length}
+        length={fixes.title.length}
         maxLength={45}
         placeholder="쿠키 제목을 입력해주세요"
-        value={value.title}
+        value={fixes.title}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           e.target.value.length < 46
-            ? setValue({
-                ...value,
+            ? setFixes({
+                ...fixes,
                 title: e.target.value,
               })
             : () => {}
@@ -109,14 +110,14 @@ const CookieEditModal = ({
       <TextAreaForm
         className="input-text"
         text="쿠키 텍스트"
-        length={value.content.length}
+        length={fixes.content.length}
         maxLength={200}
         placeholder="나만의 코멘트나 메모를 남겨주세요"
-        value={value.content}
+        value={fixes.content}
         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
           e.target.value.length < 201
-            ? setValue({
-                ...value,
+            ? setFixes({
+                ...fixes,
                 content: e.target.value,
               })
             : () => {}
@@ -132,7 +133,14 @@ const CookieEditModal = ({
           <Btn className="button" isAtvBtn onClick={() => setIsOpen(false)}>
             취소
           </Btn>
-          <Btn className="button" isOrange isAtvBtn onClick={onClickSave}>
+          <Btn
+            className="button"
+            isOrange
+            onClick={(e) => {
+              onClickSave(e);
+              setValue(fixes);
+            }}
+          >
             수정
           </Btn>
         </span>
