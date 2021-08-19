@@ -38,8 +38,7 @@ const Cookie = ({ id, className, data, allDir, isShared }: CookieProps) => {
     <CookieWrap
       id={id}
       className={className}
-      onClick={(e) => {
-        if (e.target !== e.currentTarget) return;
+      onClick={() => {
         window.open(cookie.link);
       }}
       onMouseEnter={() => {

@@ -40,7 +40,10 @@ const Icon = (
       ref={ref}
       role={role}
       style={style}
-      onClick={onClick}
+      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        onClick ? onClick(e) : () => {};
+      }}
       onMouseOver={setIsHover ? () => setIsHover(true) : undefined}
       onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
     >

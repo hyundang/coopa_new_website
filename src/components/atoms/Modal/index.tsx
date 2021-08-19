@@ -28,7 +28,12 @@ const Modal = ({
     <>
       {isOpen && (
         <>
-          <Background onClick={() => setIsOpen(false)} />
+          <Background
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(false);
+            }}
+          />
           <ModalWrap
             id={id}
             className={className}
