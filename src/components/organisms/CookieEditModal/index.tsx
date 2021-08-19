@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { Btn, Modal } from "@components/atoms";
 import { ImgBoxForm, InputForm, TextAreaForm } from "@components/molecules";
 import { modalAnimation } from "@components/animations";
-import { CookieDataProps } from "@interfaces/cookie";
+import { PatchCookieProps } from "@interfaces/cookie";
 
 export interface CookieEditModalProps {
   /** id */
@@ -11,9 +11,9 @@ export interface CookieEditModalProps {
   /** className */
   className?: string;
   /** 쿠키 제목, 쿠키 텍스트, 쿠키 썸네일, 쿠키 아이디, 쿠키 썸네일 파일 */
-  value: CookieDataProps;
+  value: PatchCookieProps;
   /** 쿠키 제목, 쿠키 텍스트, 쿠키 썸네일 setState */
-  setValue: Dispatch<SetStateAction<CookieDataProps>>;
+  setValue: Dispatch<SetStateAction<PatchCookieProps>>;
   /** '저장' 버튼 클릭 시 event handling 함수 */
   onClickSave: React.MouseEventHandler<HTMLButtonElement>;
   /** '삭제' 버튼 클릭 시 event handling 함수 */
@@ -40,7 +40,6 @@ const CookieEditModal = ({
   setIsOpen,
   isLoading,
 }: CookieEditModalProps) => {
-  const [fixes, setFixes] = useState(value);
   // img box hover 여부
   const [isHover, setIsHover] = useState(false);
   // file input 시 file value 초기화를 위해 사용
@@ -50,9 +49,10 @@ const CookieEditModal = ({
   const handleChangeImg = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       if (e.target.files[0].size < 5000001) {
-        setFixes({
-          ...fixes,
+        setValue({
+          ...value,
           thumbnail: URL.createObjectURL(e.target.files[0]),
+          image: e.target.files[0],
         });
       } else {
         setIsError(true);
@@ -81,7 +81,7 @@ const CookieEditModal = ({
       <span className="input-img__label">쿠키 이미지 업로드</span>
       <ImgBoxForm
         className="input-img"
-        imgUrl={fixes.thumbnail}
+        imgUrl={value.thumbnail}
         isHover={isHover}
         setIsHover={setIsHover}
         isLoading={isLoading}
@@ -93,14 +93,14 @@ const CookieEditModal = ({
       <InputForm
         className="input-title"
         text="쿠키 제목"
-        length={fixes.title.length}
+        length={value.title.length}
         maxLength={45}
         placeholder="쿠키 제목을 입력해주세요"
-        value={fixes.title}
+        value={value.title}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           e.target.value.length < 46
-            ? setFixes({
-                ...fixes,
+            ? setValue({
+                ...value,
                 title: e.target.value,
               })
             : () => {}
@@ -110,14 +110,14 @@ const CookieEditModal = ({
       <TextAreaForm
         className="input-text"
         text="쿠키 텍스트"
-        length={fixes.content.length}
+        length={value.content.length}
         maxLength={200}
         placeholder="나만의 코멘트나 메모를 남겨주세요"
-        value={fixes.content}
+        value={value.content}
         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
           e.target.value.length < 201
-            ? setFixes({
-                ...fixes,
+            ? setValue({
+                ...value,
                 content: e.target.value,
               })
             : () => {}
@@ -133,14 +133,7 @@ const CookieEditModal = ({
           <Btn className="button" isAtvBtn onClick={() => setIsOpen(false)}>
             취소
           </Btn>
-          <Btn
-            className="button"
-            isOrange
-            onClick={(e) => {
-              onClickSave(e);
-              setValue(fixes);
-            }}
-          >
+          <Btn className="button" isOrange onClick={onClickSave}>
             수정
           </Btn>
         </span>

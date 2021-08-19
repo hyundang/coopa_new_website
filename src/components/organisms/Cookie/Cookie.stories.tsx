@@ -25,7 +25,7 @@ export const cookie270 = () => {
   };
   return (
     <div style={{ width: "270px" }}>
-      <Cookie data={cookie} allDir={allDir} />
+      <Cookie cookie={cookie} allDir={allDir} />
     </div>
   );
 };
@@ -53,7 +53,7 @@ export const cookie270NoContent = () => {
   };
   return (
     <div style={{ width: "270px" }}>
-      <Cookie data={cookie} allDir={allDir} />
+      <Cookie cookie={cookie} allDir={allDir} />
     </div>
   );
 };
@@ -78,7 +78,7 @@ export const cookie300 = () => {
   };
   return (
     <div style={{ width: "300px" }}>
-      <Cookie data={cookie} allDir={allDir} />
+      <Cookie cookie={cookie} allDir={allDir} />
     </div>
   );
 };

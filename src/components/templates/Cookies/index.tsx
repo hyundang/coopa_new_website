@@ -11,7 +11,12 @@ const Cookies = ({ data, isShared }: IProps) => {
   return (
     <CookiesWrap>
       {data.map((cookie) => (
-        <Cookie data={cookie} key={cookie.id} allDir={[]} isShared={isShared} />
+        <Cookie
+          cookie={cookie}
+          key={cookie.id}
+          allDir={[]}
+          isShared={isShared}
+        />
       ))}
     </CookiesWrap>
   );

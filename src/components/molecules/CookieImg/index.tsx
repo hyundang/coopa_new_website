@@ -3,7 +3,7 @@ import { ImgBox, Icon } from "@components/atoms";
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { DeleteIcon } from "@assets/icons/card";
 import { cookieimgAnimation } from "@components/animations";
-import { CookieDataProps } from "@interfaces/cookie";
+import { CookieDataProps, PatchCookieProps } from "@interfaces/cookie";
 import { CookieEditModal, DelModal } from "@components/organisms";
 import { Dispatch, SetStateAction, useState } from "react";
 
@@ -16,17 +16,15 @@ export interface CookieImgProps {
   cardState: "hover" | "parking" | "normal" | "input";
   /** cookie */
   cookie: CookieDataProps;
-  /** set cookie */
-  setCookie: Dispatch<SetStateAction<CookieDataProps>>;
 }
 
-const CookieImg = ({
-  id,
-  className,
-  cardState,
-  cookie,
-  setCookie,
-}: CookieImgProps) => {
+const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
+  const [patchData, setPatchData] = useState<PatchCookieProps>({
+    title: cookie.title,
+    content: cookie.content,
+    thumbnail: cookie.thumbnail,
+    cookieId: cookie.id,
+  });
   const [isError, setIsError] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -80,8 +78,8 @@ const CookieImg = ({
         )}
       </StyledImgBox>
       <CookieEditModal
-        value={cookie}
-        setValue={setCookie}
+        value={patchData}
+        setValue={setPatchData}
         onClickSave={() => {
           //data 처리 내용
           setIsEditOpen(false);
