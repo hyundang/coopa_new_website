@@ -21,6 +21,8 @@ export interface IProps {
   isLoading?: boolean;
   /** click event handler */
   onClick?: React.MouseEventHandler<HTMLDivElement>;
+  /** img input 여부 */
+  isImgInput?: boolean;
 }
 const ImgBox = ({
   id,
@@ -32,9 +34,10 @@ const ImgBox = ({
   setIsHover,
   isLoading,
   onClick,
+  isImgInput = false,
 }: IProps) => {
   return (
-    <Wrap
+    <ImgBoxWrap
       id={id}
       className={className}
       role="img"
@@ -45,31 +48,43 @@ const ImgBox = ({
       onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
       isLoading={isLoading}
       onClick={onClick}
+      isImgInput={isImgInput}
     >
       {children}
-    </Wrap>
+    </ImgBoxWrap>
   );
 };
 
 export default ImgBox;
 
-interface IWrap {
+interface ImgBoxWrapProps {
   url?: string;
   isLoading?: boolean;
   isHover?: boolean;
+  isImgInput: boolean;
 }
-const Wrap = styled.div<IWrap>`
+const ImgBoxWrap = styled.div<ImgBoxWrapProps>`
   cursor: pointer;
   overflow: hidden;
-  background: url(${(props) => props.url}) center center/cover,
-    url(${NoThumbImg}) center center/cover;
 
-  ${(props) =>
-    !props.isLoading &&
-    props.isHover &&
-    css`
-      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-        url(${props.url}) center center/cover,
-        url(${NoThumbImg}) center center/cover;
-    `}
+  ${({ isImgInput, isLoading, isHover, url }) =>
+    isImgInput
+      ? !isLoading && isHover
+        ? css`
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+              url(${url}) center center/cover;
+          `
+        : css`
+            background: url(${url}) center center/cover;
+          `
+      : !isLoading && isHover
+      ? css`
+          background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+            url(${url}) center center/cover,
+            url(${NoThumbImg}) center center/cover;
+        `
+      : css`
+          background: url(${url}) center center/cover,
+            url(${NoThumbImg}) center center/cover;
+        `}
 `;

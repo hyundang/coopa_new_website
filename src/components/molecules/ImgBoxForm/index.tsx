@@ -51,6 +51,7 @@ const ImgBoxForm = ({
         url={imgUrl}
         isHover={isHover}
         setIsHover={setIsHover}
+        isImgInput
       >
         {isLoading ? (
           <div className="img-box__loading">
