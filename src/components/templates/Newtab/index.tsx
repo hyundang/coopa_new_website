@@ -1,5 +1,5 @@
 // components
-import { SearchBar, Tab } from "@components/atoms";
+import { SearchBar, Tab, ToastMsg } from "@components/atoms";
 import { Header } from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
 // interfaces
@@ -58,12 +58,44 @@ const Newtab = ({
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [tabValue, setTabValue] = useState("모든 쿠키");
 
+  // toast msg visible state
+  const [isVisible, setIsVisible] = useState({
+    dirCreate: false,
+    dirDel: false,
+    dirEdit: false,
+    cookieDel: false,
+    cookieEdit: false,
+    bookmarkDel: false,
+    bookmarkCreate: false,
+    homeboardEdit: false,
+    imgSizeOver: false,
+  });
+
+  // toast msg visible handling
+  const handleToastMsgVisible = (
+    key:
+      | "dirCreate"
+      | "dirDel"
+      | "dirEdit"
+      | "cookieDel"
+      | "cookieEdit"
+      | "bookmarkDel"
+      | "bookmarkCreate"
+      | "homeboardEdit"
+      | "imgSizeOver",
+    value: boolean,
+  ) =>
+    setIsVisible({
+      ...isVisible,
+      [key]: value,
+    });
+
   useEffect(() => {
     setTimeout(() => !preventFadeout && setPreventFadeout(true), 1000);
   }, [preventFadeout]);
 
   return (
-    <Container className="container">
+    <>
       <Header
         className="header"
         onClickSearch={() => {
@@ -73,56 +105,115 @@ const Newtab = ({
         isSearchIconAtv={isSearchVisible}
         imgUrl={imgUrl}
       />
-      <Homeboard
-        className="homeboard"
-        visible={isSearchVisible}
-        setVisible={setIsSearchVisible}
-        isSearched={isSearched}
-        setIsSearched={setIsSearched}
-        homeboardModalImg={homeboardModalImg}
-        setHomeboardModalImg={setHomeboardModalImg}
-        setHomeboardImg={setHomeboardImg}
-        postHomeboardImg={postHomeboardImg}
-        bookmarkDatas={bookmarkDatas}
-        onClickBookmarkDel={onClickBookmarkDel}
-        onClickBookmarkSave={onClickBookmarkSave}
-        preventFadeout={preventFadeout}
-        setPreventFadeout={setPreventFadeout}
-      />
-      {isSearchVisible && (
-        <div className="search-wrap">
-          <SearchBar
-            className="search--tablet"
-            visible={isSearchVisible}
-            setVisible={setIsSearchVisible}
-            isSearched={isSearched}
-            setIsSearched={setIsSearched}
-            preventFadeout={preventFadeout}
-            setPreventFadeout={setPreventFadeout}
-          />
-        </div>
-      )}
-      <nav className="tab-wrap">
-        <Tab
-          className="tab"
-          tabStyle={{
-            width: "106px",
-            height: "56px",
-            fontSize: "16px",
-          }}
-          options={["모든 쿠키", "디렉토리"]}
-          value={tabValue}
-          setValue={setTabValue}
+      <Container className="container">
+        <Homeboard
+          className="homeboard"
+          visible={isSearchVisible}
+          setVisible={setIsSearchVisible}
+          isSearched={isSearched}
+          setIsSearched={setIsSearched}
+          homeboardModalImg={homeboardModalImg}
+          setHomeboardModalImg={setHomeboardModalImg}
+          setHomeboardImg={setHomeboardImg}
+          postHomeboardImg={postHomeboardImg}
+          bookmarkDatas={bookmarkDatas}
+          onClickBookmarkDel={onClickBookmarkDel}
+          onClickBookmarkSave={onClickBookmarkSave}
+          preventFadeout={preventFadeout}
+          setPreventFadeout={setPreventFadeout}
         />
-      </nav>
-      <main className="card-list">
-        {tabValue === "모든 쿠키" ? (
-          <Cookies data={cookieData} />
-        ) : (
-          <Directories data={dirData} />
+        {isSearchVisible && (
+          <div className="search-wrap">
+            <SearchBar
+              className="search--tablet"
+              visible={isSearchVisible}
+              setVisible={setIsSearchVisible}
+              isSearched={isSearched}
+              setIsSearched={setIsSearched}
+              preventFadeout={preventFadeout}
+              setPreventFadeout={setPreventFadeout}
+            />
+          </div>
         )}
-      </main>
-    </Container>
+        <nav className="tab-wrap">
+          <Tab
+            className="tab"
+            tabStyle={{
+              width: "106px",
+              height: "56px",
+              fontSize: "16px",
+            }}
+            options={["모든 쿠키", "디렉토리"]}
+            value={tabValue}
+            setValue={setTabValue}
+          />
+        </nav>
+        <main className="card-list">
+          {tabValue === "모든 쿠키" ? (
+            <Cookies data={cookieData} />
+          ) : (
+            <Directories data={dirData} />
+          )}
+        </main>
+      </Container>
+      <ToastMsg
+        isVisible={isVisible.dirCreate}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("dirCreate", e)}
+      >
+        🤘 디렉토리를 만들었어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isVisible.dirEdit}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("dirEdit", e)}
+      >
+        👀 디렉토리를 수정했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isVisible.dirDel}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("dirDel", e)}
+      >
+        ❌ 디렉토리를 삭제했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isVisible.cookieDel}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("cookieDel", e)}
+      >
+        ❌ 쿠키를 삭제했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isVisible.cookieEdit}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("cookieEdit", e)}
+      >
+        🍪 쿠키를 수정했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isVisible.bookmarkDel}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("bookmarkDel", e)}
+      >
+        ❌ 즐겨찾기를 삭제했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isVisible.bookmarkCreate}
+        setIsVisible={(e: boolean) =>
+          handleToastMsgVisible("bookmarkCreate", e)
+        }
+      >
+        🤘 즐겨찾기를 만들었어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isVisible.homeboardEdit}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("homeboardEdit", e)}
+      >
+        🤘 홈보드 이미지를 변경했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isVisible.imgSizeOver}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("imgSizeOver", e)}
+        imgSizeOver
+      >
+        😥 더 작은 이미지를 올려주세요!
+      </ToastMsg>
+    </>
   );
 };
 

@@ -7,7 +7,7 @@ import {
   LogoutDuribunImg,
 } from "@assets/imgs/mypage";
 import { mypageAnimation } from "@components/animations";
-import { Btn, Bubble, Icon } from "@components/atoms";
+import { Btn, Bubble, Icon, ToastMsg } from "@components/atoms";
 import { Header } from "@components/organisms";
 import { UserDataProps } from "@interfaces/user";
 import { useState } from "react";
@@ -23,6 +23,8 @@ const My = ({ userData, onClickLogout }: MyProps) => {
   const size = useWindowSize();
   const [isTooltipHover, setIsTooltipHover] = useState(false);
   const [isLogoutHover, setIsLogoutHover] = useState(false);
+  // toast msg visible state
+  const [isVisible, setIsVisible] = useState(false);
 
   return (
     <>
@@ -157,6 +159,9 @@ const My = ({ userData, onClickLogout }: MyProps) => {
           </span>
         </div>
       </Container>
+      <ToastMsg isVisible={isVisible} setIsVisible={setIsVisible}>
+        👀 프로필을 수정했어요!
+      </ToastMsg>
     </>
   );
 };
