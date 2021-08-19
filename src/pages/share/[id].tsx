@@ -16,7 +16,7 @@ const Share = () => {
         <Title>
           <p className="name">playlist</p>
           <p className="info">
-            <EmptyCookieIcon style={{ marginRight: "6px" }} />
+            <EmptyCookieIcon className="cookie-icon" />
             8개
           </p>
         </Title>
@@ -84,6 +84,13 @@ const Title = styled.article`
     line-height: 36px;
 
     color: var(--black_1);
+
+    .cookie-icon {
+      margin-right: 6px;
+      path {
+        fill: var(--gray_7_active);
+      }
+    }
   }
 `;
 const Middle = styled.div`
