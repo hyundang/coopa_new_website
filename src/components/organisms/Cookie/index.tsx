@@ -77,11 +77,17 @@ const Cookie = ({ id, className, cookie, allDir, isShared }: CookieProps) => {
 };
 
 const CookieWrap = styled.article`
+  cursor: pointer;
   position: relative;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+  :hover {
+    .cookie--title {
+      text-decoration: underline;
+    }
+  }
   .hover-div {
     position: absolute;
     top: 0;
