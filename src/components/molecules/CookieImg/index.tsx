@@ -5,7 +5,7 @@ import { DeleteIcon } from "@assets/icons/card";
 import { cookieimgAnimation } from "@components/animations";
 import { CookieDataProps } from "@interfaces/cookie";
 import { CookieEditModal } from "@components/organisms";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 export interface CookieImgProps {
   /** id */
@@ -16,10 +16,17 @@ export interface CookieImgProps {
   cardState: "hover" | "parking" | "normal" | "input";
   /** cookie */
   cookie: CookieDataProps;
+  /** set cookie */
+  setCookie: Dispatch<SetStateAction<CookieDataProps>>;
 }
 
-const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
-  const [value, setValue] = useState<CookieDataProps>(cookie);
+const CookieImg = ({
+  id,
+  className,
+  cardState,
+  cookie,
+  setCookie,
+}: CookieImgProps) => {
   const [isError, setIsError] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const isLoading = false;
@@ -73,8 +80,8 @@ const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
       </StyledImgBox>
       {isEditOpen && (
         <CookieEditModal
-          value={value}
-          setValue={setValue}
+          value={cookie}
+          setValue={setCookie}
           onClickSave={() => {}}
           onClickDel={() => {}}
           setIsError={setIsError}
