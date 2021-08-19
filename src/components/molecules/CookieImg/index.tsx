@@ -26,10 +26,7 @@ const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
 
   const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> = (
     e: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    e.stopPropagation();
-    setIsEditOpen(true);
-  };
+  ) => setIsEditOpen(true);
 
   return (
     <>

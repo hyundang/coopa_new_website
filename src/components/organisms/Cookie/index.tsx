@@ -37,7 +37,10 @@ const Cookie = ({ id, className, cookie, allDir, isShared }: CookieProps) => {
     <CookieWrap
       id={id}
       className={className}
-      onClick={() => window.open(cookie.link)}
+      onClick={(e) => {
+        if (e.target !== e.currentTarget) return;
+        window.open(cookie.link);
+      }}
       onMouseEnter={() => {
         if (cardState !== "input") setCardState("hover");
       }}
