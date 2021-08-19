@@ -38,7 +38,10 @@ const Modal = ({
             id={id}
             className={className}
             isOpen={isOpen}
-            onClick={onClick}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick ? onClick(e) : () => {};
+            }}
           >
             {children}
           </ModalWrap>

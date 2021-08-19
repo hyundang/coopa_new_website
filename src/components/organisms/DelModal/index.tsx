@@ -15,7 +15,7 @@ export interface DelModalProps {
   /** delete cookie or directory data */
   onClickDel: () => void;
 }
-const DirectoryModal = ({
+const DelModal = ({
   id,
   className,
   type = "cookie",
@@ -64,7 +64,7 @@ const DirectoryModal = ({
   );
 };
 
-export default DirectoryModal;
+export default DelModal;
 
 const DelModalWrap = styled(Modal)`
   width: 400px;

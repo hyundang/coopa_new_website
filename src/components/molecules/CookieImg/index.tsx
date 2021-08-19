@@ -6,6 +6,7 @@ import { cookieimgAnimation } from "@components/animations";
 import { CookieDataProps } from "@interfaces/cookie";
 import { CookieEditModal } from "@components/organisms";
 import { Dispatch, SetStateAction, useState } from "react";
+import DelModal from "@components/organisms/DelModal";
 
 export interface CookieImgProps {
   /** id */
@@ -29,6 +30,7 @@ const CookieImg = ({
 }: CookieImgProps) => {
   const [isError, setIsError] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const isLoading = false;
 
   const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> = (
@@ -47,17 +49,17 @@ const CookieImg = ({
         {cardState === "hover" && (
           <HoverDiv>
             <div className="hover_icon_wrap">
-              <Icon
-                className="hover_icon"
-                onClick={(e) => editIconClickHandler(e)}
-              >
+              <Icon className="hover_icon" onClick={editIconClickHandler}>
                 <EditIcon className="hover_icon__edit" />
               </Icon>
               <Icon className="hover_icon">
                 <LinkIcon32 className="hover_icon__link" />
               </Icon>
               <Icon className="hover_icon">
-                <DeleteIcon className="hover_icon__delete" />
+                <DeleteIcon
+                  className="hover_icon__delete"
+                  onClick={() => setIsDeleteOpen(true)}
+                />
               </Icon>
             </div>
           </HoverDiv>
@@ -78,21 +80,27 @@ const CookieImg = ({
           </ParkingDiv>
         )}
       </StyledImgBox>
-      {isEditOpen && (
-        <CookieEditModal
-          value={cookie}
-          setValue={setCookie}
-          onClickSave={() => {
-            //data 처리 내용
-            setIsEditOpen(false);
-          }}
-          onClickDel={() => {}}
-          setIsError={setIsError}
-          isOpen={isEditOpen}
-          setIsOpen={setIsEditOpen}
-          isLoading={isLoading}
-        />
-      )}
+      <CookieEditModal
+        value={cookie}
+        setValue={setCookie}
+        onClickSave={() => {
+          //data 처리 내용
+          setIsEditOpen(false);
+        }}
+        onClickDel={() => {
+          setIsEditOpen(false);
+          setIsDeleteOpen(true);
+        }}
+        setIsError={setIsError}
+        isOpen={isEditOpen}
+        setIsOpen={setIsEditOpen}
+        isLoading={isLoading}
+      />
+      <DelModal
+        isOpen={isDeleteOpen}
+        setIsOpen={setIsDeleteOpen}
+        onClickDel={() => {}}
+      />
     </>
   );
 };
