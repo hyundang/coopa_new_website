@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Header } from "@components/organisms";
-import { BlackCookieIcon, FilterIcon } from "@assets/icons/common";
+import { EmptyCookieIcon, FilterIcon } from "@assets/icons/common";
 import Cookies from "@components/templates/Cookies";
 
 const Share = () => {
@@ -16,7 +16,7 @@ const Share = () => {
         <Title>
           <p className="name">playlist</p>
           <p className="info">
-            <BlackCookieIcon style={{ marginRight: "6px" }} />
+            <EmptyCookieIcon style={{ marginRight: "6px" }} />
             8개
           </p>
         </Title>

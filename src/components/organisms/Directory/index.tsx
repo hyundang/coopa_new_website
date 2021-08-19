@@ -6,7 +6,6 @@ export interface DirectoryProps {
   dir: DirectoryDataProps;
 }
 const Directory = ({ dir }: DirectoryProps) => {
-  const [isHover, setIsHover] = useState(false);
   return (
     <DirectoryWrap thumbnail={dir.thumbnail}>
       <div className="content">

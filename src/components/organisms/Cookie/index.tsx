@@ -45,10 +45,7 @@ const Cookie = ({ id, className, cookie, allDir, isShared }: CookieProps) => {
         if (cardState !== "input") setCardState("normal");
       }}
     >
-      <CookieImg
-        cardState={isShared ? "normal" : cardState}
-        content={cookie.content}
-      />
+      <CookieImg cardState={isShared ? "normal" : cardState} cookie={cookie} />
       {!isShared && (cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
           <CookieHover
