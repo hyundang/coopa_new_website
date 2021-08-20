@@ -10,6 +10,9 @@ const Template: Story<DirDetailProps> = (args) => <DirDetail {...args} />;
 
 export const dirDetail = Template.bind({});
 dirDetail.args = {
+  nickname: "희수 친구 채린",
+  imgUrl:
+    "https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg",
   cookies: [
     {
       content:

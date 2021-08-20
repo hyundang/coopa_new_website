@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Header } from "@components/organisms";
+import { Header, ListHeader } from "@components/organisms";
 import { EmptyCookieIcon, FilterIcon } from "@assets/icons/common";
 import Cookies from "@components/templates/Cookies";
 import { CookieDataProps } from "@interfaces/cookie";
@@ -7,17 +7,22 @@ import { CookieDataProps } from "@interfaces/cookie";
 export interface DirDetailProps {
   /** 공유 디렉토리 여부 */
   isShared?: boolean;
+  /** profile img */
+  imgUrl?: string;
+  /** profile nickname */
+  nickname: string;
   /** cookie data */
   cookies: CookieDataProps[];
 }
-const DirDetail = ({ isShared = false, cookies }: DirDetailProps) => {
+const DirDetail = ({
+  isShared = false,
+  imgUrl,
+  nickname,
+  cookies,
+}: DirDetailProps) => {
   return (
     <>
-      <Header
-        className="header"
-        imgUrl="https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg"
-        isMypage
-      />
+      <Header className="header" imgUrl={imgUrl} isMypage />
       <DirDetailCntnr>
         <Title>
           <p className="name">playlist</p>
@@ -26,16 +31,11 @@ const DirDetail = ({ isShared = false, cookies }: DirDetailProps) => {
             8개
           </p>
         </Title>
-        <Middle>
-          <User>
-            <img
-              alt=""
-              src="https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg"
-            />
-            <p>희수 친구 채린</p>
-          </User>
-          <FilterIcon />
-        </Middle>
+        <ListHeader
+          type={isShared ? "dirShare" : "dirDetail"}
+          imgUrl={imgUrl}
+          nickname={nickname}
+        />
         <Cookies isShared={isShared} data={cookies} />
       </DirDetailCntnr>
     </>
@@ -104,32 +104,5 @@ const Title = styled.section`
         fill: var(--gray_7_active);
       }
     }
-  }
-`;
-
-const Middle = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const User = styled.article`
-  margin-bottom: 30px;
-
-  display: flex;
-  gap: 10px;
-  & > img {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-  }
-  & > p {
-    margin: 0;
-
-    font-style: normal;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 28px;
-
-    color: var(--black_1);
   }
 `;
