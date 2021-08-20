@@ -1,7 +1,7 @@
 import Directories from ".";
 
 export default {
-  title: "components/templates/Directory",
+  title: "components/templates/Directories",
   component: Directories,
 };
 
