@@ -5,4 +5,4 @@ export { ReactComponent as SearchIcon } from "./icn_search_gray5_22px.svg";
 export { ReactComponent as EditIcon } from "./icn_edit_white_32px.svg";
 export { ReactComponent as LinkIcon } from "./icn_link_white_18px.svg";
 export { ReactComponent as LinkIcon32 } from "./icn_link_white_32px.svg";
-export { ReactComponent as FilterIcon } from "./dir_icn_filter.svg";
+export { ReactComponent as FilterIcon } from "./icn_dir_filter_48px.svg";
