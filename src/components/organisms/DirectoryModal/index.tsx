@@ -2,7 +2,7 @@ import { PlusIcon } from "@assets/icons/common";
 import { Btn, Icon, Modal } from "@components/atoms";
 import { InputForm } from "@components/molecules";
 import { PostDirectoryProps } from "@interfaces/directory";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import Picker from "emoji-picker-react";
 import { useWindowSize } from "src/hooks";
@@ -23,7 +23,7 @@ export interface DirectoryModalProps {
   /** put directory data */
   putDir: (e: PostDirectoryProps) => void;
   /** delete directory data */
-  delDir: (e: any) => void;
+  delDir: () => void;
 }
 const DirectoryModal = ({
   id,
@@ -52,11 +52,32 @@ const DirectoryModal = ({
     boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
   };
 
+  const name_input = useRef<HTMLInputElement>(null);
+
+  // enter 키 클릭 시
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.key === "Enter" && handleClickButton();
+  };
+  // esc 키 클릭 시
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Escape") {
       setIsOpen(false);
     }
   };
+
+  const handleClickButton = () => {
+    value.name !== ""
+      ? (() => {
+          type === "new" ? postDir(value) : putDir(value);
+          setIsOpen(false);
+        })()
+      : name_input.current?.focus();
+  };
+
+  // 제일 처음에 link input focus 상태로 설정
+  useEffect(() => {
+    name_input.current?.focus();
+  }, [isOpen]);
 
   return (
     <DirectoryModalWrap
@@ -113,11 +134,21 @@ const DirectoryModal = ({
         value={value.name}
         onChange={(e) => setValue({ ...value, name: e.target.value })}
         onKeyDown={handleKeyDown}
+        onKeyPress={handleKeyPress}
+        ref={name_input}
       />
       <div style={{ flexGrow: 1, width: "100%" }} />
       <div className="button-wrap">
         {type === "edit" && (
-          <Btn id="delete" className="modal-button" isAtvBtn onClick={delDir}>
+          <Btn
+            id="delete"
+            className="modal-button"
+            isAtvBtn
+            onClick={() => {
+              delDir();
+              setIsOpen(false);
+            }}
+          >
             삭제
           </Btn>
         )}
@@ -135,10 +166,7 @@ const DirectoryModal = ({
             className="modal-button"
             isAtvBtn
             isOrange
-            onClick={() => {
-              type === "new" ? postDir(value) : putDir(value);
-              setIsOpen(false);
-            }}
+            onClick={handleClickButton}
           >
             {type === "new" ? "생성" : "수정"}
           </Btn>

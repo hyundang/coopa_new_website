@@ -5,3 +5,4 @@ export { default as Header } from "./Header";
 export { default as HomeboardEditModal } from "./HomeboardEditModal";
 export { default as Bookmark } from "./Bookmark";
 export { default as NotiModal } from "./NotiModal";
+export { default as ProfileEditModal } from "./ProfileEditModal";

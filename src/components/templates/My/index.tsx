@@ -8,8 +8,8 @@ import {
 } from "@assets/imgs/mypage";
 import { mypageAnimation } from "@components/animations";
 import { Btn, Bubble, Icon } from "@components/atoms";
-import { Header } from "@components/organisms";
-import { UserDataProps } from "@interfaces/user";
+import { Header, ProfileEditModal } from "@components/organisms";
+import { PostUserDataProps, UserDataProps } from "@interfaces/user";
 import { useState } from "react";
 import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
@@ -18,11 +18,21 @@ export interface MyProps {
   userData: UserDataProps;
   /** 로그아웃 버튼 클릭 이벤트 핸들러 */
   onClickLogout: React.MouseEventHandler<HTMLButtonElement>;
+  /** 프로필 수정 버튼 클릭 이벤트 핸들러 */
+  putProfile: (newValue: PostUserDataProps) => void;
 }
-const My = ({ userData, onClickLogout }: MyProps) => {
+const My = ({ userData, onClickLogout, putProfile }: MyProps) => {
   const size = useWindowSize();
   const [isTooltipHover, setIsTooltipHover] = useState(false);
   const [isLogoutHover, setIsLogoutHover] = useState(false);
+
+  // 프로필 수정 모달 오픈
+  const [isOpen, setIsOpen] = useState(false);
+  // 프로필 수정 데이터(page로 옮기기)
+  const [profileData, setProfileData] = useState<PostUserDataProps>({
+    name: "",
+    introduction: "",
+  });
 
   return (
     <>
@@ -38,7 +48,7 @@ const My = ({ userData, onClickLogout }: MyProps) => {
             <div className="profile__info">
               <div className="name-wrap">
                 <h1 className="name">{userData.name}</h1>
-                <Icon className="edit-button">
+                <Icon className="edit-button" onClick={() => setIsOpen(true)}>
                   <EditIcon className="edit-icon" />
                 </Icon>
               </div>
@@ -157,6 +167,13 @@ const My = ({ userData, onClickLogout }: MyProps) => {
           </span>
         </div>
       </Container>
+      <ProfileEditModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        value={profileData}
+        setValue={setProfileData}
+        putProfile={putProfile}
+      />
     </>
   );
 };

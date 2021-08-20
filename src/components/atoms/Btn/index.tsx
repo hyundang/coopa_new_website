@@ -41,6 +41,7 @@ const Btn = ({
       isDirShare={isDirShare}
       isCookieDirBtn={isCookieDirBtn}
       isAtvBtn={isAtvBtn}
+      disabled={!isAtvBtn}
       onMouseEnter={setIsHover ? () => setIsHover(true) : undefined}
       onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
     >

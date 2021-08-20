@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useRef } from "react";
 import styled from "styled-components";
 import { Btn, Modal } from "@components/atoms";
 import { InputForm, TextAreaForm } from "@components/molecules";
@@ -14,13 +14,11 @@ export interface ProfileEditModalProps {
   /** 닉네임, 자기소개 setState */
   setValue: Dispatch<SetStateAction<PostUserDataProps>>;
   /** '수정' 버튼 클릭 시 event handling 함수 */
-  onClickEdit: React.MouseEventHandler<HTMLButtonElement>;
+  putProfile: (newValue: PostUserDataProps) => void;
   /** 모달 open 여부 */
   isOpen: boolean;
   /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  /** data post 시 loading 여부 */
-  isLoading: boolean;
 }
 
 const ProfileEditModal = ({
@@ -28,11 +26,17 @@ const ProfileEditModal = ({
   className,
   value,
   setValue,
-  onClickEdit,
+  putProfile,
   isOpen,
   setIsOpen,
-  isLoading,
 }: ProfileEditModalProps) => {
+  const nickname_input = useRef<HTMLInputElement>(null);
+
+  // enter 키 클릭 시
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.key === "Enter" && handleClickEdit();
+  };
+  // esc 키 클릭 시
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -41,13 +45,21 @@ const ProfileEditModal = ({
     }
   };
 
+  const handleClickEdit = () => {
+    value.name !== ""
+      ? () => {
+          putProfile(value);
+          setIsOpen(false);
+        }
+      : nickname_input.current?.focus();
+  };
+
   return (
     <ModalWrap
       id={id}
       className={className}
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      isLoading={isLoading}
     >
       <h1 className="modal-title">프로필 편집</h1>
       <InputForm
@@ -66,6 +78,8 @@ const ProfileEditModal = ({
             : () => {}
         }
         onKeyDown={handleKeyDown}
+        onKeyPress={handleKeyPress}
+        ref={nickname_input}
       />
       <TextAreaForm
         className="input-text"
@@ -86,10 +100,10 @@ const ProfileEditModal = ({
       />
       <div style={{ flexGrow: 1, width: "100%" }} />
       <div className="button-wrap">
-        <Btn className="button" onClick={() => setIsOpen(false)}>
+        <Btn className="button" isAtvBtn onClick={() => setIsOpen(false)}>
           취소
         </Btn>
-        <Btn className="button" isOrange onClick={onClickEdit}>
+        <Btn className="button" isOrange isAtvBtn onClick={handleClickEdit}>
           확인
         </Btn>
       </div>
@@ -99,10 +113,7 @@ const ProfileEditModal = ({
 
 export default ProfileEditModal;
 
-interface ModalWrapProps {
-  isLoading: boolean;
-}
-const ModalWrap = styled(Modal)<ModalWrapProps>`
+const ModalWrap = styled(Modal)`
   width: 520px;
   height: 424px;
   padding: 34px 32px 38px 32px;
@@ -128,27 +139,6 @@ const ModalWrap = styled(Modal)<ModalWrapProps>`
     font-weight: 500;
     font-size: 20px;
     line-height: 36px;
-  }
-
-  .input-img__label {
-    margin-bottom: 10px;
-    font-weight: 400;
-    font-size: 13px;
-    line-height: 16px;
-  }
-  .input-img {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 25px;
-    width: 100%;
-    .img-box {
-      width: 270px;
-      height: 136px;
-      border-radius: 16px;
-      border: ${(props) =>
-        props.isLoading ? undefined : "1px solid var(--gray_4)"};
-    }
   }
 
   .input-nickname {
