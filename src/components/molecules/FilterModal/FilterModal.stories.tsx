@@ -7,5 +7,5 @@ export default {
 } as Meta;
 
 export const Template: Story<FilterModalProps> = (args) => (
-  <FilterModal {...args} isOpen type="latest" />
+  <FilterModal {...args} isOpen filterType="latest" />
 );

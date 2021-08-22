@@ -4,11 +4,17 @@ import { MoveModal } from "@components/atoms";
 import { Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
-const items = [
+const cookieItems = [
   { text: "최신순", type: "latest" },
   { text: "오래된 순", type: "oldest" },
   { text: "많이 읽은 순", type: "readMost" },
   { text: "적게 읽은 순", type: "readLeast" },
+];
+
+const dirItems = [
+  { text: "최신순", type: "latest" },
+  { text: "오래된 순", type: "oldest" },
+  { text: "가나다순", type: "abc" },
 ];
 
 export interface FilterModalProps {
@@ -20,8 +26,10 @@ export interface FilterModalProps {
   isOpen: boolean;
   /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  /** filter list type */
+  type?: "cookie" | "dir";
   /** filter type */
-  type: "latest" | "oldest" | "readMost" | "readLeast";
+  filterType: "latest" | "oldest" | "readMost" | "readLeast" | "abc";
   /** type click event handling */
   onClickType: () => void;
 }
@@ -30,7 +38,8 @@ const NotiModal = ({
   className,
   isOpen,
   setIsOpen,
-  type,
+  type = "cookie",
+  filterType,
   onClickType,
 }: FilterModalProps) => {
   return (
@@ -40,15 +49,25 @@ const NotiModal = ({
       isOpen={isOpen}
       setIsOpen={setIsOpen}
     >
-      {items.map((i) => (
-        <Item
-          key={i.type}
-          id={i.type}
-          text={i.text}
-          isClicked={type === i.type}
-          onClickType={onClickType}
-        />
-      ))}
+      {type === "cookie"
+        ? cookieItems.map((i) => (
+            <Item
+              key={i.type}
+              id={i.type}
+              text={i.text}
+              isClicked={filterType === i.type}
+              onClickType={onClickType}
+            />
+          ))
+        : dirItems.map((i) => (
+            <Item
+              key={i.type}
+              id={i.type}
+              text={i.text}
+              isClicked={filterType === i.type}
+              onClickType={onClickType}
+            />
+          ))}
     </FilterModalWrap>
   );
 };
@@ -60,8 +79,7 @@ const FilterModalWrap = styled(MoveModal)`
   z-index: 2;
 
   width: 140px;
-  height: 148px;
-  padding: 9px;
+  padding: 10px 9px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.13);
   border-radius: 12px;
 
