@@ -14,7 +14,7 @@ export interface ListHeaderProps {
   /** profile nickname */
   nickname: string;
   /** filter type */
-  filterType: "latest" | "oldest" | "readMost" | "readLeast";
+  filterType: "latest" | "oldest" | "readMost" | "readLeast" | "abc";
   /** filter type click event handler */
   onClickType: () => void;
   /** post dir */
@@ -71,7 +71,8 @@ const ListHeader = ({
             className="filter-modal"
             isOpen={isFilterOpen}
             setIsOpen={setIsFilterOpen}
-            type={filterType}
+            type={type === "cookie" ? "cookie" : "dir"}
+            filterType={filterType}
             onClickType={onClickType}
           />
         </div>
@@ -91,7 +92,7 @@ const ListHeader = ({
 export default ListHeader;
 
 interface ListHeaderWrapProps {
-  type: "cookie" | "dir" | "dirDetail" | "dirShare";
+  type: "cookie" | "dir" | "dirDetail" | "dirShare" | "abc";
 }
 const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
   width: 1596px;

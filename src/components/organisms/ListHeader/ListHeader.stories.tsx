@@ -29,11 +29,11 @@ DirHeader.args = {
 export const DirDetailHeader = Template.bind({});
 DirDetailHeader.args = {
   type: "dirDetail",
-  filterType: "readMost",
+  filterType: "abc",
 };
 
 export const DirShareHeader = Template.bind({});
 DirShareHeader.args = {
   type: "dirShare",
-  filterType: "readLeast",
+  filterType: "abc",
 };
