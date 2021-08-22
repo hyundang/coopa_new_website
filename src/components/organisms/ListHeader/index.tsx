@@ -1,6 +1,10 @@
 import styled, { css } from "styled-components";
 import { FilterIcon, PlusIcon22 } from "@assets/icons/common";
 import { Icon } from "@components/atoms";
+import { FilterModal } from "@components/molecules";
+import { DirectoryModal } from "@components/organisms";
+import { useState } from "react";
+import { PostDirectoryProps } from "@interfaces/directory";
 
 export interface ListHeaderProps {
   /** list type */
@@ -9,33 +13,78 @@ export interface ListHeaderProps {
   imgUrl?: string;
   /** profile nickname */
   nickname: string;
+  /** filter type */
+  filterType: "latest" | "oldest" | "readMost" | "readLeast";
+  /** filter type click event handler */
+  onClickType: () => void;
+  /** post dir */
+  postDir: (e: PostDirectoryProps) => void;
 }
-const ListHeader = ({ type, imgUrl, nickname }: ListHeaderProps) => {
+const ListHeader = ({
+  type,
+  imgUrl,
+  nickname,
+  filterType,
+  onClickType,
+  postDir,
+}: ListHeaderProps) => {
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isDirAddOpen, setIsDirAddOpen] = useState(false);
+  const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
+    emoji: "",
+    name: "",
+  });
+
   return (
-    <ListHeaderWrap type={type}>
-      {(type === "dirDetail" || type === "dirShare") && (
-        <User>
-          <img alt="profile-img" src={imgUrl} />
-          <p>{nickname}</p>
-        </User>
-      )}
-      {type === "cookie" && (
-        <div className="nickname">{nickname}님의 파킹랏</div>
-      )}
-      {type === "dir" && (
-        <div className="nickname">{nickname}님의 디렉토리</div>
-      )}
-      <div className="button-wrap">
-        {type === "dir" && (
-          <StyledIcon className="create">
-            <PlusIcon22 className="plus-icon" />
-          </StyledIcon>
+    <>
+      <ListHeaderWrap type={type}>
+        {(type === "dirDetail" || type === "dirShare") && (
+          <User>
+            <img alt="profile-img" src={imgUrl} />
+            <p>{nickname}</p>
+          </User>
         )}
-        <StyledIcon className="filter">
-          <FilterIcon className="filter-icon" />
-        </StyledIcon>
-      </div>
-    </ListHeaderWrap>
+        {type === "cookie" && (
+          <div className="nickname">{nickname}님의 파킹랏</div>
+        )}
+        {type === "dir" && (
+          <div className="nickname">{nickname}님의 디렉토리</div>
+        )}
+        <div className="button-wrap">
+          {type === "dir" && (
+            <StyledIcon
+              className="create"
+              onClick={() => setIsDirAddOpen(true)}
+              isAtv={isDirAddOpen}
+            >
+              <PlusIcon22 className="plus-icon" />
+            </StyledIcon>
+          )}
+          <StyledIcon
+            className="filter"
+            onClick={() => setIsFilterOpen(true)}
+            isAtv={isFilterOpen}
+          >
+            <FilterIcon className="filter-icon" />
+          </StyledIcon>
+          <FilterModal
+            className="filter-modal"
+            isOpen={isFilterOpen}
+            setIsOpen={setIsFilterOpen}
+            type={filterType}
+            onClickType={onClickType}
+          />
+        </div>
+      </ListHeaderWrap>
+      <DirectoryModal
+        isOpen={isDirAddOpen}
+        setIsOpen={setIsDirAddOpen}
+        type="new"
+        value={newDirData}
+        setValue={setNewDirData}
+        postDir={postDir}
+      />
+    </>
   );
 };
 
@@ -91,6 +140,13 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
     width: fit-content;
     display: flex;
     flex-direction: row;
+
+    /** 이 부분 수정 필요 */
+    .filter-modal {
+      margin-right: 140px;
+      right: 80px;
+      top: 94px;
+    }
   }
 `;
 
@@ -114,12 +170,37 @@ const User = styled.div`
   }
 `;
 
-const StyledIcon = styled(Icon)`
+interface StyledIconProps {
+  isAtv?: boolean;
+}
+const StyledIcon = styled(Icon)<StyledIconProps>`
   width: 48px;
   height: 48px;
   border-radius: 24px;
 
-  &:hover {
-    background-color: var(--gray_hover_1);
-  }
+  ${({ isAtv }) =>
+    isAtv
+      ? css`
+          background-color: var(--gray_active);
+          .plus-icon {
+            rect {
+              fill: var(--white);
+            }
+          }
+          .filter-icon {
+            rect {
+              fill: var(--white);
+            }
+            circle {
+              stroke: var(--white);
+            }
+          }
+        `
+      : css`
+          @media (hover: hover) {
+            &:hover {
+              background-color: var(--gray_hover_1);
+            }
+          }
+        `}
 `;
