@@ -1,27 +1,18 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import { Btn, Input, MoveModal } from "@components/atoms";
 import { modalAnimation } from "@components/animations";
+import { PostBookmarkDataProps } from "@interfaces/homeboard";
 
-export interface NewBookmarkProps {
-  name: string;
-  link: string;
-}
 export interface BookmarkAddModalProps {
   /** id */
   id?: string;
   /** className */
   className?: string;
   /** 즐겨찾기 제목, 즐겨찾기 링크 */
-  value: NewBookmarkProps;
+  value: PostBookmarkDataProps;
   /** 즐겨찾기 제목, 즐겨찾기 링크 setState */
-  setValue: Dispatch<SetStateAction<NewBookmarkProps>>;
+  setValue: Dispatch<SetStateAction<PostBookmarkDataProps>>;
   /** '저장' 버튼 클릭 시 event handling 함수 */
   onClickSave: () => void;
   /** 모달 open 여부 */

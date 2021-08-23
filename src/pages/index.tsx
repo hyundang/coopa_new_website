@@ -1,5 +1,6 @@
 import { getApi, postApi, putApi, delApi } from "@lib/api";
 import { Newtab } from "@components/templates";
+import { PostBookmarkDataProps } from "@interfaces/homeboard";
 import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 
@@ -11,6 +12,17 @@ export default function NewtabPage() {
   const [homeboardImg, setHomeboardImg] = useState("");
   // 홈보드 모달 이미지
   const [homeboardModalImg, setHomeboardModalImg] = useState("");
+
+  // 북마크 데이터 get
+  const { data: bookmarkData } = useSWR(
+    "/users/favorites",
+    getApi.getBookmarkData,
+    {
+      onSuccess: async (data) => {
+        localStorage.setItem("bookmark", JSON.stringify(data));
+      },
+    },
+  );
 
   // toast msg visible state
   const [isVisible, setIsVisible] = useState({
@@ -40,6 +52,36 @@ export default function NewtabPage() {
     return homeboardImgUrl;
   };
 
+  // 북마크 추가
+  const handleAddBookmark = async (newValue: PostBookmarkDataProps) => {
+    const res = await postApi.postBookmarkData(newValue);
+    res &&
+      (() => {
+        mutate("/users/favorites", bookmarkData?.concat([res]), false);
+        setIsVisible({
+          ...isVisible,
+          bookmarkCreate: true,
+        });
+      })();
+  };
+
+  // 북마크 삭제
+  const handleDelBookmark = async (bookmarkID: number) => {
+    const res = await delApi.delBookmarkData(bookmarkID);
+    res &&
+      (() => {
+        mutate(
+          "/users/favorites",
+          bookmarkData?.filter((bd) => res.id !== bd.id),
+          false,
+        );
+        setIsVisible({
+          ...isVisible,
+          bookmarkDel: true,
+        });
+      })();
+  };
+
   useEffect(() => {
     // 홈보드 이미지 세팅
     const homeboardImgUrl = localStorage.getItem("homeboardImgUrl");
@@ -52,6 +94,10 @@ export default function NewtabPage() {
         })()
       : handleGetHomeboardImg();
 
+    // 북마크 세팅
+    const bookmark = localStorage.getItem("bookmark");
+    bookmark !== null &&
+      mutate("/users/favorites", JSON.parse(bookmark), false);
   }, []);
 
   return (
@@ -64,6 +110,9 @@ export default function NewtabPage() {
       homeboardImg={homeboardImg}
       setHomeboardImg={setHomeboardImg}
       postHomeboardImg={handlePostHomeboardImg}
+      bookmarkDatas={bookmarkData !== undefined ? bookmarkData : []}
+      onClickBookmarkSave={handleAddBookmark}
+      onClickBookmarkDel={handleDelBookmark}
       cookieData={[]}
       dirData={[]}
       isToastMsgVisible={isVisible}

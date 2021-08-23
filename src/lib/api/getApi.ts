@@ -1,3 +1,4 @@
+import { BookmarkDataProps } from "@interfaces/homeboard";
 import { UserDataProps } from "../interfaces/user";
 import client from "./client";
 
@@ -22,9 +23,18 @@ const getHomeboardData = async (): Promise<string> => {
   }
 };
 
+const getBookmarkData = (
+  url: string,
+): Promise<BookmarkDataProps[] | undefined> =>
+  client.get(url).then((res) => {
+    console.log("[SUCCESS] GET BOOKMARK DATA", res.data.data);
+    return res.data.data;
+  });
+
 const getApi = {
   getUserData,
   getHomeboardData,
+  getBookmarkData,
 };
 
 export default getApi;

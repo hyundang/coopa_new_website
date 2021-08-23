@@ -13,9 +13,9 @@ export interface BookmarkProps {
   /** bookmark data list */
   datas: BookmarkDataProps[];
   /** bookmark 추가 함수 */
-  onClickSave: (newBookmark: NewBookmarkProps) => void;
+  onClickSave: (newBookmark: NewBookmarkProps) => Promise<void>;
   /** bookmark 삭제 함수 */
-  onClickDel: (bookmarkID: number) => void;
+  onClickDel: (bookmarkID: number) => Promise<void>;
 }
 const Bookmark = ({
   id,

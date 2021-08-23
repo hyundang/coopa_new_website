@@ -4,3 +4,8 @@ export interface BookmarkDataProps {
   link: string;
   image?: string;
 }
+
+export interface PostBookmarkDataProps {
+  name: string;
+  link: string;
+}

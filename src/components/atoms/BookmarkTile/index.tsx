@@ -56,7 +56,9 @@ const BookmarkTile = (
           <PlusIcon className="plus-icon" />
         ) : (
           <div className="content">
-            <DelIcon onClick={onClickDelBtn}>×</DelIcon>
+            <DelIcon onClick={onClickDelBtn} id={id}>
+              ×
+            </DelIcon>
             <div className="content__favicon" />
             <div className="content__text">{siteName}</div>
           </div>

@@ -3,12 +3,26 @@ import { SearchBar, Tab, ToastMsg } from "@components/atoms";
 import { Header } from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
 // interfaces
-import { BookmarkDataProps } from "@interfaces/homeboard";
-import { NewBookmarkProps } from "@components/organisms/BookmarkAddModal";
+import {
+  BookmarkDataProps,
+  PostBookmarkDataProps,
+} from "@interfaces/homeboard";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components";
 import { CookieDataProps } from "@interfaces/cookie";
 import { DirectoryDataProps } from "@interfaces/directory";
+
+interface ToastMsgVisibleStateProps {
+  dirCreate: boolean;
+  dirDel: boolean;
+  dirEdit: boolean;
+  cookieDel: boolean;
+  cookieEdit: boolean;
+  bookmarkDel: boolean;
+  bookmarkCreate: boolean;
+  homeboardEdit: boolean;
+  imgSizeOver: boolean;
+}
 
 export interface NewtablProps {
   /** 검색 여부 */
@@ -17,26 +31,29 @@ export interface NewtablProps {
   setIsSearched: Dispatch<SetStateAction<boolean>>;
   /** 프로필 이미지 url */
   imgUrl?: string;
-  /** img input 시 img size 에러 여부 setState */
-  setIsError?: Dispatch<SetStateAction<boolean>>;
   /** 모달 안의 홈보드 배경 이미지 */
   homeboardModalImg: string;
   /** 모달 안의 홈보드 배경 이미지 setState */
   setHomeboardModalImg: Dispatch<SetStateAction<string>>;
+  /** homeboard img state */
+  homeboardImg: string;
   /** homeboard img setState */
   setHomeboardImg: Dispatch<SetStateAction<string>>;
   /** input img post */
-  postHomeboardImg: (e: File) => string;
+  postHomeboardImg: (e: File) => Promise<string>;
   /** bookmark data list */
   bookmarkDatas: BookmarkDataProps[];
   /** bookmark 추가 함수 */
-  onClickBookmarkSave: (newBookmark: NewBookmarkProps) => void;
+  onClickBookmarkSave: (newBookmark: PostBookmarkDataProps) => Promise<void>;
   /** bookmark 삭제 함수 */
-  onClickBookmarkDel: (bookmarkID: number) => void;
+  onClickBookmarkDel: (bookmarkID: number) => Promise<void>;
   /** cookie data */
   cookieData: CookieDataProps[];
   /** directory data */
   dirData: DirectoryDataProps[];
+  /** toast msg state */
+  isToastMsgVisible: ToastMsgVisibleStateProps;
+  setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
 }
 const Newtab = ({
   isSearched,
@@ -44,32 +61,21 @@ const Newtab = ({
   imgUrl,
   homeboardModalImg,
   setHomeboardModalImg,
+  homeboardImg,
   setHomeboardImg,
-  setIsError,
   postHomeboardImg,
   bookmarkDatas,
   onClickBookmarkSave,
   onClickBookmarkDel,
   cookieData,
   dirData,
+  isToastMsgVisible,
+  setIsToastMsgVisible,
 }: NewtablProps) => {
   // 검색창 불필요한 fadeout 방지
   const [preventFadeout, setPreventFadeout] = useState(true);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [tabValue, setTabValue] = useState("모든 쿠키");
-
-  // toast msg visible state
-  const [isVisible, setIsVisible] = useState({
-    dirCreate: false,
-    dirDel: false,
-    dirEdit: false,
-    cookieDel: false,
-    cookieEdit: false,
-    bookmarkDel: false,
-    bookmarkCreate: false,
-    homeboardEdit: false,
-    imgSizeOver: false,
-  });
 
   // toast msg visible handling
   const handleToastMsgVisible = (
@@ -85,8 +91,8 @@ const Newtab = ({
       | "imgSizeOver",
     value: boolean,
   ) =>
-    setIsVisible({
-      ...isVisible,
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
       [key]: value,
     });
 
@@ -114,8 +120,11 @@ const Newtab = ({
           setIsSearched={setIsSearched}
           homeboardModalImg={homeboardModalImg}
           setHomeboardModalImg={setHomeboardModalImg}
+          homeboardImg={homeboardImg}
           setHomeboardImg={setHomeboardImg}
           postHomeboardImg={postHomeboardImg}
+          setIsSuccess={(e) => handleToastMsgVisible("homeboardEdit", e)}
+          setIsError={(e) => handleToastMsgVisible("imgSizeOver", e)}
           bookmarkDatas={bookmarkDatas}
           onClickBookmarkDel={onClickBookmarkDel}
           onClickBookmarkSave={onClickBookmarkSave}
@@ -157,43 +166,43 @@ const Newtab = ({
         </main>
       </Container>
       <ToastMsg
-        isVisible={isVisible.dirCreate}
+        isVisible={isToastMsgVisible.dirCreate}
         setIsVisible={(e: boolean) => handleToastMsgVisible("dirCreate", e)}
       >
         🤘 디렉토리를 만들었어요!
       </ToastMsg>
       <ToastMsg
-        isVisible={isVisible.dirEdit}
+        isVisible={isToastMsgVisible.dirEdit}
         setIsVisible={(e: boolean) => handleToastMsgVisible("dirEdit", e)}
       >
         👀 디렉토리를 수정했어요!
       </ToastMsg>
       <ToastMsg
-        isVisible={isVisible.dirDel}
+        isVisible={isToastMsgVisible.dirDel}
         setIsVisible={(e: boolean) => handleToastMsgVisible("dirDel", e)}
       >
         ❌ 디렉토리를 삭제했어요!
       </ToastMsg>
       <ToastMsg
-        isVisible={isVisible.cookieDel}
+        isVisible={isToastMsgVisible.cookieDel}
         setIsVisible={(e: boolean) => handleToastMsgVisible("cookieDel", e)}
       >
         ❌ 쿠키를 삭제했어요!
       </ToastMsg>
       <ToastMsg
-        isVisible={isVisible.cookieEdit}
+        isVisible={isToastMsgVisible.cookieEdit}
         setIsVisible={(e: boolean) => handleToastMsgVisible("cookieEdit", e)}
       >
         🍪 쿠키를 수정했어요!
       </ToastMsg>
       <ToastMsg
-        isVisible={isVisible.bookmarkDel}
+        isVisible={isToastMsgVisible.bookmarkDel}
         setIsVisible={(e: boolean) => handleToastMsgVisible("bookmarkDel", e)}
       >
         ❌ 즐겨찾기를 삭제했어요!
       </ToastMsg>
       <ToastMsg
-        isVisible={isVisible.bookmarkCreate}
+        isVisible={isToastMsgVisible.bookmarkCreate}
         setIsVisible={(e: boolean) =>
           handleToastMsgVisible("bookmarkCreate", e)
         }
@@ -201,13 +210,13 @@ const Newtab = ({
         🤘 즐겨찾기를 만들었어요!
       </ToastMsg>
       <ToastMsg
-        isVisible={isVisible.homeboardEdit}
+        isVisible={isToastMsgVisible.homeboardEdit}
         setIsVisible={(e: boolean) => handleToastMsgVisible("homeboardEdit", e)}
       >
         🤘 홈보드 이미지를 변경했어요!
       </ToastMsg>
       <ToastMsg
-        isVisible={isVisible.imgSizeOver}
+        isVisible={isToastMsgVisible.imgSizeOver}
         setIsVisible={(e: boolean) => handleToastMsgVisible("imgSizeOver", e)}
         imgSizeOver
       >
