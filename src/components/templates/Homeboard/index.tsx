@@ -6,8 +6,10 @@ import { Icon, SearchBar } from "@components/atoms";
 import { HomeboardEditModal, Bookmark } from "@components/organisms";
 import { homeboardAnimation } from "@components/animations";
 import { useWindowSize } from "src/hooks";
-import { BookmarkDataProps } from "@interfaces/homeboard";
-import { NewBookmarkProps } from "@components/organisms/BookmarkAddModal";
+import {
+  BookmarkDataProps,
+  PostBookmarkDataProps,
+} from "@interfaces/homeboard";
 
 export interface HomeboardProps {
   /** id */
@@ -26,16 +28,22 @@ export interface HomeboardProps {
   homeboardModalImg: string;
   /** homeboard modal img setState */
   setHomeboardModalImg: Dispatch<SetStateAction<string>>;
+  /** homeboard img state */
+  homeboardImg: string;
   /** homeboard img setState */
   setHomeboardImg: Dispatch<SetStateAction<string>>;
   /** homeboard img post 함수 */
-  postHomeboardImg: (e: File) => string;
+  postHomeboardImg: (e: File) => Promise<string>;
+  /** homeboard img 변경 성공 */
+  setIsSuccess: (e: boolean) => void;
+  /** img input 시 img size 에러 */
+  setIsError: (e: boolean) => void;
   /** bookmark data list */
   bookmarkDatas: BookmarkDataProps[];
   /** bookmark 추가 함수 */
-  onClickBookmarkSave: (newBookmark: NewBookmarkProps) => void;
+  onClickBookmarkSave: (newBookmark: PostBookmarkDataProps) => Promise<void>;
   /** bookmark 삭제 함수 */
-  onClickBookmarkDel: (bookmarkID: number) => void;
+  onClickBookmarkDel: (bookmarkID: number) => Promise<void>;
   /** 검색창 불필요한 fadeout 방지 */
   preventFadeout: boolean;
   setPreventFadeout: Dispatch<SetStateAction<boolean>>;
@@ -49,8 +57,11 @@ const Homeboard = ({
   setIsSearched,
   homeboardModalImg,
   setHomeboardModalImg,
+  homeboardImg,
   setHomeboardImg,
   postHomeboardImg,
+  setIsSuccess,
+  setIsError,
   bookmarkDatas,
   onClickBookmarkDel,
   onClickBookmarkSave,
@@ -73,6 +84,7 @@ const Homeboard = ({
     <HomeboardWrap
       id={id}
       className={className}
+      homeboardImg={homeboardImg}
       isSettingIconAtv={isOpen}
       visible={visible}
     >
@@ -117,6 +129,8 @@ const Homeboard = ({
         setHomeboardImg={setHomeboardImg}
         postHomeboardImg={postHomeboardImg}
         locationX={locationX - 518 + 36}
+        setIsError={setIsError}
+        setIsSuccess={setIsSuccess}
       />
     </HomeboardWrap>
   );
@@ -125,13 +139,20 @@ const Homeboard = ({
 export default Homeboard;
 
 interface HomeboardWrapProps {
+  /** homeboard img state */
+  homeboardImg: string;
   isSettingIconAtv: boolean;
   visible: boolean;
 }
 const HomeboardWrap = styled.section<HomeboardWrapProps>`
   width: 100%;
   height: 210px;
-  background-color: var(--gray_4);
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    ),
+    url(${({ homeboardImg }) => homeboardImg}) center center/ cover,
+    var(--gray_4);
 
   display: flex;
   align-items: center;

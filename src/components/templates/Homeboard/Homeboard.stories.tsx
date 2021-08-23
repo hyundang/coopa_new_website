@@ -33,6 +33,31 @@ homeboard.args = {
   ],
 };
 
+export const homeboardWithBackground = Template.bind({});
+homeboardWithBackground.args = {
+  homeboardImg: "/theme_img/img_1.jpg",
+  bookmarkDatas: [
+    {
+      id: 1,
+      name: "naver",
+      link: "https://www.naver.com",
+      image: "	https://papago.naver.com/favicon.ico",
+    },
+    {
+      id: 2,
+      name: "naver",
+      link: "https://www.naver.com",
+      image: "	https://papago.naver.com/favicon.ico",
+    },
+    {
+      id: 3,
+      name: "naver",
+      link: "https://www.naver.com",
+      image: "	https://papago.naver.com/favicon.ico",
+    },
+  ],
+};
+
 // export const homeboard = () => {
 //   const [visible, setVisible] = useState(false);
 //   const [isSearched, setIsSearched] = useState(false);

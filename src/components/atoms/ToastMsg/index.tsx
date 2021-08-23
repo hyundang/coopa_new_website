@@ -25,8 +25,8 @@ const ToastMsg = ({
   imgSizeOver,
 }: ToastMsgProps) => {
   useEffect(() => {
-    setTimeout(() => setIsVisible(false), 3000);
-  }, []);
+    isVisible && setTimeout(() => setIsVisible(false), 3000);
+  }, [isVisible]);
 
   return (
     <ToastMsgWrap
