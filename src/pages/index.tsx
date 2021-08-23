@@ -33,6 +33,15 @@ export default function NewtabPage() {
     },
   });
 
+  // 모든 디렉토리 데이터 get
+  const { data: allDirData } = useSWR("/directories", getApi.getAllDirData, {
+    onErrorRetry: ({ retryCount }) => {
+      // 3번 까지만 재시도함
+      if (retryCount >= 3) return undefined;
+      return true;
+    },
+  });
+
   // toast msg visible state
   const [isVisible, setIsVisible] = useState({
     dirCreate: false,
@@ -123,7 +132,7 @@ export default function NewtabPage() {
       onClickBookmarkSave={handleAddBookmark}
       onClickBookmarkDel={handleDelBookmark}
       cookieData={allCookieData !== undefined ? allCookieData : []}
-      dirData={[]}
+      dirData={allDirData !== undefined ? allDirData : []}
       isToastMsgVisible={isVisible}
       setIsToastMsgVisible={setIsVisible}
     />

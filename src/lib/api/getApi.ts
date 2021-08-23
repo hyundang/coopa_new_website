@@ -1,4 +1,5 @@
 import { CookieDataProps } from "@interfaces/cookie";
+import { DirectoryDataProps } from "@interfaces/directory";
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import { UserDataProps } from "../interfaces/user";
 import client from "./client";
@@ -40,11 +41,20 @@ const getAllCookieData = (
     return res.data.data;
   });
 
+const getAllDirData = (
+  url: string,
+): Promise<DirectoryDataProps[] | undefined> =>
+  client.get(url).then((res) => {
+    console.log("[SUCCESS] GET ALL DIRECTORY DATA", res.data.data);
+    return res.data.data;
+  });
+
 const getApi = {
   getUserData,
   getHomeboardData,
   getBookmarkData,
   getAllCookieData,
+  getAllDirData,
 };
 
 export default getApi;
