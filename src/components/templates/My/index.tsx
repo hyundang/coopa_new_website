@@ -8,9 +8,9 @@ import {
 } from "@assets/imgs/mypage";
 import { mypageAnimation } from "@components/animations";
 import { Btn, Bubble, Icon, ToastMsg } from "@components/atoms";
-import { Header } from "@components/organisms";
-import { UserDataProps } from "@interfaces/user";
-import { useState } from "react";
+import { Header, ProfileEditModal } from "@components/organisms";
+import { EditUserDataProps, UserDataProps } from "@interfaces/user";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
 
@@ -18,8 +18,24 @@ export interface MyProps {
   userData: UserDataProps;
   /** 로그아웃 버튼 클릭 이벤트 핸들러 */
   onClickLogout: React.MouseEventHandler<HTMLButtonElement>;
+  /** 프로필 수정 버튼 클릭 이벤트 핸들러 */
+  editProfile: () => void;
+  /** 프로필 수정 데이터 */
+  profileData: EditUserDataProps;
+  setProfileData: Dispatch<SetStateAction<EditUserDataProps>>;
+  /** 프로필 수정 모달 오픈 */
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
-const My = ({ userData, onClickLogout }: MyProps) => {
+const My = ({
+  userData,
+  onClickLogout,
+  editProfile,
+  profileData,
+  setProfileData,
+  isOpen,
+  setIsOpen,
+}: MyProps) => {
   const size = useWindowSize();
   const [isTooltipHover, setIsTooltipHover] = useState(false);
   const [isLogoutHover, setIsLogoutHover] = useState(false);
@@ -40,11 +56,13 @@ const My = ({ userData, onClickLogout }: MyProps) => {
             <div className="profile__info">
               <div className="name-wrap">
                 <h1 className="name">{userData.name}</h1>
-                <Icon className="edit-button">
+                <Icon className="edit-button" onClick={() => setIsOpen(true)}>
                   <EditIcon className="edit-icon" />
                 </Icon>
               </div>
-              <h3 className="introduction">{userData.introduction}</h3>
+              <h3 className="introduction">
+                {userData.introduction || "나만의 한 줄 소개를 입력해주세요"}
+              </h3>
             </div>
           </section>
           <section className="cookie">
@@ -159,6 +177,13 @@ const My = ({ userData, onClickLogout }: MyProps) => {
           </span>
         </div>
       </Container>
+      <ProfileEditModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        value={profileData}
+        setValue={setProfileData}
+        editProfile={editProfile}
+      />
       <ToastMsg isVisible={isVisible} setIsVisible={setIsVisible}>
         👀 프로필을 수정했어요!
       </ToastMsg>

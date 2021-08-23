@@ -45,21 +45,22 @@ const BookmarkAddModal = ({
   // for input refs
   const link_input = useRef<HTMLInputElement>(null);
   const name_input = useRef<HTMLInputElement>(null);
-  // '수정' 버튼 활성화 여부
-  const [isBtnAtv, setIsBtnAtv] = useState(false);
 
-  //
-  const handleClickSave = () => {
-    isBtnAtv
-      ? onClickSave()
-      : value.link === ""
-      ? link_input.current?.focus()
-      : name_input.current?.focus();
+  // 생성 클릭시
+  const handleClickAdd = () => {
+    value.link !== ""
+      ? value.name !== ""
+        ? (() => {
+            onClickSave();
+            setIsOpen(false);
+          })()
+        : name_input.current?.focus()
+      : link_input.current?.focus();
   };
 
   // enter 키 클릭 시
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    e.key === "Enter" && handleClickSave();
+    e.key === "Enter" && handleClickAdd();
   };
   // esc 키 클릭 시
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -67,13 +68,6 @@ const BookmarkAddModal = ({
       setIsOpen(false);
     }
   };
-
-  // '수정' 버튼 활성화 여부 판단
-  useEffect(() => {
-    value.link !== "" && value.name !== ""
-      ? setIsBtnAtv(true)
-      : setIsBtnAtv(false);
-  }, [value]);
 
   // 제일 처음에 link input focus 상태로 설정
   useEffect(() => {
@@ -119,11 +113,20 @@ const BookmarkAddModal = ({
         onKeyPress={handleKeyPress}
       />
       <div className="button">
-        <Btn className="button__cancel" onClick={() => setIsOpen(false)}>
+        <Btn
+          className="button__cancel"
+          isAtvBtn
+          onClick={() => setIsOpen(false)}
+        >
           취소
         </Btn>
-        <Btn className="button__edit" isOrange onClick={handleClickSave}>
-          수정
+        <Btn
+          className="button__edit"
+          isOrange
+          isAtvBtn
+          onClick={handleClickAdd}
+        >
+          추가
         </Btn>
       </div>
     </ModalWrap>

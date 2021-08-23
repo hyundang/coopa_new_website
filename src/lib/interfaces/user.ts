@@ -9,5 +9,12 @@ export interface UserDataProps {
 
 export interface PostUserDataProps {
   name: string;
+  email: string;
+  googleId: string;
+  profileImage: string;
+}
+
+export interface EditUserDataProps {
+  name: string;
   introduction?: string;
 }

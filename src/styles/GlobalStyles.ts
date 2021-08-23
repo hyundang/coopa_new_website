@@ -5,7 +5,6 @@ import colorSystems from "./colorSystems";
 export const GlobalStyle = createGlobalStyle`
   ${normalize};
   ${colorSystems};
-  @import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
 
   html,
   body {

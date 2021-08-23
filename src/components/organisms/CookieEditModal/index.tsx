@@ -133,14 +133,14 @@ const CookieEditModal = ({
       />
       <div style={{ flexGrow: 1, width: "100%" }} />
       <div className="button-wrap">
-        <Btn className="button" onClick={onClickDel}>
+        <Btn className="button" isAtvBtn onClick={onClickDel}>
           삭제
         </Btn>
         <span className="button-wrap__inner">
-          <Btn className="button" onClick={() => setIsOpen(false)}>
+          <Btn className="button" isAtvBtn onClick={() => setIsOpen(false)}>
             취소
           </Btn>
-          <Btn className="button" isOrange onClick={onClickSave}>
+          <Btn className="button" isOrange isAtvBtn onClick={onClickSave}>
             수정
           </Btn>
         </span>

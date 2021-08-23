@@ -1,21 +1,14 @@
-import { UserData } from "../interfaces/user";
+import { UserDataProps } from "../interfaces/user";
 import client from "./client";
 
-const getUserData = async (token: string): Promise<UserData | undefined> => {
-  const { data } = await client.get("/users", {
-    headers: {
-      "x-access-token": token,
-    },
+const getUserData = (url: string): Promise<UserDataProps | undefined> =>
+  client.get(url).then((res) => {
+    console.log("[SUCCESS] GET USER DATA", res.data.data);
+    return res.data.data;
   });
-  try {
-    console.log("[SUCCESS] GET USER DATA", data);
-    return data;
-  } catch (e) {
-    console.log("[FAIL] GET USER DATA", e);
-    return undefined;
-  }
-};
 
-export const getApi = {
+const getApi = {
   getUserData,
 };
+
+export default getApi;
