@@ -5,7 +5,7 @@ interface directoryInfoType {
 }
 export interface CookieDataProps {
   content: string;
-  directoryInfo?: directoryInfoType;
+  directoryInfo: directoryInfoType | null;
   favicon: string;
   id: number;
   link: string;

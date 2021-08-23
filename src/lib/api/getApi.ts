@@ -1,3 +1,4 @@
+import { CookieDataProps } from "@interfaces/cookie";
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import { UserDataProps } from "../interfaces/user";
 import client from "./client";
@@ -31,10 +32,19 @@ const getBookmarkData = (
     return res.data.data;
   });
 
+const getAllCookieData = (
+  url: string,
+): Promise<CookieDataProps[] | undefined> =>
+  client.get(url).then((res) => {
+    console.log("[SUCCESS] GET ALL COOKIE DATA", res.data.data);
+    return res.data.data;
+  });
+
 const getApi = {
   getUserData,
   getHomeboardData,
   getBookmarkData,
+  getAllCookieData,
 };
 
 export default getApi;
