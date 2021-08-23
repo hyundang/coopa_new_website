@@ -1,5 +1,5 @@
-import styled, { keyframes } from "styled-components";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import styled from "styled-components";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 // assets
 import {
   page1,
@@ -55,6 +55,9 @@ const Onboarding = ({ isOpen, setIsOpen }: OnboardingProps) => {
     setCurrentSlide(0);
   };
 
+  // useEffect(() => {
+  //   console.log(page1);
+  // }, []);
   return (
     <ModalWrap
       isOpen={isOpen}
@@ -97,11 +100,11 @@ const Onboarding = ({ isOpen, setIsOpen }: OnboardingProps) => {
       </TextContainer>
       <SliderContainer currentSlide={currentSlide}>
         <ImgContainer>
-          {currentSlide === 0 && <Slide src={page1} />}
-          {currentSlide === 1 && <Slide src={page2} />}
-          {currentSlide === 2 && <Slide src={page3} />}
-          {currentSlide === 3 && <Slide src={page4} />}
-          {currentSlide === 4 && <Slide src={page5} />}
+          {currentSlide === 0 && <Slide src={page1.src} />}
+          {currentSlide === 1 && <Slide src={page2.src} />}
+          {currentSlide === 2 && <Slide src={page3.src} />}
+          {currentSlide === 3 && <Slide src={page4.src} />}
+          {currentSlide === 4 && <Slide src={page5.src} />}
         </ImgContainer>
       </SliderContainer>
       {currentSlide === 0 && <Duribun1 src={duribun1} />}

@@ -1,16 +1,23 @@
 /* global chrome */
 import { useState, useEffect } from "react";
 // components
-import Login from "@components/templates/Login";
+import { Login } from "@components/templates";
+// google login
 import {
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
 } from "react-google-login";
+// api
+import { postApi } from "@lib/api";
+import { PostUserDataProps } from "@interfaces/user";
+import { useRouter } from "next/dist/client/router";
 
-const LoginPage = () => {
+export default function LoginPage() {
   const filter: string =
     "win16|win32|win64|wince|mac|macintel|macppc|mac68k|linux i686|linux armv7l|hp-ux|sunos";
   const [isPC, setIsPC] = useState<boolean>(true);
+
+  const router = useRouter();
 
   function instanceOfGLR(object: any): object is GoogleLoginResponse {
     return true;
@@ -20,34 +27,33 @@ const LoginPage = () => {
     response: GoogleLoginResponse | GoogleLoginResponseOffline,
   ) => {
     if (instanceOfGLR(response)) {
-      const token = {
-        "x-access-token": response.accessToken,
-      };
-
-      const data = {
+      const data: PostUserDataProps = {
         name: response.profileObj.name,
         email: response.profileObj.email,
         googleId: response.profileObj.googleId,
         profileImage: response.profileObj.imageUrl,
       };
 
-      // const Response = await postApi.postLogin(token, data);
-      //   // 로컬 스토리지에 유저 토큰이랑 로그인 여부 저장
-      //   localStorage.setItem("userToken", Response.data.jwt);
-      //   localStorage.setItem("isLogin", true);
+      const Response = await postApi.postUserData(data);
 
-      //   if (isPC) {
-      //     chrome.runtime.sendMessage(
-      //       "gbpliecdabaekbhmncopnbkfpdippdnl",
-      //       { isLogin: true, userToken: Response.data.jwt },
-      //       function (response) {
-      //         if (!response.success) console.log("fail");
-      //       }
-      //     );
-      //   };
+      if (Response) {
+        // 로컬 스토리지에 유저 토큰 저장
+        localStorage.setItem("x-access-token", Response);
 
-      //   window.open("https://www.cookieparking.com", "_self");
-      console.log(token, data);
+        // if (isPC) {
+        //   chrome.runtime.sendMessage(
+        //     "gbpliecdabaekbhmncopnbkfpdippdnl",
+        //     { isLogin: true, userToken: Response.data.jwt },
+        //     function (response) {
+        //       if (!response.success) console.log("fail");
+        //     },
+        //   );
+        // }
+
+        router.push("/");
+      } else {
+        alert("로그인 실패");
+      }
     }
   };
 
@@ -66,6 +72,4 @@ const LoginPage = () => {
   }, []);
 
   return <Login onSuccess={handleSuccess} onFailure={handleFailure} />;
-};
-
-export default LoginPage;
+}

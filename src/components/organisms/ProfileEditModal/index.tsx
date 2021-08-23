@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useRef } from "react";
 import styled from "styled-components";
 import { Btn, Modal } from "@components/atoms";
 import { InputForm, TextAreaForm } from "@components/molecules";
-import { PostUserDataProps } from "@interfaces/user";
+import { EditUserDataProps } from "@interfaces/user";
 
 export interface ProfileEditModalProps {
   /** id */
@@ -10,11 +10,11 @@ export interface ProfileEditModalProps {
   /** className */
   className?: string;
   /** 닉네임, 자기소개 */
-  value: PostUserDataProps;
+  value: EditUserDataProps;
   /** 닉네임, 자기소개 setState */
-  setValue: Dispatch<SetStateAction<PostUserDataProps>>;
+  setValue: Dispatch<SetStateAction<EditUserDataProps>>;
   /** '수정' 버튼 클릭 시 event handling 함수 */
-  putProfile: (newValue: PostUserDataProps) => void;
+  editProfile: () => void;
   /** 모달 open 여부 */
   isOpen: boolean;
   /** 모달 open 여부 setState */
@@ -26,7 +26,7 @@ const ProfileEditModal = ({
   className,
   value,
   setValue,
-  putProfile,
+  editProfile,
   isOpen,
   setIsOpen,
 }: ProfileEditModalProps) => {
@@ -47,10 +47,10 @@ const ProfileEditModal = ({
 
   const handleClickEdit = () => {
     value.name !== ""
-      ? () => {
-          putProfile(value);
+      ? (() => {
+          editProfile();
           setIsOpen(false);
-        }
+        })()
       : nickname_input.current?.focus();
   };
 
@@ -75,7 +75,7 @@ const ProfileEditModal = ({
                 ...value,
                 name: e.target.value,
               })
-            : () => {}
+            : undefined
         }
         onKeyDown={handleKeyDown}
         onKeyPress={handleKeyPress}
@@ -94,7 +94,7 @@ const ProfileEditModal = ({
                 ...value,
                 introduction: e.target.value,
               })
-            : () => {}
+            : undefined
         }
         onKeyDown={handleKeyDown}
       />

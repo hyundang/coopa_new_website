@@ -27,7 +27,7 @@ const Login = ({ onSuccess, onFailure }: LoginProps) => {
           {"성장하는 사람들을 위한\n가장 간편한 콘텐츠 파킹랏"}
         </h1>
         <GoogleLogin
-          clientId={String(process.env.REACT_APP_CLIENTID)}
+          clientId={String(process.env.CLIENT_ID)}
           responseType="id_token"
           render={(renderProps: {
             onClick: React.MouseEventHandler<HTMLDivElement>;
