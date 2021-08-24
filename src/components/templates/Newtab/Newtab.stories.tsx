@@ -1,4 +1,5 @@
 import { Story, Meta } from "@storybook/react";
+import { useState } from "react";
 import Newtab, { NewtablProps } from ".";
 
 export default {
@@ -6,12 +7,27 @@ export default {
   component: Newtab,
 } as Meta;
 
-const Template: Story<NewtablProps> = (args) => (
-  <Newtab
-    {...args}
-    imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
-  />
-);
+const Template: Story<NewtablProps> = (args) => {
+  const [isVisible, setIsVisible] = useState({
+    dirCreate: false,
+    dirDel: false,
+    dirEdit: false,
+    cookieDel: false,
+    cookieEdit: false,
+    bookmarkDel: false,
+    bookmarkCreate: false,
+    homeboardEdit: false,
+    imgSizeOver: false,
+  });
+  return (
+    <Newtab
+      {...args}
+      isToastMsgVisible={isVisible}
+      setIsToastMsgVisible={setIsVisible}
+      imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
+    />
+  );
+};
 
 export const emptyBookmark = Template.bind({});
 emptyBookmark.args = {
@@ -49,6 +65,8 @@ withBookmark.args = {
 export const newtab = Template.bind({});
 newtab.args = {
   bookmarkDatas: [],
+  cookieFilter: "latest",
+  dirFilter: "latest",
   cookieData: [
     {
       content: "",
