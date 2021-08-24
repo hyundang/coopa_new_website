@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
 import { Btn } from "@components/atoms";
-import { Cookie } from "@components/organisms";
+import { Cookie, ListHeader } from "@components/organisms";
 import {
   EmptyCookieIcon,
   FilterIcon,
@@ -13,22 +13,22 @@ import React from "react";
 export interface IProps {
   /** cookie data */
   data: CookieDataProps[];
-  /** 공유 페이지에 들어가는 cookies인지 */
-  isShared?: boolean;
+  /** 어떤 페이지에 들어가는 cookies인지 */
+  type: "cookie" | "dir" | "dirDetail" | "dirShare";
   /** 공유 버튼 눌렀을 때 함수 */
   shareClick?: React.MouseEventHandler<HTMLButtonElement>;
   /** 수정 버튼 눌렀을 때 함수 */
   editClick?: React.MouseEventHandler;
 }
 
-const Cookies = ({ data, isShared, shareClick, editClick }: IProps) => {
+const Cookies = ({ data, type, shareClick, editClick }: IProps) => {
   return (
     <CookiesCntnr>
       <ShareCntnr>
         <Title>
           <p className="name">
             playlist
-            {!isShared && (
+            {type !== "dirShare" && (
               <EditIcon
                 className="edit-icon"
                 onClick={editClick ? (e) => editClick(e) : () => {}}
@@ -39,7 +39,7 @@ const Cookies = ({ data, isShared, shareClick, editClick }: IProps) => {
             <EmptyCookieIcon className="cookie-icon" />
             8개
           </p>
-          {!isShared && (
+          {type !== "dirShare" && (
             <Btn
               className="share-btn"
               isDirShare
@@ -50,24 +50,22 @@ const Cookies = ({ data, isShared, shareClick, editClick }: IProps) => {
             </Btn>
           )}
         </Title>
-        <Middle>
-          <User>
-            <img
-              alt=""
-              src="https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg"
-            />
-            <p>희수 친구 채린</p>
-          </User>
-          <FilterIcon />
-        </Middle>
       </ShareCntnr>
+      <ListHeader
+        type={type}
+        imgUrl="https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg"
+        nickname="test"
+        filterType="latest"
+        onClickType={() => {}}
+        postDir={() => {}}
+      />
       <CookieWrap>
         {data.map((cookie) => (
           <Cookie
             cookie={cookie}
             key={cookie.id}
             allDir={[]}
-            isShared={isShared}
+            isShared={type === "dirShare"}
           />
         ))}
       </CookieWrap>
@@ -183,31 +181,7 @@ const Title = styled.article`
     }
   }
 `;
-const Middle = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-const User = styled.article`
-  margin-bottom: 3rem;
 
-  display: flex;
-  gap: 1rem;
-  & > img {
-    width: 2.8rem;
-    height: 2.8rem;
-    border-radius: 50%;
-  }
-  & > p {
-    margin: 0;
-
-    font-style: normal;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 2.8rem;
-
-    color: var(--black_1);
-  }
-`;
 const CookieWrap = styled.section`
   display: grid;
   justify-content: center;

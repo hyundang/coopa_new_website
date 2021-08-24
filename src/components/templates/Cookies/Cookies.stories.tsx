@@ -93,7 +93,7 @@ export const cookies = () => {
         "[playlist]봄 밤, 창이 열린 1층 카페 끝 자리, 가사 없는 chilling 음악",
     },
   ];
-  return <Cookies data={data} />;
+  return <Cookies type="dirDetail" data={data} />;
 };
 
 cookies.story = {
@@ -188,5 +188,5 @@ export const Sharedcookies = () => {
         "[playlist]봄 밤, 창이 열린 1층 카페 끝 자리, 가사 없는 chilling 음악",
     },
   ];
-  return <Cookies isShared data={data} />;
+  return <Cookies type="dirShare" data={data} />;
 };
