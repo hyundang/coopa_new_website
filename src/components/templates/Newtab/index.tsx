@@ -172,12 +172,18 @@ const Newtab = ({
     isSearched && isSearchVisible
       ? (() => {
           setTabOptions(["쿠키", "디렉토리"]);
-          setTabValue("쿠키");
+          tabValue === "모든 쿠키" && setTabValue("쿠키");
         })()
       : (() => {
           setTabOptions(["모든 쿠키", "디렉토리"]);
-          setTabValue("모든 쿠키");
+          tabValue === "쿠키" && setTabValue("모든 쿠키");
         })();
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
   }, [isSearched, isSearchVisible]);
 
   useEffect(() => {
