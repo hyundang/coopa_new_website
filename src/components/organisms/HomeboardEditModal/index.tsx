@@ -1,4 +1,11 @@
-import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useRef,
+  useState,
+  useEffect,
+} from "react";
 import styled, { css } from "styled-components";
 import { ImgBoxForm } from "@components/molecules";
 import { ImgBox, MoveModal, Tab } from "@components/atoms";
@@ -61,6 +68,18 @@ const HomeboardEditModal = ({
   // loading 여부
   const [isLoading, setIsLoading] = useState(false);
 
+  // 키 떼어냈을 때
+  const handleKeyUp = (e: any) => {
+    // shift + -> = 업로드
+    if (e.shiftKey && e.key === "ArrowRight") {
+      setTabValue("업로드");
+    }
+    // shift + <- = 기본 테마
+    if (e.shiftKey && e.key === "ArrowLeft") {
+      setTabValue("기본 테마");
+    }
+  };
+
   // theme img click event handling
   const handleClickThemeImg = (e: any) => {
     localStorage.setItem("homeboardImgUrl", e?.target?.id);
@@ -85,6 +104,13 @@ const HomeboardEditModal = ({
       }
     }
   };
+
+  useEffect(() => {
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   return (
     <ModalWrap
