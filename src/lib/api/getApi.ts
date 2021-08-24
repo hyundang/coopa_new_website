@@ -1,6 +1,7 @@
-import { CookieDataProps } from "@interfaces/cookie";
+import { CookieDataProps, DirectoryCookieDataProps } from "@interfaces/cookie";
 import { DirectoryDataProps } from "@interfaces/directory";
 import { BookmarkDataProps } from "@interfaces/homeboard";
+import axios from "axios";
 import { UserDataProps } from "../interfaces/user";
 import client from "./client";
 
@@ -79,6 +80,14 @@ const getSearchedDirData = async (
   }
 };
 
+const getDirCookieData = (
+  url: string,
+): Promise<DirectoryCookieDataProps | undefined> =>
+  client.get(url).then((res) => {
+    console.log("[SUCCESS] GET DIRECTORY COOKIE DATA", res.data.data);
+    return res.data.data;
+  });
+
 const getApi = {
   getUserData,
   getHomeboardData,
@@ -87,6 +96,7 @@ const getApi = {
   getAllDirData,
   getSearchedCookieData,
   getSearchedDirData,
+  getDirCookieData,
 };
 
 export default getApi;
