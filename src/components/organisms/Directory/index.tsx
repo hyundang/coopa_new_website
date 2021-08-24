@@ -20,7 +20,10 @@ const Directory = ({ dir }: DirectoryProps) => {
   const [isDeleteOpen, setISDeleteOpen] = useState(false);
   return (
     <>
-      <DirectoryWrap thumbnail={dir.thumbnail}>
+      <DirectoryWrap
+        thumbnail={dir.thumbnail}
+        onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_blank")}
+      >
         <div className="content">
           <div className="content__title">
             {dir.emoji ? `${dir.emoji} ${dir.name}` : dir.name}
