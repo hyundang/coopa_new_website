@@ -2,12 +2,7 @@ import styled from "styled-components";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
 import { Btn } from "@components/atoms";
 import { Cookie, ListHeader } from "@components/organisms";
-import {
-  EmptyCookieIcon,
-  FilterIcon,
-  EditIcon,
-  LinkIcon,
-} from "@assets/icons/common";
+import { EmptyCookieIcon, EditIcon, LinkIcon } from "@assets/icons/common";
 import React from "react";
 
 export interface IProps {
@@ -24,33 +19,35 @@ export interface IProps {
 const Cookies = ({ data, type, shareClick, editClick }: IProps) => {
   return (
     <CookiesCntnr>
-      <ShareCntnr>
-        <Title>
-          <p className="name">
-            playlist
+      {(type === "dirShare" || type === "dirDetail") && (
+        <ShareCntnr>
+          <Title>
+            <p className="name">
+              playlist
+              {type !== "dirShare" && (
+                <EditIcon
+                  className="edit-icon"
+                  onClick={editClick ? (e) => editClick(e) : () => {}}
+                />
+              )}
+            </p>
+            <p className="info">
+              <EmptyCookieIcon className="cookie-icon" />
+              8개
+            </p>
             {type !== "dirShare" && (
-              <EditIcon
-                className="edit-icon"
-                onClick={editClick ? (e) => editClick(e) : () => {}}
-              />
+              <Btn
+                className="share-btn"
+                isDirShare
+                onClick={shareClick ? (e) => shareClick(e) : () => {}}
+              >
+                <LinkIcon className="icon" />
+                디렉토리 공유하기
+              </Btn>
             )}
-          </p>
-          <p className="info">
-            <EmptyCookieIcon className="cookie-icon" />
-            8개
-          </p>
-          {type !== "dirShare" && (
-            <Btn
-              className="share-btn"
-              isDirShare
-              onClick={shareClick ? (e) => shareClick(e) : () => {}}
-            >
-              <LinkIcon className="icon" />
-              디렉토리 공유하기
-            </Btn>
-          )}
-        </Title>
-      </ShareCntnr>
+          </Title>
+        </ShareCntnr>
+      )}
       <ListHeader
         type={type}
         imgUrl="https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg"
