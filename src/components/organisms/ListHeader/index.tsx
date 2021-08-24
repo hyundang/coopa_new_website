@@ -3,12 +3,19 @@ import { FilterIcon, PlusIcon22 } from "@assets/icons/common";
 import { Icon } from "@components/atoms";
 import { FilterModal } from "@components/molecules";
 import { DirectoryModal } from "@components/organisms";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PostDirectoryProps } from "@interfaces/directory";
+import { dirname } from "path/posix";
 
 export interface ListHeaderProps {
   /** list type */
   type: "cookie" | "dir" | "dirDetail" | "dirShare";
+  /** 검색 결과 여부 */
+  isSearched?: boolean;
+  /** 검색된 쿠키 개수 */
+  cookieNum: number;
+  /** 검색된 디렉토리 개수 */
+  dirNum: number;
   /** profile img */
   imgUrl?: string;
   /** profile nickname */
@@ -16,12 +23,17 @@ export interface ListHeaderProps {
   /** filter type */
   filterType: "latest" | "oldest" | "readMost" | "readLeast" | "abc";
   /** filter type click event handler */
-  onClickType: () => void;
+  onClickType: (
+    e: "latest" | "oldest" | "readMost" | "readLeast" | "abc",
+  ) => void;
   /** post dir */
   postDir: (e: PostDirectoryProps) => void;
 }
 const ListHeader = ({
   type,
+  isSearched = false,
+  cookieNum,
+  dirNum,
   imgUrl,
   nickname,
   filterType,
@@ -34,44 +46,81 @@ const ListHeader = ({
     emoji: "",
     name: "",
   });
+  // 키 떼어냈을 때
+  const handleKeyUp = (e: any) => {
+    // shift + f = 필터 모달
+    if (e.key === "F" && e.shiftKey) {
+      setIsFilterOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   return (
     <>
-      <ListHeaderWrap type={type} nickname={nickname}>
+      <ListHeaderWrap type={type} nickname={nickname} isSearched={isSearched}>
         {(type === "dirDetail" || type === "dirShare") && (
           <User>
             <img alt="profile-img" src={imgUrl} />
             <p>{nickname}</p>
           </User>
         )}
-        {type === "cookie" && <div className="nickname--cookie" />}
-        {type === "dir" && <div className="nickname--dir" />}
-        <div className="button-wrap">
-          {type === "dir" && (
+        {!isSearched ? (
+          <>
+            {type === "cookie" && <div className="nickname--cookie" />}
+            {type === "dir" && <div className="nickname--dir" />}
+          </>
+        ) : (
+          <>
+            {type === "cookie" && (
+              <div className="num">
+                <b className="num--bold">
+                  {cookieNum > 999 ? "999+" : cookieNum}개
+                </b>
+                의 쿠키
+              </div>
+            )}
+            {type === "dir" && (
+              <div className="num">
+                <b className="num--bold">{dirNum > 999 ? "999+" : dirNum}개</b>
+                의 디렉토리
+              </div>
+            )}
+          </>
+        )}
+        {!isSearched && (
+          <div className="button-wrap">
+            {type === "dir" && (
+              <StyledIcon
+                className="create"
+                onClick={() => setIsDirAddOpen(true)}
+                isAtv={isDirAddOpen}
+              >
+                <PlusIcon22 className="plus-icon" />
+              </StyledIcon>
+            )}
             <StyledIcon
-              className="create"
-              onClick={() => setIsDirAddOpen(true)}
-              isAtv={isDirAddOpen}
+              className="filter"
+              onClick={() => setIsFilterOpen(true)}
+              isAtv={isFilterOpen}
             >
-              <PlusIcon22 className="plus-icon" />
+              <FilterIcon className="filter-icon" />
             </StyledIcon>
-          )}
-          <StyledIcon
-            className="filter"
-            onClick={() => setIsFilterOpen(true)}
-            isAtv={isFilterOpen}
-          >
-            <FilterIcon className="filter-icon" />
-          </StyledIcon>
-          <FilterModal
-            className="filter-modal"
-            isOpen={isFilterOpen}
-            setIsOpen={setIsFilterOpen}
-            type={type === "cookie" ? "cookie" : "dir"}
-            filterType={filterType}
-            onClickType={onClickType}
-          />
-        </div>
+            <FilterModal
+              className="filter-modal"
+              isOpen={isFilterOpen}
+              setIsOpen={setIsFilterOpen}
+              type={type === "cookie" ? "cookie" : "dir"}
+              filterType={filterType}
+              onClickType={onClickType}
+            />
+          </div>
+        )}
       </ListHeaderWrap>
       <DirectoryModal
         isOpen={isDirAddOpen}
@@ -90,11 +139,30 @@ export default ListHeader;
 interface ListHeaderWrapProps {
   type: "cookie" | "dir" | "dirDetail" | "dirShare" | "abc";
   nickname: string;
+  isSearched: boolean;
 }
 const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+
   width: 1596px;
-  ${({ type }) =>
-    type === "cookie" || type === "dir"
+  ${({ type, isSearched, theme }) =>
+    isSearched
+      ? css`
+          margin-top: 38px;
+          margin-bottom: 22px;
+          ${theme.media.tablet`
+            margin-top: 32px;
+            margin-bottom: 24px;
+          `}
+          ${theme.media.mobile`
+            margin-top: 28px;
+            margin-bottom: 20px;
+          `}
+        `
+      : type === "cookie" || type === "dir"
       ? css`
           margin-top: 26px;
           margin-bottom: 20px;
@@ -117,7 +185,6 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
       content: "${({ nickname }) => nickname}님의 파킹랏";
     }
   }
-
   .nickname--dir {
     font-weight: 700;
     font-size: 22px;
@@ -126,6 +193,17 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
     &:after {
       content: "${({ nickname }) => nickname}님의 디렉토리";
     }
+  }
+
+  .num {
+    font-size: 18px;
+    line-height: 26px;
+    color: var(--gray_6);
+  }
+  .num--bold {
+    font-size: 18px;
+    line-height: 26px;
+    color: var(--orange);
   }
 
   .button-wrap {
@@ -159,6 +237,7 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
   /* -599 */
   ${({ theme }) => theme.media.mobile`
     width: 100%;
+    padding: 0 20px;
     .nickname--cookie {
       &:after {
         content: "모든 쿠키";
@@ -168,6 +247,14 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
       &:after {
         content: "디렉토리";
       }
+    }
+    .num {
+      font-size: 16px;
+      line-height: 20px;
+    }
+    .num--bold {
+      font-size: 16px;
+      line-height: 20px;
     }
   `}
 `;
