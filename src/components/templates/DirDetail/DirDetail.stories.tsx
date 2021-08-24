@@ -7,7 +7,7 @@ export default {
 } as Meta;
 
 const Template: Story<DirDetailProps> = (args) => (
-  <DirDetail {...args} cookies={cookies} />
+  <DirDetail {...args} dirInfo={dirInfo} cookies={cookies} />
 );
 
 export const dirDetail = Template.bind({});
@@ -26,6 +26,11 @@ dirShare.args = {
 };
 
 // mock data
+const dirInfo = {
+  name: "playlist",
+  id: 1,
+  emoji: "💜",
+};
 const cookies = [
   {
     content:
