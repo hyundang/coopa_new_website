@@ -8,27 +8,43 @@ import {
   EditIcon,
   LinkIcon,
 } from "@assets/icons/common";
+import React from "react";
 
 export interface IProps {
+  /** cookie data */
   data: CookieDataProps[];
+  /** 공유 페이지에 들어가는 cookies인지 */
   isShared?: boolean;
+  /** 공유 버튼 눌렀을 때 함수 */
+  shareClick?: React.MouseEventHandler<HTMLButtonElement>;
+  /** 수정 버튼 눌렀을 때 함수 */
+  editClick?: React.MouseEventHandler;
 }
 
-const Cookies = ({ data, isShared }: IProps) => {
+const Cookies = ({ data, isShared, shareClick, editClick }: IProps) => {
   return (
     <CookiesCntnr>
       <ShareCntnr>
         <Title>
           <p className="name">
             playlist
-            {!isShared && <EditIcon className="edit-icon" />}
+            {!isShared && (
+              <EditIcon
+                className="edit-icon"
+                onClick={editClick ? (e) => editClick(e) : () => {}}
+              />
+            )}
           </p>
           <p className="info">
             <EmptyCookieIcon className="cookie-icon" />
             8개
           </p>
           {!isShared && (
-            <Btn className="share-btn" isDirShare onClick={() => {}}>
+            <Btn
+              className="share-btn"
+              isDirShare
+              onClick={shareClick ? (e) => shareClick(e) : () => {}}
+            >
               <LinkIcon className="icon" />
               디렉토리 공유하기
             </Btn>
