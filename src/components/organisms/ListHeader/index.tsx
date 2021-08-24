@@ -134,7 +134,6 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
     flex-direction: row;
 
     position: relative;
-    /** 이 부분 수정 필요 */
     .filter-modal {
       position: absolute;
       top: 6rem;
@@ -158,16 +157,16 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
     width: 564px;
   `}
   /* -599 */
-   ${({ theme }) => theme.media.mobile`
+  ${({ theme }) => theme.media.mobile`
     width: 100%;
     .nickname--cookie {
       &:after {
-        content:"모든 쿠키";
+        content: "모든 쿠키";
       }
     }
     .nickname--dir {
       &:after {
-        content:"디렉토리";
+        content: "디렉토리";
       }
     }
   `}
