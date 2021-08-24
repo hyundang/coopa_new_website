@@ -1,5 +1,5 @@
 import { modalAnimation } from "@components/animations";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import styled, { css } from "styled-components";
 
 export interface ModalProps {
@@ -24,6 +24,17 @@ const Modal = ({
   setIsOpen,
   onClick,
 }: ModalProps) => {
+  const handleKeyDown = (e: any) => {
+    e.key === "Escape" && setIsOpen(false);
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <>
       {isOpen && (
