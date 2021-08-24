@@ -28,11 +28,16 @@ const MoveModal = ({
     if (!isOpen && (!modal.current || !modal.current.contains(e.target)))
       setIsOpen(false);
   };
+  const handleKeyDown = (e: any) => {
+    e.key === "Escape" && setIsOpen(false);
+  };
 
   useEffect(() => {
     window.addEventListener("mousedown", handleCloseModal);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("mousedown", handleCloseModal);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
