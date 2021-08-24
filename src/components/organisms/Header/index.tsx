@@ -40,10 +40,29 @@ const Header = ({
   const windowSize = useWindowSize();
   const notiIconLocation = useRef<HTMLButtonElement>(null);
 
+  // 키 떼어냈을 때
+  const handleKeyUp = (e: any) => {
+    // shift + i = 온보딩 모달
+    if (e.key === "I" && e.shiftKey) {
+      setIsOnboardOpen(true);
+    }
+    // shift + n = 공지 모달
+    if (e.key === "N" && e.shiftKey) {
+      setIsNotiOpen(true);
+    }
+  };
+
   useEffect(() => {
     notiIconLocation.current &&
       setLocationX(notiIconLocation.current.getBoundingClientRect().x);
   }, [windowSize.width]);
+
+  useEffect(() => {
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   return (
     <HeaderWrap
