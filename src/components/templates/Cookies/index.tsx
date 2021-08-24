@@ -1,16 +1,18 @@
 import styled from "styled-components";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
 import { Cookie } from "@components/organisms";
+import { DirectoryDataProps } from "@interfaces/directory";
 
 export interface IProps {
   data: CookieDataProps[];
+  allDir: DirectoryDataProps[];
 }
 
-const Cookies = ({ data }: IProps) => {
+const Cookies = ({ data, allDir }: IProps) => {
   return (
     <CookiesWrap>
       {data.map((cookie) => (
-        <Cookie cookie={cookie} key={cookie.id} allDir={[]} />
+        <Cookie cookie={cookie} key={cookie.id} allDir={allDir} />
       ))}
     </CookiesWrap>
   );

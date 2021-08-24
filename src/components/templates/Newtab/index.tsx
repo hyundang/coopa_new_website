@@ -237,7 +237,7 @@ const Newtab = ({
           {isSearched && isSearchVisible ? (
             <>
               {tabValue === "쿠키" ? (
-                <Cookies data={searchedCookieData} />
+                <Cookies data={searchedCookieData} allDir={dirData} />
               ) : (
                 <Directories data={searchedDirData} />
               )}
@@ -245,7 +245,7 @@ const Newtab = ({
           ) : (
             <>
               {tabValue === "모든 쿠키" ? (
-                <Cookies data={cookieData} />
+                <Cookies data={cookieData} allDir={dirData} />
               ) : (
                 <Directories data={dirData} />
               )}
