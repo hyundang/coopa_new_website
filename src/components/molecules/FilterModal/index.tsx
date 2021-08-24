@@ -31,7 +31,9 @@ export interface FilterModalProps {
   /** filter type */
   filterType: "latest" | "oldest" | "readMost" | "readLeast" | "abc";
   /** type click event handling */
-  onClickType: () => void;
+  onClickType: (
+    e: "latest" | "oldest" | "readMost" | "readLeast" | "abc",
+  ) => void;
 }
 const NotiModal = ({
   id,
@@ -76,7 +78,7 @@ export default NotiModal;
 
 const FilterModalWrap = styled(MoveModal)`
   position: fixed;
-  z-index: 2;
+  z-index: 3;
 
   width: 140px;
   padding: 10px 9px;
@@ -107,11 +109,17 @@ interface ItemProps {
   className?: string;
   text: string;
   isClicked: boolean;
-  onClickType: () => void;
+  onClickType: (
+    e: "latest" | "oldest" | "readMost" | "readLeast" | "abc",
+  ) => void;
 }
 const Item = ({ id, className, text, isClicked, onClickType }: ItemProps) => {
   return (
-    <ItemWrap id={id} className={className} onClick={onClickType}>
+    <ItemWrap
+      id={id}
+      className={className}
+      onClick={(e: any) => onClickType(e.target.id)}
+    >
       {text}
       {isClicked && <CheckIcon className="check-icon" />}
     </ItemWrap>
