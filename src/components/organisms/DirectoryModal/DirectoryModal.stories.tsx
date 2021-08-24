@@ -19,7 +19,7 @@ const Template: Story<DirectoryModalProps> = (args) => {
       {...args}
       value={value}
       setValue={setValue}
-      isOpen={isOpen}
+      // isOpen={isOpen}
       setIsOpen={setIsOpen}
     />
   );

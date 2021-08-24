@@ -1,12 +1,13 @@
+import { Meta, Story } from "@storybook/react";
 import { useState } from "react";
-import BookmarkAddModal from ".";
+import BookmarkAddModal, { BookmarkAddModalProps } from ".";
 
 export default {
   title: "components/organisms/BookmarkAddModal",
   component: BookmarkAddModal,
-};
+} as Meta;
 
-export const bookmarkAddModal = () => {
+export const detfault: Story<BookmarkAddModalProps> = (args) => {
   const [value, setValue] = useState({
     link: "",
     name: "",
@@ -17,18 +18,15 @@ export const bookmarkAddModal = () => {
     <>
       {isOpen && (
         <BookmarkAddModal
+          {...args}
           className="bookmark-add-modal"
           value={value}
           setValue={setValue}
-          isOpen={isOpen}
+          // isOpen={isOpen}
           setIsOpen={setIsOpen}
           onClickSave={() => {}}
         />
       )}
     </>
   );
-};
-
-bookmarkAddModal.story = {
-  name: "Default",
 };
