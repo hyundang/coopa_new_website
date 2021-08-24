@@ -35,6 +35,8 @@ export interface NewtablProps {
   onKeyPress: React.KeyboardEventHandler<HTMLInputElement>;
   /** 프로필 이미지 url */
   imgUrl?: string;
+  /** 프로필 닉네임 */
+  nickname: string;
   /** 모달 안의 홈보드 배경 이미지 */
   homeboardModalImg: string;
   setHomeboardModalImg: Dispatch<SetStateAction<string>>;
@@ -80,6 +82,7 @@ const Newtab = ({
   setSearchValue,
   onKeyPress,
   imgUrl,
+  nickname,
   homeboardModalImg,
   setHomeboardModalImg,
   homeboardImg,
@@ -266,7 +269,7 @@ const Newtab = ({
               tabValue === "모든 쿠키" || tabValue === "쿠키" ? "cookie" : "dir"
             }
             imgUrl={imgUrl}
-            nickname="hihi"
+            nickname={nickname}
             filterType={tabValue === "모든 쿠키" ? cookieFilter : dirFilter}
             onClickType={
               tabValue === "모든 쿠키" ? setCookieFilter : setDirFilter

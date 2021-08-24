@@ -271,6 +271,7 @@ export default function NewtabPage() {
       setSearchValue={setSearchValue}
       onKeyPress={handleKeyPress}
       imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
+      nickname="hihi"
       homeboardModalImg={homeboardModalImg}
       setHomeboardModalImg={setHomeboardModalImg}
       homeboardImg={homeboardImg}
