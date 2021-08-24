@@ -1,23 +1,61 @@
 import styled, { css } from "styled-components";
-import { EmptyCookieIcon } from "@assets/icons/common";
-import { DirectoryDataProps } from "src/lib/interfaces/directory";
+import { EmptyCookieIcon, EditIcon } from "@assets/icons/common";
+import {
+  DirectoryDataProps,
+  PostDirectoryProps,
+} from "src/lib/interfaces/directory";
+import { Icon } from "@components/atoms";
+import { useState } from "react";
+import { DelModal, DirectoryModal } from "..";
 
 export interface DirectoryProps {
   dir: DirectoryDataProps;
 }
 const Directory = ({ dir }: DirectoryProps) => {
+  const [postData, setPostData] = useState<PostDirectoryProps>({
+    name: "",
+    emoji: "",
+  });
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setISDeleteOpen] = useState(false);
   return (
-    <DirectoryWrap thumbnail={dir.thumbnail}>
-      <div className="content">
-        <div className="content__title">
-          {dir.emoji ? `${dir.emoji} ${dir.name}` : dir.name}
+    <>
+      <DirectoryWrap thumbnail={dir.thumbnail}>
+        <div className="content">
+          <div className="content__title">
+            {dir.emoji ? `${dir.emoji} ${dir.name}` : dir.name}
+          </div>
+          <div className="content__num">
+            <EmptyCookieIcon className="cookie-icon" />
+            <span>{dir.cookieCnt}개</span>
+          </div>
         </div>
-        <div className="content__num">
-          <EmptyCookieIcon className="cookie-icon" />
-          <span>{dir.cookieCnt}개</span>
+        <div className="icon">
+          <Icon onClick={() => setIsEditOpen(true)}>
+            <EditIcon />
+          </Icon>
         </div>
-      </div>
-    </DirectoryWrap>
+      </DirectoryWrap>
+      <DirectoryModal
+        type="edit"
+        isOpen={isEditOpen}
+        setIsOpen={setIsEditOpen}
+        value={postData}
+        setValue={setPostData}
+        postDir={() => {}}
+        putDir={() => {}}
+        delDir={() => {
+          setISDeleteOpen(true);
+          setIsEditOpen(false);
+        }}
+      />
+      <DelModal
+        type="directory"
+        isOpen={isDeleteOpen}
+        setIsOpen={setISDeleteOpen}
+        onClickDel={() => {}}
+      />
+    </>
   );
 };
 
@@ -52,6 +90,9 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
   transition: 0.2s;
   &:hover {
     background: rgba(0, 0, 0, 0.7);
+    .icon {
+      display: block;
+    }
     .content > * {
       color: var(--white);
     }
@@ -152,5 +193,12 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
         }
       }
     }
+  }
+  .icon {
+    position: absolute;
+    bottom: 1.7rem;
+    right: 1.7rem;
+
+    display: none;
   }
 `;

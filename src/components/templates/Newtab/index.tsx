@@ -1,5 +1,5 @@
 import { SearchBar, Tab } from "@components/atoms";
-import { Header } from "@components/organisms";
+import { Header, ListHeader } from "@components/organisms";
 import { NewBookmarkProps } from "@components/organisms/BookmarkAddModal";
 import { Homeboard } from "@components/templates";
 import { BookmarkDataProps } from "@interfaces/homeboard";
@@ -105,7 +105,10 @@ const Newtab = ({
           setValue={setTabValue}
         />
       </nav>
-      <main className="cookie-list">cookie card list</main>
+      <main className="cookie-list">
+        <ListHeader type="dir" nickname="계정이름" />
+        cookie card list
+      </main>
     </Container>
   );
 };

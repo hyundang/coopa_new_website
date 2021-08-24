@@ -1,24 +1,43 @@
 import styled from "styled-components";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
-import { Cookie } from "@components/organisms";
+import { Btn } from "@components/atoms";
+import { Cookie, ListHeader } from "@components/organisms";
+import { EmptyCookieIcon, EditIcon, LinkIcon } from "@assets/icons/common";
+import React from "react";
 
-export interface IProps {
+export interface CookiesProps {
+  /** cookie data */
   data: CookieDataProps[];
+  /** 공유 쿠키 여부 */
+  isShared?: boolean;
 }
 
-const Cookies = ({ data }: IProps) => {
+const Cookies = ({ data, isShared }: CookiesProps) => {
   return (
-    <CookiesWrap>
-      {data.map((cookie) => (
-        <Cookie cookie={cookie} key={cookie.id} allDir={[]} />
-      ))}
-    </CookiesWrap>
+    <CookiesCntnr>
+      <CookieWrap>
+        {data.map((cookie) => (
+          <Cookie
+            cookie={cookie}
+            key={cookie.id}
+            allDir={[]}
+            isShared={isShared}
+          />
+        ))}
+      </CookieWrap>
+    </CookiesCntnr>
   );
 };
 
 export default Cookies;
 
-const CookiesWrap = styled.section`
+const CookiesCntnr = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const CookieWrap = styled.section`
   display: grid;
   justify-content: center;
   grid-gap: 5px 24px;

@@ -3,7 +3,9 @@ import { ImgBox, Icon } from "@components/atoms";
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { DeleteIcon } from "@assets/icons/card";
 import { cookieimgAnimation } from "@components/animations";
-import { CookieDataProps } from "@interfaces/cookie";
+import { CookieDataProps, PatchCookieProps } from "@interfaces/cookie";
+import { CookieEditModal, DelModal } from "@components/organisms";
+import { Dispatch, SetStateAction, useState } from "react";
 
 export interface CookieImgProps {
   /** id */
@@ -15,46 +17,88 @@ export interface CookieImgProps {
   /** cookie */
   cookie: CookieDataProps;
 }
+
 const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
+  const [patchData, setPatchData] = useState<PatchCookieProps>({
+    title: cookie.title,
+    content: cookie.content,
+    thumbnail: cookie.thumbnail,
+    cookieId: cookie.id,
+  });
+  const [isError, setIsError] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const isLoading = false;
+
+  const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> = (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => setIsEditOpen(true);
+
   return (
-    <StyledImgBox
-      id={id}
-      className={className}
-      cookieContent={cookie?.content}
-      url={cookie?.thumbnail}
-      isHover={cardState === "hover"}
-    >
-      {cardState === "hover" && (
-        <HoverDiv>
-          <div className="hover_icon_wrap">
-            <Icon className="hover_icon">
-              <EditIcon className="hover_icon__edit" />
-            </Icon>
-            <Icon className="hover_icon">
-              <LinkIcon32 className="hover_icon__link" />
-            </Icon>
-            <Icon className="hover_icon">
-              <DeleteIcon className="hover_icon__delete" />
-            </Icon>
-          </div>
-        </HoverDiv>
-      )}
-      {cardState === "parking" && (
-        <ParkingDiv>
-          <div className="parking--title">
-            {cookie.directoryInfo?.emoji && (
-              <div className="parking--title__emoji">
-                {cookie.directoryInfo.emoji}
-              </div>
-            )}
-            <div className="parking--title__name">
-              {cookie.directoryInfo?.name}
+    <>
+      <StyledImgBox
+        id={id}
+        className={className}
+        cookieContent={cookie?.content}
+        url={cookie?.thumbnail}
+        isHover={cardState === "hover"}
+      >
+        {cardState === "hover" && (
+          <HoverDiv>
+            <div className="hover_icon_wrap">
+              <Icon className="hover_icon" onClick={editIconClickHandler}>
+                <EditIcon className="hover_icon__edit" />
+              </Icon>
+              <Icon className="hover_icon">
+                <LinkIcon32 className="hover_icon__link" />
+              </Icon>
+              <Icon className="hover_icon">
+                <DeleteIcon
+                  className="hover_icon__delete"
+                  onClick={() => setIsDeleteOpen(true)}
+                />
+              </Icon>
             </div>
-          </div>
-          <div className="parking--desc">에 파킹했어요!</div>
-        </ParkingDiv>
-      )}
-    </StyledImgBox>
+          </HoverDiv>
+        )}
+        {cardState === "parking" && (
+          <ParkingDiv>
+            <div className="parking--title">
+              {cookie.directoryInfo?.emoji && (
+                <div className="parking--title__emoji">
+                  {cookie.directoryInfo.emoji}
+                </div>
+              )}
+              <div className="parking--title__name">
+                {cookie.directoryInfo?.name}
+              </div>
+            </div>
+            <div className="parking--desc">에 파킹했어요!</div>
+          </ParkingDiv>
+        )}
+      </StyledImgBox>
+      <CookieEditModal
+        value={patchData}
+        setValue={setPatchData}
+        onClickSave={() => {
+          //data 처리 내용
+          setIsEditOpen(false);
+        }}
+        onClickDel={() => {
+          setIsEditOpen(false);
+          setIsDeleteOpen(true);
+        }}
+        setIsError={setIsError}
+        isOpen={isEditOpen}
+        setIsOpen={setIsEditOpen}
+        isLoading={isLoading}
+      />
+      <DelModal
+        isOpen={isDeleteOpen}
+        setIsOpen={setIsDeleteOpen}
+        onClickDel={() => {}}
+      />
+    </>
   );
 };
 

@@ -14,8 +14,10 @@ export interface CookieProps {
   cookie: CookieDataProps;
   /** all directory */
   allDir: DirectoryDataProps[];
+  /** share cookie */
+  isShared?: boolean;
 }
-const Cookie = ({ id, className, cookie, allDir }: CookieProps) => {
+const Cookie = ({ id, className, cookie, allDir, isShared }: CookieProps) => {
   //normal: 기본 | hover: 호버 | parking: 파킹중 | input: 인풋입력중
   const [cardState, setCardState] = useState<
     "hover" | "normal" | "parking" | "input"
@@ -35,7 +37,9 @@ const Cookie = ({ id, className, cookie, allDir }: CookieProps) => {
     <CookieWrap
       id={id}
       className={className}
-      onClick={() => window.open(cookie.link)}
+      onClick={() => {
+        window.open(cookie.link);
+      }}
       onMouseEnter={() => {
         if (cardState !== "input") setCardState("hover");
       }}
@@ -43,11 +47,11 @@ const Cookie = ({ id, className, cookie, allDir }: CookieProps) => {
         if (cardState !== "input") setCardState("normal");
       }}
     >
-      <CookieImg cardState={cardState} cookie={cookie} />
-      {(cardState === "hover" || cardState === "input") && (
+      <CookieImg cardState={isShared ? "normal" : cardState} cookie={cookie} />
+      {!isShared && (cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
           <CookieHover
-            allDir={allDir}
+            allDir={allDir || []}
             setCardState={setCardState}
             currDir={currDir}
             setCurrDir={setCurrDir}
@@ -75,11 +79,17 @@ const Cookie = ({ id, className, cookie, allDir }: CookieProps) => {
 };
 
 const CookieWrap = styled.article`
+  cursor: pointer;
   position: relative;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+  :hover {
+    .cookie--title {
+      text-decoration: underline;
+    }
+  }
   .hover-div {
     position: absolute;
     top: 0;
