@@ -2,8 +2,9 @@ import styled from "styled-components";
 import { Header, ListHeader } from "@components/organisms";
 import { EditIcon, EmptyCookieIcon, LinkIcon } from "@assets/icons/common";
 import Cookies from "@components/templates/Cookies";
-import { CookieDataProps } from "@interfaces/cookie";
+import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
 import { Btn } from "@components/atoms";
+import { DirectoryDataProps } from "@interfaces/directory";
 
 export interface DirDetailProps {
   /** 공유 디렉토리 여부 */
@@ -12,8 +13,16 @@ export interface DirDetailProps {
   imgUrl?: string;
   /** profile nickname */
   nickname: string;
+  /** directory info */
+  dirInfo: directoryInfoType;
+  /** directory data */
+  allDir?: DirectoryDataProps[];
   /** cookie data */
   cookies: CookieDataProps[];
+  filterType: "latest" | "readMost" | "readLeast" | "oldest";
+  onClickType: (
+    filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
+  ) => void;
   /** 공유 버튼 눌렀을 때 함수 */
   shareClick?: React.MouseEventHandler<HTMLButtonElement>;
   /** 수정 버튼 눌렀을 때 함수 */
@@ -23,18 +32,27 @@ const DirDetail = ({
   isShared = false,
   imgUrl,
   nickname,
+  dirInfo,
+  allDir,
   cookies,
+  filterType,
+  onClickType,
   shareClick,
   editClick,
 }: DirDetailProps) => {
   return (
-    <>
-      <Header className="header" imgUrl={imgUrl} isMypage />
-      <DirDetailCntnr>
+    <DirDetailCntnr>
+      <Header
+        className="header"
+        imgUrl={imgUrl}
+        isDirDetail
+        isShared={isShared}
+      />
+      <DirDetailWrap>
         <ShareCntnr>
           <Title>
             <p className="name">
-              playlist
+              {`${dirInfo.emoji || ""} ${dirInfo.name}`}
               {!isShared && (
                 <EditIcon
                   className="edit-icon"
@@ -44,13 +62,14 @@ const DirDetail = ({
             </p>
             <p className="info">
               <EmptyCookieIcon className="cookie-icon" />
-              8개
+              {cookies.length}개
             </p>
             {!isShared && (
               <Btn
                 className="share-btn"
                 isDirShare
-                onClick={shareClick ? (e) => shareClick(e) : () => {}}
+                onClick={shareClick}
+                isAtvBtn
               >
                 <LinkIcon className="icon" />
                 디렉토리 공유하기
@@ -62,23 +81,27 @@ const DirDetail = ({
           type={isShared ? "dirShare" : "dirDetail"}
           imgUrl={imgUrl}
           nickname={nickname}
-          filterType="latest"
-          onClickType={() => {}}
-          postDir={() => {}}
+          cookieNum={cookies.length}
+          filterType={filterType}
+          onClickType={onClickType}
         />
-        <Cookies isShared={isShared} data={cookies} />
-      </DirDetailCntnr>
-    </>
+        <Cookies isShared={isShared} data={cookies} allDir={allDir} />
+      </DirDetailWrap>
+    </DirDetailCntnr>
   );
 };
 
 export default DirDetail;
 
 const DirDetailCntnr = styled.div`
-  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
+const DirDetailWrap = styled.div`
   margin-top: 60px;
-  left: 50%;
-  transform: translateX(-50%);
+  padding-top: 48px;
 
   width: 1596px;
   ${({ theme }) => theme.media.desktop_2`
@@ -100,6 +123,7 @@ const DirDetailCntnr = styled.div`
    ${({ theme }) => theme.media.mobile`
     width: 100%;
     padding:0 20px;
+    padding-top: 36px;
   `}
 `;
 
@@ -122,7 +146,7 @@ const ShareCntnr = styled.div`
   `}
   /* -599 */
    ${({ theme }) => theme.media.mobile`
-    width: 33.4rem;
+    width: 100%;
   `}
 `;
 
