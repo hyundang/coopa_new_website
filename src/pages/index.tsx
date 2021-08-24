@@ -1,8 +1,16 @@
 import { getApi, postApi, putApi, delApi } from "@lib/api";
 import { Newtab } from "@components/templates";
 import { PostBookmarkDataProps } from "@interfaces/homeboard";
+import {
+  readCountDesc,
+  readCountAsc,
+  idCountAsc,
+  idCountDesc,
+} from "@lib/filter";
 import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
+import { CookieDataProps } from "@interfaces/cookie";
+import { DirectoryDataProps } from "@interfaces/directory";
 
 export default function NewtabPage() {
   // 검색 여부
@@ -33,6 +41,29 @@ export default function NewtabPage() {
       if (retryCount >= 3) return undefined;
       return true;
     },
+    onSuccess: (data) => {
+      const filter = localStorage.getItem("cookieFilter");
+      if (data && filter !== null) {
+        switch (filter) {
+          case "readMost":
+            setCookieFilter("readMost");
+            setFilteredCookieData([...data].sort(readCountDesc));
+            break;
+          case "readLeast":
+            setCookieFilter("readLeast");
+            setFilteredCookieData([...data].sort(readCountAsc));
+            break;
+          case "oldest":
+            setCookieFilter("oldest");
+            setFilteredCookieData([...data].reverse());
+            break;
+          default:
+            setCookieFilter("latest");
+            setFilteredCookieData([...data]);
+            break;
+        }
+      }
+    },
   });
   // 검색된 쿠키 데이터
   const { data: searchedCookieData } = useSWR(
@@ -40,6 +71,14 @@ export default function NewtabPage() {
     getApi.getSearchedCookieData,
     { revalidateOnFocus: false },
   );
+  // 쿠키 필터
+  const [cookieFilter, setCookieFilter] = useState<
+    "latest" | "readMost" | "readLeast" | "oldest"
+  >("latest");
+  // 필터링 된 쿠키 데이터
+  const [filteredCookieData, setFilteredCookieData] = useState<
+    CookieDataProps[] | undefined
+  >([]);
 
   // 모든 디렉토리 데이터 get
   const { data: allDirData } = useSWR("/directories", getApi.getAllDirData, {
@@ -48,6 +87,25 @@ export default function NewtabPage() {
       if (retryCount >= 3) return undefined;
       return true;
     },
+    onSuccess: (data) => {
+      const filter = localStorage.getItem("dirFilter");
+      if (data && filter !== null) {
+        switch (filter) {
+          case "latest":
+            setDirFilter("latest");
+            setFilteredDirData([...data].sort(idCountDesc));
+            break;
+          case "oldest":
+            setDirFilter("oldest");
+            setFilteredDirData([...data].sort(idCountAsc));
+            break;
+          default:
+            setDirFilter("abc");
+            setFilteredDirData(data);
+            break;
+        }
+      }
+    },
   });
   // 검색된 디렉토리 데이터
   const { data: searchedDirData } = useSWR(
@@ -55,6 +113,14 @@ export default function NewtabPage() {
     getApi.getSearchedDirData,
     { revalidateOnFocus: false },
   );
+  // 디렉토리 필터
+  const [dirFilter, setDirFilter] = useState<"latest" | "oldest" | "abc">(
+    "latest",
+  );
+  // 필터링 된 디렉토리 데이터
+  const [filteredDirData, setFilteredDirData] = useState<
+    DirectoryDataProps[] | undefined
+  >([]);
 
   // toast msg visible state
   const [isVisible, setIsVisible] = useState({
@@ -131,6 +197,54 @@ export default function NewtabPage() {
       })();
   };
 
+  // 쿠키 필터 변경
+  const handleCookieFilter = (
+    filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
+  ) => {
+    filter !== "abc" && setCookieFilter(filter);
+    localStorage.setItem("cookieFilter", filter);
+    switch (filter) {
+      case "readMost":
+        setFilteredCookieData(
+          allCookieData && [...allCookieData].sort(readCountDesc),
+        );
+        break;
+      case "readLeast":
+        setFilteredCookieData(
+          allCookieData && [...allCookieData].sort(readCountAsc),
+        );
+        break;
+      case "oldest":
+        setFilteredCookieData(allCookieData && [...allCookieData].reverse());
+        break;
+      default:
+        setFilteredCookieData(allCookieData);
+        break;
+    }
+  };
+
+  // 디렉토리 필터 변경
+  const handleDirFilter = (
+    filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
+  ) => {
+    filter !== "readMost" && filter !== "readLeast" && setDirFilter(filter);
+    localStorage.setItem("dirFilter", filter);
+    switch (filter) {
+      case "latest":
+        setFilteredDirData(allDirData && [...allDirData].sort(idCountDesc));
+        break;
+      case "oldest":
+        setFilteredDirData(allDirData && [...allDirData].sort(idCountAsc));
+        break;
+      default:
+        setFilteredDirData(allDirData);
+        break;
+    }
+  };
+
+  // 디렉토리 생성
+  const handlePostDir = () => {};
+
   useEffect(() => {
     // 홈보드 이미지 세팅
     const homeboardImgUrl = localStorage.getItem("homeboardImgUrl");
@@ -165,14 +279,19 @@ export default function NewtabPage() {
       bookmarkDatas={bookmarkData !== undefined ? bookmarkData : []}
       onClickBookmarkSave={handleAddBookmark}
       onClickBookmarkDel={handleDelBookmark}
-      cookieData={allCookieData !== undefined ? allCookieData : []}
+      cookieData={filteredCookieData !== undefined ? filteredCookieData : []}
       searchedCookieData={
         searchedCookieData !== undefined ? searchedCookieData : []
       }
-      dirData={allDirData !== undefined ? allDirData : []}
+      cookieFilter={cookieFilter}
+      setCookieFilter={handleCookieFilter}
+      dirData={filteredDirData !== undefined ? filteredDirData : []}
       searchedDirData={searchedDirData !== undefined ? searchedDirData : []}
+      dirFilter={dirFilter}
+      setDirFilter={handleDirFilter}
       isToastMsgVisible={isVisible}
       setIsToastMsgVisible={setIsVisible}
+      postDir={handlePostDir}
     />
   );
 }
