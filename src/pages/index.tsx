@@ -276,17 +276,15 @@ export default function NewtabPage() {
       homeboardImg={homeboardImg}
       setHomeboardImg={setHomeboardImg}
       postHomeboardImg={handlePostHomeboardImg}
-      bookmarkDatas={bookmarkData !== undefined ? bookmarkData : []}
+      bookmarkDatas={bookmarkData || []}
       onClickBookmarkSave={handleAddBookmark}
       onClickBookmarkDel={handleDelBookmark}
-      cookieData={filteredCookieData !== undefined ? filteredCookieData : []}
-      searchedCookieData={
-        searchedCookieData !== undefined ? searchedCookieData : []
-      }
+      cookieData={filteredCookieData || []}
+      searchedCookieData={searchedCookieData || []}
       cookieFilter={cookieFilter}
       setCookieFilter={handleCookieFilter}
-      dirData={filteredDirData !== undefined ? filteredDirData : []}
-      searchedDirData={searchedDirData !== undefined ? searchedDirData : []}
+      dirData={filteredDirData || []}
+      searchedDirData={searchedDirData || []}
       dirFilter={dirFilter}
       setDirFilter={handleDirFilter}
       isToastMsgVisible={isVisible}
