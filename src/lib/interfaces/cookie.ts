@@ -1,4 +1,4 @@
-interface directoryInfoType {
+export interface directoryInfoType {
   emoji?: string | null;
   id: number;
   name: string;
@@ -21,4 +21,10 @@ export interface PatchCookieProps {
   thumbnail: string;
   cookieId: number | string;
   image?: File;
+}
+
+/** 디렉토리 쿠키 */
+export interface DirectoryCookieDataProps {
+  directoryInfo: directoryInfoType;
+  cookies: CookieDataProps[];
 }
