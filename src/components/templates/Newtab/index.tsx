@@ -1,7 +1,6 @@
 // components
 import { SearchBar, Tab, ToastMsg } from "@components/atoms";
 import { Header, ListHeader } from "@components/organisms";
-import { Header } from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
 // interfaces
 import {
@@ -54,10 +53,22 @@ export interface NewtablProps {
   cookieData: CookieDataProps[];
   /** 검색된 쿠키 데이터 */
   searchedCookieData: CookieDataProps[];
+  /** 쿠키 필터 */
+  cookieFilter: "latest" | "readMost" | "readLeast" | "oldest";
+  setCookieFilter: (
+    f: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
+  ) => void;
   /** all directory data */
   dirData: DirectoryDataProps[];
   /** 검색된 디렉토리 데이터 */
   searchedDirData: DirectoryDataProps[];
+  /** 디렉토리 필터 */
+  dirFilter: "latest" | "oldest" | "abc";
+  setDirFilter: (
+    f: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
+  ) => void;
+  /** 디렉토리 생성 */
+  postDir: () => void;
   /** toast msg state */
   isToastMsgVisible: ToastMsgVisibleStateProps;
   setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
@@ -79,14 +90,20 @@ const Newtab = ({
   onClickBookmarkDel,
   cookieData,
   searchedCookieData,
+  cookieFilter,
+  setCookieFilter,
   dirData,
   searchedDirData,
+  dirFilter,
+  setDirFilter,
+  postDir,
   isToastMsgVisible,
   setIsToastMsgVisible,
 }: NewtablProps) => {
   // 검색창 불필요한 fadeout 방지
   const [preventFadeout, setPreventFadeout] = useState(true);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  // tab
   const [tabOptions, setTabOptions] = useState(["모든 쿠키", "디렉토리"]);
   const [tabValue, setTabValue] = useState("모든 쿠키");
 
@@ -235,6 +252,21 @@ const Newtab = ({
           />
         </nav>
         <main className="card-list">
+          <ListHeader
+            isSearched={isSearched && isSearchVisible}
+            cookieNum={searchedCookieData.length}
+            dirNum={searchedDirData.length}
+            type={
+              tabValue === "모든 쿠키" || tabValue === "쿠키" ? "cookie" : "dir"
+            }
+            imgUrl={imgUrl}
+            nickname="hihi"
+            filterType={tabValue === "모든 쿠키" ? cookieFilter : dirFilter}
+            onClickType={
+              tabValue === "모든 쿠키" ? setCookieFilter : setDirFilter
+            }
+            postDir={postDir}
+          />
           {isSearched && isSearchVisible ? (
             <>
               {tabValue === "쿠키" ? (
