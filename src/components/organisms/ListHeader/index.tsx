@@ -37,19 +37,15 @@ const ListHeader = ({
 
   return (
     <>
-      <ListHeaderWrap type={type}>
+      <ListHeaderWrap type={type} nickname={nickname}>
         {(type === "dirDetail" || type === "dirShare") && (
           <User>
             <img alt="profile-img" src={imgUrl} />
             <p>{nickname}</p>
           </User>
         )}
-        {type === "cookie" && (
-          <div className="nickname">{nickname}님의 파킹랏</div>
-        )}
-        {type === "dir" && (
-          <div className="nickname">{nickname}님의 디렉토리</div>
-        )}
+        {type === "cookie" && <div className="nickname--cookie" />}
+        {type === "dir" && <div className="nickname--dir" />}
         <div className="button-wrap">
           {type === "dir" && (
             <StyledIcon
@@ -93,6 +89,7 @@ export default ListHeader;
 
 interface ListHeaderWrapProps {
   type: "cookie" | "dir" | "dirDetail" | "dirShare" | "abc";
+  nickname: string;
 }
 const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
   width: 1596px;
@@ -105,6 +102,46 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
       : css`
           margin-bottom: 20px;
         `}
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  .nickname--cookie {
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 28px;
+    color: var(--black_1);
+    &:after {
+      content: "${({ nickname }) => nickname}님의 파킹랏";
+    }
+  }
+
+  .nickname--dir {
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 28px;
+    color: var(--black_1);
+    &:after {
+      content: "${({ nickname }) => nickname}님의 디렉토리";
+    }
+  }
+
+  .button-wrap {
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+
+    position: relative;
+    /** 이 부분 수정 필요 */
+    .filter-modal {
+      position: absolute;
+      top: 6rem;
+      right: 0;
+    }
+  }
+
   ${({ theme }) => theme.media.desktop_2`
     width: 1272px;
   `}
@@ -121,35 +158,19 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
     width: 564px;
   `}
   /* -599 */
-   ${({ theme, type }) => theme.media.mobile`
+   ${({ theme }) => theme.media.mobile`
     width: 100%;
-  `}
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-
-  .nickname {
-    font-weight: 700;
-    font-size: 22px;
-    line-height: 28px;
-    color: var(--black_1);
-  }
-
-  .button-wrap {
-    width: fit-content;
-    display: flex;
-    flex-direction: row;
-
-    position: relative;
-    /** 이 부분 수정 필요 */
-    .filter-modal {
-      position: absolute;
-      top: 6rem;
-      right: 0;
+    .nickname--cookie {
+      &:after {
+        content:"모든 쿠키";
+      }
     }
-  }
+    .nickname--dir {
+      &:after {
+        content:"디렉토리";
+      }
+    }
+  `}
 `;
 
 const User = styled.div`
