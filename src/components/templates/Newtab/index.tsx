@@ -8,7 +8,7 @@ import {
   PostBookmarkDataProps,
 } from "@interfaces/homeboard";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { CookieDataProps } from "@interfaces/cookie";
 import { DirectoryDataProps } from "@interfaces/directory";
 
@@ -126,20 +126,21 @@ const Newtab = ({
     <>
       <Header
         className="header"
-        onClickSearch={() => {
-          isSearchVisible && setPreventFadeout(false);
-          setIsSearchVisible(!isSearchVisible);
-        }}
+        onClickSearch={handleClickSearchIcon}
         isSearchIconAtv={isSearchVisible}
         imgUrl={imgUrl}
       />
-      <Container className="container">
+      <Container className="container" isSearched={isSearched}>
         <Homeboard
           className="homeboard"
           visible={isSearchVisible}
           setVisible={setIsSearchVisible}
           isSearched={isSearched}
           setIsSearched={setIsSearched}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          onSearchBarKeyDown={handleKeyDown}
+          onSearchBarKeyPress={handleKeyPress}
           homeboardModalImg={homeboardModalImg}
           setHomeboardModalImg={setHomeboardModalImg}
           homeboardImg={homeboardImg}
@@ -254,7 +255,10 @@ const Newtab = ({
 
 export default Newtab;
 
-const Container = styled.div`
+interface ContainerProps {
+  isSearched: boolean;
+}
+const Container = styled.div<ContainerProps>`
   width: 100%;
   padding-top: 60px;
 
@@ -293,8 +297,19 @@ const Container = styled.div`
     width: 100%;
     padding: 8px 16px;
     display: none;
-    ${({ theme }) => theme.media.tablet`
+    ${({ theme, isSearched }) => theme.media.tablet`
       display: block;
+      ${
+        isSearched &&
+        css`
+          ${theme.media.mobile`
+            margin-top: 12px;
+          `}
+          padding: 8px 16px;
+          margin-top: 24px;
+          margin-bottom: 8px;
+        `
+      }
     `}
   }
 `;

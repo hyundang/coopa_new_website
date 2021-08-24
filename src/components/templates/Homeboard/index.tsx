@@ -94,6 +94,7 @@ const Homeboard = ({
       homeboardImg={homeboardImg}
       isSettingIconAtv={isOpen}
       visible={visible}
+      isSearched={isSearched && visible}
     >
       <div className="inner-wrap">
         {!visible && <DuribunLImg role="img" className="duribun-left" />}
@@ -154,6 +155,7 @@ interface HomeboardWrapProps {
   homeboardImg: string;
   isSettingIconAtv: boolean;
   visible: boolean;
+  isSearched: boolean;
 }
 const HomeboardWrap = styled.section<HomeboardWrapProps>`
   width: 100%;
@@ -172,6 +174,34 @@ const HomeboardWrap = styled.section<HomeboardWrapProps>`
   ${({ theme }) => theme.media.tablet`
     display: none;
   `}
+
+  ${({ visible }) =>
+    visible
+      ? css`
+          .duribun-search {
+            animation: ${homeboardAnimation.fadeInRule};
+          }
+        `
+      : css`
+          .duribun-left {
+            animation: ${homeboardAnimation.fadeInRule};
+          }
+          .duribun-right {
+            animation: ${homeboardAnimation.fadeInRule};
+          }
+          .setting {
+            animation: ${homeboardAnimation.fadeInRule};
+          }
+          .bookmark {
+            animation: ${homeboardAnimation.fadeInRule};
+          }
+        `};
+  ${({ isSearched }) =>
+    isSearched &&
+    css`
+      height: 87px;
+      background: none;
+    `}
 
   .inner-wrap {
     position: relative;
@@ -201,28 +231,12 @@ const HomeboardWrap = styled.section<HomeboardWrapProps>`
       left: 198px;
       width: 200px;
       height: 168px;
+      ${({ isSearched }) =>
+        isSearched &&
+        css`
+          display: none;
+        `};
     }
-    ${({ visible }) =>
-      visible
-        ? css`
-            .duribun-search {
-              animation: ${homeboardAnimation.fadeInRule};
-            }
-          `
-        : css`
-            .duribun-left {
-              animation: ${homeboardAnimation.fadeInRule};
-            }
-            .duribun-right {
-              animation: ${homeboardAnimation.fadeInRule};
-            }
-            .setting {
-              animation: ${homeboardAnimation.fadeInRule};
-            }
-            .bookmark {
-              animation: ${homeboardAnimation.fadeInRule};
-            }
-          `};
 
     .setting {
       position: absolute;
@@ -268,6 +282,12 @@ const HomeboardWrap = styled.section<HomeboardWrapProps>`
       left: 50%;
       margin-left: 35px;
       transform: translateX(-50%);
+      ${({ isSearched }) =>
+        isSearched &&
+        css`
+          top: 18px;
+          margin-left: 0;
+        `};
     }
 
     .bookmark {

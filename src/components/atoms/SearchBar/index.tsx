@@ -151,29 +151,31 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
     &:hover {
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     }
-    ${({ isFocus }) =>
-      isFocus &&
-      css`
-        background-color: var(--white);
-        box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.15);
-      `}
-    ${({ isSearched }) =>
-      isSearched &&
-      css`
-        border-radius: 0;
-        border-bottom: 1.5px solid var(--orange);
-        padding: 7px 11px;
-        &:hover {
-          box-shadow: none;
-        }
-      `}
+    ${({ isSearched, isFocus }) =>
+      isSearched
+        ? css`
+            height: 50px;
+            background-color: unset;
+            border-radius: 0;
+            border-bottom: 1.5px solid var(--orange);
+            padding: 7px 11px;
+            box-shadow: none;
+            &:hover {
+              box-shadow: none;
+            }
+          `
+        : isFocus &&
+          css`
+            background-color: var(--white);
+            box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.15);
+          `}
 
     &__icon {
       width: 23.7px;
       height: 23.7px;
       margin-right: 18px;
-      ${({ isFocus }) =>
-        isFocus &&
+      ${({ isFocus, isSearched }) =>
+        (isFocus || isSearched) &&
         css`
           transition: 0.2s;
           path {
@@ -203,7 +205,7 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
       }
     }
 
-    ${({ theme }) => theme.media.tablet`
+    ${({ theme, isSearched, isFocus }) => theme.media.tablet`
       width: 522px;
       height: 48px;
       padding: 15px 21px;
@@ -223,15 +225,53 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
         height: 18px;
         margin-right: 13px;
       }
+      ${
+        isSearched
+          ? css`
+              height: 40px;
+              width: 564px;
+              margin-right: 0;
+              padding: 9px 6px;
+              border-bottom: 2px solid var(--orange);
+              background-color: unset;
+              border-radius: 0;
+              box-shadow: none;
+              &:hover {
+                box-shadow: none;
+              }
+              &__input {
+                font-size: 20px;
+              }
+              &__icon {
+                width: 20.8px;
+                height: 20.8px;
+              }
+            `
+          : isFocus &&
+            css`
+              background-color: var(--white);
+              box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+            `
+      }
     `}
-    ${({ isFocus, theme }) =>
-      isFocus &&
-      theme.media.tablet`
-        background-color: var(--white);
-        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
-      `}
-    ${({ theme }) => theme.media.mobile`
+
+    ${({ theme, isSearched }) => theme.media.mobile`
       width: 100%;
+      ${
+        isSearched &&
+        css`
+          height: 38px;
+          padding: 9px 7.5px;
+          border-bottom: 1px solid var(--orange);
+          &__input {
+            height: 22px;
+            font-size: 18px;
+          }
+          &__icon {
+            margin-right: 9px;
+          }
+        `
+      }
     `}
   }
 
@@ -240,6 +280,11 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
       !visible &&
       css`
         cursor: auto;
+      `}
+    ${({ isSearched }) =>
+      isSearched &&
+      css`
+        display: none;
       `}
     width: 56px;
     height: 56px;
