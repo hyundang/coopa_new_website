@@ -6,9 +6,22 @@ import { useState } from "react";
 import { readCountAsc, readCountDesc } from "@lib/filter";
 import { CookieDataProps } from "@interfaces/cookie";
 import postApi from "@api/postApi";
+import { UserDataProps } from "@interfaces/user";
 
 const DirDetailPage = () => {
   const router = useRouter();
+
+  // 유저 데이터 get
+  const { data: userData, error: userDataError } = useSWR<
+    UserDataProps | undefined
+  >("/users", getApi.getUserData, {
+    onErrorRetry: ({ retryCount }) => {
+      // 3번 까지만 재시도함
+      if (retryCount >= 3) return undefined;
+      return true;
+    },
+    revalidateOnFocus: false,
+  });
 
   // 모든 디렉토리 데이터 get
   const { data: allDirData } = useSWR("/directories", getApi.getAllDirData, {
@@ -93,13 +106,13 @@ const DirDetailPage = () => {
 
   const handleShareClick = async () => {
     const shareToken = await postApi.postShareToken(Number(router.query.id));
-    console.log(shareToken);
+    console.log(`${DOMAIN}/share/${shareToken}`);
   };
 
   return (
     <DirDetail
-      imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
-      nickname="hihi"
+      imgUrl={userData?.profileImage}
+      nickname={userData?.name || ""}
       dirInfo={DirCookieData?.directoryInfo || { name: "", id: 0 }}
       allDir={allDirData}
       cookies={filteredCookieData || []}

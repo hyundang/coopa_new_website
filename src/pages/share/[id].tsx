@@ -86,8 +86,8 @@ const SharePage = () => {
   return (
     <DirDetail
       isShared
-      imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
-      nickname="hihi"
+      imgUrl={sharedDirCookieData?.userInfo.profileImage}
+      nickname={sharedDirCookieData?.userInfo.name || ""}
       dirInfo={sharedDirCookieData?.directoryInfo || { name: "", id: 0 }}
       cookies={filteredCookieData || []}
       filterType={cookieFilter}
