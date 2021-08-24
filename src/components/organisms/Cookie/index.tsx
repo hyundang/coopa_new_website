@@ -13,7 +13,7 @@ export interface CookieProps {
   /** cookie */
   cookie: CookieDataProps;
   /** all directory */
-  allDir: DirectoryDataProps[];
+  allDir?: DirectoryDataProps[];
   /** share cookie */
   isShared?: boolean;
 }

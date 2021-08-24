@@ -13,9 +13,9 @@ export interface ListHeaderProps {
   /** 검색 결과 여부 */
   isSearched?: boolean;
   /** 검색된 쿠키 개수 */
-  cookieNum: number;
+  cookieNum?: number;
   /** 검색된 디렉토리 개수 */
-  dirNum: number;
+  dirNum?: number;
   /** profile img */
   imgUrl?: string;
   /** profile nickname */
@@ -27,13 +27,13 @@ export interface ListHeaderProps {
     e: "latest" | "oldest" | "readMost" | "readLeast" | "abc",
   ) => void;
   /** post dir */
-  postDir: (e: PostDirectoryProps) => void;
+  postDir?: (e: PostDirectoryProps) => void;
 }
 const ListHeader = ({
   type,
   isSearched = false,
-  cookieNum,
-  dirNum,
+  cookieNum = 0,
+  dirNum = 0,
   imgUrl,
   nickname,
   filterType,
@@ -115,7 +115,7 @@ const ListHeader = ({
               className="filter-modal"
               isOpen={isFilterOpen}
               setIsOpen={setIsFilterOpen}
-              type={type === "cookie" ? "cookie" : "dir"}
+              type={type === "dir" ? "dir" : "cookie"}
               filterType={filterType}
               onClickType={onClickType}
             />

@@ -11,7 +11,8 @@ export interface CookiesProps {
   data: CookieDataProps[];
   /** 공유 쿠키 여부 */
   isShared?: boolean;
-  allDir: DirectoryDataProps[];
+  /** 전체 디렉토리 리스트 */
+  allDir?: DirectoryDataProps[];
 }
 
 const Cookies = ({ data, allDir, isShared }: CookiesProps) => {
