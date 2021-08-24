@@ -103,7 +103,7 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
           margin-bottom: 20px;
         `
       : css`
-          margin-bottom: 30px;
+          margin-bottom: 20px;
         `}
   ${({ theme }) => theme.media.desktop_2`
     width: 1272px;
@@ -142,11 +142,12 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
     display: flex;
     flex-direction: row;
 
+    position: relative;
     /** 이 부분 수정 필요 */
     .filter-modal {
-      margin-right: 140px;
-      right: 80px;
-      top: 94px;
+      position: absolute;
+      top: 6rem;
+      right: 0;
     }
   }
 `;

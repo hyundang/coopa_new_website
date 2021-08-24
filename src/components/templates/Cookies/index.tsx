@@ -106,7 +106,7 @@ const ShareCntnr = styled.div`
 
 const Title = styled.article`
   position: relative;
-  margin-bottom: 5rem;
+  margin-bottom: 4rem;
 
   display: flex;
   flex-direction: column;
