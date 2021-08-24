@@ -38,6 +38,7 @@ export default function NewtabPage() {
   const { data: searchedCookieData } = useSWR(
     "/cookies/search",
     getApi.getSearchedCookieData,
+    { revalidateOnFocus: false },
   );
 
   // 모든 디렉토리 데이터 get
@@ -52,6 +53,7 @@ export default function NewtabPage() {
   const { data: searchedDirData } = useSWR(
     "/directories/search",
     getApi.getSearchedDirData,
+    { revalidateOnFocus: false },
   );
 
   // toast msg visible state
