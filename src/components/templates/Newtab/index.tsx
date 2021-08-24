@@ -77,6 +77,7 @@ const Newtab = ({
   // 검색창 불필요한 fadeout 방지
   const [preventFadeout, setPreventFadeout] = useState(true);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [tabOptions, setTabOptions] = useState(["모든 쿠키", "디렉토리"]);
   const [tabValue, setTabValue] = useState("모든 쿠키");
 
   // toast msg visible handling
@@ -121,6 +122,19 @@ const Newtab = ({
   useEffect(() => {
     setTimeout(() => !preventFadeout && setPreventFadeout(true), 1000);
   }, [preventFadeout]);
+
+  // 검색 여부에 따른 tab option 변경
+  useEffect(() => {
+    isSearched && isSearchVisible
+      ? (() => {
+          setTabOptions(["쿠키", "디렉토리"]);
+          setTabValue("쿠키");
+        })()
+      : (() => {
+          setTabOptions(["모든 쿠키", "디렉토리"]);
+          setTabValue("모든 쿠키");
+        })();
+  }, [isSearched, isSearchVisible]);
 
   return (
     <>
@@ -179,16 +193,22 @@ const Newtab = ({
               height: "56px",
               fontSize: "16px",
             }}
-            options={["모든 쿠키", "디렉토리"]}
+            options={tabOptions}
             value={tabValue}
             setValue={setTabValue}
           />
         </nav>
         <main className="card-list">
-          {tabValue === "모든 쿠키" ? (
-            <Cookies data={cookieData} />
+          {isSearched && isSearchVisible ? (
+            <></>
           ) : (
-            <Directories data={dirData} />
+            <>
+              {tabValue === "모든 쿠키" ? (
+                <Cookies data={cookieData} />
+              ) : (
+                <Directories data={dirData} />
+              )}
+            </>
           )}
         </main>
       </Container>
