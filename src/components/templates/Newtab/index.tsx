@@ -1,5 +1,6 @@
 // components
 import { SearchBar, Tab, ToastMsg } from "@components/atoms";
+import { Header, ListHeader } from "@components/organisms";
 import { Header } from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
 // interfaces

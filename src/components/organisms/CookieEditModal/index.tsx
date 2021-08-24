@@ -3,24 +3,17 @@ import styled, { css } from "styled-components";
 import { Btn, Modal } from "@components/atoms";
 import { ImgBoxForm, InputForm, TextAreaForm } from "@components/molecules";
 import { modalAnimation } from "@components/animations";
+import { PatchCookieProps } from "@interfaces/cookie";
 
-/** !쿠키 1개에 대한 export interface 만들어서 사용하기! */
-interface ValueProps {
-  title: string;
-  content: string;
-  thumbnail: string;
-  cookieId: number | string;
-  image?: File;
-}
 export interface CookieEditModalProps {
   /** id */
   id?: string;
   /** className */
   className?: string;
   /** 쿠키 제목, 쿠키 텍스트, 쿠키 썸네일, 쿠키 아이디, 쿠키 썸네일 파일 */
-  value: ValueProps;
+  value: PatchCookieProps;
   /** 쿠키 제목, 쿠키 텍스트, 쿠키 썸네일 setState */
-  setValue: Dispatch<SetStateAction<ValueProps>>;
+  setValue: Dispatch<SetStateAction<PatchCookieProps>>;
   /** '저장' 버튼 클릭 시 event handling 함수 */
   onClickSave: React.MouseEventHandler<HTMLButtonElement>;
   /** '삭제' 버튼 클릭 시 event handling 함수 */
@@ -140,7 +133,7 @@ const CookieEditModal = ({
           <Btn className="button" isAtvBtn onClick={() => setIsOpen(false)}>
             취소
           </Btn>
-          <Btn className="button" isOrange isAtvBtn onClick={onClickSave}>
+          <Btn className="button" isOrange onClick={onClickSave}>
             수정
           </Btn>
         </span>

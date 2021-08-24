@@ -19,11 +19,11 @@ export interface DirectoryModalProps {
   value: PostDirectoryProps;
   setValue: Dispatch<SetStateAction<PostDirectoryProps>>;
   /** post directory data */
-  postDir: (e: PostDirectoryProps) => void;
+  postDir?: (e: PostDirectoryProps) => void;
   /** put directory data */
-  putDir: (e: PostDirectoryProps) => void;
+  putDir?: (e: PostDirectoryProps) => void;
   /** delete directory data */
-  delDir: () => void;
+  delDir?: () => void;
 }
 const DirectoryModal = ({
   id,
@@ -68,7 +68,7 @@ const DirectoryModal = ({
   const handleClickButton = () => {
     value.name !== ""
       ? (() => {
-          type === "new" ? postDir(value) : putDir(value);
+          type === "new" ? postDir && postDir(value) : putDir && putDir(value);
           setIsOpen(false);
         })()
       : name_input.current?.focus();
@@ -145,7 +145,7 @@ const DirectoryModal = ({
             className="modal-button"
             isAtvBtn
             onClick={() => {
-              delDir();
+              delDir && delDir();
               setIsOpen(false);
             }}
           >
