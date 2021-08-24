@@ -20,6 +20,8 @@ export interface BtnProps {
   isCookieDirBtn?: boolean;
   /** 버튼 활성화 여부 (활성화 - >true / 비활성화 -> false) */
   isAtvBtn?: boolean;
+  /** role */
+  role?: string;
 }
 const Btn = ({
   id,
@@ -31,6 +33,7 @@ const Btn = ({
   setIsHover,
   isCookieDirBtn,
   isAtvBtn,
+  role,
 }: BtnProps) => {
   return (
     <BtnWrap
@@ -44,6 +47,7 @@ const Btn = ({
       disabled={!isAtvBtn}
       onMouseEnter={setIsHover ? () => setIsHover(true) : undefined}
       onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
+      role={role}
     >
       {children}
     </BtnWrap>

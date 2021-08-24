@@ -33,11 +33,11 @@ const DelModal = ({
       <h1 className="modal-title">
         {type === "cookie" ? "쿠키" : "디렉토리"} 삭제
       </h1>
-      <span className="modal-desc">
+      <div className="modal-desc">
         {type === "cookie"
           ? "이 쿠키를 삭제할까요?"
           : "포함된 모든 쿠키가 삭제돼요! 삭제하시겠어요?"}
-      </span>
+      </div>
       <div style={{ flexGrow: 1, width: "100%" }} />
       <div className="button-wrap">
         <Btn
