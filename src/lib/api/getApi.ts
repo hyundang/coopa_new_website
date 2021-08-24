@@ -88,6 +88,14 @@ const getDirCookieData = (
     return res.data.data;
   });
 
+const getSharedDirectoryData = (
+  url: string,
+): Promise<DirectoryCookieDataProps | undefined> =>
+  axios.get(url, { baseURL: API_DOMAIN }).then((res) => {
+    console.log("[SUCCESS] GET SHARED COOKIE DATA", res.data.data);
+    return res.data.data;
+  });
+
 const getApi = {
   getUserData,
   getHomeboardData,
@@ -97,6 +105,7 @@ const getApi = {
   getSearchedCookieData,
   getSearchedDirData,
   getDirCookieData,
+  getSharedDirectoryData,
 };
 
 export default getApi;
