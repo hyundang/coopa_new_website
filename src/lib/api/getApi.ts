@@ -1,4 +1,8 @@
-import { CookieDataProps, DirectoryCookieDataProps } from "@interfaces/cookie";
+import {
+  CookieDataProps,
+  DirectoryCookieDataProps,
+  SharedDirectoryCookieDataProps,
+} from "@interfaces/cookie";
 import { DirectoryDataProps } from "@interfaces/directory";
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import axios from "axios";
@@ -90,7 +94,7 @@ const getDirCookieData = (
 
 const getSharedDirectoryData = (
   url: string,
-): Promise<DirectoryCookieDataProps | undefined> =>
+): Promise<SharedDirectoryCookieDataProps | undefined> =>
   axios.get(url, { baseURL: API_DOMAIN }).then((res) => {
     console.log("[SUCCESS] GET SHARED COOKIE DATA", res.data.data);
     return res.data.data;
