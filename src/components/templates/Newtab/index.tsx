@@ -51,8 +51,12 @@ export interface NewtablProps {
   onClickBookmarkDel: (bookmarkID: number) => Promise<void>;
   /** all cookie data */
   cookieData: CookieDataProps[];
+  /** 검색된 쿠키 데이터 */
+  searchedCookieData: CookieDataProps[];
   /** all directory data */
   dirData: DirectoryDataProps[];
+  /** 검색된 디렉토리 데이터 */
+  searchedDirData: DirectoryDataProps[];
   /** toast msg state */
   isToastMsgVisible: ToastMsgVisibleStateProps;
   setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
@@ -73,7 +77,9 @@ const Newtab = ({
   onClickBookmarkSave,
   onClickBookmarkDel,
   cookieData,
+  searchedCookieData,
   dirData,
+  searchedDirData,
   isToastMsgVisible,
   setIsToastMsgVisible,
 }: NewtablProps) => {
@@ -111,7 +117,7 @@ const Newtab = ({
   };
 
   // 키 클릭 시
-  const handleKeyDown = (e: any) => {
+  const handleKeyDown = async (e: any) => {
     // esc = 검색창 닫기
     if (e.key === "Escape" && isSearchVisible) {
       setPreventFadeout(false);
@@ -121,7 +127,7 @@ const Newtab = ({
   // 키 떼어냈을 때
   const handleKeyUp = (e: any) => {
     // shift + s = 검색창 열기
-    if (e.key === "S" && e.shiftKey) {
+    if (e.key === "S" && e.shiftKey && !isSearchVisible) {
       setIsSearchVisible(true);
       setSearchValue("");
       setIsSearched(false);
@@ -229,7 +235,13 @@ const Newtab = ({
         </nav>
         <main className="card-list">
           {isSearched && isSearchVisible ? (
-            <></>
+            <>
+              {tabValue === "쿠키" ? (
+                <Cookies data={searchedCookieData} />
+              ) : (
+                <Directories data={searchedDirData} />
+              )}
+            </>
           ) : (
             <>
               {tabValue === "모든 쿠키" ? (

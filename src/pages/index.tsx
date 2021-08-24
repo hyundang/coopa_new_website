@@ -34,6 +34,11 @@ export default function NewtabPage() {
       return true;
     },
   });
+  // 검색된 쿠키 데이터
+  const { data: searchedCookieData } = useSWR(
+    "/cookies/search",
+    getApi.getSearchedCookieData,
+  );
 
   // 모든 디렉토리 데이터 get
   const { data: allDirData } = useSWR("/directories", getApi.getAllDirData, {
@@ -43,6 +48,11 @@ export default function NewtabPage() {
       return true;
     },
   });
+  // 검색된 디렉토리 데이터
+  const { data: searchedDirData } = useSWR(
+    "/directories/search",
+    getApi.getSearchedDirData,
+  );
 
   // toast msg visible state
   const [isVisible, setIsVisible] = useState({
@@ -56,6 +66,23 @@ export default function NewtabPage() {
     homeboardEdit: false,
     imgSizeOver: false,
   });
+
+  // 검색창 enter 키 클릭 시
+  const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setIsSearched(true);
+      mutate(
+        "/cookies/search",
+        await getApi.getSearchedCookieData(searchValue),
+        false,
+      );
+      mutate(
+        "/directories/search",
+        await getApi.getSearchedDirData(searchValue),
+        false,
+      );
+    }
+  };
 
   // 홈보드 이미지 get
   const handleGetHomeboardImg = async () => {
@@ -126,6 +153,7 @@ export default function NewtabPage() {
       setIsSearched={setIsSearched}
       searchValue={searchValue}
       setSearchValue={setSearchValue}
+      onKeyPress={handleKeyPress}
       imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
       homeboardModalImg={homeboardModalImg}
       setHomeboardModalImg={setHomeboardModalImg}
@@ -136,7 +164,11 @@ export default function NewtabPage() {
       onClickBookmarkSave={handleAddBookmark}
       onClickBookmarkDel={handleDelBookmark}
       cookieData={allCookieData !== undefined ? allCookieData : []}
+      searchedCookieData={
+        searchedCookieData !== undefined ? searchedCookieData : []
+      }
       dirData={allDirData !== undefined ? allDirData : []}
+      searchedDirData={searchedDirData !== undefined ? searchedDirData : []}
       isToastMsgVisible={isVisible}
       setIsToastMsgVisible={setIsVisible}
     />

@@ -49,12 +49,44 @@ const getAllDirData = (
     return res.data.data;
   });
 
+const getSearchedCookieData = async (
+  word: string,
+): Promise<CookieDataProps[]> => {
+  try {
+    const {
+      data: { data },
+    } = await client.get(`/cookies/search?word=${word}`);
+    console.log("[SUCCESS] GET SEARCHED COOKIE DATA", data);
+    return data;
+  } catch (e) {
+    console.log("[FAIL] GET SEARCHED COOKIE DATA", e);
+    return e;
+  }
+};
+
+const getSearchedDirData = async (
+  word: string,
+): Promise<DirectoryDataProps[]> => {
+  try {
+    const {
+      data: { data },
+    } = await client.get(`/directories/search?word=${word}`);
+    console.log("[SUCCESS] GET SEARCHED dIRECTORIES DATA", data);
+    return data;
+  } catch (e) {
+    console.log("[FAIL] GET SEARCHED dIRECTORIES DATA", e);
+    return e;
+  }
+};
+
 const getApi = {
   getUserData,
   getHomeboardData,
   getBookmarkData,
   getAllCookieData,
   getAllDirData,
+  getSearchedCookieData,
+  getSearchedDirData,
 };
 
 export default getApi;
