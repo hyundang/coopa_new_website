@@ -31,6 +31,8 @@ export interface NewtablProps {
   /** 검색어 */
   searchValue: string;
   setSearchValue: Dispatch<SetStateAction<string>>;
+  /** enter key 클릭 */
+  onKeyPress: React.KeyboardEventHandler<HTMLInputElement>;
   /** 프로필 이미지 url */
   imgUrl?: string;
   /** 모달 안의 홈보드 배경 이미지 */
@@ -60,6 +62,7 @@ const Newtab = ({
   setIsSearched,
   searchValue,
   setSearchValue,
+  onKeyPress,
   imgUrl,
   homeboardModalImg,
   setHomeboardModalImg,
@@ -107,18 +110,35 @@ const Newtab = ({
     setIsSearched(false);
   };
 
-  // enter 키 클릭 시
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    e.key === "Enter" && setIsSearched(true);
-  };
-  // esc 키 클릭 시
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Escape") {
+  // 키 클릭 시
+  const handleKeyDown = (e: any) => {
+    // esc = 검색창 닫기
+    if (e.key === "Escape" && isSearchVisible) {
       setPreventFadeout(false);
       setIsSearchVisible(false);
     }
   };
+  // 키 떼어냈을 때
+  const handleKeyUp = (e: any) => {
+    // shift + s = 검색창 열기
+    if (e.key === "S" && e.shiftKey) {
+      setIsSearchVisible(true);
+      setSearchValue("");
+      setIsSearched(false);
+    }
+    // shift + c = 모든 쿠키 탭
+    if (e.key === "C" && e.shiftKey) {
+      isSearched && isSearchVisible
+        ? setTabValue("쿠키")
+        : setTabValue("모든 쿠키");
+    }
+    // shift + d = 디렉토리 탭
+    if (e.key === "D" && e.shiftKey) {
+      setTabValue("디렉토리");
+    }
+  };
 
+  // 불필요한 검색창 렌더링 방지
   useEffect(() => {
     setTimeout(() => !preventFadeout && setPreventFadeout(true), 1000);
   }, [preventFadeout]);
@@ -135,6 +155,15 @@ const Newtab = ({
           setTabValue("모든 쿠키");
         })();
   }, [isSearched, isSearchVisible]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   return (
     <>
@@ -154,7 +183,7 @@ const Newtab = ({
           searchValue={searchValue}
           setSearchValue={setSearchValue}
           onSearchBarKeyDown={handleKeyDown}
-          onSearchBarKeyPress={handleKeyPress}
+          onSearchBarKeyPress={onKeyPress}
           homeboardModalImg={homeboardModalImg}
           setHomeboardModalImg={setHomeboardModalImg}
           homeboardImg={homeboardImg}
@@ -181,7 +210,7 @@ const Newtab = ({
               preventFadeout={preventFadeout}
               setPreventFadeout={setPreventFadeout}
               onKeyDown={handleKeyDown}
-              onKeyPress={handleKeyPress}
+              onKeyPress={onKeyPress}
             />
           </div>
         )}
