@@ -18,19 +18,22 @@ export interface HomeboardProps {
   className?: string;
   /** 검색창 visible 여부 */
   visible: boolean;
-  /** 검색창 visible 여부 setState */
   setVisible: Dispatch<SetStateAction<boolean>>;
   /** 검색 여부 */
   isSearched: boolean;
-  /** 검색 여부 setState */
   setIsSearched: Dispatch<SetStateAction<boolean>>;
-  /** homeboard modal img */
+  /** 검색어 */
+  searchValue: string;
+  setSearchValue: Dispatch<SetStateAction<string>>;
+  /** onKeyPress event handler */
+  onSearchBarKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
+  /** onKeyDown event handler */
+  onSearchBarKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  /** 모달 안의 홈보드 배경 이미지 */
   homeboardModalImg: string;
-  /** homeboard modal img setState */
   setHomeboardModalImg: Dispatch<SetStateAction<string>>;
-  /** homeboard img state */
+  /** 홈보드 배경 이미지 */
   homeboardImg: string;
-  /** homeboard img setState */
   setHomeboardImg: Dispatch<SetStateAction<string>>;
   /** homeboard img post 함수 */
   postHomeboardImg: (e: File) => Promise<string>;
@@ -55,6 +58,10 @@ const Homeboard = ({
   setVisible,
   isSearched,
   setIsSearched,
+  searchValue,
+  setSearchValue,
+  onSearchBarKeyDown,
+  onSearchBarKeyPress,
   homeboardModalImg,
   setHomeboardModalImg,
   homeboardImg,
@@ -109,8 +116,12 @@ const Homeboard = ({
           setVisible={setVisible}
           isSearched={isSearched}
           setIsSearched={setIsSearched}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
           preventFadeout={preventFadeout}
           setPreventFadeout={setPreventFadeout}
+          onKeyDown={onSearchBarKeyDown}
+          onKeyPress={onSearchBarKeyPress}
         />
         {!visible && (
           <Bookmark

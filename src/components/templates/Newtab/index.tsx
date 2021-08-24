@@ -27,17 +27,17 @@ interface ToastMsgVisibleStateProps {
 export interface NewtablProps {
   /** 검색 여부 */
   isSearched: boolean;
-  /** 검색 여부 setState */
   setIsSearched: Dispatch<SetStateAction<boolean>>;
+  /** 검색어 */
+  searchValue: string;
+  setSearchValue: Dispatch<SetStateAction<string>>;
   /** 프로필 이미지 url */
   imgUrl?: string;
   /** 모달 안의 홈보드 배경 이미지 */
   homeboardModalImg: string;
-  /** 모달 안의 홈보드 배경 이미지 setState */
   setHomeboardModalImg: Dispatch<SetStateAction<string>>;
-  /** homeboard img state */
+  /** 홈보드 배경 이미지 */
   homeboardImg: string;
-  /** homeboard img setState */
   setHomeboardImg: Dispatch<SetStateAction<string>>;
   /** input img post */
   postHomeboardImg: (e: File) => Promise<string>;
@@ -47,9 +47,9 @@ export interface NewtablProps {
   onClickBookmarkSave: (newBookmark: PostBookmarkDataProps) => Promise<void>;
   /** bookmark 삭제 함수 */
   onClickBookmarkDel: (bookmarkID: number) => Promise<void>;
-  /** cookie data */
+  /** all cookie data */
   cookieData: CookieDataProps[];
-  /** directory data */
+  /** all directory data */
   dirData: DirectoryDataProps[];
   /** toast msg state */
   isToastMsgVisible: ToastMsgVisibleStateProps;
@@ -58,6 +58,8 @@ export interface NewtablProps {
 const Newtab = ({
   isSearched,
   setIsSearched,
+  searchValue,
+  setSearchValue,
   imgUrl,
   homeboardModalImg,
   setHomeboardModalImg,
@@ -95,6 +97,26 @@ const Newtab = ({
       ...isToastMsgVisible,
       [key]: value,
     });
+
+  // 검색 아이콘 클릭 시
+  const handleClickSearchIcon = () => {
+    isSearchVisible && setPreventFadeout(false);
+    setIsSearchVisible(!isSearchVisible);
+    setSearchValue("");
+    setIsSearched(false);
+  };
+
+  // enter 키 클릭 시
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.key === "Enter" && setIsSearched(true);
+  };
+  // esc 키 클릭 시
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape") {
+      setPreventFadeout(false);
+      setIsSearchVisible(false);
+    }
+  };
 
   useEffect(() => {
     setTimeout(() => !preventFadeout && setPreventFadeout(true), 1000);
@@ -139,8 +161,12 @@ const Newtab = ({
               setVisible={setIsSearchVisible}
               isSearched={isSearched}
               setIsSearched={setIsSearched}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
               preventFadeout={preventFadeout}
               setPreventFadeout={setPreventFadeout}
+              onKeyDown={handleKeyDown}
+              onKeyPress={handleKeyPress}
             />
           </div>
         )}

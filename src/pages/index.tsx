@@ -7,6 +7,8 @@ import useSWR, { mutate } from "swr";
 export default function NewtabPage() {
   // 검색 여부
   const [isSearched, setIsSearched] = useState(false);
+  // 검색어
+  const [searchValue, setSearchValue] = useState("");
 
   // 홈보드 배경 이미지
   const [homeboardImg, setHomeboardImg] = useState("");
@@ -122,6 +124,8 @@ export default function NewtabPage() {
     <Newtab
       isSearched={isSearched}
       setIsSearched={setIsSearched}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
       imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
       homeboardModalImg={homeboardModalImg}
       setHomeboardModalImg={setHomeboardModalImg}

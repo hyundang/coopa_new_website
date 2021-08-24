@@ -7,17 +7,11 @@ export default {
   title: "components/atoms/SearchBar",
 } as Meta;
 
-export const Default = () => {
+export const Default: Story<SearchBarProps> = (args) => {
   const [visible, setVisible] = useState(true);
-  const [isSearched, setIsSearched] = useState(false);
   return (
     <div style={{ width: "100%", padding: "0 20px" }}>
-      <SearchBar
-        visible={visible}
-        setVisible={setVisible}
-        isSearched={isSearched}
-        setIsSearched={setIsSearched}
-      />
+      <SearchBar {...args} visible={visible} setVisible={setVisible} />
     </div>
   );
 };

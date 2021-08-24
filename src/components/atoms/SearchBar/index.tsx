@@ -8,7 +8,6 @@ import React, {
 import styled, { css } from "styled-components";
 import { CloseIcon } from "src/assets/icons/searchbar";
 import { SearchIcon } from "@assets/icons/common";
-import { useInput } from "src/hooks";
 import { searchbarAnimation } from "@components/animations";
 import { Icon } from "@components/atoms";
 
@@ -19,14 +18,17 @@ export interface SearchBarProps {
   className?: string;
   /** 검색창 표시 여부 */
   visible: boolean;
-  /** 검색창 표시 여부 setState */
-  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  setVisible: Dispatch<SetStateAction<boolean>>;
   /** 검색 여부 */
   isSearched: boolean;
-  /** 검색 여부 setState */
-  setIsSearched: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsSearched: Dispatch<SetStateAction<boolean>>;
+  /** 검색어 */
+  searchValue: string;
+  setSearchValue: Dispatch<SetStateAction<string>>;
   /** onKeyPress event handler */
   onKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
+  /** onKeyDown event handler */
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   /** 검색창 불필요한 fadeout 방지 */
   preventFadeout: boolean;
   setPreventFadeout: Dispatch<SetStateAction<boolean>>;
@@ -39,15 +41,25 @@ export default function SearchBar({
   setVisible,
   isSearched,
   setIsSearched,
+  searchValue,
+  setSearchValue,
   onKeyPress,
+  onKeyDown,
   preventFadeout,
   setPreventFadeout,
 }: SearchBarProps) {
-  const { value: searchValue, onChange: onChangeValue } = useInput("");
+  // input focus
   const [isFocus, setIsFocus] = useState(false);
 
   // for input refs
   const search_input = useRef<HTMLInputElement>(null);
+
+  // close button click
+  const handleClickClose = () => {
+    setPreventFadeout(false);
+    setIsSearched(false);
+    setVisible(false);
+  };
 
   // 제일 처음에 search bar focus 상태로 설정
   useEffect(() => {
@@ -69,23 +81,17 @@ export default function SearchBar({
           className="search-bar__input"
           placeholder="무엇을 찾아드릴까요?"
           value={searchValue}
-          onChange={onChangeValue}
+          onChange={(e) => setSearchValue(e.target.value)}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onKeyPress={onKeyPress}
+          onKeyDown={onKeyDown}
           ref={search_input}
         />
       </span>
       <Icon
         className="search-close"
-        onClick={
-          visible
-            ? () => {
-                setPreventFadeout(false);
-                setVisible(false);
-              }
-            : undefined
-        }
+        onClick={visible ? handleClickClose : undefined}
       >
         <CloseIcon className="search-close__icon" />
       </Icon>
