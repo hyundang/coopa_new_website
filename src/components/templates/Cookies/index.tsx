@@ -5,64 +5,23 @@ import { Cookie, ListHeader } from "@components/organisms";
 import { EmptyCookieIcon, EditIcon, LinkIcon } from "@assets/icons/common";
 import React from "react";
 
-export interface IProps {
+export interface CookiesProps {
   /** cookie data */
   data: CookieDataProps[];
-  /** 어떤 페이지에 들어가는 cookies인지 */
-  type: "cookie" | "dir" | "dirDetail" | "dirShare";
-  /** 공유 버튼 눌렀을 때 함수 */
-  shareClick?: React.MouseEventHandler<HTMLButtonElement>;
-  /** 수정 버튼 눌렀을 때 함수 */
-  editClick?: React.MouseEventHandler;
+  /** 공유 쿠키 여부 */
+  isShared?: boolean;
 }
 
-const Cookies = ({ data, type, shareClick, editClick }: IProps) => {
+const Cookies = ({ data, isShared }: CookiesProps) => {
   return (
     <CookiesCntnr>
-      {(type === "dirShare" || type === "dirDetail") && (
-        <ShareCntnr>
-          <Title>
-            <p className="name">
-              playlist
-              {type !== "dirShare" && (
-                <EditIcon
-                  className="edit-icon"
-                  onClick={editClick ? (e) => editClick(e) : () => {}}
-                />
-              )}
-            </p>
-            <p className="info">
-              <EmptyCookieIcon className="cookie-icon" />
-              8개
-            </p>
-            {type !== "dirShare" && (
-              <Btn
-                className="share-btn"
-                isDirShare
-                onClick={shareClick ? (e) => shareClick(e) : () => {}}
-              >
-                <LinkIcon className="icon" />
-                디렉토리 공유하기
-              </Btn>
-            )}
-          </Title>
-        </ShareCntnr>
-      )}
-      <ListHeader
-        type={type}
-        imgUrl="https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg"
-        nickname="test"
-        filterType="latest"
-        onClickType={() => {}}
-        postDir={() => {}}
-      />
       <CookieWrap>
         {data.map((cookie) => (
           <Cookie
             cookie={cookie}
             key={cookie.id}
             allDir={[]}
-            isShared={type === "dirShare"}
+            isShared={isShared}
           />
         ))}
       </CookieWrap>
@@ -76,107 +35,6 @@ const CookiesCntnr = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-
-const ShareCntnr = styled.div`
-  width: 159.6rem;
-  ${({ theme }) => theme.media.desktop_2`
-    width: 127.2rem;
-  `}
-  /* 1366- 1599*/
-  ${({ theme }) => theme.media.desktop_3`
-    width: 115.2rem;
-  `}  
-  /* 1024-1365 */
-  ${({ theme }) => theme.media.desktop_4`
-    width: 85.8rem;
-  `}
-  /* 600-1023 */
-  ${({ theme }) => theme.media.tablet`
-    width: 56.4rem;
-  `}
-  /* -599 */
-   ${({ theme }) => theme.media.mobile`
-    width: 33.4rem;
-  `}
-`;
-
-const Title = styled.article`
-  position: relative;
-  margin-bottom: 4rem;
-
-  display: flex;
-  flex-direction: column;
-  .name {
-    margin: 0;
-
-    font-style: normal;
-    font-weight: bold;
-    font-size: 24px;
-    line-height: 36px;
-
-    display: flex;
-    align-items: center;
-
-    color: var(--black_2);
-
-    .edit-icon {
-      margin-left: 0.5rem;
-      width: 2.2rem;
-      height: 2.2rem;
-      path {
-        fill: var(--black_1);
-      }
-    }
-  }
-  .info {
-    margin: 0;
-
-    font-style: normal;
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 36px;
-
-    color: var(--black_1);
-
-    .cookie-icon {
-      margin-right: 6px;
-      path {
-        fill: var(--gray_7_active);
-      }
-    }
-  }
-  .share-btn {
-    position: absolute;
-    right: 0;
-    top: 1.2rem;
-
-    width: 19.1rem;
-    height: 5rem;
-    border-radius: 25px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 26px;
-    :hover {
-      .icon {
-        path {
-          fill: var(--white);
-        }
-      }
-    }
-    .icon {
-      width: 1.9rem;
-      margin-right: 5px;
-      path {
-        fill: var(--orange);
-      }
-    }
-  }
 `;
 
 const CookieWrap = styled.section`
