@@ -22,6 +22,8 @@ const Template: Story<NewtablProps> = (args) => {
   return (
     <Newtab
       {...args}
+      searchedCookieData={[]}
+      searchedDirData={[]}
       isToastMsgVisible={isVisible}
       setIsToastMsgVisible={setIsVisible}
       imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
