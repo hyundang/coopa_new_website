@@ -1,24 +1,20 @@
-import Cookies from ".";
+import { Meta, Story } from "@storybook/react";
+import Cookies, { CookiesProps } from ".";
 
 export default {
   title: "components/templates/Cookies",
   component: Cookies,
+} as Meta;
+
+const Template: Story<CookiesProps> = (args) => {
+  return <Cookies {...args} data={data} />;
 };
 
-export const cookies = () => {
-  return <Cookies type="cookie" data={data} />;
-};
+export const Default = Template.bind({});
 
-cookies.story = {
-  name: "Default",
-};
-
-export const dirDetail = () => {
-  return <Cookies type="dirDetail" data={data} />;
-};
-
-export const Sharedcookies = () => {
-  return <Cookies type="dirShare" data={data} />;
+export const Sharedcookies = Template.bind({});
+Sharedcookies.args = {
+  isShared: true,
 };
 
 const data = [
