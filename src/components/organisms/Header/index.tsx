@@ -22,6 +22,10 @@ export interface HeaderProps {
   imgUrl?: string;
   /** mypage 여부 */
   isMypage?: boolean;
+  /** 디렉토리 상세 페이지 여부 */
+  isDirDetail?: boolean;
+  /** 공유 디렉토리 여부 */
+  isShared?: boolean;
 }
 const Header = ({
   id,
@@ -30,6 +34,8 @@ const Header = ({
   isSearchIconAtv,
   imgUrl,
   isMypage = false,
+  isDirDetail = false,
+  isShared = false,
 }: HeaderProps) => {
   const router = useRouter();
   const [isNotiOpen, setIsNotiOpen] = useState(false);
@@ -83,8 +89,7 @@ const Header = ({
           <LogoImg className="logo_img" />
         </Icon>
         <div style={{ flexGrow: 1 }} />
-        {/* <div> */}
-        {!isMypage && (
+        {!isMypage && !isDirDetail && (
           <Icon
             className="content__search"
             role="button"
@@ -93,8 +98,6 @@ const Header = ({
             <SearchIcon className="search_icon" />
           </Icon>
         )}
-        {/* <Bubble className="search-bubble">검색</Bubble>
-        </div> */}
         <Icon
           className="content__info"
           role="button"
@@ -110,13 +113,15 @@ const Header = ({
         >
           <NotiIcon className="noti_icon" />
         </Icon>
-        <Icon
-          className="content__mypage"
-          role="link"
-          onClick={isMypage ? undefined : () => router.push("/mypage")}
-        >
-          <div className="profile_img" />
-        </Icon>
+        {!isShared && (
+          <Icon
+            className="content__mypage"
+            role="link"
+            onClick={isMypage ? undefined : () => router.push("/mypage")}
+          >
+            <div className="profile_img" />
+          </Icon>
+        )}
         <NotiModal
           isOpen={isNotiOpen}
           setIsOpen={setIsNotiOpen}
