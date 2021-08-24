@@ -72,19 +72,19 @@ const ImgBoxWrap = styled.div<ImgBoxWrapProps>`
       ? !isLoading && isHover
         ? css`
             background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-              url(${url}) center center/cover;
+              url("${url}") center center/cover;
           `
         : css`
-            background: url(${url}) center center/cover;
+            background: url("${url}") center center/cover;
           `
       : !isLoading && isHover
       ? css`
           background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-            url(${url}) center center/cover,
+            url("${url}") center center/cover,
             url(${NoThumbImg}) center center/cover;
         `
       : css`
-          background: url(${url}) center center/cover,
+          background: url("${url}") center center/cover,
             url(${NoThumbImg}) center center/cover;
         `}
 `;
