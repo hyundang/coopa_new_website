@@ -14,7 +14,7 @@ export interface CookiesProps {
   allDir: DirectoryDataProps[];
 }
 
-const Cookies = ({ data, allDir, isShared }: IProps) => {
+const Cookies = ({ data, allDir, isShared }: CookiesProps) => {
   return (
     <CookiesCntnr>
       <CookieWrap>
