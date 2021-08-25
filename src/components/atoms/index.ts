@@ -13,3 +13,4 @@ export { default as SearchBar } from "./SearchBar";
 export { default as LoginBtn } from "./LoginBtn";
 export { default as Bubble } from "./Bubble";
 export { default as MoveModal } from "./MoveModal";
+export { default as WebStoreBtn } from "./WebStoreBtn";
