@@ -1,6 +1,6 @@
 // components
 import { SearchBar, Tab, ToastMsg } from "@components/atoms";
-import { Header, ListHeader } from "@components/organisms";
+import { Footer, Header, ListHeader } from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
 // interfaces
 import {
@@ -292,6 +292,7 @@ const Newtab = ({
           )}
         </main>
       </Container>
+      <Footer />
       <ToastMsg
         isVisible={isToastMsgVisible.dirCreate}
         setIsVisible={(e: boolean) => handleToastMsgVisible("dirCreate", e)}
@@ -361,6 +362,7 @@ interface ContainerProps {
 const Container = styled.div<ContainerProps>`
   width: 100%;
   padding-top: 60px;
+  padding-bottom: 130px;
 
   .tab-wrap {
     width: 100%;
