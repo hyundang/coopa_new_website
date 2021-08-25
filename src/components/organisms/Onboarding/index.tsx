@@ -12,7 +12,7 @@ import {
   duribun4,
   duribun5,
 } from "@assets/imgs/onboarding";
-import { Modal } from "@components/atoms";
+import { Btn, Modal } from "@components/atoms";
 import { onboardingAnimation } from "@components/animations";
 
 export interface OnboardingProps {
@@ -24,7 +24,7 @@ const Onboarding = ({ isOpen, setIsOpen }: OnboardingProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const TOTAL_SLIDES = 4;
 
-  const nextSlide = (e: React.MouseEvent<HTMLDivElement>) => {
+  const nextSlide = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     if (currentSlide >= TOTAL_SLIDES) {
       // 더 이상 넘어갈 슬라이드가 없으면 슬라이드를 초기화합니다.
@@ -39,16 +39,6 @@ const Onboarding = ({ isOpen, setIsOpen }: OnboardingProps) => {
     } else {
       setCurrentSlide(currentSlide - 1);
     }
-  };
-  const pageOpenHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLDivElement;
-    target.innerText === "쿠키파킹 더 자세히 알아보기"
-      ? window.open(
-          "https://www.notion.so/Help-Support-a5f04ad03fe14940801520d1d2bd20ae",
-        )
-      : window.open(
-          "https://chrome.google.com/webstore/detail/cookie-parking/gbpliecdabaekbhmncopnbkfpdippdnl?hl=ko",
-        );
   };
   const closeHandler = () => {
     setIsOpen(false);
@@ -113,27 +103,52 @@ const Onboarding = ({ isOpen, setIsOpen }: OnboardingProps) => {
       {currentSlide === 4 && <Duribun5 src={duribun5} />}
       {currentSlide !== 4 ? (
         <Carousel>
-          <div className={currentSlide === 0 ? "oval" : "circle"} />
-          <div className={currentSlide === 1 ? "oval" : "circle"} />
-          <div className={currentSlide === 2 ? "oval" : "circle"} />
-          <div className={currentSlide === 3 ? "oval" : "circle"} />
-          <div className={currentSlide === 4 ? "oval" : "circle"} />
+          <span className={currentSlide === 0 ? "oval" : "circle"} />
+          <span className={currentSlide === 1 ? "oval" : "circle"} />
+          <span className={currentSlide === 2 ? "oval" : "circle"} />
+          <span className={currentSlide === 3 ? "oval" : "circle"} />
+          <span className={currentSlide === 4 ? "oval" : "circle"} />
         </Carousel>
       ) : (
         ""
       )}
       <MoveWrap>
-        {currentSlide !== 0 ? <PrevBtn onClick={prevSlide}>이전</PrevBtn> : ""}
-        {currentSlide !== 4 ? <NextBtn onClick={nextSlide}>다음</NextBtn> : ""}
+        {currentSlide !== 0 ? (
+          <PrevBtn onClick={prevSlide} isAtvBtn>
+            이전
+          </PrevBtn>
+        ) : (
+          ""
+        )}
+        {currentSlide !== 4 ? (
+          <NextBtn onClick={nextSlide} isAtvBtn isOrange>
+            다음
+          </NextBtn>
+        ) : (
+          ""
+        )}
       </MoveWrap>
       {currentSlide === 4 && (
-        <StartBtn onClick={closeHandler}>파킹을 시작할래요!</StartBtn>
+        <StartBtn onClick={closeHandler} isAtvBtn isOrange>
+          파킹을 시작할래요!
+        </StartBtn>
       )}
-      <CloseBtn onClick={pageOpenHandler}>
-        {currentSlide
-          ? "쿠키파킹 더 자세히 알아보기"
-          : "혹시 쿠키파킹을 설치하지 않으셨나요?"}
-      </CloseBtn>
+
+      {currentSlide ? (
+        <Link
+          href="https://www.notion.so/Help-Support-a5f04ad03fe14940801520d1d2bd20ae"
+          target="_blank"
+        >
+          쿠키파킹 더 자세히 알아보기
+        </Link>
+      ) : (
+        <Link
+          href="https://chrome.google.com/webstore/detail/cookie-parking/gbpliecdabaekbhmncopnbkfpdippdnl?hl=ko"
+          target="_blank"
+        >
+          혹시 쿠키파킹을 설치하지 않으셨나요?
+        </Link>
+      )}
     </ModalWrap>
   );
 };
@@ -161,7 +176,8 @@ const TextContainer = styled.div`
   background: #ff9c59;
   border-radius: 24px 24px 0 0;
 `;
-const Text = styled.div`
+const Text = styled.h1`
+  all: unset;
   font-style: normal;
   font-weight: 500;
   font-size: 20px;
@@ -264,7 +280,9 @@ const Carousel = styled.div`
   }
 `;
 
-const CloseBtn = styled.div`
+const Link = styled.a`
+  all: unset;
+  box-sizing: border-box;
   cursor: pointer;
 
   position: fixed;
@@ -295,70 +313,29 @@ const MoveWrap = styled.div`
   width: 100%;
 `;
 
-const PrevBtn = styled.div`
+const PrevBtn = styled(Btn)`
   position: absolute;
   top: 408px;
   left: 44px;
-  cursor: pointer;
   width: 78px;
   height: 52px;
-  background: var(--gray_2);
-  color: var(--gray_6);
   border-radius: 26px;
-  font-style: normal;
-  font-weight: 500;
   font-size: 18px;
-  line-height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &:hover {
-    background: var(--gray_hover_2);
-  }
 `;
-const NextBtn = styled.div`
+const NextBtn = styled(Btn)`
   position: absolute;
   top: 408px;
   right: 44px;
-  cursor: pointer;
   width: 78px;
   height: 52px;
-  background: var(--orange);
-  color: var(--white);
   border-radius: 26px;
-  font-style: normal;
-  font-weight: 500;
   font-size: 18px;
-  line-height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &:hover {
-    background: var(--orange_hover);
-  }
 `;
-const StartBtn = styled.div`
-  cursor: pointer;
-  display: flex;
+const StartBtn = styled(Btn)`
   position: absolute;
-  justify-content: center;
-  align-items: center;
   top: 408px;
-  box-sizing: border-box;
   width: 320px;
   height: 52px;
-  font-style: normal;
-  font-weight: 500;
   font-size: 18px;
-  line-height: 26px;
-  border: none;
   border-radius: 26px;
-  background: var(--orange);
-  color: var(--white);
-  &:active {
-    outline: none;
-  }
-  &:hover {
-    background: var(--orange_hover);
-  }
 `;

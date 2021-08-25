@@ -95,7 +95,8 @@ const DirectoryModal = ({
       <h1 className="modal-title">
         디렉토리 {type === "new" ? "생성" : "수정"}
       </h1>
-      <span className="input-emoji__label">디렉토리 아이콘</span>
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label className="input-emoji__label">디렉토리 아이콘</label>
       <div className="input-emoji">
         <Icon
           className="input-emoji__button"

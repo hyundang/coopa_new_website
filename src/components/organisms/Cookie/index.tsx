@@ -58,8 +58,8 @@ const Cookie = ({ id, className, cookie, allDir, isShared }: CookieProps) => {
           />
         </div>
       )}
-      <div className="cookie--desc">
-        <div className="cookie--title">{cookie.title}</div>
+      <section className="cookie--desc">
+        <h1 className="cookie--title">{cookie.title}</h1>
         <div className="cookie--content">{cookie.content}</div>
         <div style={{ flexGrow: 1 }} />
         <div className="cookie--profile">
@@ -71,9 +71,9 @@ const Cookie = ({ id, className, cookie, allDir, isShared }: CookieProps) => {
               e.currentTarget.src = fvcOnErrorImg;
             }}
           />
-          <div className="cookie--profile__author">{cookie.provider}</div>
+          <cite className="cookie--profile__author">{cookie.provider}</cite>
         </div>
-      </div>
+      </section>
     </CookieWrap>
   );
 };
@@ -104,6 +104,7 @@ const CookieWrap = styled.article`
     flex-grow: 1;
 
     .cookie--title {
+      all: unset;
       color: var(--black_1);
       line-height: 26px;
       font-size: 17px;
@@ -136,6 +137,7 @@ const CookieWrap = styled.article`
       display: flex;
       align-items: center;
       &__author {
+        all: unset;
         font-size: 13px;
         color: var(--gray_5);
         display: -webkit-box;

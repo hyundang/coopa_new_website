@@ -27,12 +27,12 @@ const Directory = ({ dir }: DirectoryProps) => {
         <div className="content">
           <div className="content__title">
             {dir.emoji ? `${dir.emoji} ${dir.name}` : dir.name}
-          </div>
+          </h1>
           <div className="content__num">
             <EmptyCookieIcon className="cookie-icon" />
             <span>{dir.cookieCnt}개</span>
           </div>
-        </div>
+        </section>
         <div className="icon">
           <Icon onClick={() => setIsEditOpen(true)}>
             <EditIcon />
@@ -142,6 +142,7 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
     gap: 8px;
 
     &__title {
+      all: unset;
       max-width: 254px;
       height: 19px;
       line-height: 19px;
