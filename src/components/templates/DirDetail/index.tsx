@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Header, ListHeader } from "@components/organisms";
+import { Footer, Header, ListHeader } from "@components/organisms";
 import { EditIcon, EmptyCookieIcon, LinkIcon } from "@assets/icons/common";
 import Cookies from "@components/templates/Cookies";
 import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
@@ -87,6 +87,7 @@ const DirDetail = ({
         />
         <Cookies isShared={isShared} data={cookies} allDir={allDir} />
       </DirDetailWrap>
+      <Footer />
     </DirDetailCntnr>
   );
 };
@@ -96,12 +97,14 @@ export default DirDetail;
 const DirDetailCntnr = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const DirDetailWrap = styled.div`
   margin-top: 60px;
   padding-top: 48px;
+  padding-bottom: 130px;
 
   width: 1596px;
   ${({ theme }) => theme.media.desktop_2`
@@ -124,6 +127,7 @@ const DirDetailWrap = styled.div`
     width: 100%;
     padding:0 20px;
     padding-top: 36px;
+    padding-bottom: 130px;
   `}
 `;
 
