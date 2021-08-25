@@ -20,4 +20,9 @@ Default.args = {
       "https://lh5.googleusercontent.com/-iKH4kcTU298/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucnofwea1DKUZyF7cjUeO12bCL9LpA/s96-c/photo.jpg",
     readCount: 282,
   },
+  profileData: {
+    introduction:
+      "다섯글자임다섯글자임다섯글자임다섯글자임다섯글자임다섯글자임다섯글자임다섯글자임다섯글자임다섯글자임다섯글자임다섯글자임다섯글자임다섯글자임",
+    name: "Hyunjin Lee",
+  },
 };
