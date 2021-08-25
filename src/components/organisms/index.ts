@@ -9,3 +9,4 @@ export { default as DelModal } from "./DelModal";
 export { default as DirectoryModal } from "./DirectoryModal";
 export { default as ProfileEditModal } from "./ProfileEditModal";
 export { default as ListHeader } from "./ListHeader";
+export { default as Footer } from "./Footer";

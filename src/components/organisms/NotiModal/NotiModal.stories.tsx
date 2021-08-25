@@ -7,5 +7,5 @@ export default {
 } as Meta;
 
 export const Template: Story<NotiModalProps> = (args) => (
-  <NotiModal {...args} />
+  <NotiModal {...args} isOpen />
 );

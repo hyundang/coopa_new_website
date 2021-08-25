@@ -47,7 +47,6 @@ const BookmarkTile = (
         role="button"
         onMouseOver={setIsHover ? () => setIsHover(true) : undefined}
         onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
-        url={url}
         onClick={isAddBtn ? onClickAddBtn : () => window.open(url, "__blank")}
         isAddBtn={isAddBtn}
         ref={ref}
@@ -56,11 +55,14 @@ const BookmarkTile = (
           <PlusIcon className="plus-icon" />
         ) : (
           <div className="content">
-            <DelIcon onClick={onClickDelBtn} id={id}>
-              ×
-            </DelIcon>
-            <div className="content__favicon" />
-            <div className="content__text">{siteName}</div>
+            <DelIcon onClick={onClickDelBtn}>×</DelIcon>
+            <img
+              className="content__favicon"
+              src={url}
+              alt="favicon"
+              onError={(e) => (e.target.src = "/favicon.ico")}
+            />
+            <cite className="content__text">{siteName}</cite>
           </div>
         )}
       </Wrap>
@@ -70,7 +72,9 @@ const BookmarkTile = (
 
 export default forwardRef(BookmarkTile);
 
-const DelIcon = styled.span`
+const DelIcon = styled.button`
+  all: unset;
+  box-sizing: border-box;
   position: absolute;
   top: 5px;
   right: 5px;
@@ -114,10 +118,9 @@ const HoverWrap = styled.div<HoverWrapProps>`
 `;
 
 interface WrapProps {
-  url?: string;
   isAddBtn?: boolean;
 }
-const Wrap = styled.span<WrapProps>`
+const Wrap = styled.div<WrapProps>`
   cursor: pointer;
   box-sizing: border-box;
   width: 80px;
@@ -156,7 +159,7 @@ const Wrap = styled.span<WrapProps>`
       height: 22px;
       border-radius: 4px;
       margin-bottom: 6px;
-      background: url(${(props) => props.url}) center center / cover;
+      object-fit: cover;
     }
 
     &__text {

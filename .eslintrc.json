@@ -53,7 +53,8 @@
     "@typescript-eslint/no-empty-function": "off", // empty function 사용 방지
     "import/no-extraneous-dependencies": "off",
     "@typescript-eslint/ban-ts-comment": "off",
-    "consistent-return": "off"
+    "consistent-return": "off",
+    "no-return-assign":"off"
   },
   "settings": {
     "react": {

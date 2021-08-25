@@ -31,9 +31,9 @@ const NotiModal = ({
       setIsOpen={setIsOpen}
       locationX={locationX}
     >
-      <NotiImg className="noti-img" />
+      <NotiImg className="noti-img" role="img" />
       <span className="noti-text">
-        쿠키파킹이 <span className="noti-text--bold">업데이트</span> 되었어요 🎉
+        쿠키파킹이 <b className="noti-text--bold">업데이트</b> 되었어요 🎉
         {"\n더 보기를 눌러 자세히 살펴보세요!"}
       </span>
       <Btn
@@ -41,6 +41,7 @@ const NotiModal = ({
         isOrange
         isAtvBtn
         onClick={() => window.open(process.env.NOTICE_URL, "_blank")}
+        role="link"
       >
         더보기
       </Btn>
@@ -58,7 +59,7 @@ const NotiModalWrap = styled(MoveModal)<NotiModalWrapProps>`
   top: 56px;
   left: ${({ locationX }) => locationX}px;
 
-  width: 416px;
+  width: 396px;
   height: 104px;
   padding: 24px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.13);
@@ -89,14 +90,11 @@ const NotiModalWrap = styled(MoveModal)<NotiModalWrapProps>`
   }
 
   .noti-text {
-    margin-right: 44px;
+    margin-right: 24px;
     font-size: 13px;
     line-height: 20px;
     color: var(--black_1);
     white-space: pre-wrap;
-    &--bold {
-      font-weight: 700;
-    }
   }
 
   .noti-button {

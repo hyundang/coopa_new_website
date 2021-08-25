@@ -8,7 +8,7 @@ import {
 } from "@assets/imgs/mypage";
 import { mypageAnimation } from "@components/animations";
 import { Btn, Bubble, Icon, ToastMsg } from "@components/atoms";
-import { Header, ProfileEditModal } from "@components/organisms";
+import { Footer, Header, ProfileEditModal } from "@components/organisms";
 import { EditUserDataProps, UserDataProps } from "@interfaces/user";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useWindowSize } from "src/hooks";
@@ -43,9 +43,9 @@ const My = ({
   const [isVisible, setIsVisible] = useState(false);
 
   return (
-    <>
+    <Container>
       <Header imgUrl={userData.profileImage} isMypage />
-      <Container
+      <MyCntnr
         imgUrl={userData.profileImage}
         isLogoutHover={isLogoutHover}
         width={size.width}
@@ -176,7 +176,8 @@ const My = ({
             </Btn>
           </span>
         </div>
-      </Container>
+      </MyCntnr>
+      <Footer />
       <ProfileEditModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -187,21 +188,24 @@ const My = ({
       <ToastMsg isVisible={isVisible} setIsVisible={setIsVisible}>
         👀 프로필을 수정했어요!
       </ToastMsg>
-    </>
+    </Container>
   );
 };
 
 export default My;
 
-interface ContainerProps {
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+interface MyCntnrProps {
   imgUrl?: string;
   isLogoutHover: boolean;
   width?: number;
 }
-const Container = styled.section<ContainerProps>`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+const MyCntnr = styled.section<MyCntnrProps>`
   width: 840px;
   margin-top: 116px;
   .user-info {

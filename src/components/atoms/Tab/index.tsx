@@ -31,6 +31,7 @@ const Tab = ({
       tabStyle={tabStyle}
       value={value}
       options={options}
+      role="tab"
     >
       <div className="tab-list">
         {options.map((opt: string) => {
@@ -91,6 +92,7 @@ interface TabBtnProps {
 const TabBtn = styled.button<TabBtnProps>`
   all: unset;
   height: 100%;
+  cursor: pointer;
   text-align: center;
   transition: 0.2s;
 
