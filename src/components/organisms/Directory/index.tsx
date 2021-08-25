@@ -24,8 +24,8 @@ const Directory = ({ dir }: DirectoryProps) => {
         thumbnail={dir.thumbnail}
         onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_blank")}
       >
-        <div className="content">
-          <div className="content__title">
+        <section className="content">
+          <h1 className="content__title">
             {dir.emoji ? `${dir.emoji} ${dir.name}` : dir.name}
           </h1>
           <div className="content__num">
