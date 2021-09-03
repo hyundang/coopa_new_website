@@ -1,4 +1,4 @@
-import type { AppProps } from "next/app";
+import type { AppContext, AppProps } from "next/app";
 import Head from "next/head";
 // recoil
 import { RecoilRoot } from "recoil";
@@ -6,6 +6,9 @@ import { RecoilRoot } from "recoil";
 import { ThemeProvider } from "styled-components";
 import { theme } from "src/styles/theme";
 import { GlobalStyle } from "src/styles/GlobalStyles";
+import cookies from "next-cookies";
+import { setToken } from "@api/TokenManaget";
+import getApi from "@api/getApi";
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -65,3 +68,22 @@ function App({ Component, pageProps }: AppProps) {
 }
 
 export default App;
+
+App.getInitialProps = async ({ ctx, Component }: AppContext) => {
+  // 토큰
+  const allCookies = cookies(ctx);
+  const userToken = allCookies["x-access-token"];
+  if (userToken !== undefined) {
+    setToken(userToken);
+  }
+
+  // 유저 데이터
+  const initUserData = await getApi.getUserData("/users");
+
+  let pageProps = {};
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx);
+  }
+
+  return { pageProps: { ...pageProps, initUserData } };
+};
