@@ -5,7 +5,7 @@ import {
 } from "src/lib/interfaces/directory";
 import Directory from "@components/organisms/Directory";
 import { Empty } from "@components/organisms";
-import { EmptyImg } from "@assets/imgs/common";
+import { EmptyImg } from "@assets/imgs/error";
 import { PlusIcon } from "@assets/icons/common";
 import { Btn } from "@components/atoms";
 import { Dispatch, SetStateAction } from "react";

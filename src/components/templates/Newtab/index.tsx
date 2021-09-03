@@ -20,8 +20,6 @@ import {
   PostDirectoryProps,
 } from "@interfaces/directory";
 // asset
-import { EmptyImg } from "@assets/imgs/common";
-import { CookieIcon, PlusIcon } from "@assets/icons/common";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
@@ -225,7 +223,6 @@ const Newtab = ({
   }, [isSearched, isSearchVisible]);
 
   useEffect(() => {
-    console.log(cookieData);
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
     return () => {
