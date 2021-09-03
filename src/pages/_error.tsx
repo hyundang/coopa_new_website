@@ -1,19 +1,17 @@
 import { getApi } from "@lib/api";
 import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
-import { useRouter } from "next/dist/client/router";
-import NewtabError from "@components/templates/NewtabError";
+import { NewtabError } from "@components/templates";
 import { NotFoundErrorImg } from "@assets/imgs/error";
+import { UserDataProps } from "@interfaces/user";
 
-export default function NotFound() {
-  // 로그인 여부
-  const [isLogin, setIsLogin] = useState(false);
-  const router = useRouter();
-
+export default function Error({
+  initUserData,
+}: {
+  initUserData: UserDataProps;
+}) {
   // 홈보드 배경 이미지
   const [homeboardImg, setHomeboardImg] = useState("");
-  // 홈보드 모달 이미지
-  const [homeboardModalImg, setHomeboardModalImg] = useState("");
 
   // 북마크 데이터 get
   const { data: bookmarkData } = useSWR(
@@ -31,23 +29,15 @@ export default function NotFound() {
     const homeboardImgUrl = await getApi.getHomeboardData();
     localStorage.setItem("homeboardImgUrl", homeboardImgUrl);
     setHomeboardImg(homeboardImgUrl);
-    setHomeboardModalImg(homeboardImgUrl);
   };
 
   useEffect(() => {
-    // 로그인 여부 검사
-    localStorage.getItem("x-access-token") === null
-      ? router.replace("/login")
-      : setIsLogin(true);
     // 홈보드 이미지 세팅
     const homeboardImgUrl = localStorage.getItem("homeboardImgUrl");
     homeboardImgUrl?.length === 1
       ? setHomeboardImg(`/theme_img/img_${homeboardImgUrl}.jpg`)
       : homeboardImgUrl !== null
-      ? (() => {
-          setHomeboardImg(homeboardImgUrl);
-          setHomeboardModalImg(homeboardImgUrl);
-        })()
+      ? setHomeboardImg(homeboardImgUrl)
       : handleGetHomeboardImg();
 
     // 북마크 세팅
@@ -58,7 +48,7 @@ export default function NotFound() {
 
   return (
     <NewtabError
-      imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
+      imgUrl={initUserData?.profileImage}
       homeboardImg={homeboardImg}
       bookmarkDatas={bookmarkData || []}
       errorImg={NotFoundErrorImg}
