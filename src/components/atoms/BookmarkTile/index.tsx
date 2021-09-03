@@ -9,8 +9,10 @@ export interface BookmarkTileProps {
   id?: string;
   /** className */
   className?: string;
-  /** 파비콘 url */
+  /** 사이트 url */
   url?: string;
+  /** 파비콘 url */
+  imgUrl?: string;
   /** 사이트 이름 */
   siteName?: string;
   /** 즐겨찾기 타일 클릭 시 */
@@ -27,6 +29,7 @@ const BookmarkTile = (
     id,
     className = "tile",
     url,
+    imgUrl,
     siteName,
     onClickAddBtn,
     onClickDelBtn,
@@ -62,7 +65,7 @@ const BookmarkTile = (
             )}
             <img
               className="content__favicon"
-              src={url}
+              src={imgUrl}
               alt="favicon"
               onError={(e) => (e.target.src = "/favicon.ico")}
             />
