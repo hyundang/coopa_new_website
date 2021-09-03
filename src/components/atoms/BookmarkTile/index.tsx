@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, RefObject, forwardRef } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  RefObject,
+  forwardRef,
+  SyntheticEvent,
+} from "react";
 import styled from "styled-components";
 // assets
 import { PlusIcon } from "@assets/icons/common";
@@ -67,7 +73,9 @@ const BookmarkTile = (
               className="content__favicon"
               src={imgUrl}
               alt="favicon"
-              onError={(e) => (e.target.src = "/favicon.ico")}
+              onError={(e: SyntheticEvent<HTMLImageElement, Event>) =>
+                (e.currentTarget.src = "/favicon.ico")
+              }
             />
             <cite className="content__text">{siteName}</cite>
           </div>
