@@ -24,13 +24,14 @@ module.exports = {
           process.env.NODE_ENV === "production"
             ? JSON.stringify(process.env.API_URL)
             : JSON.stringify(process.env.DEV_API_URL),
+        HTTP_ONLY: process.env.NODE_ENV === "production" ? "true" : "false",
       }),
       new webpack.EnvironmentPlugin(["NODE_ENV"]),
     );
 
     return config;
   },
-  
+
   env: {
     NOTICE_URL: process.env.NOTICE_URL,
     CLIENT_ID: process.env.CLIENT_ID,
