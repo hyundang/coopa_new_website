@@ -55,7 +55,11 @@ const BookmarkTile = (
           <PlusIcon className="plus-icon" />
         ) : (
           <div className="content">
-            <DelIcon onClick={onClickDelBtn}>×</DelIcon>
+            {onClickDelBtn && (
+              <DelIcon id={id} onClick={onClickDelBtn}>
+                ×
+              </DelIcon>
+            )}
             <img
               className="content__favicon"
               src={url}

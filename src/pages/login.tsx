@@ -50,7 +50,7 @@ export default function LoginPage() {
         //   );
         // }
 
-        router.push("/");
+        document.location.href = `${DOMAIN}`;
       } else {
         alert("로그인 실패");
       }

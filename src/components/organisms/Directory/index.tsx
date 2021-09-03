@@ -119,7 +119,7 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
         border-radius: 12px;
         top: 0;
         left: 0;
-        background: url(${props.thumbnail}) center center / cover no-repeat;
+        background: url("${props.thumbnail}") center center / cover no-repeat;
         width: 100%;
         height: 100%;
         opacity: 0.15;

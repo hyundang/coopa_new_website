@@ -17,39 +17,39 @@ export interface HomeboardProps {
   /** className */
   className?: string;
   /** 검색창 visible 여부 */
-  visible: boolean;
-  setVisible: Dispatch<SetStateAction<boolean>>;
+  visible?: boolean;
+  setVisible?: Dispatch<SetStateAction<boolean>>;
   /** 검색 여부 */
-  isSearched: boolean;
-  setIsSearched: Dispatch<SetStateAction<boolean>>;
+  isSearched?: boolean;
+  setIsSearched?: Dispatch<SetStateAction<boolean>>;
   /** 검색어 */
-  searchValue: string;
-  setSearchValue: Dispatch<SetStateAction<string>>;
+  searchValue?: string;
+  setSearchValue?: Dispatch<SetStateAction<string>>;
   /** onKeyPress event handler */
   onSearchBarKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
   /** onKeyDown event handler */
   onSearchBarKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   /** 모달 안의 홈보드 배경 이미지 */
-  homeboardModalImg: string;
-  setHomeboardModalImg: Dispatch<SetStateAction<string>>;
+  homeboardModalImg?: string;
+  setHomeboardModalImg?: Dispatch<SetStateAction<string>>;
   /** 홈보드 배경 이미지 */
   homeboardImg: string;
-  setHomeboardImg: Dispatch<SetStateAction<string>>;
+  setHomeboardImg?: Dispatch<SetStateAction<string>>;
   /** homeboard img post 함수 */
-  postHomeboardImg: (e: File) => Promise<string>;
+  postHomeboardImg?: (e: File) => Promise<string>;
   /** homeboard img 변경 성공 */
-  setIsSuccess: (e: boolean) => void;
+  setIsSuccess?: (e: boolean) => void;
   /** img input 시 img size 에러 */
-  setIsError: (e: boolean) => void;
+  setIsError?: (e: boolean) => void;
   /** bookmark data list */
   bookmarkDatas: BookmarkDataProps[];
   /** bookmark 추가 함수 */
-  onClickBookmarkSave: (newBookmark: PostBookmarkDataProps) => Promise<void>;
+  onClickBookmarkSave?: (newBookmark: PostBookmarkDataProps) => Promise<void>;
   /** bookmark 삭제 함수 */
-  onClickBookmarkDel: (bookmarkID: number) => Promise<void>;
+  onClickBookmarkDel?: (bookmarkID: number) => Promise<void>;
   /** 검색창 불필요한 fadeout 방지 */
-  preventFadeout: boolean;
-  setPreventFadeout: Dispatch<SetStateAction<boolean>>;
+  preventFadeout?: boolean;
+  setPreventFadeout?: Dispatch<SetStateAction<boolean>>;
 }
 const Homeboard = ({
   id,
@@ -115,7 +115,7 @@ const Homeboard = ({
         {!visible && <DuribunLImg role="img" className="duribun-left" />}
         {!visible && <DuribunRImg role="img" className="duribun-right" />}
         {visible && <SearchImg role="img" className="duribun-search" />}
-        {!visible && (
+        {!visible && setHomeboardImg && (
           <Icon
             className="setting"
             ref={settingIconLocation}
@@ -126,19 +126,21 @@ const Homeboard = ({
             <SettingIcon className="setting__icon" />
           </Icon>
         )}
-        <SearchBar
-          className="search"
-          visible={visible}
-          setVisible={setVisible}
-          isSearched={isSearched}
-          setIsSearched={setIsSearched}
-          searchValue={searchValue}
-          setSearchValue={setSearchValue}
-          preventFadeout={preventFadeout}
-          setPreventFadeout={setPreventFadeout}
-          onKeyDown={onSearchBarKeyDown}
-          onKeyPress={onSearchBarKeyPress}
-        />
+        {visible !== undefined && (
+          <SearchBar
+            className="search"
+            visible={visible}
+            setVisible={setVisible}
+            isSearched={isSearched}
+            setIsSearched={setIsSearched}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+            preventFadeout={preventFadeout}
+            setPreventFadeout={setPreventFadeout}
+            onKeyDown={onSearchBarKeyDown}
+            onKeyPress={onSearchBarKeyPress}
+          />
+        )}
         {!visible && (
           <Bookmark
             className="bookmark"
@@ -148,17 +150,24 @@ const Homeboard = ({
           />
         )}
       </div>
-      <HomeboardEditModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        value={homeboardModalImg}
-        setValue={setHomeboardModalImg}
-        setHomeboardImg={setHomeboardImg}
-        postHomeboardImg={postHomeboardImg}
-        locationX={locationX - 518 + 36}
-        setIsError={setIsError}
-        setIsSuccess={setIsSuccess}
-      />
+      {homeboardModalImg !== undefined &&
+        setHomeboardModalImg &&
+        setHomeboardImg &&
+        postHomeboardImg &&
+        setIsError &&
+        setIsSuccess && (
+          <HomeboardEditModal
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            value={homeboardModalImg}
+            setValue={setHomeboardModalImg}
+            setHomeboardImg={setHomeboardImg}
+            postHomeboardImg={postHomeboardImg}
+            locationX={locationX - 518 + 36}
+            setIsError={setIsError}
+            setIsSuccess={setIsSuccess}
+          />
+        )}
     </HomeboardWrap>
   );
 };
@@ -169,8 +178,8 @@ interface HomeboardWrapProps {
   /** homeboard img state */
   homeboardImg: string;
   isSettingIconAtv: boolean;
-  visible: boolean;
-  isSearched: boolean;
+  visible?: boolean;
+  isSearched?: boolean;
 }
 const HomeboardWrap = styled.section<HomeboardWrapProps>`
   width: 100%;
@@ -179,8 +188,8 @@ const HomeboardWrap = styled.section<HomeboardWrapProps>`
       rgba(255, 255, 255, 0.3),
       rgba(255, 255, 255, 0.3)
     ),
-    url(${({ homeboardImg }) => homeboardImg}) center center/ cover,
-    var(--gray_4);
+    url("${({ homeboardImg }) => homeboardImg}") center center/ cover,
+    url("/theme_img/img_6.jpg") center center/ cover;
 
   display: flex;
   align-items: center;

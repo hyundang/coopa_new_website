@@ -1,20 +1,68 @@
 import styled from "styled-components";
 import { DirectoryDataProps } from "src/lib/interfaces/directory";
 import Directory from "@components/organisms/Directory";
+import { Empty } from "@components/organisms";
+import { EmptyImg } from "@assets/imgs/common";
+import { PlusIcon } from "@assets/icons/common";
+import { Btn } from "@components/atoms";
+import { Dispatch, SetStateAction } from "react";
 
 export interface DirectoriesProps {
   data: DirectoryDataProps[];
+  /** 검색 디렉토리 여부 */
+  isSearched?: boolean;
+  /** 디렉토리 생성 모달 오픈 여부 */
+  setIsDirAddOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
-const Directories = ({ data }: DirectoriesProps) => {
+const Directories = ({
+  data,
+  isSearched = false,
+  setIsDirAddOpen,
+}: DirectoriesProps) => {
   return (
-    <DirectoiresWrap>
-      {data.map((dir) => (
-        <Directory key={dir.id} dir={dir} />
-      ))}
-    </DirectoiresWrap>
+    <>
+      {data.length !== 0 ? (
+        <DirectoiresWrap>
+          {data.map((dir) => (
+            <Directory key={dir.id} dir={dir} />
+          ))}
+        </DirectoiresWrap>
+      ) : (
+        <>
+          {isSearched ? (
+            <Empty
+              img={EmptyImg}
+              imgWidth={170}
+              text="검색된 디렉토리가 없어요!"
+            />
+          ) : (
+            <StyledEmpty
+              className="empty"
+              img={EmptyImg}
+              imgWidth={170}
+              text="새 디렉토리를 만들어볼까요?"
+              Btn={
+                <Btn
+                  className="empty__button--dir"
+                  isOrange
+                  isAtvBtn
+                  onClick={() => setIsDirAddOpen && setIsDirAddOpen(true)}
+                  role="link"
+                >
+                  <PlusIcon className="plus-icon" />새 디렉토리 만들기
+                </Btn>
+              }
+            />
+          )}
+        </>
+      )}
+    </>
   );
 };
+
+export default Directories;
+
 const DirectoiresWrap = styled.section`
   display: grid;
   justify-content: center;
@@ -43,4 +91,17 @@ const DirectoiresWrap = styled.section`
     grid-gap: 12px;
   `}
 `;
-export default Directories;
+
+const StyledEmpty = styled(Empty)`
+  .empty__button--dir {
+    width: 259px;
+    height: 58px;
+    border-radius: 29px;
+    font-size: 18px;
+    .plus-icon {
+      width: 17px;
+      height: 17px;
+      margin-right: 8px;
+    }
+  }
+`;

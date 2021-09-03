@@ -1,9 +1,11 @@
 import styled from "styled-components";
-import { Header, ListHeader } from "@components/organisms";
+import { DirectoryModal, Header, ListHeader } from "@components/organisms";
 import { EditIcon, EmptyCookieIcon, LinkIcon } from "@assets/icons/common";
 import Cookies from "@components/templates/Cookies";
 import { CookieDataProps } from "@interfaces/cookie";
 import { Btn } from "@components/atoms";
+import { PostDirectoryProps } from "@interfaces/directory";
+import { useState } from "react";
 
 export interface DirDetailProps {
   /** 공유 디렉토리 여부 */
@@ -27,9 +29,24 @@ const DirDetail = ({
   shareClick,
   editClick,
 }: DirDetailProps) => {
+  // 디렉토리 생성 모달 오픈
+  const [isDirAddOpen, setIsDirAddOpen] = useState(false);
+  const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
+    emoji: "",
+    name: "",
+  });
+  // 온보딩 모달 오픈
+  const [isOnboardOpen, setIsOnboardOpen] = useState(false);
+
   return (
     <>
-      <Header className="header" imgUrl={imgUrl} isMypage />
+      <Header
+        className="header"
+        imgUrl={imgUrl}
+        isErrorpage
+        isOnboardOpen={isOnboardOpen}
+        setIsOnboardOpen={setIsOnboardOpen}
+      />
       <DirDetailCntnr>
         <ShareCntnr>
           <Title>
@@ -64,10 +81,23 @@ const DirDetail = ({
           nickname={nickname}
           filterType="latest"
           onClickType={() => {}}
-          postDir={() => {}}
+          isDirAddOpen={isDirAddOpen}
+          setIsDirAddOpen={setIsDirAddOpen}
         />
-        <Cookies isShared={isShared} data={cookies} />
+        <Cookies
+          type={isShared ? "dirShare" : "dirDetail"}
+          data={cookies}
+          allDir={[]}
+        />
       </DirDetailCntnr>
+      <DirectoryModal
+        isOpen={isDirAddOpen}
+        setIsOpen={setIsDirAddOpen}
+        type="new"
+        value={newDirData}
+        setValue={setNewDirData}
+        postDir={() => {}}
+      />
     </>
   );
 };

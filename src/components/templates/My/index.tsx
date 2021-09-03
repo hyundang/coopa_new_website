@@ -41,10 +41,17 @@ const My = ({
   const [isLogoutHover, setIsLogoutHover] = useState(false);
   // toast msg visible state
   const [isVisible, setIsVisible] = useState(false);
+  // 온보딩 모달 오픈
+  const [isOnboardOpen, setIsOnboardOpen] = useState(false);
 
   return (
     <Container>
-      <Header imgUrl={userData.profileImage} isMypage />
+      <Header
+        imgUrl={userData.profileImage}
+        isMypage
+        isOnboardOpen={isOnboardOpen}
+        setIsOnboardOpen={setIsOnboardOpen}
+      />
       <MyCntnr
         imgUrl={userData.profileImage}
         isLogoutHover={isLogoutHover}
@@ -221,7 +228,7 @@ const MyCntnr = styled.section<MyCntnrProps>`
         margin-right: 41px;
         border-radius: 76px;
         border: 2px solid var(--gray_4);
-        background: url(${({ imgUrl }) => imgUrl}) center center/cover;
+        background: url("${({ imgUrl }) => imgUrl}") center center/cover;
       }
       &__info {
         .name-wrap {

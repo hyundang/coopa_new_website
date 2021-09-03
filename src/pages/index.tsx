@@ -11,8 +11,13 @@ import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import { CookieDataProps } from "@interfaces/cookie";
 import { DirectoryDataProps } from "@interfaces/directory";
+import { useRouter } from "next/dist/client/router";
 
 export default function NewtabPage() {
+  // 로그인 여부
+  const [isLogin, setIsLogin] = useState(false);
+  const router = useRouter();
+
   // 검색 여부
   const [isSearched, setIsSearched] = useState(false);
   // 검색어
@@ -62,6 +67,9 @@ export default function NewtabPage() {
             setFilteredCookieData([...data]);
             break;
         }
+      } else if (data && filter === null) {
+        setCookieFilter("latest");
+        setFilteredCookieData([...data]);
       }
     },
   });
@@ -104,6 +112,9 @@ export default function NewtabPage() {
             setFilteredDirData(data);
             break;
         }
+      } else if (data && filter === null) {
+        setDirFilter("abc");
+        setFilteredDirData([...data]);
       }
     },
   });
@@ -246,6 +257,10 @@ export default function NewtabPage() {
   const handlePostDir = () => {};
 
   useEffect(() => {
+    // 로그인 여부 검사
+    localStorage.getItem("x-access-token") === null
+      ? router.replace("/login")
+      : setIsLogin(true);
     // 홈보드 이미지 세팅
     const homeboardImgUrl = localStorage.getItem("homeboardImgUrl");
     homeboardImgUrl?.length === 1
@@ -264,32 +279,38 @@ export default function NewtabPage() {
   }, []);
 
   return (
-    <Newtab
-      isSearched={isSearched}
-      setIsSearched={setIsSearched}
-      searchValue={searchValue}
-      setSearchValue={setSearchValue}
-      onKeyPress={handleKeyPress}
-      imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
-      homeboardModalImg={homeboardModalImg}
-      setHomeboardModalImg={setHomeboardModalImg}
-      homeboardImg={homeboardImg}
-      setHomeboardImg={setHomeboardImg}
-      postHomeboardImg={handlePostHomeboardImg}
-      bookmarkDatas={bookmarkData || []}
-      onClickBookmarkSave={handleAddBookmark}
-      onClickBookmarkDel={handleDelBookmark}
-      cookieData={filteredCookieData || []}
-      searchedCookieData={searchedCookieData || []}
-      cookieFilter={cookieFilter}
-      setCookieFilter={handleCookieFilter}
-      dirData={filteredDirData || []}
-      searchedDirData={searchedDirData || []}
-      dirFilter={dirFilter}
-      setDirFilter={handleDirFilter}
-      isToastMsgVisible={isVisible}
-      setIsToastMsgVisible={setIsVisible}
-      postDir={handlePostDir}
-    />
+    <>
+      {isLogin ? (
+        <Newtab
+          isSearched={isSearched}
+          setIsSearched={setIsSearched}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          onKeyPress={handleKeyPress}
+          imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
+          homeboardModalImg={homeboardModalImg}
+          setHomeboardModalImg={setHomeboardModalImg}
+          homeboardImg={homeboardImg}
+          setHomeboardImg={setHomeboardImg}
+          postHomeboardImg={handlePostHomeboardImg}
+          bookmarkDatas={bookmarkData || []}
+          onClickBookmarkSave={handleAddBookmark}
+          onClickBookmarkDel={handleDelBookmark}
+          cookieData={filteredCookieData || []}
+          searchedCookieData={searchedCookieData || []}
+          cookieFilter={cookieFilter}
+          setCookieFilter={handleCookieFilter}
+          dirData={filteredDirData || []}
+          searchedDirData={searchedDirData || []}
+          dirFilter={dirFilter}
+          setDirFilter={handleDirFilter}
+          isToastMsgVisible={isVisible}
+          setIsToastMsgVisible={setIsVisible}
+          postDir={handlePostDir}
+        />
+      ) : (
+        <></>
+      )}
+    </>
   );
 }

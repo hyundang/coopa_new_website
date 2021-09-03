@@ -7,14 +7,7 @@ export default {
 } as Meta;
 
 const Template: Story<CookiesProps> = (args) => {
-  return <Cookies {...args} data={data} />;
-};
-
-export const Default = Template.bind({});
-
-export const Sharedcookies = Template.bind({});
-Sharedcookies.args = {
-  isShared: true,
+  return <Cookies {...args} />;
 };
 
 const data = [
@@ -100,3 +93,32 @@ const data = [
       "[playlist]봄 밤, 창이 열린 1층 카페 끝 자리, 가사 없는 chilling 음악",
   },
 ];
+
+export const Default = Template.bind({});
+Default.args = {
+  data,
+};
+
+export const empty = Template.bind({});
+empty.args = {
+  data: [],
+  type: "normal",
+};
+
+export const searchEmpty = Template.bind({});
+searchEmpty.args = {
+  data: [],
+  type: "searched",
+};
+
+export const dirDetailEmpty = Template.bind({});
+dirDetailEmpty.args = {
+  data: [],
+  type: "dirDetail",
+};
+
+export const SharedCookies = Template.bind({});
+SharedCookies.args = {
+  data,
+  type: "dirShare",
+};
