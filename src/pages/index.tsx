@@ -1,13 +1,23 @@
-import { getApi, postApi, putApi, delApi } from "@lib/api";
-import { Newtab } from "@components/templates";
-import { PostBookmarkDataProps } from "@interfaces/homeboard";
+import { NotFoundErrorImg } from "@assets/imgs/error";
+import { NewtabError, Newtab } from "@components/templates";
+import {
+  BookmarkDataProps,
+  PostBookmarkDataProps,
+} from "@interfaces/homeboard";
+import useSWR, { mutate } from "swr";
+import { CookieDataProps } from "@interfaces/cookie";
+import { DirectoryDataProps } from "@interfaces/directory";
+import { UserDataProps } from "@interfaces/user";
 import {
   readCountDesc,
   readCountAsc,
   idCountAsc,
   idCountDesc,
 } from "@lib/filter";
+import { getApi, postApi, putApi, delApi } from "@lib/api";
 import { useEffect, useState } from "react";
+import cookies from "next-cookies";
+import cookie from "react-cookies";
 import useSWR, { mutate } from "swr";
 import { CookieDataProps } from "@interfaces/cookie";
 import {
@@ -17,41 +27,57 @@ import {
 } from "@interfaces/directory";
 import { useRouter } from "next/dist/client/router";
 
-export default function NewtabPage() {
-  // 로그인 여부
-  const [isLogin, setIsLogin] = useState(false);
-  const router = useRouter();
-
+interface NewtabPageProps {
+  isLogin: boolean;
+  initUserData: UserDataProps;
+  initAllCookieData: CookieDataProps[];
+  initAllDirData: DirectoryDataProps[];
+  initBookmarkData: BookmarkDataProps[];
+  initHomeboardImgUrl?: string;
+}
+export default function NewtabPage({
+  isLogin,
+  initUserData,
+  initAllCookieData,
+  initAllDirData,
+  initBookmarkData,
+  initHomeboardImgUrl,
+}: NewtabPageProps) {
   // 검색 여부
   const [isSearched, setIsSearched] = useState(false);
   // 검색어
   const [searchValue, setSearchValue] = useState("");
 
   // 홈보드 배경 이미지
-  const [homeboardImg, setHomeboardImg] = useState("");
+  const [homeboardImg, setHomeboardImg] = useState(initHomeboardImgUrl || "");
   // 홈보드 모달 이미지
-  const [homeboardModalImg, setHomeboardModalImg] = useState("");
-
-  // 북마크 데이터 get
-  const { data: bookmarkData } = useSWR(
-    "/users/favorites",
-    getApi.getBookmarkData,
-    {
-      onSuccess: async (data) => {
-        localStorage.setItem("bookmark", JSON.stringify(data));
-      },
-    },
+  const [homeboardModalImg, setHomeboardModalImg] = useState(
+    initHomeboardImgUrl || "",
   );
+
+  // toast msg visible state
+  const [isVisible, setIsVisible] = useState({
+    dirCreate: false,
+    dirDel: false,
+    dirEdit: false,
+    cookieDel: false,
+    cookieEdit: false,
+    bookmarkDel: false,
+    bookmarkCreate: false,
+    homeboardEdit: false,
+    imgSizeOver: false,
+  });
 
   // 모든 쿠키 데이터 get
   const { data: allCookieData } = useSWR("/cookies", getApi.getAllCookieData, {
+    initialData: initAllCookieData,
     onErrorRetry: ({ retryCount }) => {
       // 3번 까지만 재시도함
       if (retryCount >= 3) return undefined;
       return true;
     },
     onSuccess: (data) => {
-      const filter = localStorage.getItem("cookieFilter");
+      const filter = cookie.load("cookieFilter");
       if (data && filter !== null) {
         switch (filter) {
           case "readMost":
@@ -81,7 +107,7 @@ export default function NewtabPage() {
   const { data: searchedCookieData } = useSWR(
     "/cookies/search",
     getApi.getSearchedCookieData,
-    { revalidateOnFocus: false },
+    { revalidateOnFocus: false, revalidateOnMount: false },
   );
   // 쿠키 필터
   const [cookieFilter, setCookieFilter] = useState<
@@ -90,7 +116,7 @@ export default function NewtabPage() {
   // 필터링 된 쿠키 데이터
   const [filteredCookieData, setFilteredCookieData] = useState<
     CookieDataProps[] | undefined
-  >([]);
+  >(initAllCookieData);
   // 쿠키 삭제
   const handleDelCookie = async (cookieId: number) => {
     const res = await delApi.delCookieData(cookieId);
@@ -166,13 +192,14 @@ export default function NewtabPage() {
   };
   // 모든 디렉토리 데이터 get
   const { data: allDirData } = useSWR("/directories", getApi.getAllDirData, {
+    initialData: initAllDirData,
     onErrorRetry: ({ retryCount }) => {
       // 3번 까지만 재시도함
       if (retryCount >= 3) return undefined;
       return true;
     },
     onSuccess: (data) => {
-      const filter = localStorage.getItem("dirFilter");
+      const filter = cookie.load("dirFilter");
       if (data && filter !== null) {
         switch (filter) {
           case "latest":
@@ -270,7 +297,7 @@ export default function NewtabPage() {
   const { data: searchedDirData } = useSWR(
     "/directories/search",
     getApi.getSearchedDirData,
-    { revalidateOnFocus: false },
+    { revalidateOnFocus: false, revalidateOnMount: false },
   );
   // 디렉토리 필터
   const [dirFilter, setDirFilter] = useState<"latest" | "oldest" | "abc">(
@@ -279,20 +306,7 @@ export default function NewtabPage() {
   // 필터링 된 디렉토리 데이터
   const [filteredDirData, setFilteredDirData] = useState<
     DirectoryDataProps[] | undefined
-  >([]);
-
-  // toast msg visible state
-  const [isVisible, setIsVisible] = useState({
-    dirCreate: false,
-    dirDel: false,
-    dirEdit: false,
-    cookieDel: false,
-    cookieEdit: false,
-    bookmarkDel: false,
-    bookmarkCreate: false,
-    homeboardEdit: false,
-    imgSizeOver: false,
-  });
+  >(initAllDirData);
 
   // 검색창 enter 키 클릭 시
   const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -318,7 +332,6 @@ export default function NewtabPage() {
     setHomeboardImg(homeboardImgUrl);
     setHomeboardModalImg(homeboardImgUrl);
   };
-
   // 홈보드 이미지 변경
   const handlePostHomeboardImg = async (e: File) => {
     const homeboardImgUrl = await putApi.putHomeboardData(e);
@@ -326,6 +339,17 @@ export default function NewtabPage() {
     return homeboardImgUrl;
   };
 
+  // 북마크 데이터 get
+  const { data: bookmarkData } = useSWR(
+    "/users/favorites",
+    getApi.getBookmarkData,
+    {
+      initialData: initBookmarkData,
+      onSuccess: async (data) => {
+        localStorage.setItem("bookmark", JSON.stringify(data));
+      },
+    },
+  );
   // 북마크 추가
   const handleAddBookmark = async (newValue: PostBookmarkDataProps) => {
     const res = await postApi.postBookmarkData(newValue);
@@ -338,7 +362,6 @@ export default function NewtabPage() {
         });
       })();
   };
-
   // 북마크 삭제
   const handleDelBookmark = async (bookmarkID: number) => {
     const res = await delApi.delBookmarkData(bookmarkID);
@@ -361,7 +384,10 @@ export default function NewtabPage() {
     filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => {
     filter !== "abc" && setCookieFilter(filter);
-    localStorage.setItem("cookieFilter", filter);
+    cookie.save("cookieFilter", filter, {
+      path: "/",
+      httpOnly: JSON.parse(HTTP_ONLY),
+    });
     switch (filter) {
       case "readMost":
         setFilteredCookieData(
@@ -387,7 +413,10 @@ export default function NewtabPage() {
     filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => {
     filter !== "readMost" && filter !== "readLeast" && setDirFilter(filter);
-    localStorage.setItem("dirFilter", filter);
+    cookie.save("dirFilter", filter, {
+      path: "/",
+      httpOnly: JSON.parse(HTTP_ONLY),
+    });
     switch (filter) {
       case "latest":
         setFilteredDirData(allDirData && [...allDirData].sort(idCountDesc));
@@ -402,24 +431,22 @@ export default function NewtabPage() {
   };
 
   useEffect(() => {
-    // 로그인 여부 검사
-    localStorage.getItem("x-access-token") === null
-      ? router.replace("/login")
-      : setIsLogin(true);
     // 홈보드 이미지 세팅
     const homeboardImgUrl = localStorage.getItem("homeboardImgUrl");
     homeboardImgUrl?.length === 1
       ? setHomeboardImg(`/theme_img/img_${homeboardImgUrl}.jpg`)
-      : homeboardImgUrl !== null
-      ? (() => {
-          setHomeboardImg(homeboardImgUrl);
-          setHomeboardModalImg(homeboardImgUrl);
-        })()
-      : handleGetHomeboardImg();
+      : !initHomeboardImgUrl &&
+        (homeboardImgUrl !== null
+          ? (() => {
+              setHomeboardImg(homeboardImgUrl);
+              setHomeboardModalImg(homeboardImgUrl);
+            })()
+          : handleGetHomeboardImg());
 
     // 북마크 세팅
     const bookmark = localStorage.getItem("bookmark");
-    bookmark !== null &&
+    !initBookmarkData &&
+      bookmark !== null &&
       mutate("/users/favorites", JSON.parse(bookmark), false);
   }, []);
 
@@ -432,7 +459,7 @@ export default function NewtabPage() {
           searchValue={searchValue}
           setSearchValue={setSearchValue}
           onKeyPress={handleKeyPress}
-          imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
+          imgUrl={initUserData?.profileImage}
           homeboardModalImg={homeboardModalImg}
           setHomeboardModalImg={setHomeboardModalImg}
           homeboardImg={homeboardImg}
@@ -459,8 +486,72 @@ export default function NewtabPage() {
           handleUpdateDirectory={handleUpdateDirectory}
         />
       ) : (
-        <></>
+        <NewtabError
+          imgUrl={initUserData?.profileImage}
+          homeboardImg={homeboardImg}
+          bookmarkDatas={bookmarkData || []}
+          errorImg={NotFoundErrorImg}
+          errorImgWidth={141}
+          text="앗, 로그인이 필요한 페이지에요! 😮"
+          text2="로그인 후 함께하시겠어요?"
+          isLoginError
+        />
       )}
     </>
   );
 }
+
+// 로그인 여부 검사
+NewtabPage.getInitialProps = async (ctx: any) => {
+  const allCookies = cookies(ctx);
+  const userToken = allCookies["x-access-token"];
+
+  // 쿠키 데이터
+  const initAllCookieData = await getApi.getAllCookieData("/cookies");
+  const { cookieFilter } = allCookies;
+  if (cookieFilter) {
+    switch (cookieFilter) {
+      case "readMost":
+        initAllCookieData?.sort(readCountDesc);
+        break;
+      case "readLeast":
+        initAllCookieData?.sort(readCountAsc);
+        break;
+      case "oldest":
+        initAllCookieData?.reverse();
+        break;
+      default:
+        break;
+    }
+  }
+
+  // 디렉토리 데이터
+  const initAllDirData = await getApi.getAllDirData("/directories");
+  const { dirFilter } = allCookies;
+  if (dirFilter) {
+    switch (dirFilter) {
+      case "latest":
+        initAllDirData?.sort(idCountDesc);
+        break;
+      case "oldest":
+        initAllDirData?.sort(idCountAsc);
+        break;
+      default:
+        break;
+    }
+  }
+
+  // 북마크 데이터
+  const initBookmarkData = await getApi.getBookmarkData("/users/favorites");
+
+  // 홈보드 이미지
+  const initHomeboardImgUrl = await getApi.getHomeboardData();
+
+  return {
+    isLogin: userToken !== undefined,
+    initAllCookieData,
+    initAllDirData,
+    initBookmarkData,
+    initHomeboardImgUrl,
+  };
+};
