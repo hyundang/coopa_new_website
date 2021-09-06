@@ -1,16 +1,23 @@
 import type { AppContext, AppProps } from "next/app";
 import Head from "next/head";
-// recoil
 import { RecoilRoot } from "recoil";
-// style
 import { ThemeProvider } from "styled-components";
 import { theme } from "src/styles/theme";
 import { GlobalStyle } from "src/styles/GlobalStyles";
 import cookies from "next-cookies";
 import { setToken } from "@api/TokenManaget";
 import getApi from "@api/getApi";
+import { useRouterLoading } from "src/hooks";
+import { useEffect } from "react";
 
 function App({ Component, pageProps }: AppProps) {
+  // 로딩 여부
+  const isLoading = useRouterLoading();
+
+  useEffect(() => {
+    console.log(isLoading);
+  }, [isLoading]);
+
   return (
     <>
       <Head>
@@ -60,7 +67,11 @@ function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <RecoilRoot>
           <GlobalStyle />
-          <Component {...pageProps} />
+          {isLoading ? (
+            <h1 style={{ fontSize: "100px" }}>...loading</h1>
+          ) : (
+            <Component {...pageProps} />
+          )}
         </RecoilRoot>
       </ThemeProvider>
     </>
