@@ -25,7 +25,7 @@ export interface DirectoryModalProps {
   /** post directory data */
   postDir?: (e: PostDirectoryProps) => void;
   /** put directory data */
-  putDir?: (e: PostDirectoryProps) => void;
+  putDir?: () => void;
   /** delete directory data */
   delDir?: () => void;
 }
@@ -72,7 +72,7 @@ const DirectoryModal = ({
   const handleClickButton = () => {
     value.name !== ""
       ? (() => {
-          type === "new" ? postDir && postDir(value) : putDir && putDir(value);
+          type === "new" ? postDir && postDir(value) : putDir && putDir();
           setIsOpen(false);
         })()
       : name_input.current?.focus();

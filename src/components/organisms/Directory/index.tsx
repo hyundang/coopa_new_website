@@ -10,8 +10,14 @@ import { DelModal, DirectoryModal } from "..";
 
 export interface DirectoryProps {
   dir: DirectoryDataProps;
+  handleDelDirectory: (id: number) => void;
+  handleUpdateDirectory: (id: number, data: PostDirectoryProps) => void;
 }
-const Directory = ({ dir }: DirectoryProps) => {
+const Directory = ({
+  dir,
+  handleDelDirectory,
+  handleUpdateDirectory,
+}: DirectoryProps) => {
   const [postData, setPostData] = useState<PostDirectoryProps>({
     name: "",
     emoji: "",
@@ -46,7 +52,7 @@ const Directory = ({ dir }: DirectoryProps) => {
         value={postData}
         setValue={setPostData}
         postDir={() => {}}
-        putDir={() => {}}
+        putDir={() => handleUpdateDirectory(dir.id, postData)}
         delDir={() => {
           setISDeleteOpen(true);
           setIsEditOpen(false);
@@ -56,7 +62,7 @@ const Directory = ({ dir }: DirectoryProps) => {
         type="directory"
         isOpen={isDeleteOpen}
         setIsOpen={setISDeleteOpen}
-        onClickDel={() => {}}
+        onClickDel={() => handleDelDirectory(dir.id)}
       />
     </>
   );

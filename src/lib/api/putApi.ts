@@ -1,3 +1,4 @@
+import { PostDirectoryProps } from "@interfaces/directory";
 import { EditUserDataProps } from "../interfaces/user";
 import client from "./client";
 
@@ -30,9 +31,29 @@ const putHomeboardData = async (imgFile: File): Promise<string> => {
   }
 };
 
+const updateCookie = async (body: FormData) => {
+  try {
+    const { data } = await client.patch(`/cookies`, body);
+    return data.data;
+  } catch (e) {
+    return e;
+  }
+};
+
+const updateDirectoryData = async (id: number, body: PostDirectoryProps) => {
+  try {
+    const result = await client.put(`/directories/${id}`, body);
+    return result;
+  } catch (e) {
+    return e;
+  }
+};
+
 const putApi = {
   putUserData,
   putHomeboardData,
+  updateCookie,
+  updateDirectoryData,
 };
 
 export default putApi;

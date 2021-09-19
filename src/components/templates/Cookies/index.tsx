@@ -1,15 +1,14 @@
 import styled from "styled-components";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
 import { Btn } from "@components/atoms";
-import { Cookie, Empty, ListHeader } from "@components/organisms";
-import {
-  EmptyCookieIcon,
-  EditIcon,
-  LinkIcon,
-  CookieIcon,
-} from "@assets/icons/common";
+import { Cookie, Empty } from "@components/organisms";
+import { CookieIcon } from "@assets/icons/common";
 import React, { Dispatch, SetStateAction } from "react";
-import { DirectoryDataProps } from "@interfaces/directory";
+import {
+  DirectoryDataProps,
+  PostDirAddCookieProps,
+  PostDirectoryProps,
+} from "@interfaces/directory";
 import { EmptyImg } from "@assets/imgs/common";
 
 export interface CookiesProps {
@@ -21,6 +20,14 @@ export interface CookiesProps {
   allDir: DirectoryDataProps[];
   /** 온보딩 모달 오픈 */
   setIsOnboardOpen?: Dispatch<SetStateAction<boolean>>;
+  /** del cookie handler */
+  delCookieHandler: (id: number) => void;
+  /** edit cookie handler */
+  handleEditCookie: (data: FormData) => void;
+  /** add cookie to dir */
+  handleDirAddCookie: (body: PostDirAddCookieProps) => void;
+  /** add dir */
+  postDir: (body: PostDirectoryProps) => void;
 }
 
 const Cookies = ({
@@ -28,6 +35,10 @@ const Cookies = ({
   allDir,
   type = "normal",
   setIsOnboardOpen,
+  delCookieHandler,
+  handleEditCookie,
+  handleDirAddCookie,
+  postDir,
 }: CookiesProps) => {
   return (
     <CookiesCntnr>
@@ -39,6 +50,10 @@ const Cookies = ({
               key={cookie.id}
               allDir={allDir}
               isShared={type === "dirShare"}
+              deleteCookieHandler={delCookieHandler}
+              handleEditCookie={handleEditCookie}
+              handleDirAddCookie={handleDirAddCookie}
+              postDir={postDir}
             />
           ))}
         </CookieWrap>

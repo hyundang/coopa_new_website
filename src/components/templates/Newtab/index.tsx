@@ -14,7 +14,11 @@ import {
   PostBookmarkDataProps,
 } from "@interfaces/homeboard";
 import { CookieDataProps } from "@interfaces/cookie";
-import { DirectoryDataProps, PostDirectoryProps } from "@interfaces/directory";
+import {
+  DirectoryDataProps,
+  PostDirAddCookieProps,
+  PostDirectoryProps,
+} from "@interfaces/directory";
 // asset
 import { EmptyImg } from "@assets/imgs/common";
 import { CookieIcon, PlusIcon } from "@assets/icons/common";
@@ -77,10 +81,20 @@ export interface NewtablProps {
     f: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => void;
   /** 디렉토리 생성 */
-  postDir: () => void;
+  postDir: (e: PostDirectoryProps) => void;
   /** toast msg state */
   isToastMsgVisible: ToastMsgVisibleStateProps;
   setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
+  /** delete cookie handler */
+  delCookieHandler: (id: number) => void;
+  /** edit cookie */
+  handleEditCookie: (data: FormData) => void;
+  /** delete dir */
+  handleDelDirectory: (id: number) => void;
+  /** dir cookie 추가 */
+  handleDirAddCookie: (body: PostDirAddCookieProps) => void;
+  /** update dir */
+  handleUpdateDirectory: (id: number, body: PostDirectoryProps) => void;
 }
 const Newtab = ({
   isSearched,
@@ -108,6 +122,11 @@ const Newtab = ({
   postDir,
   isToastMsgVisible,
   setIsToastMsgVisible,
+  delCookieHandler,
+  handleEditCookie,
+  handleDelDirectory,
+  handleDirAddCookie,
+  handleUpdateDirectory,
 }: NewtablProps) => {
   // 검색창 불필요한 fadeout 방지
   const [preventFadeout, setPreventFadeout] = useState(true);
@@ -311,9 +330,18 @@ const Newtab = ({
                   data={searchedCookieData}
                   allDir={dirData}
                   type="searched"
+                  delCookieHandler={delCookieHandler}
+                  handleEditCookie={handleEditCookie}
+                  handleDirAddCookie={handleDirAddCookie}
+                  postDir={postDir}
                 />
               ) : (
-                <Directories data={searchedDirData} isSearched />
+                <Directories
+                  data={searchedDirData}
+                  isSearched
+                  handleDelDirectory={handleDelDirectory}
+                  handleUpdateDirectory={handleUpdateDirectory}
+                />
               )}
             </>
           ) : (
@@ -323,9 +351,18 @@ const Newtab = ({
                   data={cookieData}
                   allDir={dirData}
                   setIsOnboardOpen={setIsOnboardOpen}
+                  delCookieHandler={delCookieHandler}
+                  handleEditCookie={handleEditCookie}
+                  handleDirAddCookie={handleDirAddCookie}
+                  postDir={postDir}
                 />
               ) : (
-                <Directories data={dirData} setIsDirAddOpen={setIsDirAddOpen} />
+                <Directories
+                  data={dirData}
+                  setIsDirAddOpen={setIsDirAddOpen}
+                  handleDelDirectory={handleDelDirectory}
+                  handleUpdateDirectory={handleUpdateDirectory}
+                />
               )}
             </>
           )}

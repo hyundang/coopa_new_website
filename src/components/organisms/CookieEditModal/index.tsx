@@ -14,8 +14,6 @@ export interface CookieEditModalProps {
   value: PatchCookieProps;
   /** 쿠키 제목, 쿠키 텍스트, 쿠키 썸네일 setState */
   setValue: Dispatch<SetStateAction<PatchCookieProps>>;
-  /** '저장' 버튼 클릭 시 event handling 함수 */
-  onClickSave: React.MouseEventHandler<HTMLButtonElement>;
   /** '삭제' 버튼 클릭 시 event handling 함수 */
   onClickDel: React.MouseEventHandler<HTMLButtonElement>;
   /** img input 시 img size 에러 여부 setState */
@@ -26,6 +24,8 @@ export interface CookieEditModalProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   /** data post 시 loading 여부 */
   isLoading: boolean;
+  /** cookie edit handler */
+  handleEditCookie: (data: FormData) => void;
 }
 
 const CookieEditModal = ({
@@ -33,12 +33,12 @@ const CookieEditModal = ({
   className,
   value,
   setValue,
-  onClickSave,
   onClickDel,
   setIsError,
   isOpen,
   setIsOpen,
   isLoading,
+  handleEditCookie,
 }: CookieEditModalProps) => {
   // img box hover 여부
   const [isHover, setIsHover] = useState(false);
@@ -133,7 +133,20 @@ const CookieEditModal = ({
           <Btn className="button" isAtvBtn onClick={() => setIsOpen(false)}>
             취소
           </Btn>
-          <Btn className="button" isOrange onClick={onClickSave}>
+          <Btn
+            className="button"
+            isOrange
+            isAtvBtn
+            onClick={() => {
+              const formData = new FormData();
+              formData.append("cookieId", value.cookieId);
+              formData.append("image", value?.image ? value.image : "");
+              formData.append("title", value.title);
+              formData.append("content", value.content);
+              handleEditCookie(formData);
+              setIsOpen(false);
+            }}
+          >
             수정
           </Btn>
         </span>

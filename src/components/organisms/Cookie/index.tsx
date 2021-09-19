@@ -3,7 +3,11 @@ import styled from "styled-components";
 import { SyntheticEvent, useState, useEffect } from "react";
 import { fvcOnErrorImg } from "@assets/icons/card";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
-import { DirectoryDataProps } from "src/lib/interfaces/directory";
+import {
+  DirectoryDataProps,
+  PostDirAddCookieProps,
+  PostDirectoryProps,
+} from "src/lib/interfaces/directory";
 
 export interface CookieProps {
   /** id */
@@ -16,8 +20,26 @@ export interface CookieProps {
   allDir: DirectoryDataProps[];
   /** share cookie */
   isShared?: boolean;
+  /** cookie delete handler */
+  deleteCookieHandler: (id: number) => void;
+  /** cookie edit handler */
+  handleEditCookie: (data: FormData) => void;
+  /** add cookie to dir */
+  handleDirAddCookie: (data: PostDirAddCookieProps) => void;
+  /** post dir */
+  postDir: (data: PostDirectoryProps) => void;
 }
-const Cookie = ({ id, className, cookie, allDir, isShared }: CookieProps) => {
+const Cookie = ({
+  id,
+  className,
+  cookie,
+  allDir,
+  isShared,
+  deleteCookieHandler,
+  handleEditCookie,
+  handleDirAddCookie,
+  postDir,
+}: CookieProps) => {
   //normal: 기본 | hover: 호버 | parking: 파킹중 | input: 인풋입력중
   const [cardState, setCardState] = useState<
     "hover" | "normal" | "parking" | "input"
@@ -30,9 +52,23 @@ const Cookie = ({ id, className, cookie, allDir, isShared }: CookieProps) => {
       : cookie.directoryInfo.name,
   );
   useEffect(() => {
-    setCardState("parking");
-    setTimeout(() => setCardState("normal"), 1500);
-  }, [currDir]);
+    (async () => {
+      if (currDir !== cookie.directoryInfo?.name && currDir !== "모든 쿠키") {
+        if (allDir.filter((dir) => dir.name === currDir).length === 0) {
+          await postDir({ name: currDir });
+        }
+        if (currDir !== cookie.directoryInfo?.name) {
+          setCardState("parking");
+          setTimeout(() => setCardState("normal"), 1500);
+          const body: PostDirAddCookieProps = {
+            cookieId: cookie.id,
+            directoryId: allDir.filter((dir) => dir.name === currDir)[0]?.id,
+          };
+          body.directoryId && handleDirAddCookie(body);
+        }
+      }
+    })();
+  }, [currDir, allDir]);
   return (
     <CookieWrap
       id={id}
@@ -47,7 +83,12 @@ const Cookie = ({ id, className, cookie, allDir, isShared }: CookieProps) => {
         if (cardState !== "input") setCardState("normal");
       }}
     >
-      <CookieImg cardState={isShared ? "normal" : cardState} cookie={cookie} />
+      <CookieImg
+        cardState={isShared ? "normal" : cardState}
+        cookie={cookie}
+        deleteCookieHanlder={deleteCookieHandler}
+        handleEditCookie={handleEditCookie}
+      />
       {!isShared && (cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
           <CookieHover

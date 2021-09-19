@@ -10,7 +10,11 @@ import {
 import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import { CookieDataProps } from "@interfaces/cookie";
-import { DirectoryDataProps } from "@interfaces/directory";
+import {
+  DirectoryDataProps,
+  PostDirAddCookieProps,
+  PostDirectoryProps,
+} from "@interfaces/directory";
 import { useRouter } from "next/dist/client/router";
 
 export default function NewtabPage() {
@@ -87,7 +91,79 @@ export default function NewtabPage() {
   const [filteredCookieData, setFilteredCookieData] = useState<
     CookieDataProps[] | undefined
   >([]);
+  // 쿠키 삭제
+  const handleDelCookie = async (cookieId: number) => {
+    const res = await delApi.delCookieData(cookieId);
+    res &&
+      (() => {
+        mutate(
+          "/cookies/:id",
+          setFilteredCookieData((prev) =>
+            prev?.filter((cookie) => cookie.id !== res.cookieId),
+          ),
+          false,
+        );
+        setIsVisible({
+          ...isVisible,
+          cookieDel: true,
+        });
+      })();
+  };
 
+  // 쿠키 수정
+  const handleEditCookie = async (formData: FormData) => {
+    const res = await putApi.updateCookie(formData);
+    res &&
+      (() => {
+        mutate(
+          "/cookies",
+          setFilteredCookieData((prev) =>
+            prev?.map((cookie) => {
+              if (cookie.id === res.cookieId) {
+                return {
+                  ...cookie,
+                  content: res.content,
+                  thumbnail: res.thumbnail,
+                  title: res.title,
+                };
+              }
+              return cookie;
+            }),
+          ),
+          false,
+        );
+        setIsVisible({
+          ...isVisible,
+          cookieEdit: true,
+        });
+      })();
+  };
+  //디렉토리에 쿠키 추가
+  const handleDirAddCookie = async (body: PostDirAddCookieProps) => {
+    const res = await postApi.postDirAddCookie(body);
+    res &&
+      (() => {
+        mutate(
+          "/directories/add/cookie",
+          setFilteredCookieData((cookies) =>
+            cookies?.map((cookie) => {
+              if (cookie.id === res.cookieId) {
+                return {
+                  ...cookie,
+                  directoryInfo: {
+                    emoji: res?.directoryEmoji || null,
+                    id: res.directoryId,
+                    name: res.directoryName,
+                  },
+                };
+              }
+              return cookie;
+            }),
+          ),
+          false,
+        );
+      })();
+  };
   // 모든 디렉토리 데이터 get
   const { data: allDirData } = useSWR("/directories", getApi.getAllDirData, {
     onErrorRetry: ({ retryCount }) => {
@@ -118,6 +194,78 @@ export default function NewtabPage() {
       }
     },
   });
+  // 디렉토리 생성
+  const handlePostDir = async (newValue: PostDirectoryProps) => {
+    const res = await postApi.postDirectoryData(newValue);
+    res &&
+      (() => {
+        mutate(
+          "/directories",
+          () => {
+            const newDirList: DirectoryDataProps = {
+              emoji: res.emoji,
+              id: res.directoryId,
+              name: res.name,
+              cookieCnt: 0,
+            };
+            setFilteredDirData((prev) => prev?.concat(newDirList));
+          },
+          false,
+        );
+        setIsVisible({
+          ...isVisible,
+          dirCreate: true,
+        });
+      })();
+  };
+  //디렉토리 삭제
+  const handleDelDirectory = async (dirId: number) => {
+    const res = await delApi.delDirData(dirId);
+    res &&
+      (() => {
+        mutate(
+          "/directory/:id",
+          setFilteredDirData((prev) =>
+            prev?.filter((dir) => dir.id !== res.id),
+          ),
+          false,
+        );
+        setIsVisible({
+          ...isVisible,
+          dirDel: true,
+        });
+      })();
+  };
+  //디렉토리 수정
+  const handleUpdateDirectory = async (
+    id: number,
+    body: PostDirectoryProps,
+  ) => {
+    const res = await putApi.updateDirectoryData(id, body);
+    res &&
+      (() => {
+        mutate(
+          "/directories/:id",
+          setFilteredDirData((prev) =>
+            prev?.map((dir) => {
+              if (dir.id === id) {
+                return {
+                  ...dir,
+                  name: body.name || "",
+                  emoji: body.emoji || "",
+                };
+              }
+              return dir;
+            }),
+          ),
+          false,
+        );
+        setIsVisible({
+          ...isVisible,
+          dirEdit: true,
+        });
+      })();
+  };
   // 검색된 디렉토리 데이터
   const { data: searchedDirData } = useSWR(
     "/directories/search",
@@ -253,9 +401,6 @@ export default function NewtabPage() {
     }
   };
 
-  // 디렉토리 생성
-  const handlePostDir = () => {};
-
   useEffect(() => {
     // 로그인 여부 검사
     localStorage.getItem("x-access-token") === null
@@ -307,6 +452,11 @@ export default function NewtabPage() {
           isToastMsgVisible={isVisible}
           setIsToastMsgVisible={setIsVisible}
           postDir={handlePostDir}
+          delCookieHandler={handleDelCookie}
+          handleEditCookie={handleEditCookie}
+          handleDelDirectory={handleDelDirectory}
+          handleDirAddCookie={handleDirAddCookie}
+          handleUpdateDirectory={handleUpdateDirectory}
         />
       ) : (
         <></>

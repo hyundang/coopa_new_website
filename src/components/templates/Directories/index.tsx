@@ -1,5 +1,8 @@
 import styled from "styled-components";
-import { DirectoryDataProps } from "src/lib/interfaces/directory";
+import {
+  DirectoryDataProps,
+  PostDirectoryProps,
+} from "src/lib/interfaces/directory";
 import Directory from "@components/organisms/Directory";
 import { Empty } from "@components/organisms";
 import { EmptyImg } from "@assets/imgs/common";
@@ -13,19 +16,30 @@ export interface DirectoriesProps {
   isSearched?: boolean;
   /** 디렉토리 생성 모달 오픈 여부 */
   setIsDirAddOpen?: Dispatch<SetStateAction<boolean>>;
+  /** delete dir */
+  handleDelDirectory: (id: number) => void;
+  /** update dir */
+  handleUpdateDirectory: (id: number, data: PostDirectoryProps) => void;
 }
 
 const Directories = ({
   data,
   isSearched = false,
   setIsDirAddOpen,
+  handleDelDirectory,
+  handleUpdateDirectory,
 }: DirectoriesProps) => {
   return (
     <>
       {data.length !== 0 ? (
         <DirectoiresWrap>
           {data.map((dir) => (
-            <Directory key={dir.id} dir={dir} />
+            <Directory
+              key={dir.id}
+              dir={dir}
+              handleDelDirectory={handleDelDirectory}
+              handleUpdateDirectory={handleUpdateDirectory}
+            />
           ))}
         </DirectoiresWrap>
       ) : (
