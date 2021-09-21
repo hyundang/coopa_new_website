@@ -1,16 +1,22 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { EditIcon, EmptyCookieIcon, LinkIcon } from "@assets/icons/common";
+import { Btn, Icon, ToastMsg } from "@components/atoms";
 import {
   DirectoryModal,
   Header,
   ListHeader,
   Footer,
+  DelModal,
 } from "@components/organisms";
-import { EditIcon, EmptyCookieIcon, LinkIcon } from "@assets/icons/common";
 import Cookies from "@components/templates/Cookies";
-import { Btn } from "@components/atoms";
-import { PostDirectoryProps, DirectoryDataProps } from "@interfaces/directory";
+import {
+  PostDirectoryProps,
+  DirectoryDataProps,
+  PostAddCookieToDirProps,
+} from "@interfaces/directory";
 import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
-import { useState } from "react";
+import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
+import { Dispatch, SetStateAction, useState } from "react";
 
 export interface DirDetailProps {
   /** 공유 디렉토리 여부 */
@@ -31,8 +37,21 @@ export interface DirDetailProps {
   ) => void;
   /** 공유 버튼 눌렀을 때 함수 */
   shareClick?: React.MouseEventHandler<HTMLButtonElement>;
-  /** 수정 버튼 눌렀을 때 함수 */
-  editClick?: React.MouseEventHandler;
+  /** toast msg state */
+  isToastMsgVisible: ToastMsgVisibleStateProps;
+  setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
+  /** delete cookie handler */
+  delCookieHandler: (id: number) => void;
+  /** edit cookie */
+  handleEditCookie: (data: FormData) => void;
+  /** dir cookie 추가 */
+  handleDirAddCookie: (body: PostAddCookieToDirProps) => void;
+  /** 디렉토리 생성 */
+  postDir?: (e: PostDirectoryProps) => void;
+  /** delete dir */
+  handleDelDirectory?: (id: number) => void;
+  /** update dir */
+  handleUpdateDirectory?: (id: number, body: PostDirectoryProps) => void;
 }
 const DirDetail = ({
   isShared = false,
@@ -44,16 +63,35 @@ const DirDetail = ({
   filterType,
   onClickType,
   shareClick,
-  editClick,
+  isToastMsgVisible,
+  setIsToastMsgVisible,
+  postDir,
+  delCookieHandler,
+  handleEditCookie,
+  handleDelDirectory,
+  handleDirAddCookie,
+  handleUpdateDirectory,
 }: DirDetailProps) => {
-  // 디렉토리 생성 모달 오픈
-  const [isDirAddOpen, setIsDirAddOpen] = useState(false);
+  // 디렉토리 수정 모달 오픈
+  const [isDirEditOpen, setIsDirEditOpen] = useState(false);
   const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
     emoji: "",
     name: "",
   });
+  // 삭제 모달 오픈
+  const [isDelOpen, setIsDelOpen] = useState(false);
   // 온보딩 모달 오픈
   const [isOnboardOpen, setIsOnboardOpen] = useState(false);
+
+  // toast msg visible handling
+  const handleToastMsgVisible = (
+    key: "dirEdit" | "cookieDel" | "cookieEdit" | "imgSizeOver" | "copyLink",
+    value: boolean,
+  ) =>
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      [key]: value,
+    });
 
   return (
     <>
@@ -67,14 +105,16 @@ const DirDetail = ({
         />
         <DirDetailWrap>
           <ShareCntnr>
-            <Title>
+            <Title isEditIconAtv={isDirEditOpen}>
               <p className="name">
                 {`${dirInfo.emoji || ""} ${dirInfo.name}`}
                 {!isShared && (
-                  <EditIcon
-                    className="edit-icon"
-                    onClick={editClick ? (e) => editClick(e) : () => {}}
-                  />
+                  <Icon
+                    className="edit-btn"
+                    onClick={() => setIsDirEditOpen(true)}
+                  >
+                    <EditIcon className="edit-icon" />
+                  </Icon>
                 )}
               </p>
               <p className="info">
@@ -98,8 +138,6 @@ const DirDetail = ({
             type={isShared ? "dirShare" : "dirDetail"}
             imgUrl={imgUrl}
             nickname={nickname}
-            isDirAddOpen={isDirAddOpen}
-            setIsDirAddOpen={setIsDirAddOpen}
             cookieNum={cookies.length}
             filterType={filterType}
             onClickType={onClickType}
@@ -109,22 +147,65 @@ const DirDetail = ({
             data={cookies}
             allDir={allDir || []}
             setIsOnboardOpen={setIsOnboardOpen}
-            delCookieHandler={() => {}}
-            handleEditCookie={() => {}}
-            handleDirAddCookie={() => {}}
-            postDir={() => {}}
+            delCookieHandler={delCookieHandler}
+            handleEditCookie={handleEditCookie}
+            handleDirAddCookie={handleDirAddCookie}
+            postDir={postDir}
           />
         </DirDetailWrap>
         <Footer />
       </DirDetailCntnr>
       <DirectoryModal
-        isOpen={isDirAddOpen}
-        setIsOpen={setIsDirAddOpen}
-        type="new"
+        isOpen={isDirEditOpen}
+        setIsOpen={setIsDirEditOpen}
+        type="edit"
         value={newDirData}
         setValue={setNewDirData}
-        postDir={() => {}}
+        putDir={() =>
+          handleUpdateDirectory && handleUpdateDirectory(dirInfo.id, newDirData)
+        }
+        delDir={() => {
+          setIsDelOpen(true);
+          setIsDirEditOpen(false);
+        }}
       />
+      <DelModal
+        type="directory"
+        isOpen={isDelOpen}
+        setIsOpen={setIsDelOpen}
+        onClickDel={() => handleDelDirectory && handleDelDirectory(dirInfo.id)}
+      />
+      <ToastMsg
+        isVisible={isToastMsgVisible.copyLink}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("copyLink", e)}
+      >
+        👏 공유 링크를 복사했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.dirEdit}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("dirEdit", e)}
+      >
+        👀 디렉토리를 수정했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.cookieDel}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("cookieDel", e)}
+      >
+        ❌ 쿠키를 삭제했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.cookieEdit}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("cookieEdit", e)}
+      >
+        🍪 쿠키를 수정했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.imgSizeOver}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("imgSizeOver", e)}
+        imgSizeOver
+      >
+        😥 더 작은 이미지를 올려주세요!
+      </ToastMsg>
     </>
   );
 };
@@ -191,7 +272,10 @@ const ShareCntnr = styled.div`
   `}
 `;
 
-const Title = styled.article`
+interface TitleProps {
+  isEditIconAtv: boolean;
+}
+const Title = styled.article<TitleProps>`
   position: relative;
   margin-bottom: 4rem;
 
@@ -210,13 +294,35 @@ const Title = styled.article`
 
     color: var(--black_2);
 
-    .edit-icon {
-      margin-left: 0.5rem;
-      width: 2.2rem;
-      height: 2.2rem;
-      path {
-        fill: var(--black_1);
+    .edit-btn {
+      width: 44px;
+      height: 44px;
+      margin-left: 5px;
+      border-radius: 22px;
+      .edit-icon {
+        width: 28px;
+        height: 28px;
+        path {
+          fill: var(--black_1);
+        }
       }
+      ${({ isEditIconAtv }) =>
+        isEditIconAtv
+          ? css`
+              background-color: var(--gray_active);
+              .edit-icon {
+                path {
+                  fill: var(--white);
+                }
+              }
+            `
+          : css`
+              @media (hover: hover) {
+                &:hover {
+                  background-color: var(--gray_hover_1);
+                }
+              }
+            `}
     }
   }
   .info {
