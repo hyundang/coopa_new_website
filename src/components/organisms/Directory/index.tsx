@@ -28,7 +28,7 @@ const Directory = ({
     <>
       <DirectoryWrap
         thumbnail={dir.thumbnail}
-        onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_blank")}
+        onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_self")}
       >
         <section className="content">
           <h1 className="content__title">
