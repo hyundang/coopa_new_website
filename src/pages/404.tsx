@@ -55,6 +55,7 @@ export default function NotFound({
       errorImgWidth={141}
       text="앗, 찾을 수 없는 페이지에요..😢️"
       text2="확인 후 다시 함께하시겠어요?"
+      is404Error
     />
   );
 }

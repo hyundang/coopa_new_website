@@ -27,6 +27,8 @@ export interface NewtabErrorProps {
   text2: string;
   /** 로그인 에러 여부 */
   isLoginError?: boolean;
+  /** 404 에러 여부 */
+  is404Error?: boolean;
 }
 const NewtabError = ({
   imgUrl,
@@ -37,6 +39,7 @@ const NewtabError = ({
   text,
   text2,
   isLoginError = false,
+  is404Error = false,
 }: NewtabErrorProps) => {
   // onboarding
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
@@ -68,6 +71,8 @@ const NewtabError = ({
                 onClick={
                   isLoginError
                     ? () => router.push("/login")
+                    : is404Error
+                    ? () => (window.location.href = DOMAIN)
                     : () => window.location.reload()
                 }
               >
@@ -76,7 +81,11 @@ const NewtabError = ({
                 ) : (
                   <RefreshIcon className="button-icon" />
                 )}
-                {isLoginError ? "로그인하기" : "재시도하기"}
+                {isLoginError
+                  ? "로그인하기"
+                  : is404Error
+                  ? "웹사이트로"
+                  : "재시도하기"}
               </Btn>
             }
           />
