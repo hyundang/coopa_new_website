@@ -1,6 +1,5 @@
 import {
-  PostDirAddCookie,
-  PostDirAddCookieProps,
+  PostAddCookieToDirProps,
   PostDirAddCookieResponseProps,
   PostDirectoryProps,
   PostDirectoryResponseProps,
@@ -50,12 +49,10 @@ const postShareToken = async (
 ): Promise<string | undefined> => {
   try {
     const {
-      data: {
-        data: { shareToken },
-      },
+      data: { data },
     } = await client.post(`/share`, { directoryId });
-    console.log("[SUCCESS] POST SHARE TOKEN", shareToken);
-    return shareToken;
+    console.log("[SUCCESS] POST SHARE TOKEN", data);
+    return data;
   } catch (e) {
     console.log("[FAIL] POST SHARE TOKEN", e);
     return undefined;
@@ -78,7 +75,7 @@ const postDirectoryData = async (
 };
 
 const postDirAddCookie = async (
-  body: PostDirAddCookieProps,
+  body: PostAddCookieToDirProps,
 ): Promise<PostDirAddCookieResponseProps | undefined> => {
   try {
     const {

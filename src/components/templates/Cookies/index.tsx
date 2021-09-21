@@ -27,7 +27,7 @@ export interface CookiesProps {
   /** add cookie to dir */
   handleDirAddCookie: (body: PostAddCookieToDirProps) => void;
   /** add dir */
-  postDir: (body: PostDirectoryProps) => void;
+  postDir?: (body: PostDirectoryProps) => void;
 }
 
 const Cookies = ({
