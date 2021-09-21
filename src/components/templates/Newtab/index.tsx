@@ -305,7 +305,7 @@ const Newtab = ({
                   : "dir"
               }
               imgUrl={imgUrl}
-              nickname="hihi"
+              nickname={nickname}
               filterType={tabValue === "모든 쿠키" ? cookieFilter : dirFilter}
               onClickType={
                 tabValue === "모든 쿠키" ? setCookieFilter : setDirFilter

@@ -124,6 +124,7 @@ export default function NewtabPage({
           setSearchValue={setSearchValue}
           onKeyPress={handleKeyPress}
           imgUrl={initUserData?.profileImage}
+          nickname={initUserData?.name}
           homeboardModalImg={homebrdModule.homeboardModalImg}
           setHomeboardModalImg={homebrdModule.setHomeboardModalImg}
           homeboardImg={homebrdModule.homeboardImg}
