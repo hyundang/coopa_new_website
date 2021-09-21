@@ -1,126 +1,147 @@
 import { DirDetail } from "@components/templates";
-import { useRouter } from "next/router";
-import getApi from "@api/getApi";
-import useSWR from "swr";
-import { useState } from "react";
-import { readCountAsc, readCountDesc } from "@lib/filter";
-import { CookieDataProps } from "@interfaces/cookie";
-import postApi from "@api/postApi";
+import nextCookie from "next-cookies";
+import {
+  idCountAsc,
+  idCountDesc,
+  readCountAsc,
+  readCountDesc,
+} from "@lib/filter";
+import { DirectoryCookieDataProps } from "@interfaces/cookie";
+import { DirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
+import getApi from "@api/getApi";
+import postApi from "@api/postApi";
+import CookieModule from "@modules/CookieModule";
+import DirModule from "@modules/DirModule";
+import delApi from "@api/delApi";
+import { useToastMsg } from "src/hooks";
 
-const DirDetailPage = () => {
-  const router = useRouter();
+interface DirDetailPageProps {
+  isLogin: boolean;
+  initUserData: UserDataProps;
+  initDirDetailData: DirectoryCookieDataProps;
+  initAllDirData: DirectoryDataProps[];
+  queryID: number;
+}
+const DirDetailPage = ({
+  isLogin,
+  initUserData,
+  initDirDetailData,
+  initAllDirData,
+  queryID,
+}: DirDetailPageProps) => {
+  // toast msg visible state
+  const { isVisible, setIsVisible } = useToastMsg();
 
-  // 유저 데이터 get
-  const { data: userData, error: userDataError } = useSWR<
-    UserDataProps | undefined
-  >("/users", getApi.getUserData, {
-    onErrorRetry: ({ retryCount }) => {
-      // 3번 까지만 재시도함
-      if (retryCount >= 3) return undefined;
-      return true;
-    },
-    revalidateOnFocus: false,
+  // 쿠키 모듈
+  const cookieModule = CookieModule({
+    key: `/directories/${queryID}`,
+    initAllCookieData: initDirDetailData.cookies,
+    isVisible,
+    setIsVisible,
   });
 
-  // 모든 디렉토리 데이터 get
-  const { data: allDirData } = useSWR("/directories", getApi.getAllDirData, {
-    onErrorRetry: ({ retryCount }) => {
-      // 3번 까지만 재시도함
-      if (retryCount >= 3) return undefined;
-      return true;
-    },
+  // 디렉토리 모듈
+  const dirModule = DirModule({
+    initAllDirData,
+    isVisible,
+    setIsVisible,
   });
 
-  // 디렉토리 안 쿠키 데이터 get
-  const { data: DirCookieData } = useSWR(
-    `/directories/${router.query.id}`,
-    getApi.getDirCookieData,
-    {
-      onErrorRetry: ({ retryCount }) => {
-        // 3번 까지만 재시도함
-        if (retryCount >= 3) return undefined;
-        return true;
-      },
-      onSuccess: (data) => {
-        const filter = localStorage.getItem("cookieFilter");
-        if (data && filter !== null) {
-          switch (filter) {
-            case "readMost":
-              setCookieFilter("readMost");
-              setFilteredCookieData([...data.cookies].sort(readCountDesc));
-              break;
-            case "readLeast":
-              setCookieFilter("readLeast");
-              setFilteredCookieData([...data.cookies].sort(readCountAsc));
-              break;
-            case "oldest":
-              setCookieFilter("oldest");
-              setFilteredCookieData([...data.cookies].reverse());
-              break;
-            default:
-              setCookieFilter("latest");
-              setFilteredCookieData([...data.cookies]);
-              break;
-          }
-        }
-      },
-    },
-  );
-  // 쿠키 필터
-  const [cookieFilter, setCookieFilter] = useState<
-    "latest" | "readMost" | "readLeast" | "oldest"
-  >("latest");
-  // 필터링 된 쿠키 데이터
-  const [filteredCookieData, setFilteredCookieData] = useState<
-    CookieDataProps[] | undefined
-  >([]);
-
-  // 쿠키 필터 변경
-  const handleCookieFilter = (
-    filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
-  ) => {
-    filter !== "abc" && setCookieFilter(filter);
-    localStorage.setItem("cookieFilter", filter);
-    switch (filter) {
-      case "readMost":
-        setFilteredCookieData(
-          DirCookieData && [...DirCookieData.cookies].sort(readCountDesc),
-        );
-        break;
-      case "readLeast":
-        setFilteredCookieData(
-          DirCookieData && [...DirCookieData.cookies].sort(readCountAsc),
-        );
-        break;
-      case "oldest":
-        setFilteredCookieData(
-          DirCookieData && [...DirCookieData.cookies].reverse(),
-        );
-        break;
-      default:
-        setFilteredCookieData(DirCookieData?.cookies);
-        break;
-    }
+  // 디렉토리 delete
+  const handleDelDir = async (dirId: number) => {
+    const res = await delApi.delDirData(dirId);
+    window.open(DOMAIN, "_self");
   };
 
   const handleShareClick = async () => {
-    const shareToken = await postApi.postShareToken(Number(router.query.id));
+    const shareToken = await postApi.postShareToken(queryID);
     console.log(`${DOMAIN}/share/${shareToken}`);
+    setIsVisible({ ...isVisible, copyLink: true });
   };
 
   return (
-    <DirDetail
-      imgUrl={userData?.profileImage}
-      nickname={userData?.name || ""}
-      dirInfo={DirCookieData?.directoryInfo || { name: "", id: 0 }}
-      allDir={allDirData}
-      cookies={filteredCookieData || []}
-      filterType={cookieFilter}
-      onClickType={handleCookieFilter}
-      shareClick={handleShareClick}
-      editClick={() => {}}
-    />
+    <>
+      {isLogin ? (
+        <DirDetail
+          imgUrl={initUserData?.profileImage}
+          nickname={initUserData?.name || ""}
+          dirInfo={initDirDetailData?.directoryInfo || { name: "", id: 0 }}
+          allDir={initAllDirData}
+          cookies={cookieModule.filteredCookieData || []}
+          filterType={cookieModule.cookieFilter}
+          onClickType={cookieModule.handleCookieFilter}
+          shareClick={handleShareClick}
+          isToastMsgVisible={isVisible}
+          setIsToastMsgVisible={setIsVisible}
+          postDir={dirModule.handlePostDir}
+          delCookieHandler={cookieModule.handleDelCookie}
+          handleEditCookie={cookieModule.handleEditCookie}
+          handleDelDirectory={handleDelDir}
+          handleDirAddCookie={cookieModule.handleAddCookieToDir}
+          handleUpdateDirectory={dirModule.handleEditDir}
+        />
+      ) : (
+        <div>error: login</div>
+      )}
+    </>
   );
 };
 export default DirDetailPage;
+
+DirDetailPage.getInitialProps = async (ctx: any) => {
+  const allCookies = nextCookie(ctx);
+  const userToken = allCookies["x-access-token"];
+  const queryID = ctx.query.id;
+
+  // 로그인 되어 있을 때
+  if (userToken) {
+    // 쿠키 데이터
+    const initDirDetailData = await getApi.getDirCookieData(
+      `/directories/${queryID}`,
+    );
+    const { cookieFilter } = allCookies;
+    if (cookieFilter) {
+      switch (cookieFilter) {
+        case "readMost":
+          initDirDetailData?.cookies.sort(readCountDesc);
+          break;
+        case "readLeast":
+          initDirDetailData?.cookies.sort(readCountAsc);
+          break;
+        case "oldest":
+          initDirDetailData?.cookies.reverse();
+          break;
+        default:
+          break;
+      }
+    }
+
+    // 디렉토리 데이터
+    const initAllDirData = await getApi.getAllDirData("/directories");
+    const { dirFilter } = allCookies;
+    if (dirFilter) {
+      switch (dirFilter) {
+        case "latest":
+          initAllDirData?.sort(idCountDesc);
+          break;
+        case "oldest":
+          initAllDirData?.sort(idCountAsc);
+          break;
+        default:
+          break;
+      }
+    }
+
+    return {
+      isLogin: true,
+      initDirDetailData,
+      initAllDirData,
+      queryID,
+    };
+  }
+  // 로그인 안 되어 있을 때
+  return {
+    isLogin: false,
+  };
+};
