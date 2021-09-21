@@ -16,9 +16,20 @@ export interface CookieImgProps {
   cardState: "hover" | "parking" | "normal" | "input";
   /** cookie */
   cookie: CookieDataProps;
+  /** delete cookie handler */
+  deleteCookieHanlder: (id: number) => void;
+  /** edit cookie handler */
+  handleEditCookie: (data: FormData) => void;
 }
 
-const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
+const CookieImg = ({
+  id,
+  className,
+  cardState,
+  cookie,
+  deleteCookieHanlder,
+  handleEditCookie,
+}: CookieImgProps) => {
   const [patchData, setPatchData] = useState<PatchCookieProps>({
     title: cookie.title,
     content: cookie.content,
@@ -80,10 +91,7 @@ const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
       <CookieEditModal
         value={patchData}
         setValue={setPatchData}
-        onClickSave={() => {
-          //data 처리 내용
-          setIsEditOpen(false);
-        }}
+        handleEditCookie={handleEditCookie}
         onClickDel={() => {
           setIsEditOpen(false);
           setIsDeleteOpen(true);
@@ -96,7 +104,7 @@ const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
       <DelModal
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
-        onClickDel={() => {}}
+        onClickDel={() => deleteCookieHanlder(cookie.id)}
       />
     </>
   );

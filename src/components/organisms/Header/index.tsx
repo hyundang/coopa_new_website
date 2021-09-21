@@ -3,7 +3,7 @@ import { InfoIcon, NotiIcon } from "@assets/icons/Header";
 import { LogoImg } from "@assets/imgs/common";
 import { Bubble, Icon } from "@components/atoms";
 import { useRouter } from "next/dist/client/router";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
 import NotiModal from "../NotiModal";
@@ -22,6 +22,11 @@ export interface HeaderProps {
   imgUrl?: string;
   /** mypage 여부 */
   isMypage?: boolean;
+  /** error page 여부 */
+  isErrorpage?: boolean;
+  /** onboarding open 여부 */
+  isOnboardOpen: boolean;
+  setIsOnboardOpen: Dispatch<SetStateAction<boolean>>;
   /** 디렉토리 상세 페이지 여부 */
   isDirDetail?: boolean;
   /** 공유 디렉토리 여부 */
@@ -34,12 +39,9 @@ const Header = ({
   isSearchIconAtv,
   imgUrl,
   isMypage = false,
-  isDirDetail = false,
-  isShared = false,
 }: HeaderProps) => {
   const router = useRouter();
   const [isNotiOpen, setIsNotiOpen] = useState(false);
-  const [isOnboardOpen, setIsOnboardOpen] = useState(false);
 
   // noti modal x좌표
   const [locationX, setLocationX] = useState(0);
@@ -89,7 +91,7 @@ const Header = ({
           <LogoImg className="logo_img" />
         </Icon>
         <div style={{ flexGrow: 1 }} />
-        {!isMypage && !isDirDetail && (
+        {!isMypage && !isDirDetail && !isErrorpage && (
           <Icon
             className="content__search"
             role="button"
@@ -113,7 +115,7 @@ const Header = ({
         >
           <NotiIcon className="noti_icon" />
         </Icon>
-        {!isShared && (
+        {!isShared && !isErrorpage && (
           <Icon
             className="content__mypage"
             role="link"
@@ -321,7 +323,7 @@ const HeaderWrap = styled.header<HeaderWrapProps>`
         height: 40px;
         border-radius: 20px;
         border: 5px solid var(--white);
-        background: url(${(props) => props.imgUrl}) center center / cover;
+        background: url("${(props) => props.imgUrl}") center center / cover;
 
         ${(props) =>
           props.isMypageIconAtv

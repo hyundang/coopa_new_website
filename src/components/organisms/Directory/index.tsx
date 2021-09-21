@@ -10,8 +10,14 @@ import { DelModal, DirectoryModal } from "..";
 
 export interface DirectoryProps {
   dir: DirectoryDataProps;
+  handleDelDirectory: (id: number) => void;
+  handleUpdateDirectory: (id: number, data: PostDirectoryProps) => void;
 }
-const Directory = ({ dir }: DirectoryProps) => {
+const Directory = ({
+  dir,
+  handleDelDirectory,
+  handleUpdateDirectory,
+}: DirectoryProps) => {
   const [postData, setPostData] = useState<PostDirectoryProps>({
     name: "",
     emoji: "",
@@ -20,7 +26,10 @@ const Directory = ({ dir }: DirectoryProps) => {
   const [isDeleteOpen, setISDeleteOpen] = useState(false);
   return (
     <>
-      <DirectoryWrap thumbnail={dir.thumbnail}>
+      <DirectoryWrap
+        thumbnail={dir.thumbnail}
+        onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_blank")}
+      >
         <section className="content">
           <h1 className="content__title">
             {dir.emoji ? `${dir.emoji} ${dir.name}` : dir.name}
@@ -43,7 +52,7 @@ const Directory = ({ dir }: DirectoryProps) => {
         value={postData}
         setValue={setPostData}
         postDir={() => {}}
-        putDir={() => {}}
+        putDir={() => handleUpdateDirectory(dir.id, postData)}
         delDir={() => {
           setISDeleteOpen(true);
           setIsEditOpen(false);
@@ -53,7 +62,7 @@ const Directory = ({ dir }: DirectoryProps) => {
         type="directory"
         isOpen={isDeleteOpen}
         setIsOpen={setISDeleteOpen}
-        onClickDel={() => {}}
+        onClickDel={() => handleDelDirectory(dir.id)}
       />
     </>
   );
@@ -116,7 +125,7 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
         border-radius: 12px;
         top: 0;
         left: 0;
-        background: url(${props.thumbnail}) center center / cover no-repeat;
+        background: url("${props.thumbnail}") center center / cover no-repeat;
         width: 100%;
         height: 100%;
         opacity: 0.15;

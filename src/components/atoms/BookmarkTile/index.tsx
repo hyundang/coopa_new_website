@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, RefObject, forwardRef } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  RefObject,
+  forwardRef,
+  SyntheticEvent,
+} from "react";
 import styled from "styled-components";
 // assets
 import { PlusIcon } from "@assets/icons/common";
@@ -9,8 +15,10 @@ export interface BookmarkTileProps {
   id?: string;
   /** className */
   className?: string;
-  /** 파비콘 url */
+  /** 사이트 url */
   url?: string;
+  /** 파비콘 url */
+  imgUrl?: string;
   /** 사이트 이름 */
   siteName?: string;
   /** 즐겨찾기 타일 클릭 시 */
@@ -27,6 +35,7 @@ const BookmarkTile = (
     id,
     className = "tile",
     url,
+    imgUrl,
     siteName,
     onClickAddBtn,
     onClickDelBtn,
@@ -55,12 +64,18 @@ const BookmarkTile = (
           <PlusIcon className="plus-icon" />
         ) : (
           <div className="content">
-            <DelIcon onClick={onClickDelBtn}>×</DelIcon>
+            {onClickDelBtn && (
+              <DelIcon id={id} onClick={onClickDelBtn}>
+                ×
+              </DelIcon>
+            )}
             <img
               className="content__favicon"
-              src={url}
+              src={imgUrl}
               alt="favicon"
-              onError={(e) => (e.target.src = "/favicon.ico")}
+              onError={(e: SyntheticEvent<HTMLImageElement, Event>) =>
+                (e.currentTarget.src = "/favicon.ico")
+              }
             />
             <cite className="content__text">{siteName}</cite>
           </div>

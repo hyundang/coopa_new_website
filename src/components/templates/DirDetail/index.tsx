@@ -1,10 +1,11 @@
 import styled from "styled-components";
-import { Footer, Header, ListHeader } from "@components/organisms";
+import { DirectoryModal, Header, ListHeader, Footer } from "@components/organisms";
 import { EditIcon, EmptyCookieIcon, LinkIcon } from "@assets/icons/common";
 import Cookies from "@components/templates/Cookies";
 import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
 import { Btn } from "@components/atoms";
-import { DirectoryDataProps } from "@interfaces/directory";
+import { PostDirectoryProps, DirectoryDataProps } from "@interfaces/directory";
+import { useState } from "react";
 
 export interface DirDetailProps {
   /** 공유 디렉토리 여부 */
@@ -40,15 +41,25 @@ const DirDetail = ({
   shareClick,
   editClick,
 }: DirDetailProps) => {
+  // 디렉토리 생성 모달 오픈
+  const [isDirAddOpen, setIsDirAddOpen] = useState(false);
+  const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
+    emoji: "",
+    name: "",
+  });
+  // 온보딩 모달 오픈
+  const [isOnboardOpen, setIsOnboardOpen] = useState(false);
+
   return (
-    <DirDetailCntnr>
+    <>
       <Header
         className="header"
         imgUrl={imgUrl}
-        isDirDetail
-        isShared={isShared}
+        isErrorpage
+        isOnboardOpen={isOnboardOpen}
+        setIsOnboardOpen={setIsOnboardOpen}
       />
-      <DirDetailWrap>
+      <DirDetailCntnr>
         <ShareCntnr>
           <Title>
             <p className="name">
@@ -81,14 +92,29 @@ const DirDetail = ({
           type={isShared ? "dirShare" : "dirDetail"}
           imgUrl={imgUrl}
           nickname={nickname}
+          isDirAddOpen={isDirAddOpen}
+          setIsDirAddOpen={setIsDirAddOpen}
           cookieNum={cookies.length}
           filterType={filterType}
           onClickType={onClickType}
         />
-        <Cookies isShared={isShared} data={cookies} allDir={allDir} />
+        <Cookies
+          type={isShared ? "dirShare" : "dirDetail"}
+          data={cookies}
+          allDir={allDir}
+        />
       </DirDetailWrap>
       <Footer />
     </DirDetailCntnr>
+      <DirectoryModal
+        isOpen={isDirAddOpen}
+        setIsOpen={setIsDirAddOpen}
+        type="new"
+        value={newDirData}
+        setValue={setNewDirData}
+        postDir={() => {}}
+      />
+    </>
   );
 };
 

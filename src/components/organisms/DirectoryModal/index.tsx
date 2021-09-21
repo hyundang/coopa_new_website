@@ -4,8 +4,12 @@ import { InputForm } from "@components/molecules";
 import { PostDirectoryProps } from "@interfaces/directory";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
-import Picker from "emoji-picker-react";
+import dynamic from "next/dynamic";
 import { useWindowSize } from "src/hooks";
+
+const Picker = dynamic(() => import("emoji-picker-react"), {
+  ssr: false,
+});
 
 export interface DirectoryModalProps {
   id?: string;
@@ -21,7 +25,7 @@ export interface DirectoryModalProps {
   /** post directory data */
   postDir?: (e: PostDirectoryProps) => void;
   /** put directory data */
-  putDir?: (e: PostDirectoryProps) => void;
+  putDir?: () => void;
   /** delete directory data */
   delDir?: () => void;
 }
@@ -68,7 +72,7 @@ const DirectoryModal = ({
   const handleClickButton = () => {
     value.name !== ""
       ? (() => {
-          type === "new" ? postDir && postDir(value) : putDir && putDir(value);
+          type === "new" ? postDir && postDir(value) : putDir && putDir();
           setIsOpen(false);
         })()
       : name_input.current?.focus();

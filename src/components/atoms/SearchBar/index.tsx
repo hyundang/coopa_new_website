@@ -17,21 +17,21 @@ export interface SearchBarProps {
   /** className */
   className?: string;
   /** 검색창 표시 여부 */
-  visible: boolean;
-  setVisible: Dispatch<SetStateAction<boolean>>;
+  visible?: boolean;
+  setVisible?: Dispatch<SetStateAction<boolean>>;
   /** 검색 여부 */
-  isSearched: boolean;
-  setIsSearched: Dispatch<SetStateAction<boolean>>;
+  isSearched?: boolean;
+  setIsSearched?: Dispatch<SetStateAction<boolean>>;
   /** 검색어 */
-  searchValue: string;
-  setSearchValue: Dispatch<SetStateAction<string>>;
+  searchValue?: string;
+  setSearchValue?: Dispatch<SetStateAction<string>>;
   /** onKeyPress event handler */
   onKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
   /** onKeyDown event handler */
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   /** 검색창 불필요한 fadeout 방지 */
-  preventFadeout: boolean;
-  setPreventFadeout: Dispatch<SetStateAction<boolean>>;
+  preventFadeout?: boolean;
+  setPreventFadeout?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function SearchBar({
@@ -56,9 +56,9 @@ export default function SearchBar({
 
   // close button click
   const handleClickClose = () => {
-    setPreventFadeout(false);
-    setIsSearched(false);
-    setVisible(false);
+    setPreventFadeout && setPreventFadeout(false);
+    setIsSearched && setIsSearched(false);
+    setVisible && setVisible(false);
   };
 
   // 제일 처음에 search bar focus 상태로 설정
@@ -81,7 +81,7 @@ export default function SearchBar({
           className="search-bar__input"
           placeholder="무엇을 찾아드릴까요?"
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          onChange={(e) => setSearchValue && setSearchValue(e.target.value)}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onKeyPress={onKeyPress}
@@ -100,10 +100,10 @@ export default function SearchBar({
 }
 
 interface SearchBarWrapProps {
-  visible: boolean;
-  isSearched: boolean;
+  visible?: boolean;
+  isSearched?: boolean;
   isFocus: boolean;
-  preventFadeout: boolean;
+  preventFadeout?: boolean;
 }
 const SearchBarWrap = styled.div<SearchBarWrapProps>`
   display: flex;

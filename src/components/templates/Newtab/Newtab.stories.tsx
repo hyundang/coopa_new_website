@@ -19,11 +19,17 @@ const Template: Story<NewtablProps> = (args) => {
     homeboardEdit: false,
     imgSizeOver: false,
   });
+  const [img, setImg] = useState("");
+  const [toastMsg, setToastMsg] = useState(false);
   return (
     <Newtab
       {...args}
       searchedCookieData={[]}
       searchedDirData={[]}
+      homeboardModalImg={img}
+      setHomeboardImg={setImg}
+      setHomeboardModalImg={setImg}
+      postHomeboardImg={async () => "hi"}
       isToastMsgVisible={isVisible}
       setIsToastMsgVisible={setIsVisible}
       imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"

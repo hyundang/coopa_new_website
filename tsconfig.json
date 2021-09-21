@@ -27,7 +27,8 @@
       "@interfaces/*": ["src/lib/interfaces/*"],
       "@lib/*": ["src/lib/*"],
       "@assets/*": ["src/assets/*"],
-      "@styles/*": ["scr/styles/*"]
+      "@styles/*": ["scr/styles/*"],
+      "@modules/*": ["src/modules/*"],
     }
   },
   "include": ["src", "next.config.js", "next-env.d.ts"],

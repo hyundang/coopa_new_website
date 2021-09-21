@@ -11,6 +11,7 @@ import {
 import { postApi } from "@lib/api";
 import { PostUserDataProps } from "@interfaces/user";
 import { useRouter } from "next/dist/client/router";
+import { setToken } from "@api/TokenManager";
 
 export default function LoginPage() {
   const filter: string =
@@ -37,8 +38,8 @@ export default function LoginPage() {
       const Response = await postApi.postUserData(data);
 
       if (Response) {
-        // 로컬 스토리지에 유저 토큰 저장
-        localStorage.setItem("x-access-token", Response);
+        // 쿠키에 유저 토큰 저장
+        setToken(Response);
 
         // if (isPC) {
         //   chrome.runtime.sendMessage(
@@ -50,7 +51,7 @@ export default function LoginPage() {
         //   );
         // }
 
-        router.push("/");
+        document.location.href = `${DOMAIN}`;
       } else {
         alert("로그인 실패");
       }

@@ -6,24 +6,7 @@ export default {
   component: DirDetail,
 } as Meta;
 
-const Template: Story<DirDetailProps> = (args) => (
-  <DirDetail {...args} dirInfo={dirInfo} cookies={cookies} />
-);
-
-export const dirDetail = Template.bind({});
-dirDetail.args = {
-  nickname: "희수 친구 채린",
-  imgUrl:
-    "https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg",
-};
-
-export const dirShare = Template.bind({});
-dirShare.args = {
-  isShared: true,
-  nickname: "희수 친구 채린",
-  imgUrl:
-    "https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg",
-};
+const Template: Story<DirDetailProps> = (args) => <DirDetail {...args} />;
 
 // mock data
 const dirInfo = {
@@ -118,3 +101,28 @@ const cookies = [
       "[playlist]봄 밤, 창이 열린 1층 카페 끝 자리, 가사 없는 chilling 음악",
   },
 ];
+
+export const dirDetail = Template.bind({});
+dirDetail.args = {
+  nickname: "희수 친구 채린",
+  imgUrl:
+    "https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg",
+  cookies,
+};
+
+export const dirDetailEmpty = Template.bind({});
+dirDetailEmpty.args = {
+  nickname: "희수 친구 채린",
+  imgUrl:
+    "https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg",
+  cookies: [],
+};
+
+export const dirShare = Template.bind({});
+dirShare.args = {
+  isShared: true,
+  nickname: "희수 친구 채린",
+  imgUrl:
+    "https://lh4.googleusercontent.com/-8Sj3uh-4Tvc/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucm1v42OfrKMBeMcncTbD27GToGVqA/s96-c/photo.jpg",
+  cookies,
+};

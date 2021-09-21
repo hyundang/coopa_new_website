@@ -15,9 +15,9 @@ export interface BookmarkProps {
   /** bookmark data list */
   datas: BookmarkDataProps[];
   /** bookmark 추가 함수 */
-  onClickSave: (newBookmark: PostBookmarkDataProps) => Promise<void>;
+  onClickSave?: (newBookmark: PostBookmarkDataProps) => Promise<void>;
   /** bookmark 삭제 함수 */
-  onClickDel: (bookmarkID: number) => Promise<void>;
+  onClickDel?: (bookmarkID: number) => Promise<void>;
 }
 const Bookmark = ({
   id,
@@ -66,25 +66,34 @@ const Bookmark = ({
             key={bookmark.id}
             siteName={bookmark.name}
             url={bookmark.link}
-            onClickDelBtn={(e: any) => {
-              e.stopPropagation();
-              onClickDel(Number(e.target.id));
-            }}
+            imgUrl={bookmark.image}
+            onClickDelBtn={
+              onClickDel
+                ? (e: any) => {
+                    e.stopPropagation();
+                    onClickDel(Number(e.target.id));
+                  }
+                : undefined
+            }
           />
         ))}
-        <BookmarkTile
-          isAddBtn
-          onClickAddBtn={() => setIsOpen(true)}
-          setIsHover={setIsHover}
-        />
-        <BookmarkAddModal
-          value={newBookmark}
-          setValue={setNewBookmark}
-          onClickSave={() => onClickSave(newBookmark)}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          locationX={-150 + 40}
-        />
+        {onClickSave && (
+          <>
+            <BookmarkTile
+              isAddBtn
+              onClickAddBtn={() => setIsOpen(true)}
+              setIsHover={setIsHover}
+            />
+            <BookmarkAddModal
+              value={newBookmark}
+              setValue={setNewBookmark}
+              onClickSave={() => onClickSave(newBookmark)}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              locationX={-150 + 40}
+            />
+          </>
+        )}
       </BookmarkWrap>
     </>
   );

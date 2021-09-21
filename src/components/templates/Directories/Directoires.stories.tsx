@@ -1,12 +1,13 @@
-import Directories from ".";
+import { Meta, Story } from "@storybook/react";
+import Directories, { DirectoriesProps } from ".";
 
 export default {
   title: "components/templates/Directories",
   component: Directories,
-};
+} as Meta;
 
-export const directories = () => {
-  return <Directories data={allDir} />;
+const Template: Story<DirectoriesProps> = (args) => {
+  return <Directories {...args} />;
 };
 
 const allDir = [
@@ -40,6 +41,18 @@ const allDir = [
   },
 ];
 
-directories.story = {
-  name: "Default",
+export const Default = Template.bind({});
+Default.args = {
+  data: allDir,
+};
+
+export const empty = Template.bind({});
+empty.args = {
+  data: [],
+};
+
+export const searchEmpty = Template.bind({});
+searchEmpty.args = {
+  data: [],
+  isSearched: true,
 };

@@ -1,16 +1,27 @@
 // components
-import { SearchBar, Tab, ToastMsg } from "@components/atoms";
-import { Header, ListHeader } from "@components/organisms";
+import { Btn, SearchBar, Tab, ToastMsg } from "@components/atoms";
+import {
+  DirectoryModal,
+  Empty,
+  Footer,
+  Header,
+  ListHeader,
+} from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
 // interfaces
 import {
   BookmarkDataProps,
   PostBookmarkDataProps,
 } from "@interfaces/homeboard";
+import { CookieDataProps } from "@interfaces/cookie";
+import {
+  DirectoryDataProps,
+  PostDirAddCookieProps,
+  PostDirectoryProps,
+} from "@interfaces/directory";
+// asset
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-import { CookieDataProps } from "@interfaces/cookie";
-import { DirectoryDataProps } from "@interfaces/directory";
 
 interface ToastMsgVisibleStateProps {
   dirCreate: boolean;
@@ -25,6 +36,8 @@ interface ToastMsgVisibleStateProps {
 }
 
 export interface NewtablProps {
+  /** 로딩 여부 */
+  isLoading: boolean;
   /** 검색 여부 */
   isSearched: boolean;
   setIsSearched: Dispatch<SetStateAction<boolean>>;
@@ -70,12 +83,23 @@ export interface NewtablProps {
     f: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => void;
   /** 디렉토리 생성 */
-  postDir: () => void;
+  postDir: (e: PostDirectoryProps) => void;
   /** toast msg state */
   isToastMsgVisible: ToastMsgVisibleStateProps;
   setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
+  /** delete cookie handler */
+  delCookieHandler: (id: number) => void;
+  /** edit cookie */
+  handleEditCookie: (data: FormData) => void;
+  /** delete dir */
+  handleDelDirectory: (id: number) => void;
+  /** dir cookie 추가 */
+  handleDirAddCookie: (body: PostDirAddCookieProps) => void;
+  /** update dir */
+  handleUpdateDirectory: (id: number, body: PostDirectoryProps) => void;
 }
 const Newtab = ({
+  isLoading,
   isSearched,
   setIsSearched,
   searchValue,
@@ -102,6 +126,11 @@ const Newtab = ({
   postDir,
   isToastMsgVisible,
   setIsToastMsgVisible,
+  delCookieHandler,
+  handleEditCookie,
+  handleDelDirectory,
+  handleDirAddCookie,
+  handleUpdateDirectory,
 }: NewtablProps) => {
   // 검색창 불필요한 fadeout 방지
   const [preventFadeout, setPreventFadeout] = useState(true);
@@ -109,6 +138,16 @@ const Newtab = ({
   // tab
   const [tabOptions, setTabOptions] = useState(["모든 쿠키", "디렉토리"]);
   const [tabValue, setTabValue] = useState("모든 쿠키");
+
+  // 디렉토리 생성 모달 오픈
+  const [isDirAddOpen, setIsDirAddOpen] = useState(false);
+  const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
+    emoji: "",
+    name: "",
+  });
+
+  // 온보딩 모달 오픈
+  const [isOnboardOpen, setIsOnboardOpen] = useState(false);
 
   // toast msg visible handling
   const handleToastMsgVisible = (
@@ -205,6 +244,8 @@ const Newtab = ({
         onClickSearch={handleClickSearchIcon}
         isSearchIconAtv={isSearchVisible}
         imgUrl={imgUrl}
+        isOnboardOpen={isOnboardOpen}
+        setIsOnboardOpen={setIsOnboardOpen}
       />
       <Container className="container" isSearched={isSearched}>
         <Homeboard
@@ -261,40 +302,84 @@ const Newtab = ({
           />
         </nav>
         <main className="card-list">
-          <ListHeader
-            isSearched={isSearched && isSearchVisible}
-            cookieNum={searchedCookieData.length}
-            dirNum={searchedDirData.length}
-            type={
-              tabValue === "모든 쿠키" || tabValue === "쿠키" ? "cookie" : "dir"
-            }
-            imgUrl={imgUrl}
-            nickname={nickname}
-            filterType={tabValue === "모든 쿠키" ? cookieFilter : dirFilter}
-            onClickType={
-              tabValue === "모든 쿠키" ? setCookieFilter : setDirFilter
-            }
-            postDir={postDir}
-          />
+          {((isSearched &&
+            isSearchVisible &&
+            (tabValue === "쿠키" || tabValue === "디렉토리")) ||
+            (tabValue === "모든 쿠키" && cookieData.length !== 0) ||
+            (tabValue === "디렉토리" && dirData.length !== 0)) && (
+            <ListHeader
+              isSearched={isSearched && isSearchVisible}
+              cookieNum={searchedCookieData.length}
+              dirNum={searchedDirData.length}
+              type={
+                tabValue === "모든 쿠키" || tabValue === "쿠키"
+                  ? "cookie"
+                  : "dir"
+              }
+              imgUrl={imgUrl}
+              nickname="hihi"
+              filterType={tabValue === "모든 쿠키" ? cookieFilter : dirFilter}
+              onClickType={
+                tabValue === "모든 쿠키" ? setCookieFilter : setDirFilter
+              }
+              isDirAddOpen={isDirAddOpen}
+              setIsDirAddOpen={setIsDirAddOpen}
+            />
+          )}
           {isSearched && isSearchVisible ? (
             <>
               {tabValue === "쿠키" ? (
-                <Cookies data={searchedCookieData} allDir={dirData} />
+                <Cookies
+                  data={searchedCookieData}
+                  allDir={dirData}
+                  type="searched"
+                  delCookieHandler={delCookieHandler}
+                  handleEditCookie={handleEditCookie}
+                  handleDirAddCookie={handleDirAddCookie}
+                  postDir={postDir}
+                />
               ) : (
-                <Directories data={searchedDirData} />
+                <Directories
+                  data={searchedDirData}
+                  isSearched
+                  handleDelDirectory={handleDelDirectory}
+                  handleUpdateDirectory={handleUpdateDirectory}
+                />
               )}
             </>
           ) : (
             <>
               {tabValue === "모든 쿠키" ? (
-                <Cookies data={cookieData} allDir={dirData} />
+                <Cookies
+                  data={cookieData}
+                  allDir={dirData}
+                  setIsOnboardOpen={setIsOnboardOpen}
+                  delCookieHandler={delCookieHandler}
+                  handleEditCookie={handleEditCookie}
+                  handleDirAddCookie={handleDirAddCookie}
+                  postDir={postDir}
+                />
               ) : (
-                <Directories data={dirData} />
+                <Directories
+                  data={dirData}
+                  setIsDirAddOpen={setIsDirAddOpen}
+                  handleDelDirectory={handleDelDirectory}
+                  handleUpdateDirectory={handleUpdateDirectory}
+                />
               )}
             </>
           )}
         </main>
       </Container>
+      <Footer />
+      <DirectoryModal
+        isOpen={isDirAddOpen}
+        setIsOpen={setIsDirAddOpen}
+        type="new"
+        value={newDirData}
+        setValue={setNewDirData}
+        postDir={postDir}
+      />
       <ToastMsg
         isVisible={isToastMsgVisible.dirCreate}
         setIsVisible={(e: boolean) => handleToastMsgVisible("dirCreate", e)}
@@ -364,6 +449,7 @@ interface ContainerProps {
 const Container = styled.div<ContainerProps>`
   width: 100%;
   padding-top: 60px;
+  padding-bottom: 130px;
 
   .tab-wrap {
     width: 100%;

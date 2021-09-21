@@ -1,4 +1,11 @@
 import {
+  PostDirAddCookie,
+  PostDirAddCookieProps,
+  PostDirAddCookieResponseProps,
+  PostDirectoryProps,
+  PostDirectoryResponseProps,
+} from "@interfaces/directory";
+import {
   BookmarkDataProps,
   PostBookmarkDataProps,
 } from "@interfaces/homeboard";
@@ -55,10 +62,42 @@ const postShareToken = async (
   }
 };
 
+const postDirectoryData = async (
+  body: PostDirectoryProps,
+): Promise<PostDirectoryResponseProps | undefined> => {
+  try {
+    const {
+      data: { data },
+    } = await client.post(`/directories`, body);
+    console.log("[SUCCESS] POST BOOKMARK DATA", data);
+    return data;
+  } catch (e) {
+    console.log("[FAIL] POST BOOKMARK DATA", e);
+    return undefined;
+  }
+};
+
+const postDirAddCookie = async (
+  body: PostDirAddCookieProps,
+): Promise<PostDirAddCookieResponseProps | undefined> => {
+  try {
+    const {
+      data: { data },
+    } = await client.post(`/directories/add/cookie`, body);
+    console.log("[SUCCESS] POST ADD COOKIE DATA", data);
+    return data;
+  } catch (e) {
+    console.log("[FAIL] POST ADD COOKIE DATA", e);
+    return undefined;
+  }
+};
+
 const postApi = {
   postUserData,
   postBookmarkData,
   postShareToken,
+  postDirectoryData,
+  postDirAddCookie,
 };
 
 export default postApi;

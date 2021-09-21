@@ -2,10 +2,8 @@ import styled, { css } from "styled-components";
 import { FilterIcon, PlusIcon22 } from "@assets/icons/common";
 import { Icon } from "@components/atoms";
 import { FilterModal } from "@components/molecules";
-import { DirectoryModal } from "@components/organisms";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { PostDirectoryProps } from "@interfaces/directory";
-import { dirname } from "path/posix";
 
 export interface ListHeaderProps {
   /** list type */
@@ -26,6 +24,9 @@ export interface ListHeaderProps {
   onClickType: (
     e: "latest" | "oldest" | "readMost" | "readLeast" | "abc",
   ) => void;
+  /** 디렉토리 모달 오픈 */
+  isDirAddOpen?: boolean;
+  setIsDirAddOpen?: Dispatch<SetStateAction<boolean>>;
   /** post dir */
   postDir?: (e: PostDirectoryProps) => void;
 }
@@ -38,14 +39,11 @@ const ListHeader = ({
   nickname,
   filterType,
   onClickType,
-  postDir,
+  isDirAddOpen,
+  setIsDirAddOpen,
 }: ListHeaderProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [isDirAddOpen, setIsDirAddOpen] = useState(false);
-  const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
-    emoji: "",
-    name: "",
-  });
+
   // 키 떼어냈을 때
   const handleKeyUp = (e: any) => {
     // shift + f = 필터 모달
@@ -80,14 +78,16 @@ const ListHeader = ({
             {type === "cookie" && (
               <div className="num">
                 <b className="num--bold">
-                  {cookieNum > 999 ? "999+" : cookieNum}개
+                  {cookieNum && cookieNum > 999 ? "999+" : cookieNum}개
                 </b>
                 의 쿠키
               </div>
             )}
             {type === "dir" && (
               <div className="num">
-                <b className="num--bold">{dirNum > 999 ? "999+" : dirNum}개</b>
+                <b className="num--bold">
+                  {dirNum && dirNum > 999 ? "999+" : dirNum}개
+                </b>
                 의 디렉토리
               </div>
             )}
@@ -98,7 +98,7 @@ const ListHeader = ({
             {type === "dir" && (
               <StyledIcon
                 className="create"
-                onClick={() => setIsDirAddOpen(true)}
+                onClick={() => setIsDirAddOpen && setIsDirAddOpen(true)}
                 isAtv={isDirAddOpen}
               >
                 <PlusIcon22 className="plus-icon" />
@@ -122,14 +122,6 @@ const ListHeader = ({
           </div>
         )}
       </ListHeaderWrap>
-      <DirectoryModal
-        isOpen={isDirAddOpen}
-        setIsOpen={setIsDirAddOpen}
-        type="new"
-        value={newDirData}
-        setValue={setNewDirData}
-        postDir={postDir}
-      />
     </>
   );
 };

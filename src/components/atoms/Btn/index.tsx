@@ -70,6 +70,10 @@ const BtnWrap = styled.button<BtnWrapProps>`
   width: 100%;
   height: 100%;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   font-weight: 500;
   text-align: center;
   letter-spacing: -0.2px;
