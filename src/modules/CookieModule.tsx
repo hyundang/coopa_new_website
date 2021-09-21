@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { readCountAsc, readCountDesc } from "@lib/filter";
 import { CookieDataProps } from "@interfaces/cookie";
 import { PostAddCookieToDirProps } from "@interfaces/directory";
-import { ToastMsgProps } from "@interfaces/toastMsg";
+import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
 import getApi from "@api/getApi";
 import delApi from "@api/delApi";
 import putApi from "@api/putApi";
@@ -14,8 +14,8 @@ interface CookieModuleProps {
   /** initial cookie datas */
   initAllCookieData: CookieDataProps[];
   /** toast msg */
-  isVisible: ToastMsgProps;
-  setIsVisible: Dispatch<SetStateAction<ToastMsgProps>>;
+  isVisible: ToastMsgVisibleStateProps;
+  setIsVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
 }
 const CookieModule = ({
   initAllCookieData,

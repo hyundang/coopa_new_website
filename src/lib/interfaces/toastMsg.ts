@@ -1,4 +1,4 @@
-export interface ToastMsgProps {
+export interface ToastMsgVisibleStateProps {
   dirCreate: boolean;
   dirDel: boolean;
   dirEdit: boolean;

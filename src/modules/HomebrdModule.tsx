@@ -4,7 +4,7 @@ import {
   BookmarkDataProps,
   PostBookmarkDataProps,
 } from "@interfaces/homeboard";
-import { ToastMsgProps } from "@interfaces/toastMsg";
+import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
 import getApi from "@api/getApi";
 import delApi from "@api/delApi";
 import putApi from "@api/putApi";
@@ -15,8 +15,8 @@ interface HomebrdModuleProps {
   initBookmarkData: BookmarkDataProps[];
   initHomeboardImgUrl?: string;
   /** toast msg */
-  isVisible: ToastMsgProps;
-  setIsVisible: Dispatch<SetStateAction<ToastMsgProps>>;
+  isVisible: ToastMsgVisibleStateProps;
+  setIsVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
 }
 const HomebrdModule = ({
   initHomeboardImgUrl,

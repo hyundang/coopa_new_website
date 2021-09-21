@@ -1,8 +1,7 @@
 // components
-import { Btn, SearchBar, Tab, ToastMsg } from "@components/atoms";
+import { SearchBar, Tab, ToastMsg } from "@components/atoms";
 import {
   DirectoryModal,
-  Empty,
   Footer,
   Header,
   ListHeader,
@@ -16,24 +15,13 @@ import {
 import { CookieDataProps } from "@interfaces/cookie";
 import {
   DirectoryDataProps,
-  PostDirAddCookieProps,
+  PostAddCookieToDirProps,
   PostDirectoryProps,
 } from "@interfaces/directory";
+import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
 // asset
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-
-interface ToastMsgVisibleStateProps {
-  dirCreate: boolean;
-  dirDel: boolean;
-  dirEdit: boolean;
-  cookieDel: boolean;
-  cookieEdit: boolean;
-  bookmarkDel: boolean;
-  bookmarkCreate: boolean;
-  homeboardEdit: boolean;
-  imgSizeOver: boolean;
-}
 
 export interface NewtablProps {
   /** 로딩 여부 */
@@ -94,7 +82,7 @@ export interface NewtablProps {
   /** delete dir */
   handleDelDirectory: (id: number) => void;
   /** dir cookie 추가 */
-  handleDirAddCookie: (body: PostDirAddCookieProps) => void;
+  handleDirAddCookie: (body: PostAddCookieToDirProps) => void;
   /** update dir */
   handleUpdateDirectory: (id: number, body: PostDirectoryProps) => void;
 }
