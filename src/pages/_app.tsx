@@ -7,17 +7,10 @@ import { GlobalStyle } from "src/styles/GlobalStyles";
 import cookies from "next-cookies";
 import { setToken } from "@api/TokenManager";
 import getApi from "@api/getApi";
-import { useRouterLoading } from "src/hooks";
-import { useEffect } from "react";
+// import { useRouterLoading } from "src/hooks";
+// import { useEffect } from "react";
 
 function App({ Component, pageProps }: AppProps) {
-  // 로딩 여부
-  const isLoading = useRouterLoading();
-
-  useEffect(() => {
-    console.log(isLoading);
-  }, [isLoading]);
-
   return (
     <>
       <Head>
@@ -67,11 +60,11 @@ function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <RecoilRoot>
           <GlobalStyle />
-          {isLoading ? (
+          {/* {isLoading ? (
             <h1 style={{ fontSize: "100px" }}>...loading</h1>
-          ) : (
-            <Component {...pageProps} />
-          )}
+          ) : ( */}
+          <Component {...pageProps} />
+          {/* )} */}
         </RecoilRoot>
       </ThemeProvider>
     </>

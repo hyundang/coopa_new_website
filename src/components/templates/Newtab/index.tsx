@@ -36,6 +36,8 @@ interface ToastMsgVisibleStateProps {
 }
 
 export interface NewtablProps {
+  /** 로딩 여부 */
+  isLoading: boolean;
   /** 검색 여부 */
   isSearched: boolean;
   setIsSearched: Dispatch<SetStateAction<boolean>>;
@@ -95,6 +97,7 @@ export interface NewtablProps {
   handleUpdateDirectory: (id: number, body: PostDirectoryProps) => void;
 }
 const Newtab = ({
+  isLoading,
   isSearched,
   setIsSearched,
   searchValue,
