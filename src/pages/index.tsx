@@ -6,7 +6,11 @@ import {
 } from "@interfaces/homeboard";
 import useSWR, { mutate } from "swr";
 import { CookieDataProps } from "@interfaces/cookie";
-import { DirectoryDataProps } from "@interfaces/directory";
+import {
+  DirectoryDataProps,
+  PostDirAddCookieProps,
+  PostDirectoryProps,
+} from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 import {
   readCountDesc,
@@ -16,16 +20,8 @@ import {
 } from "@lib/filter";
 import { getApi, postApi, putApi, delApi } from "@lib/api";
 import { useEffect, useState } from "react";
-import cookies from "next-cookies";
-import cookie from "react-cookies";
-import useSWR, { mutate } from "swr";
-import { CookieDataProps } from "@interfaces/cookie";
-import {
-  DirectoryDataProps,
-  PostDirAddCookieProps,
-  PostDirectoryProps,
-} from "@interfaces/directory";
-import { useRouter } from "next/dist/client/router";
+import nextCookie from "next-cookies";
+import reactCookie from "react-cookies";
 
 interface NewtabPageProps {
   isLogin: boolean;
@@ -77,7 +73,7 @@ export default function NewtabPage({
       return true;
     },
     onSuccess: (data) => {
-      const filter = cookie.load("cookieFilter");
+      const filter = reactCookie.load("cookieFilter");
       if (data && filter !== null) {
         switch (filter) {
           case "readMost":
@@ -199,7 +195,7 @@ export default function NewtabPage({
       return true;
     },
     onSuccess: (data) => {
-      const filter = cookie.load("dirFilter");
+      const filter = reactCookie.load("dirFilter");
       if (data && filter !== null) {
         switch (filter) {
           case "latest":
@@ -384,7 +380,7 @@ export default function NewtabPage({
     filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => {
     filter !== "abc" && setCookieFilter(filter);
-    cookie.save("cookieFilter", filter, {
+    reactCookie.save("cookieFilter", filter, {
       path: "/",
       httpOnly: JSON.parse(HTTP_ONLY),
     });
@@ -413,7 +409,7 @@ export default function NewtabPage({
     filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => {
     filter !== "readMost" && filter !== "readLeast" && setDirFilter(filter);
-    cookie.save("dirFilter", filter, {
+    reactCookie.save("dirFilter", filter, {
       path: "/",
       httpOnly: JSON.parse(HTTP_ONLY),
     });
@@ -501,57 +497,63 @@ export default function NewtabPage({
   );
 }
 
-// 로그인 여부 검사
 NewtabPage.getInitialProps = async (ctx: any) => {
-  const allCookies = cookies(ctx);
+  const allCookies = nextCookie(ctx);
   const userToken = allCookies["x-access-token"];
 
-  // 쿠키 데이터
-  const initAllCookieData = await getApi.getAllCookieData("/cookies");
-  const { cookieFilter } = allCookies;
-  if (cookieFilter) {
-    switch (cookieFilter) {
-      case "readMost":
-        initAllCookieData?.sort(readCountDesc);
-        break;
-      case "readLeast":
-        initAllCookieData?.sort(readCountAsc);
-        break;
-      case "oldest":
-        initAllCookieData?.reverse();
-        break;
-      default:
-        break;
+  // 로그인 되어 있을 때
+  if (userToken) {
+    // 쿠키 데이터
+    const initAllCookieData = await getApi.getAllCookieData("/cookies");
+    const { cookieFilter } = allCookies;
+    if (cookieFilter) {
+      switch (cookieFilter) {
+        case "readMost":
+          initAllCookieData?.sort(readCountDesc);
+          break;
+        case "readLeast":
+          initAllCookieData?.sort(readCountAsc);
+          break;
+        case "oldest":
+          initAllCookieData?.reverse();
+          break;
+        default:
+          break;
+      }
     }
-  }
 
-  // 디렉토리 데이터
-  const initAllDirData = await getApi.getAllDirData("/directories");
-  const { dirFilter } = allCookies;
-  if (dirFilter) {
-    switch (dirFilter) {
-      case "latest":
-        initAllDirData?.sort(idCountDesc);
-        break;
-      case "oldest":
-        initAllDirData?.sort(idCountAsc);
-        break;
-      default:
-        break;
+    // 디렉토리 데이터
+    const initAllDirData = await getApi.getAllDirData("/directories");
+    const { dirFilter } = allCookies;
+    if (dirFilter) {
+      switch (dirFilter) {
+        case "latest":
+          initAllDirData?.sort(idCountDesc);
+          break;
+        case "oldest":
+          initAllDirData?.sort(idCountAsc);
+          break;
+        default:
+          break;
+      }
     }
+
+    // 북마크 데이터
+    const initBookmarkData = await getApi.getBookmarkData("/users/favorites");
+
+    // 홈보드 이미지
+    const initHomeboardImgUrl = await getApi.getHomeboardData();
+
+    return {
+      isLogin: true,
+      initAllCookieData,
+      initAllDirData,
+      initBookmarkData,
+      initHomeboardImgUrl,
+    };
   }
-
-  // 북마크 데이터
-  const initBookmarkData = await getApi.getBookmarkData("/users/favorites");
-
-  // 홈보드 이미지
-  const initHomeboardImgUrl = await getApi.getHomeboardData();
-
+  // 로그인 안 되어 있을 때
   return {
-    isLogin: userToken !== undefined,
-    initAllCookieData,
-    initAllDirData,
-    initBookmarkData,
-    initHomeboardImgUrl,
+    isLogin: false,
   };
 };
