@@ -27,12 +27,14 @@ export interface ListHeaderProps {
   /** 디렉토리 모달 오픈 */
   isDirAddOpen?: boolean;
   setIsDirAddOpen?: Dispatch<SetStateAction<boolean>>;
+  /** post dir */
+  postDir?: (e: PostDirectoryProps) => void;
 }
 const ListHeader = ({
   type,
   isSearched = false,
-  cookieNum,
-  dirNum,
+  cookieNum = 0,
+  dirNum = 0,
   imgUrl,
   nickname,
   filterType,
@@ -113,7 +115,7 @@ const ListHeader = ({
               className="filter-modal"
               isOpen={isFilterOpen}
               setIsOpen={setIsFilterOpen}
-              type={type === "cookie" ? "cookie" : "dir"}
+              type={type === "dir" ? "dir" : "cookie"}
               filterType={filterType}
               onClickType={onClickType}
             />

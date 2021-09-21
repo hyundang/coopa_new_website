@@ -1,6 +1,5 @@
 import {
-  PostDirAddCookie,
-  PostDirAddCookieProps,
+  PostAddCookieToDirProps,
   PostDirAddCookieResponseProps,
   PostDirectoryProps,
   PostDirectoryResponseProps,
@@ -21,7 +20,7 @@ const postUserData = async (
       data: {
         data: { jwt },
       },
-    } = await axios.post(`${API_DOMAIN}/auth/google`, body);
+    } = await axios.post(`/auth/google`, body, { baseURL: API_DOMAIN });
     console.log("[SUCCESS] POST USER DATA", jwt);
     return jwt;
   } catch (e) {
@@ -45,6 +44,21 @@ const postBookmarkData = async (
   }
 };
 
+const postShareToken = async (
+  directoryId: number,
+): Promise<string | undefined> => {
+  try {
+    const {
+      data: { data },
+    } = await client.post(`/share`, { directoryId });
+    console.log("[SUCCESS] POST SHARE TOKEN", data);
+    return data;
+  } catch (e) {
+    console.log("[FAIL] POST SHARE TOKEN", e);
+    return undefined;
+  }
+};
+
 const postDirectoryData = async (
   body: PostDirectoryProps,
 ): Promise<PostDirectoryResponseProps | undefined> => {
@@ -61,7 +75,7 @@ const postDirectoryData = async (
 };
 
 const postDirAddCookie = async (
-  body: PostDirAddCookieProps,
+  body: PostAddCookieToDirProps,
 ): Promise<PostDirAddCookieResponseProps | undefined> => {
   try {
     const {
@@ -78,6 +92,7 @@ const postDirAddCookie = async (
 const postApi = {
   postUserData,
   postBookmarkData,
+  postShareToken,
   postDirectoryData,
   postDirAddCookie,
 };

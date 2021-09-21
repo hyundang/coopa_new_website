@@ -4,20 +4,23 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { readCountAsc, readCountDesc } from "@lib/filter";
 import { CookieDataProps } from "@interfaces/cookie";
 import { PostAddCookieToDirProps } from "@interfaces/directory";
-import { ToastMsgProps } from "@interfaces/toastMsg";
+import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
 import getApi from "@api/getApi";
 import delApi from "@api/delApi";
 import putApi from "@api/putApi";
 import postApi from "@api/postApi";
 
 interface CookieModuleProps {
+  /** swr key */
+  key: string;
   /** initial cookie datas */
   initAllCookieData: CookieDataProps[];
   /** toast msg */
-  isVisible: ToastMsgProps;
-  setIsVisible: Dispatch<SetStateAction<ToastMsgProps>>;
+  isVisible: ToastMsgVisibleStateProps;
+  setIsVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
 }
 const CookieModule = ({
+  key,
   initAllCookieData,
   isVisible,
   setIsVisible,
@@ -57,7 +60,7 @@ const CookieModule = ({
   };
 
   // 모든 쿠키 데이터 get
-  const { data: allCookieData } = useSWR("/cookies", getApi.getAllCookieData, {
+  const { data: allCookieData } = useSWR(key, getApi.getAllCookieData, {
     initialData: initAllCookieData,
     onErrorRetry: ({ retryCount }) => {
       // 3번 까지만 재시도함
@@ -110,7 +113,7 @@ const CookieModule = ({
     res &&
       (() => {
         mutate(
-          "/cookies",
+          key,
           setFilteredCookieData((prev) =>
             prev?.filter((cookie) => cookie.id !== res.cookieId),
           ),
@@ -129,7 +132,7 @@ const CookieModule = ({
     res &&
       (() => {
         mutate(
-          "/cookies",
+          key,
           setFilteredCookieData((prev) =>
             prev?.map((cookie) => {
               if (cookie.id === res.cookieId) {
@@ -152,13 +155,13 @@ const CookieModule = ({
       })();
   };
 
-  //디렉토리에 쿠키 추가
+  // 디렉토리에 쿠키 추가
   const handleAddCookieToDir = async (body: PostAddCookieToDirProps) => {
     const res = await postApi.postDirAddCookie(body);
     res &&
       (() => {
         mutate(
-          "/directories/add/cookie",
+          key,
           setFilteredCookieData((cookies) =>
             cookies?.map((cookie) => {
               if (cookie.id === res.cookieId) {

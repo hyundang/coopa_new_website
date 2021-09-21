@@ -1,4 +1,4 @@
-export interface ToastMsgProps {
+export interface ToastMsgVisibleStateProps {
   dirCreate: boolean;
   dirDel: boolean;
   dirEdit: boolean;
@@ -8,4 +8,5 @@ export interface ToastMsgProps {
   bookmarkCreate: boolean;
   homeboardEdit: boolean;
   imgSizeOver: boolean;
+  copyLink: boolean;
 }

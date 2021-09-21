@@ -9,6 +9,11 @@ export default {
 const Template: Story<DirDetailProps> = (args) => <DirDetail {...args} />;
 
 // mock data
+const dirInfo = {
+  name: "playlist",
+  id: 1,
+  emoji: "💜",
+};
 const cookies = [
   {
     content:

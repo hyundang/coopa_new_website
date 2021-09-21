@@ -18,26 +18,26 @@ export interface HeaderProps {
   onClickSearch?: React.MouseEventHandler<HTMLButtonElement>;
   /** search icon active 여부 */
   isSearchIconAtv?: boolean;
-  /** profile img url */
-  imgUrl?: string;
-  /** mypage 여부 */
-  isMypage?: boolean;
-  /** error page 여부 */
-  isErrorpage?: boolean;
   /** onboarding open 여부 */
   isOnboardOpen: boolean;
   setIsOnboardOpen: Dispatch<SetStateAction<boolean>>;
+  /** profile img url */
+  imgUrl?: string;
+  /** mypage icon 여부 */
+  isMypageIconExist?: boolean;
+  /** mypage 여부 */
+  isMypage?: boolean;
 }
 const Header = ({
   id,
   className,
   onClickSearch,
   isSearchIconAtv,
-  imgUrl,
-  isMypage = false,
-  isErrorpage = false,
   isOnboardOpen,
   setIsOnboardOpen,
+  imgUrl,
+  isMypageIconExist = true,
+  isMypage = false,
 }: HeaderProps) => {
   const router = useRouter();
   const [isNotiOpen, setIsNotiOpen] = useState(false);
@@ -90,8 +90,7 @@ const Header = ({
           <LogoImg className="logo_img" />
         </Icon>
         <div style={{ flexGrow: 1 }} />
-        {/* <div> */}
-        {!isMypage && !isErrorpage && (
+        {isSearchIconAtv && (
           <Icon
             className="content__search"
             role="button"
@@ -100,8 +99,6 @@ const Header = ({
             <SearchIcon className="search_icon" />
           </Icon>
         )}
-        {/* <Bubble className="search-bubble">검색</Bubble>
-        </div> */}
         <Icon
           className="content__info"
           role="button"
@@ -117,7 +114,7 @@ const Header = ({
         >
           <NotiIcon className="noti_icon" />
         </Icon>
-        {!isErrorpage && (
+        {isMypageIconExist && (
           <Icon
             className="content__mypage"
             role="link"

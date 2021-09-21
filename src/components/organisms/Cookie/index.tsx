@@ -5,7 +5,7 @@ import { fvcOnErrorImg } from "@assets/icons/card";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
 import {
   DirectoryDataProps,
-  PostDirAddCookieProps,
+  PostAddCookieToDirProps,
   PostDirectoryProps,
 } from "src/lib/interfaces/directory";
 
@@ -17,7 +17,7 @@ export interface CookieProps {
   /** cookie */
   cookie: CookieDataProps;
   /** all directory */
-  allDir: DirectoryDataProps[];
+  allDir?: DirectoryDataProps[];
   /** share cookie */
   isShared?: boolean;
   /** cookie delete handler */
@@ -25,9 +25,9 @@ export interface CookieProps {
   /** cookie edit handler */
   handleEditCookie: (data: FormData) => void;
   /** add cookie to dir */
-  handleDirAddCookie: (data: PostDirAddCookieProps) => void;
+  handleDirAddCookie: (data: PostAddCookieToDirProps) => void;
   /** post dir */
-  postDir: (data: PostDirectoryProps) => void;
+  postDir?: (data: PostDirectoryProps) => void;
 }
 const Cookie = ({
   id,
@@ -54,15 +54,16 @@ const Cookie = ({
   useEffect(() => {
     (async () => {
       if (currDir !== cookie.directoryInfo?.name && currDir !== "모든 쿠키") {
-        if (allDir.filter((dir) => dir.name === currDir).length === 0) {
-          await postDir({ name: currDir });
+        if (allDir?.filter((dir) => dir.name === currDir).length === 0) {
+          postDir && (await postDir({ name: currDir }));
         }
         if (currDir !== cookie.directoryInfo?.name) {
           setCardState("parking");
           setTimeout(() => setCardState("normal"), 1500);
-          const body: PostDirAddCookieProps = {
+          const body: PostAddCookieToDirProps = {
             cookieId: cookie.id,
-            directoryId: allDir.filter((dir) => dir.name === currDir)[0]?.id,
+            directoryId:
+              allDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,
           };
           body.directoryId && handleDirAddCookie(body);
         }

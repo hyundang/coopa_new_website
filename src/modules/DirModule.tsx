@@ -3,7 +3,7 @@ import reactCookie from "react-cookies";
 import { Dispatch, SetStateAction, useState } from "react";
 import { idCountAsc, idCountDesc } from "@lib/filter";
 import { DirectoryDataProps, PostDirectoryProps } from "@interfaces/directory";
-import { ToastMsgProps } from "@interfaces/toastMsg";
+import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
 import getApi from "@api/getApi";
 import delApi from "@api/delApi";
 import putApi from "@api/putApi";
@@ -13,8 +13,8 @@ interface DirModuleProps {
   /** initial directory datas */
   initAllDirData: DirectoryDataProps[];
   /** toast msg */
-  isVisible: ToastMsgProps;
-  setIsVisible: Dispatch<SetStateAction<ToastMsgProps>>;
+  isVisible: ToastMsgVisibleStateProps;
+  setIsVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
 }
 const DirModule = ({
   initAllDirData,

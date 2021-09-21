@@ -6,7 +6,7 @@ import { CookieIcon } from "@assets/icons/common";
 import React, { Dispatch, SetStateAction } from "react";
 import {
   DirectoryDataProps,
-  PostDirAddCookieProps,
+  PostAddCookieToDirProps,
   PostDirectoryProps,
 } from "@interfaces/directory";
 import { EmptyImg } from "@assets/imgs/error";
@@ -25,9 +25,9 @@ export interface CookiesProps {
   /** edit cookie handler */
   handleEditCookie: (data: FormData) => void;
   /** add cookie to dir */
-  handleDirAddCookie: (body: PostDirAddCookieProps) => void;
+  handleDirAddCookie: (body: PostAddCookieToDirProps) => void;
   /** add dir */
-  postDir: (body: PostDirectoryProps) => void;
+  postDir?: (body: PostDirectoryProps) => void;
 }
 
 const Cookies = ({

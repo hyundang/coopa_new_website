@@ -9,7 +9,7 @@ export interface BtnProps {
   /** 버튼 안의 내용 */
   children: React.ReactNode;
   /**  버튼 클릭시 실행되는 함수 */
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   /** 버튼 색깔 판단 (true -> 주황색 버튼) */
   isOrange?: boolean;
   /** '디렉토리 공유하기' 버튼의 경우 -> true */
