@@ -1,10 +1,15 @@
 import styled from "styled-components";
-import { DirectoryModal, Header, ListHeader, Footer } from "@components/organisms";
+import {
+  DirectoryModal,
+  Header,
+  ListHeader,
+  Footer,
+} from "@components/organisms";
 import { EditIcon, EmptyCookieIcon, LinkIcon } from "@assets/icons/common";
 import Cookies from "@components/templates/Cookies";
-import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
 import { Btn } from "@components/atoms";
 import { PostDirectoryProps, DirectoryDataProps } from "@interfaces/directory";
+import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
 import { useState } from "react";
 
 export interface DirDetailProps {
@@ -52,60 +57,66 @@ const DirDetail = ({
 
   return (
     <>
-      <Header
-        className="header"
-        imgUrl={imgUrl}
-        isErrorpage
-        isOnboardOpen={isOnboardOpen}
-        setIsOnboardOpen={setIsOnboardOpen}
-      />
       <DirDetailCntnr>
-        <ShareCntnr>
-          <Title>
-            <p className="name">
-              {`${dirInfo.emoji || ""} ${dirInfo.name}`}
-              {!isShared && (
-                <EditIcon
-                  className="edit-icon"
-                  onClick={editClick ? (e) => editClick(e) : () => {}}
-                />
-              )}
-            </p>
-            <p className="info">
-              <EmptyCookieIcon className="cookie-icon" />
-              {cookies.length}개
-            </p>
-            {!isShared && (
-              <Btn
-                className="share-btn"
-                isDirShare
-                onClick={shareClick}
-                isAtvBtn
-              >
-                <LinkIcon className="icon" />
-                디렉토리 공유하기
-              </Btn>
-            )}
-          </Title>
-        </ShareCntnr>
-        <ListHeader
-          type={isShared ? "dirShare" : "dirDetail"}
+        <Header
+          className="header"
           imgUrl={imgUrl}
-          nickname={nickname}
-          isDirAddOpen={isDirAddOpen}
-          setIsDirAddOpen={setIsDirAddOpen}
-          cookieNum={cookies.length}
-          filterType={filterType}
-          onClickType={onClickType}
+          isOnboardOpen={isOnboardOpen}
+          setIsOnboardOpen={setIsOnboardOpen}
+          isMypageIconExist={!isShared}
         />
-        <Cookies
-          type={isShared ? "dirShare" : "dirDetail"}
-          data={cookies}
-          allDir={allDir}
-        />
-      </DirDetailWrap>
-      <Footer />
-    </DirDetailCntnr>
+        <DirDetailWrap>
+          <ShareCntnr>
+            <Title>
+              <p className="name">
+                {`${dirInfo.emoji || ""} ${dirInfo.name}`}
+                {!isShared && (
+                  <EditIcon
+                    className="edit-icon"
+                    onClick={editClick ? (e) => editClick(e) : () => {}}
+                  />
+                )}
+              </p>
+              <p className="info">
+                <EmptyCookieIcon className="cookie-icon" />
+                {cookies.length}개
+              </p>
+              {!isShared && (
+                <Btn
+                  className="share-btn"
+                  isDirShare
+                  onClick={shareClick}
+                  isAtvBtn
+                >
+                  <LinkIcon className="icon" />
+                  디렉토리 공유하기
+                </Btn>
+              )}
+            </Title>
+          </ShareCntnr>
+          <ListHeader
+            type={isShared ? "dirShare" : "dirDetail"}
+            imgUrl={imgUrl}
+            nickname={nickname}
+            isDirAddOpen={isDirAddOpen}
+            setIsDirAddOpen={setIsDirAddOpen}
+            cookieNum={cookies.length}
+            filterType={filterType}
+            onClickType={onClickType}
+          />
+          <Cookies
+            type={isShared ? "dirShare" : "dirDetail"}
+            data={cookies}
+            allDir={allDir || []}
+            setIsOnboardOpen={setIsOnboardOpen}
+            delCookieHandler={() => {}}
+            handleEditCookie={() => {}}
+            handleDirAddCookie={() => {}}
+            postDir={() => {}}
+          />
+        </DirDetailWrap>
+        <Footer />
+      </DirDetailCntnr>
       <DirectoryModal
         isOpen={isDirAddOpen}
         setIsOpen={setIsDirAddOpen}

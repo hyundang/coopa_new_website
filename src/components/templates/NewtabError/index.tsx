@@ -50,9 +50,9 @@ const NewtabError = ({
       <Header
         className="header"
         imgUrl={imgUrl}
-        isErrorpage
         isOnboardOpen={isOnboardingOpen}
         setIsOnboardOpen={setIsOnboardingOpen}
+        isMypageIconExist={false}
       />
       <Container className="container">
         <Homeboard homeboardImg={homeboardImg} bookmarkDatas={bookmarkDatas} />

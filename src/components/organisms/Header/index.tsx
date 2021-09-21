@@ -18,26 +18,25 @@ export interface HeaderProps {
   onClickSearch?: React.MouseEventHandler<HTMLButtonElement>;
   /** search icon active 여부 */
   isSearchIconAtv?: boolean;
-  /** profile img url */
-  imgUrl?: string;
-  /** mypage 여부 */
-  isMypage?: boolean;
-  /** error page 여부 */
-  isErrorpage?: boolean;
   /** onboarding open 여부 */
   isOnboardOpen: boolean;
   setIsOnboardOpen: Dispatch<SetStateAction<boolean>>;
-  /** 디렉토리 상세 페이지 여부 */
-  isDirDetail?: boolean;
-  /** 공유 디렉토리 여부 */
-  isShared?: boolean;
+  /** profile img url */
+  imgUrl?: string;
+  /** mypage icon 여부 */
+  isMypageIconExist?: boolean;
+  /** mypage 여부 */
+  isMypage?: boolean;
 }
 const Header = ({
   id,
   className,
   onClickSearch,
   isSearchIconAtv,
+  isOnboardOpen,
+  setIsOnboardOpen,
   imgUrl,
+  isMypageIconExist = true,
   isMypage = false,
 }: HeaderProps) => {
   const router = useRouter();
@@ -91,7 +90,7 @@ const Header = ({
           <LogoImg className="logo_img" />
         </Icon>
         <div style={{ flexGrow: 1 }} />
-        {!isMypage && !isDirDetail && !isErrorpage && (
+        {isSearchIconAtv && (
           <Icon
             className="content__search"
             role="button"
@@ -115,7 +114,7 @@ const Header = ({
         >
           <NotiIcon className="noti_icon" />
         </Icon>
-        {!isShared && !isErrorpage && (
+        {isMypageIconExist && (
           <Icon
             className="content__mypage"
             role="link"
