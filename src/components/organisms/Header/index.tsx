@@ -117,13 +117,15 @@ const Header = ({
         >
           <NotiIcon className="noti_icon" />
         </Icon>
-        <Icon
-          className="content__mypage"
-          role="link"
-          onClick={isMypage ? undefined : () => router.push("/mypage")}
-        >
-          <div className="profile_img" />
-        </Icon>
+        {!isErrorpage && (
+          <Icon
+            className="content__mypage"
+            role="link"
+            onClick={isMypage ? undefined : () => router.push("/mypage")}
+          >
+            <div className="profile_img" />
+          </Icon>
+        )}
         <NotiModal
           isOpen={isNotiOpen}
           setIsOpen={setIsNotiOpen}

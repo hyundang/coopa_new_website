@@ -66,6 +66,7 @@ const Bookmark = ({
             key={bookmark.id}
             siteName={bookmark.name}
             url={bookmark.link}
+            imgUrl={bookmark.image}
             onClickDelBtn={
               onClickDel
                 ? (e: any) => {

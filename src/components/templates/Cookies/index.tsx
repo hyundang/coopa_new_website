@@ -9,7 +9,7 @@ import {
   PostDirAddCookieProps,
   PostDirectoryProps,
 } from "@interfaces/directory";
-import { EmptyImg } from "@assets/imgs/common";
+import { EmptyImg } from "@assets/imgs/error";
 
 export interface CookiesProps {
   /** cookie data */

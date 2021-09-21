@@ -20,8 +20,6 @@ import {
   PostDirectoryProps,
 } from "@interfaces/directory";
 // asset
-import { EmptyImg } from "@assets/imgs/common";
-import { CookieIcon, PlusIcon } from "@assets/icons/common";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
@@ -38,6 +36,8 @@ interface ToastMsgVisibleStateProps {
 }
 
 export interface NewtablProps {
+  /** 로딩 여부 */
+  isLoading: boolean;
   /** 검색 여부 */
   isSearched: boolean;
   setIsSearched: Dispatch<SetStateAction<boolean>>;
@@ -97,6 +97,7 @@ export interface NewtablProps {
   handleUpdateDirectory: (id: number, body: PostDirectoryProps) => void;
 }
 const Newtab = ({
+  isLoading,
   isSearched,
   setIsSearched,
   searchValue,
@@ -225,7 +226,6 @@ const Newtab = ({
   }, [isSearched, isSearchVisible]);
 
   useEffect(() => {
-    console.log(cookieData);
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
     return () => {

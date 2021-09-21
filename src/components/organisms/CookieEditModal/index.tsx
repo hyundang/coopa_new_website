@@ -43,7 +43,7 @@ const CookieEditModal = ({
   // img box hover 여부
   const [isHover, setIsHover] = useState(false);
   // file input 시 file value 초기화를 위해 사용
-  const img_input = useRef(document.createElement("input"));
+  const img_input = useRef<HTMLInputElement>(null);
 
   // img input event handling 함수
   const handleChangeImg = (e: ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +56,7 @@ const CookieEditModal = ({
         });
       } else {
         setIsError(true);
-        img_input.current.value = "";
+        if (img_input.current) img_input.current.value = "";
       }
     }
   };

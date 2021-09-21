@@ -4,13 +4,19 @@ import useSWR, { mutate } from "swr";
 import { EditUserDataProps, UserDataProps } from "@interfaces/user";
 import { useRouter } from "next/dist/client/router";
 import { useEffect, useState } from "react";
+import cookie from "react-cookies";
 
-export default function mypage() {
+export default function mypage({
+  initUserData,
+}: {
+  initUserData: UserDataProps;
+}) {
   const router = useRouter();
-  // 유저 데이터 get
+  // 유저 데이터
   const { data: userData, error: userDataError } = useSWR<
     UserDataProps | undefined
   >("/users", getApi.getUserData, {
+    initialData: initUserData,
     onErrorRetry: ({ retryCount }) => {
       console.log(userDataError);
       // 3번 까지만 재시도함
@@ -27,7 +33,7 @@ export default function mypage() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClickLogout = () => {
-    localStorage.removeItem("x-access-token");
+    cookie.remove("x-access-token");
     router.replace("/login");
   };
 
@@ -42,10 +48,6 @@ export default function mypage() {
     );
     await putApi.putUserData(profileData);
   };
-
-  useEffect(() => {
-    localStorage.getItem("x-access-token") === null && router.replace("/login");
-  }, []);
 
   useEffect(() => {
     isOpen &&
@@ -73,3 +75,8 @@ export default function mypage() {
     </>
   );
 }
+
+// export const getStaticProps: GetStaticProps = async () => {
+//   const initUserData = await getApi.getUserData("/users");
+//   return { props: { initUserData } };
+// };

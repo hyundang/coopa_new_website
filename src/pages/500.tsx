@@ -2,10 +2,10 @@ import { getApi } from "@lib/api";
 import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import { NewtabError } from "@components/templates";
-import { NotFoundErrorImg } from "@assets/imgs/error";
+import { NetworkErrorImg } from "@assets/imgs/error";
 import { UserDataProps } from "@interfaces/user";
 
-export default function NotFound({
+export default function InternalServerError({
   initUserData,
 }: {
   initUserData: UserDataProps;
@@ -51,11 +51,10 @@ export default function NotFound({
       imgUrl={initUserData?.profileImage}
       homeboardImg={homeboardImg}
       bookmarkDatas={bookmarkData || []}
-      errorImg={NotFoundErrorImg}
-      errorImgWidth={141}
-      text="앗, 찾을 수 없는 페이지에요..😢️"
-      text2="확인 후 다시 함께하시겠어요?"
-      is404Error
+      errorImg={NetworkErrorImg}
+      errorImgWidth={183}
+      text="앗, 인터넷 연결을 확인해주세요! 😮"
+      text2="확인 후 다시 도전하시겠어요?"
     />
   );
 }
