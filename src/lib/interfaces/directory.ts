@@ -22,7 +22,7 @@ export interface DirDeleteDataProps {
   name: string;
 }
 
-export interface PostDirAddCookieProps {
+export interface PostAddCookieToDirProps {
   directoryId: number;
   cookieId: number;
 }
