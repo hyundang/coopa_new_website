@@ -8,4 +8,5 @@ export interface ToastMsgVisibleStateProps {
   bookmarkCreate: boolean;
   homeboardEdit: boolean;
   imgSizeOver: boolean;
+  copyLink: boolean;
 }

@@ -14,7 +14,7 @@ import { getApi } from "@lib/api";
 import { useEffect, useState } from "react";
 import nextCookie from "next-cookies";
 import { mutate } from "swr";
-import { useRouterLoading } from "src/hooks";
+import { useRouterLoading, useToastMsg } from "src/hooks";
 import { CookieModule, DirModule, HomebrdModule } from "src/modules";
 
 interface NewtabPageProps {
@@ -42,17 +42,7 @@ export default function NewtabPage({
   const [searchValue, setSearchValue] = useState("");
 
   // toast msg visible state
-  const [isVisible, setIsVisible] = useState({
-    dirCreate: false,
-    dirDel: false,
-    dirEdit: false,
-    cookieDel: false,
-    cookieEdit: false,
-    bookmarkDel: false,
-    bookmarkCreate: false,
-    homeboardEdit: false,
-    imgSizeOver: false,
-  });
+  const { isVisible, setIsVisible } = useToastMsg();
 
   // 홈보드 모듈
   const homebrdModule = HomebrdModule({
@@ -64,6 +54,7 @@ export default function NewtabPage({
 
   // 쿠키 모듈
   const cookieModule = CookieModule({
+    key: "/cookies",
     initAllCookieData,
     isVisible,
     setIsVisible,

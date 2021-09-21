@@ -148,7 +148,8 @@ const Newtab = ({
       | "bookmarkDel"
       | "bookmarkCreate"
       | "homeboardEdit"
-      | "imgSizeOver",
+      | "imgSizeOver"
+      | "copyLink",
     value: boolean,
   ) =>
     setIsToastMsgVisible({
