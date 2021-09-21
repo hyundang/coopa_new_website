@@ -10,7 +10,7 @@ function setToken(xAccessToken: string) {
   cookie.save("x-access-token", xAccessToken, {
     path: "/",
     // expires,
-    httpOnly: JSON.parse(HTTP_ONLY), // dev/prod 에 따라 false / true 로 받게 했다.
+    httpOnly: process.env.NODE_ENV === "production", // dev/prod 에 따라 false / true 로 받게 했다.
   });
 }
 

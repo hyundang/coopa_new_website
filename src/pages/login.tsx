@@ -11,7 +11,7 @@ import {
 import { postApi } from "@lib/api";
 import { PostUserDataProps } from "@interfaces/user";
 import { useRouter } from "next/dist/client/router";
-import { setToken } from "@api/TokenManaget";
+import { setToken } from "@api/TokenManager";
 
 export default function LoginPage() {
   const filter: string =
