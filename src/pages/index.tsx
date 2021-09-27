@@ -135,6 +135,7 @@ export default function NewtabPage({
           isToastMsgVisible={isVisible}
           setIsToastMsgVisible={setIsVisible}
           postDir={dirModule.handlePostDir}
+          copyCookieLink={cookieModule.copyCookieLink}
           delCookieHandler={cookieModule.handleDelCookie}
           handleEditCookie={cookieModule.handleEditCookie}
           handleDelDirectory={dirModule.handleDelDir}

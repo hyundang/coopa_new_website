@@ -20,6 +20,8 @@ export interface CookieProps {
   allDir?: DirectoryDataProps[];
   /** share cookie */
   isShared?: boolean;
+  /** copy cookie link */
+  copyCookieLink: () => void;
   /** cookie delete handler */
   deleteCookieHandler: (id: number) => void;
   /** cookie edit handler */
@@ -35,6 +37,7 @@ const Cookie = ({
   cookie,
   allDir,
   isShared,
+  copyCookieLink,
   deleteCookieHandler,
   handleEditCookie,
   handleDirAddCookie,
@@ -86,7 +89,9 @@ const Cookie = ({
     >
       <CookieImg
         cardState={isShared ? "normal" : cardState}
+        setCardState={setCardState}
         cookie={cookie}
+        copyCookieLink={copyCookieLink}
         deleteCookieHanlder={deleteCookieHandler}
         handleEditCookie={handleEditCookie}
       />

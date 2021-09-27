@@ -106,7 +106,13 @@ const CookieModule = ({
     getApi.getSearchedCookieData,
     { revalidateOnFocus: false, revalidateOnMount: false },
   );
-
+  //쿠키 링크 복사
+  const copyCookieLink = () => {
+    setIsVisible({
+      ...isVisible,
+      copyLink: true,
+    });
+  };
   // 쿠키 delete
   const handleDelCookie = async (cookieId: number) => {
     const res = await delApi.delCookieData(cookieId);
@@ -188,6 +194,7 @@ const CookieModule = ({
     allCookieData,
     filteredCookieData,
     searchedCookieData,
+    copyCookieLink,
     handleDelCookie,
     handleEditCookie,
     handleAddCookieToDir,

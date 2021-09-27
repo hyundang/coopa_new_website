@@ -75,6 +75,8 @@ export interface NewtablProps {
   /** toast msg state */
   isToastMsgVisible: ToastMsgVisibleStateProps;
   setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
+  /** copy cookie link */
+  copyCookieLink: () => void;
   /** delete cookie handler */
   delCookieHandler: (id: number) => void;
   /** edit cookie */
@@ -114,6 +116,7 @@ const Newtab = ({
   postDir,
   isToastMsgVisible,
   setIsToastMsgVisible,
+  copyCookieLink,
   delCookieHandler,
   handleEditCookie,
   handleDelDirectory,
@@ -322,6 +325,7 @@ const Newtab = ({
                   data={searchedCookieData}
                   allDir={dirData}
                   type="searched"
+                  copyCookieLink={copyCookieLink}
                   delCookieHandler={delCookieHandler}
                   handleEditCookie={handleEditCookie}
                   handleDirAddCookie={handleDirAddCookie}
@@ -343,6 +347,7 @@ const Newtab = ({
                   data={cookieData}
                   allDir={dirData}
                   setIsOnboardOpen={setIsOnboardOpen}
+                  copyCookieLink={copyCookieLink}
                   delCookieHandler={delCookieHandler}
                   handleEditCookie={handleEditCookie}
                   handleDirAddCookie={handleDirAddCookie}
@@ -386,6 +391,12 @@ const Newtab = ({
         setIsVisible={(e: boolean) => handleToastMsgVisible("dirDel", e)}
       >
         ❌ 디렉토리를 삭제했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.copyLink}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("copyLink", e)}
+      >
+        👏🏻 링크를 복사했어요!
       </ToastMsg>
       <ToastMsg
         isVisible={isToastMsgVisible.cookieDel}

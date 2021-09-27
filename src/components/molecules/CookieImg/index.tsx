@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import { ImgBox, Icon } from "@components/atoms";
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { DeleteIcon } from "@assets/icons/card";
@@ -14,8 +15,14 @@ export interface CookieImgProps {
   className?: string;
   /** cookie card state */
   cardState: "hover" | "parking" | "normal" | "input";
+  /** set cookie card state */
+  setCardState: Dispatch<
+    SetStateAction<"hover" | "parking" | "normal" | "input">
+  >;
   /** cookie */
   cookie: CookieDataProps;
+  /** copy cookie handler */
+  copyCookieLink: () => void;
   /** delete cookie handler */
   deleteCookieHanlder: (id: number) => void;
   /** edit cookie handler */
@@ -26,7 +33,9 @@ const CookieImg = ({
   id,
   className,
   cardState,
+  setCardState,
   cookie,
+  copyCookieLink,
   deleteCookieHanlder,
   handleEditCookie,
 }: CookieImgProps) => {
@@ -60,9 +69,11 @@ const CookieImg = ({
               <Icon className="hover_icon" onClick={editIconClickHandler}>
                 <EditIcon className="hover_icon__edit" />
               </Icon>
-              <Icon className="hover_icon">
-                <LinkIcon32 className="hover_icon__link" />
-              </Icon>
+              <CopyToClipboard text={cookie.link} onCopy={copyCookieLink}>
+                <Icon className="hover_icon">
+                  <LinkIcon32 className="hover_icon__link" />
+                </Icon>
+              </CopyToClipboard>
               <Icon className="hover_icon">
                 <DeleteIcon
                   className="hover_icon__delete"
@@ -96,6 +107,7 @@ const CookieImg = ({
           setIsEditOpen(false);
           setIsDeleteOpen(true);
         }}
+        setCardState={setCardState}
         setIsError={setIsError}
         isOpen={isEditOpen}
         setIsOpen={setIsEditOpen}

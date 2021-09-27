@@ -20,6 +20,8 @@ export interface CookiesProps {
   allDir: DirectoryDataProps[];
   /** 온보딩 모달 오픈 */
   setIsOnboardOpen?: Dispatch<SetStateAction<boolean>>;
+  /** copy cookie link */
+  copyCookieLink: () => void;
   /** del cookie handler */
   delCookieHandler: (id: number) => void;
   /** edit cookie handler */
@@ -35,6 +37,7 @@ const Cookies = ({
   allDir,
   type = "normal",
   setIsOnboardOpen,
+  copyCookieLink,
   delCookieHandler,
   handleEditCookie,
   handleDirAddCookie,
@@ -50,6 +53,7 @@ const Cookies = ({
               key={cookie.id}
               allDir={allDir}
               isShared={type === "dirShare"}
+              copyCookieLink={copyCookieLink}
               deleteCookieHandler={delCookieHandler}
               handleEditCookie={handleEditCookie}
               handleDirAddCookie={handleDirAddCookie}

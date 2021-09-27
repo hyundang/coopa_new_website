@@ -19,8 +19,8 @@ const Directory = ({
   handleUpdateDirectory,
 }: DirectoryProps) => {
   const [postData, setPostData] = useState<PostDirectoryProps>({
-    name: "",
-    emoji: "",
+    name: dir.name,
+    emoji: dir?.emoji || "",
   });
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setISDeleteOpen] = useState(false);
