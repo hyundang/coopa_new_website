@@ -12,7 +12,7 @@ const putUserData = async (body: EditUserDataProps): Promise<undefined> => {
   return undefined;
 };
 
-const putHomeboardData = async (imgFile: File): Promise<string> => {
+const putHomeboardData = async (imgFile: File): Promise<string | unknown> => {
   try {
     const body = new FormData();
     body.append("image", imgFile);
@@ -34,8 +34,10 @@ const putHomeboardData = async (imgFile: File): Promise<string> => {
 const updateCookie = async (body: FormData) => {
   try {
     const { data } = await client.patch(`/cookies`, body);
+    console.log("[SUCCESS] PUT COOKIE DATA", data);
     return data.data;
   } catch (e) {
+    console.log("[FAIL] PUT COOKIE DATA", e);
     return e;
   }
 };

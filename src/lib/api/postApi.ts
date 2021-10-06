@@ -66,10 +66,10 @@ const postDirectoryData = async (
     const {
       data: { data },
     } = await client.post(`/directories`, body);
-    console.log("[SUCCESS] POST BOOKMARK DATA", data);
+    console.log("[SUCCESS] POST DIRECTORY DATA", data);
     return data;
   } catch (e) {
-    console.log("[FAIL] POST BOOKMARK DATA", e);
+    console.log("[FAIL] POST DIRECTORY DATA", e);
     return undefined;
   }
 };
@@ -89,12 +89,24 @@ const postDirAddCookie = async (
   }
 };
 
+const postCookieCount = async (id: number) => {
+  try {
+    const { data } = await client.post(`/cookies/${id}/read`);
+    console.log("[SUCCESS] POST ADD COOKIE COUNT", data);
+    return data;
+  } catch (e) {
+    console.log("[FAIL] POST ADD COOKIE COUNT", e);
+    return e;
+  }
+};
+
 const postApi = {
   postUserData,
   postBookmarkData,
   postShareToken,
   postDirectoryData,
   postDirAddCookie,
+  postCookieCount,
 };
 
 export default postApi;

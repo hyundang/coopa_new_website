@@ -87,6 +87,8 @@ export interface NewtablProps {
   handleDirAddCookie: (body: PostAddCookieToDirProps) => void;
   /** update dir */
   handleUpdateDirectory: (id: number, body: PostDirectoryProps) => void;
+  /** add cookie count */
+  handleAddCookieCount: (id: number) => void;
 }
 const Newtab = ({
   isLoading,
@@ -122,6 +124,7 @@ const Newtab = ({
   handleDelDirectory,
   handleDirAddCookie,
   handleUpdateDirectory,
+  handleAddCookieCount,
 }: NewtablProps) => {
   // 검색창 불필요한 fadeout 방지
   const [preventFadeout, setPreventFadeout] = useState(true);
@@ -152,7 +155,8 @@ const Newtab = ({
       | "bookmarkCreate"
       | "homeboardEdit"
       | "imgSizeOver"
-      | "copyLink",
+      | "copyLink"
+      | "copyShareLink",
     value: boolean,
   ) =>
     setIsToastMsgVisible({
@@ -329,6 +333,7 @@ const Newtab = ({
                   delCookieHandler={delCookieHandler}
                   handleEditCookie={handleEditCookie}
                   handleDirAddCookie={handleDirAddCookie}
+                  handleAddCookieCount={handleAddCookieCount}
                   postDir={postDir}
                 />
               ) : (
@@ -351,6 +356,7 @@ const Newtab = ({
                   delCookieHandler={delCookieHandler}
                   handleEditCookie={handleEditCookie}
                   handleDirAddCookie={handleDirAddCookie}
+                  handleAddCookieCount={handleAddCookieCount}
                   postDir={postDir}
                 />
               ) : (

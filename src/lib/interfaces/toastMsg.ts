@@ -9,4 +9,5 @@ export interface ToastMsgVisibleStateProps {
   homeboardEdit: boolean;
   imgSizeOver: boolean;
   copyLink: boolean;
+  copyShareLink: boolean;
 }

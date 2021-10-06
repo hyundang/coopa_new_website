@@ -97,25 +97,6 @@ const CookieHoverWrap = styled(DropDown)<CookieHoverWrapProps>`
   `}
 
   .list-content {
-    overflow: hidden;
-    .direcory-list {
-      height: 200px;
-      ${({ theme }) => theme.media.desktop_3`
-        height: 184px;
-      `}
-      .list-div__emoji {
-        font-size: 15px;
-        ${({ theme }) => theme.media.desktop_3`
-          font-size: 14px;
-        `}
-      }
-      .list-div__name {
-        font-size: 15px;
-        ${({ theme }) => theme.media.desktop_3`
-          font-size: 14px;
-        `}
-      }
-    }
     .directory-form {
       position: relative;
       z-index: 2;

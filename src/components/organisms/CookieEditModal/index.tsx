@@ -17,7 +17,7 @@ export interface CookieEditModalProps {
   /** '삭제' 버튼 클릭 시 event handling 함수 */
   onClickDel: React.MouseEventHandler<HTMLButtonElement>;
   /** cookie card set state */
-  setCardState: Dispatch<
+  setCardState?: Dispatch<
     SetStateAction<"hover" | "parking" | "normal" | "input">
   >;
   /** img input 시 img size 에러 여부 setState */
@@ -150,7 +150,7 @@ const CookieEditModal = ({
               formData.append("content", value.content);
               handleEditCookie(formData);
               setIsOpen(false);
-              setCardState("normal");
+              setCardState ? setCardState("normal"): () => {};
             }}
           >
             수정

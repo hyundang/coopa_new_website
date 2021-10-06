@@ -1,10 +1,11 @@
 export interface UserDataProps {
+  id: number;
   name: string;
   email: string;
   profileImage?: string;
   introduction?: string;
-  allCookies: number;
-  readCount: number;
+  cookieCount: number;
+  readCookieCount: number;
 }
 
 export interface PostUserDataProps {

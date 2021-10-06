@@ -28,7 +28,7 @@ const List = ({ id, className, allDir, setCurrDir, setIsBlur }: ListProps) => {
       root: viewport.current,
       threshold: 1,
     };
-    const handleIntersection = (entries: any, observer: any) => {
+    const handleIntersection = (entries: any) => {
       setIsBlur &&
         entries.forEach((entry: any) => {
           entry.isIntersecting ? setIsBlur(false) : setIsBlur(true);
@@ -73,6 +73,9 @@ const ListWrap = styled.ul`
   padding: 0;
   margin: 0;
   overflow: auto;
+  @media screen and (min-width: 1600px) {
+    height: 20.2rem;
+  }
   ::-webkit-scrollbar {
     width: 8px;
   }
@@ -87,8 +90,14 @@ const ListWrap = styled.ul`
   .list-item {
     display: flex;
     align-items: center;
-    width: 100%;
+    width: 20.3rem;
     border-radius: 17px;
+    font-size: 14px;
+    @media screen and (min-width: 1600px) {
+      font-size: 15px;
+      width: 23.5rem;
+      border-radius: 17px;
+    }
     :hover {
       background: var(--gray_hover_2);
       /* 오른쪽 동그라미 */
@@ -105,14 +114,27 @@ const ListWrap = styled.ul`
       }
     }
     &__emoji {
-      margin: 0 8px;
-      font-size: 14px;
+      width: 16px;
+      font-size: 16px;
+      margin: 0 10px;
+      object-fit: fill;
+      @media screen and (min-width: 1600px) {
+        font-size: 18px;
+        width: 18px;
+        margin: 0 13px;
+      }
     }
     &__name {
+      max-width: 145px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
       font-style: normal;
       font-weight: 500;
-      font-size: 14px;
       margin: 7px 0;
+      @media screen and (min-width: 1600px) {
+        margin: 9px 0;
+      }
     }
   }
 `;

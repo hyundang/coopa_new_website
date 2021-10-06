@@ -17,6 +17,7 @@ import {
 import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
 import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
 import { Dispatch, SetStateAction, useState } from "react";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 export interface DirDetailProps {
   /** 공유 디렉토리 여부 */
@@ -37,9 +38,13 @@ export interface DirDetailProps {
   ) => void;
   /** 공유 버튼 눌렀을 때 함수 */
   shareClick?: React.MouseEventHandler<HTMLButtonElement>;
+  /** 공유 링크 */
+  shareLink?: string;
   /** toast msg state */
   isToastMsgVisible: ToastMsgVisibleStateProps;
   setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
+  /** copy cookie link */
+  copyCookieLink?: () => void;
   /** delete cookie handler */
   delCookieHandler: (id: number) => void;
   /** edit cookie */
@@ -52,6 +57,8 @@ export interface DirDetailProps {
   handleDelDirectory?: (id: number) => void;
   /** update dir */
   handleUpdateDirectory?: (id: number, body: PostDirectoryProps) => void;
+  /** add cookie count */
+  handleAddCookieCount: (id: number) => void;
 }
 const DirDetail = ({
   isShared = false,
@@ -63,20 +70,23 @@ const DirDetail = ({
   filterType,
   onClickType,
   shareClick,
+  shareLink,
   isToastMsgVisible,
   setIsToastMsgVisible,
   postDir,
+  copyCookieLink,
   delCookieHandler,
   handleEditCookie,
   handleDelDirectory,
   handleDirAddCookie,
   handleUpdateDirectory,
+  handleAddCookieCount,
 }: DirDetailProps) => {
   // 디렉토리 수정 모달 오픈
   const [isDirEditOpen, setIsDirEditOpen] = useState(false);
   const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
-    emoji: "",
-    name: "",
+    emoji: dirInfo?.emoji || "",
+    name: dirInfo.name,
   });
   // 삭제 모달 오픈
   const [isDelOpen, setIsDelOpen] = useState(false);
@@ -85,7 +95,13 @@ const DirDetail = ({
 
   // toast msg visible handling
   const handleToastMsgVisible = (
-    key: "dirEdit" | "cookieDel" | "cookieEdit" | "imgSizeOver" | "copyLink",
+    key:
+      | "dirEdit"
+      | "cookieDel"
+      | "cookieEdit"
+      | "imgSizeOver"
+      | "copyLink"
+      | "copyShareLink",
     value: boolean,
   ) =>
     setIsToastMsgVisible({
@@ -122,15 +138,17 @@ const DirDetail = ({
                 {cookies.length}개
               </p>
               {!isShared && (
-                <Btn
-                  className="share-btn"
-                  isDirShare
-                  onClick={shareClick}
-                  isAtvBtn
-                >
-                  <LinkIcon className="icon" />
-                  디렉토리 공유하기
-                </Btn>
+                <CopyToClipboard text={shareLink}>
+                  <Btn
+                    className="share-btn"
+                    isDirShare
+                    onClick={shareClick}
+                    isAtvBtn
+                  >
+                    <LinkIcon className="icon" />
+                    디렉토리 공유하기
+                  </Btn>
+                </CopyToClipboard>
               )}
             </Title>
           </ShareCntnr>
@@ -147,9 +165,11 @@ const DirDetail = ({
             data={cookies}
             allDir={allDir || []}
             setIsOnboardOpen={setIsOnboardOpen}
+            copyCookieLink={copyCookieLink || (() => {})}
             delCookieHandler={delCookieHandler}
             handleEditCookie={handleEditCookie}
             handleDirAddCookie={handleDirAddCookie}
+            handleAddCookieCount={handleAddCookieCount}
             postDir={postDir}
           />
         </DirDetailWrap>
@@ -176,10 +196,16 @@ const DirDetail = ({
         onClickDel={() => handleDelDirectory && handleDelDirectory(dirInfo.id)}
       />
       <ToastMsg
+        isVisible={isToastMsgVisible.copyShareLink}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("copyShareLink", e)}
+      >
+        👏 공유 링크를 복사했어요!
+      </ToastMsg>
+      <ToastMsg
         isVisible={isToastMsgVisible.copyLink}
         setIsVisible={(e: boolean) => handleToastMsgVisible("copyLink", e)}
       >
-        👏 공유 링크를 복사했어요!
+        👏🏻 링크를 복사했어요!
       </ToastMsg>
       <ToastMsg
         isVisible={isToastMsgVisible.dirEdit}

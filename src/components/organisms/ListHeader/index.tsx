@@ -158,6 +158,10 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
       ? css`
           margin-top: 26px;
           margin-bottom: 20px;
+          ${type === "cookie" &&
+          theme.media.mobile`
+            margin-bottom: 0;
+          `}
         `
       : css`
           margin-bottom: 20px;

@@ -187,6 +187,13 @@ const CookieModule = ({
         );
       })();
   };
+  const handleAddCookieCount = async (id: number) => {
+    const res = await postApi.postCookieCount(id);
+    res &&
+      (() => {
+        mutate(key, () => {}, false);
+      })();
+  };
 
   return {
     cookieFilter,
@@ -198,6 +205,7 @@ const CookieModule = ({
     handleDelCookie,
     handleEditCookie,
     handleAddCookieToDir,
+    handleAddCookieCount,
   };
 };
 

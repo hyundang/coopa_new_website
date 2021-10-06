@@ -13,8 +13,8 @@ import getApi from "@api/getApi";
 import postApi from "@api/postApi";
 import CookieModule from "@modules/CookieModule";
 import DirModule from "@modules/DirModule";
-import delApi from "@api/delApi";
 import { useToastMsg } from "src/hooks";
+import { useState } from "react";
 
 interface DirDetailPageProps {
   isLogin: boolean;
@@ -30,6 +30,8 @@ const DirDetailPage = ({
   initAllDirData,
   queryID,
 }: DirDetailPageProps) => {
+  // share link url
+  const [shareLink, setShareLink] = useState("");
   // toast msg visible state
   const { isVisible, setIsVisible } = useToastMsg();
 
@@ -50,14 +52,14 @@ const DirDetailPage = ({
 
   // 디렉토리 delete
   const handleDelDir = async (dirId: number) => {
-    const res = await delApi.delDirData(dirId);
+    await dirModule.handleDelDir(dirId);
     window.open(DOMAIN, "_self");
   };
 
   const handleShareClick = async () => {
     const shareToken = await postApi.postShareToken(queryID);
-    console.log(`${DOMAIN}/share/${shareToken}`);
-    setIsVisible({ ...isVisible, copyLink: true });
+    setIsVisible({ ...isVisible, copyShareLink: true });
+    setShareLink(`${DOMAIN}/share/${shareToken}`);
   };
 
   return (
@@ -71,15 +73,18 @@ const DirDetailPage = ({
           cookies={cookieModule.filteredCookieData || []}
           filterType={cookieModule.cookieFilter}
           onClickType={cookieModule.handleCookieFilter}
+          shareLink={shareLink}
           shareClick={handleShareClick}
           isToastMsgVisible={isVisible}
           setIsToastMsgVisible={setIsVisible}
           postDir={dirModule.handlePostDir}
+          copyCookieLink={cookieModule.copyCookieLink}
           delCookieHandler={cookieModule.handleDelCookie}
           handleEditCookie={cookieModule.handleEditCookie}
           handleDelDirectory={handleDelDir}
           handleDirAddCookie={cookieModule.handleAddCookieToDir}
           handleUpdateDirectory={dirModule.handleEditDir}
+          handleAddCookieCount={cookieModule.handleAddCookieCount}
         />
       ) : (
         <div>error: login</div>

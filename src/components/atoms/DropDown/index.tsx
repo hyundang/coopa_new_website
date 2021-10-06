@@ -67,10 +67,14 @@ const DropDownWrap = styled.div<DropDownWrapProps>`
     border-radius: 22px;
     background: rgba(255, 255, 255, 0.92);
     p {
+      max-width: 75%;
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
       line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
     img {
       position: absolute;

@@ -12,6 +12,7 @@ const useToastMsg = () => {
     homeboardEdit: false,
     imgSizeOver: false,
     copyLink: false,
+    copyShareLink: false,
   });
 
   return { isVisible, setIsVisible };

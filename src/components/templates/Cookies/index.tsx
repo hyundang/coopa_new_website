@@ -1,15 +1,16 @@
 import styled from "styled-components";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
 import { Btn } from "@components/atoms";
-import { Cookie, Empty } from "@components/organisms";
+import { Cookie, CookieMobile, Empty } from "@components/organisms";
 import { CookieIcon } from "@assets/icons/common";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   DirectoryDataProps,
   PostAddCookieToDirProps,
   PostDirectoryProps,
 } from "@interfaces/directory";
 import { EmptyImg } from "@assets/imgs/error";
+import { useWindowSize } from "src/hooks";
 
 export interface CookiesProps {
   /** cookie data */
@@ -30,6 +31,8 @@ export interface CookiesProps {
   handleDirAddCookie: (body: PostAddCookieToDirProps) => void;
   /** add dir */
   postDir?: (body: PostDirectoryProps) => void;
+  /** add cookie count */
+  handleAddCookieCount: (id: number) => void;
 }
 
 const Cookies = ({
@@ -41,26 +44,51 @@ const Cookies = ({
   delCookieHandler,
   handleEditCookie,
   handleDirAddCookie,
+  handleAddCookieCount,
   postDir,
 }: CookiesProps) => {
+  const size = useWindowSize();
+  const [isError, setIsError] = useState(false);
+
   return (
     <CookiesCntnr>
       {data.length !== 0 ? (
-        <CookieWrap>
-          {data.map((cookie) => (
-            <Cookie
-              cookie={cookie}
-              key={cookie.id}
-              allDir={allDir}
-              isShared={type === "dirShare"}
-              copyCookieLink={copyCookieLink}
-              deleteCookieHandler={delCookieHandler}
-              handleEditCookie={handleEditCookie}
-              handleDirAddCookie={handleDirAddCookie}
-              postDir={postDir}
-            />
-          ))}
-        </CookieWrap>
+        <>
+          {size.width && size.width < 600 ? (
+            <CookieMobileWrap>
+              {data.map((cookie) => (
+                <CookieMobile
+                  key={cookie.id}
+                  cookie={cookie}
+                  isLoading
+                  setIsError={setIsError}
+                  isShared={type === "dirShare"}
+                  copyCookieLink={copyCookieLink}
+                  delCookieHandler={delCookieHandler}
+                  handleEditCookie={handleEditCookie}
+                  handleAddCookieCount={handleAddCookieCount}
+                />
+              ))}
+            </CookieMobileWrap>
+          ) : (
+            <CookieWrap>
+              {data.map((cookie) => (
+                <Cookie
+                  cookie={cookie}
+                  key={cookie.id}
+                  allDir={allDir}
+                  isShared={type === "dirShare"}
+                  copyCookieLink={copyCookieLink}
+                  deleteCookieHandler={delCookieHandler}
+                  handleEditCookie={handleEditCookie}
+                  handleDirAddCookie={handleDirAddCookie}
+                  postDir={postDir}
+                  handleAddCookieCount={handleAddCookieCount}
+                />
+              ))}
+            </CookieWrap>
+          )}
+        </>
       ) : (
         <>
           {type === "dirDetail" ? (
@@ -150,4 +178,9 @@ const CookieWrap = styled.section`
    ${({ theme }) => theme.media.mobile`
     grid-template-columns: repeat(1, auto);
   `}
+`;
+
+const CookieMobileWrap = styled.section`
+  width: 100%;
+  padding: 0 20px;
 `;

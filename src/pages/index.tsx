@@ -141,6 +141,7 @@ export default function NewtabPage({
           handleDelDirectory={dirModule.handleDelDir}
           handleDirAddCookie={cookieModule.handleAddCookieToDir}
           handleUpdateDirectory={dirModule.handleEditDir}
+          handleAddCookieCount={cookieModule.handleAddCookieCount}
         />
       ) : (
         <NewtabError

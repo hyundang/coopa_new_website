@@ -30,6 +30,8 @@ export interface CookieProps {
   handleDirAddCookie: (data: PostAddCookieToDirProps) => void;
   /** post dir */
   postDir?: (data: PostDirectoryProps) => void;
+  /** post cookie count */
+  handleAddCookieCount: (data: number) => void;
 }
 const Cookie = ({
   id,
@@ -41,6 +43,7 @@ const Cookie = ({
   deleteCookieHandler,
   handleEditCookie,
   handleDirAddCookie,
+  handleAddCookieCount,
   postDir,
 }: CookieProps) => {
   //normal: 기본 | hover: 호버 | parking: 파킹중 | input: 인풋입력중
@@ -79,6 +82,7 @@ const Cookie = ({
       className={className}
       onClick={() => {
         window.open(cookie.link);
+        handleAddCookieCount(cookie.id);
       }}
       onMouseEnter={() => {
         if (cardState !== "input") setCardState("hover");

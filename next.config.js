@@ -1,6 +1,6 @@
 module.exports = {
   reactStrictMode: true,
-  webpack(config, { dev, webpack }) {
+  webpack(config, { webpack }) {
     config.module.rules.push({
       test: /\.svg$/,
       use: [

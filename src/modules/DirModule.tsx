@@ -125,7 +125,7 @@ const DirModule = ({
         mutate(
           "/directories",
           setFilteredDirData((prev) =>
-            prev?.filter((dir) => dir.id !== res.id),
+            prev?.filter((dir) => dir.id !== res.directoryId),
           ),
           false,
         );

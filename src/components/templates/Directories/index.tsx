@@ -101,6 +101,7 @@ const DirectoiresWrap = styled.section`
   `}
   /* -599 */
    ${({ theme }) => theme.media.mobile`
+    padding: 0 20px;
     grid-template-columns: 1fr 1fr;
     grid-gap: 12px;
   `}

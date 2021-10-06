@@ -36,6 +36,7 @@ const SharePage = ({ initSharedDirDetailData, queryID }: SharePageProps) => {
       delCookieHandler={cookieModule.handleDelCookie}
       handleEditCookie={cookieModule.handleEditCookie}
       handleDirAddCookie={cookieModule.handleAddCookieToDir}
+      handleAddCookieCount={cookieModule.handleAddCookieCount}
     />
   );
 };

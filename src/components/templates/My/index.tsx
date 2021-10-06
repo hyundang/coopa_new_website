@@ -85,23 +85,25 @@ const My = ({
             />
             <div className="cookie-count">
               👏 지금까지 쿠키
-              {userData.allCookies > 9999 ? (
+              {userData.cookieCount > 9999 ? (
                 <AllCookieNumWrap width={5}>
                   <AllCookieNum num={9999} isOver />
                 </AllCookieNumWrap>
               ) : (
-                <AllCookieNumWrap width={String(userData.allCookies).length}>
-                  <AllCookieNum num={userData.allCookies} />
+                <AllCookieNumWrap width={String(userData.cookieCount).length}>
+                  <AllCookieNum num={userData.cookieCount} />
                 </AllCookieNumWrap>
               )}
               개를 파킹했고
-              {userData.readCount > 9999 ? (
+              {userData.readCookieCount > 9999 ? (
                 <ReadCookieNumWrap width={5}>
                   <ReadCookieNum num={9999} isOver />
                 </ReadCookieNumWrap>
               ) : (
-                <ReadCookieNumWrap width={String(userData.readCount).length}>
-                  <ReadCookieNum num={userData.readCount} />
+                <ReadCookieNumWrap
+                  width={String(userData.readCookieCount).length}
+                >
+                  <ReadCookieNum num={userData.readCookieCount} />
                 </ReadCookieNumWrap>
               )}
               번 읽었어요!
@@ -696,7 +698,7 @@ const AllCookieNumWrap = styled.span<CookieNumWrapProps>`
   `};
 `;
 const ReadCookieNumWrap = styled.span<CookieNumWrapProps>`
-  width: ${(props) => (props.width + 2) * 12}px;
+  width: ${({ width }) => (width + 2) * 12}px;
   height: 40px;
   margin: 0 4px 0 10px;
   border-radius: 30px;
@@ -708,10 +710,10 @@ const ReadCookieNumWrap = styled.span<CookieNumWrapProps>`
   animation: stretchTwo 1.5s;
   @keyframes stretchTwo {
     from {
-      width: ${(props) => props.width * 12}px;
+      width: ${({ width }) => width * 12}px;
     }
     to {
-      width: ${(props) => (props.width + 2) * 12}px;
+      width: ${({ width }) => (width + 2) * 12}px;
     }
   }
   ${({ width, theme }) =>

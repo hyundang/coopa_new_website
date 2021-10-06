@@ -18,7 +18,7 @@ export interface PostDirectoryResponseProps {
 }
 
 export interface DirDeleteDataProps {
-  id: number;
+  directoryId: number;
   name: string;
 }
 

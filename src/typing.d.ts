@@ -17,3 +17,7 @@ declare module "*.gif" {
   const src: string;
   export default src;
 }
+
+declare const DOMAIN: string;
+declare const HTTP_ONLY: string;
+declare const API_DOMAIN: string;
