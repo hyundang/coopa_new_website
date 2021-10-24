@@ -40,10 +40,10 @@ const HomebrdModule = ({
   };
 
   // 홈보드 이미지 edit
-  const handlePostHomeboardImg = async (e: File) => {
+  const handlePostHomeboardImg = async (e: File): Promise<string> => {
     const homeboardImgUrl = await putApi.putHomeboardData(e);
-    localStorage.setItem("homeboardImgUrl", homeboardImgUrl);
-    return homeboardImgUrl;
+    localStorage.setItem("homeboardImgUrl", String(homeboardImgUrl));
+    return String(homeboardImgUrl);
   };
 
   // 북마크 get

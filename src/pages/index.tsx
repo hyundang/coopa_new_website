@@ -167,38 +167,9 @@ NewtabPage.getInitialProps = async (ctx: any) => {
   if (userToken) {
     // 쿠키 데이터
     const initAllCookieData = await getApi.getAllCookieData("/cookies");
-    const { cookieFilter } = allCookies;
-    if (cookieFilter) {
-      switch (cookieFilter) {
-        case "readMost":
-          initAllCookieData?.sort(readCountDesc);
-          break;
-        case "readLeast":
-          initAllCookieData?.sort(readCountAsc);
-          break;
-        case "oldest":
-          initAllCookieData?.reverse();
-          break;
-        default:
-          break;
-      }
-    }
 
     // 디렉토리 데이터
     const initAllDirData = await getApi.getAllDirData("/directories");
-    const { dirFilter } = allCookies;
-    if (dirFilter) {
-      switch (dirFilter) {
-        case "latest":
-          initAllDirData?.sort(idCountDesc);
-          break;
-        case "oldest":
-          initAllDirData?.sort(idCountAsc);
-          break;
-        default:
-          break;
-      }
-    }
 
     // 북마크 데이터
     const initBookmarkData = await getApi.getBookmarkData("/users/favorites");

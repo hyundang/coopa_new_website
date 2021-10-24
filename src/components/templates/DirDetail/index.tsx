@@ -138,7 +138,7 @@ const DirDetail = ({
                 {cookies.length}개
               </p>
               {!isShared && (
-                <CopyToClipboard text={shareLink}>
+                <CopyToClipboard text={shareLink || ""}>
                   <Btn
                     className="share-btn"
                     isDirShare

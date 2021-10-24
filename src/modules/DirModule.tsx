@@ -22,68 +22,68 @@ const DirModule = ({
   setIsVisible,
 }: DirModuleProps) => {
   // 디렉토리 필터
+  const initFilter = reactCookie.load("dirFilter");
   const [dirFilter, setDirFilter] = useState<"latest" | "oldest" | "abc">(
-    "latest",
+    initFilter || "latest",
   );
 
-  // 디렉토리 필터 변경
-  const handleDirFilter = (
-    filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
+  const returnFilteredDirData = (
+    allDir: DirectoryDataProps[],
+    filter: "latest" | "oldest" | "abc" | undefined,
   ) => {
-    filter !== "readMost" && filter !== "readLeast" && setDirFilter(filter);
-    reactCookie.save("dirFilter", filter, {
-      path: "/",
-      httpOnly: JSON.parse(HTTP_ONLY),
-    });
-    switch (filter) {
-      case "latest":
-        setFilteredDirData(allDirData && [...allDirData].sort(idCountDesc));
-        break;
-      case "oldest":
-        setFilteredDirData(allDirData && [...allDirData].sort(idCountAsc));
-        break;
-      default:
-        setFilteredDirData(allDirData);
-        break;
+    if (allDir && filter) {
+      switch (filter) {
+        case "latest":
+          return [...allDir].sort(idCountDesc);
+        case "oldest":
+          return [...allDir].sort(idCountAsc);
+        default:
+          return allDir;
+      }
+    } else if (allDir && !filter) {
+      return [...allDir].sort(idCountDesc);
     }
   };
 
   // 모든 디렉토리 데이터 get
   const { data: allDirData } = useSWR("/directories", getApi.getAllDirData, {
-    initialData: initAllDirData,
+    initialData: returnFilteredDirData(initAllDirData, initFilter),
     onErrorRetry: ({ retryCount }) => {
       // 3번 까지만 재시도함
       if (retryCount >= 3) return undefined;
       return true;
     },
     onSuccess: (data) => {
-      const filter = reactCookie.load("dirFilter");
-      if (data && filter !== null) {
-        switch (filter) {
-          case "latest":
-            setDirFilter("latest");
-            setFilteredDirData([...data].sort(idCountDesc));
-            break;
-          case "oldest":
-            setDirFilter("oldest");
-            setFilteredDirData([...data].sort(idCountAsc));
-            break;
-          default:
-            setDirFilter("abc");
-            setFilteredDirData(data);
-            break;
-        }
-      } else if (data && filter === null) {
-        setDirFilter("abc");
-        setFilteredDirData([...data]);
-      }
+      // 필터에 따라 디렉토리 데이터 정렬
+      setFilteredDirData(returnFilteredDirData(data || [], dirFilter));
     },
   });
+
+  // 디렉토리 필터 변경
+  const handleDirFilter = (
+    filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
+  ) => {
+    filter !== "readMost" && filter !== "readLeast" && setDirFilter(filter);
+    // 만료일 설정, 쿠키 저장
+    const expires = new Date();
+    expires.setFullYear(
+      expires.getFullYear() + Number(process.env.EXPIRE_YEAR),
+    );
+    reactCookie.save("dirFilter", filter, {
+      path: "/",
+      expires,
+      httpOnly: JSON.parse(HTTP_ONLY),
+    });
+    // 필터에 따라 디렉토리 데이터 정렬
+    filter !== "readLeast" &&
+      filter !== "readMost" &&
+      setFilteredDirData(returnFilteredDirData(allDirData || [], filter));
+  };
 
   // 필터링 된 디렉토리 데이터 get
   const [filteredDirData, setFilteredDirData] = useState<
     DirectoryDataProps[] | undefined
-  >(initAllDirData);
+  >(allDirData);
 
   // 검색된 디렉토리 데이터 get
   const { data: searchedDirData } = useSWR(

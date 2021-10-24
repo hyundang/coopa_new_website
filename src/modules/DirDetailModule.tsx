@@ -7,29 +7,32 @@ import {
   readCountAsc,
   readCountDesc,
 } from "@lib/filter";
-import { CookieDataProps } from "@interfaces/cookie";
-import { PostAddCookieToDirProps } from "@interfaces/directory";
+import { CookieDataProps, DirectoryCookieDataProps } from "@interfaces/cookie";
+import {
+  PostAddCookieToDirProps,
+  PostDirectoryProps,
+} from "@interfaces/directory";
 import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
 import getApi from "@api/getApi";
 import delApi from "@api/delApi";
 import putApi from "@api/putApi";
 import postApi from "@api/postApi";
 
-interface CookieModuleProps {
+interface DirDetailModuleProps {
   /** swr key */
   key: string;
   /** initial cookie datas */
-  initAllCookieData: CookieDataProps[];
+  initDirDetailData: DirectoryCookieDataProps;
   /** toast msg */
   isVisible: ToastMsgVisibleStateProps;
   setIsVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
 }
-const CookieModule = ({
+const DirDetailModule = ({
   key,
-  initAllCookieData,
+  initDirDetailData,
   isVisible,
   setIsVisible,
-}: CookieModuleProps) => {
+}: DirDetailModuleProps) => {
   // 쿠키 필터
   const initFilter = reactCookie.load("cookieFilter");
   const [cookieFilter, setCookieFilter] = useState<
@@ -57,9 +60,9 @@ const CookieModule = ({
     }
   };
 
-  // 모든 쿠키 데이터 get
-  const { data: allCookieData } = useSWR(key, getApi.getAllCookieData, {
-    initialData: returnFilteredCookieData(initAllCookieData, initFilter),
+  // 디렉토리 상세 데이터 get
+  const { data: DirDetailData } = useSWR(key, getApi.getDirCookieData, {
+    initialData: initDirDetailData,
     onErrorRetry: ({ retryCount }) => {
       // 3번 까지만 재시도함
       if (retryCount >= 3) return undefined;
@@ -67,7 +70,10 @@ const CookieModule = ({
     },
     onSuccess: (data) => {
       // 필터에 따라 쿠키 데이터 정렬
-      setFilteredCookieData(returnFilteredCookieData(data || [], cookieFilter));
+      data &&
+        setFilteredCookieData(
+          returnFilteredCookieData(data.cookies || [], cookieFilter),
+        );
     },
   });
 
@@ -89,7 +95,7 @@ const CookieModule = ({
     // 필터에 따라 쿠키 데이터 정렬
     setFilteredCookieData(
       returnFilteredCookieData(
-        allCookieData || [],
+        (DirDetailData && DirDetailData.cookies) || [],
         filter !== "abc" ? filter : "latest",
       ),
     );
@@ -98,14 +104,7 @@ const CookieModule = ({
   // 필터링 된 쿠키 데이터 get
   const [filteredCookieData, setFilteredCookieData] = useState<
     CookieDataProps[] | undefined
-  >(allCookieData);
-
-  // 검색된 쿠키 데이터 get
-  const { data: searchedCookieData } = useSWR(
-    "/cookies/search",
-    getApi.getSearchedCookieData,
-    { revalidateOnFocus: false, revalidateOnMount: false },
-  );
+  >(returnFilteredCookieData(initDirDetailData.cookies, initFilter));
 
   //쿠키 링크 복사
   const copyCookieLink = () => {
@@ -171,24 +170,14 @@ const CookieModule = ({
         mutate(
           key,
           setFilteredCookieData((cookies) =>
-            cookies?.map((cookie) => {
-              if (cookie.id === res.cookieId) {
-                return {
-                  ...cookie,
-                  directoryInfo: {
-                    emoji: res?.directoryEmoji || null,
-                    id: res.directoryId,
-                    name: res.directoryName,
-                  },
-                };
-              }
-              return cookie;
-            }),
+            cookies?.filter((cookie) => cookie.id !== res.cookieId),
           ),
           false,
         );
       })();
   };
+
+  // 쿠키 read 횟수
   const handleAddCookieCount = async (id: number) => {
     const res = await postApi.postCookieCount(id);
     res &&
@@ -197,17 +186,37 @@ const CookieModule = ({
       })();
   };
 
+  // 디렉토리 edit
+  const handleEditDir = async (id: number, body: PostDirectoryProps) => {
+    const res = await putApi.updateDirectoryData(id, body);
+    res &&
+      (() => {
+        mutate(key, {
+          ...DirDetailData,
+          directoryInfo: {
+            name: res.name,
+            emoji: res.emoji,
+          },
+        });
+        setIsVisible({
+          ...isVisible,
+          dirEdit: true,
+        });
+      })();
+  };
+
   return {
+    dirInfo: DirDetailData?.directoryInfo,
     cookieFilter,
     handleCookieFilter,
     filteredCookieData,
-    searchedCookieData,
     copyCookieLink,
     handleDelCookie,
     handleEditCookie,
     handleAddCookieToDir,
     handleAddCookieCount,
+    handleEditDir,
   };
 };
 
-export default CookieModule;
+export default DirDetailModule;

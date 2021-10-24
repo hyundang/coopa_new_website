@@ -37,5 +37,6 @@ module.exports = {
     CLIENT_ID: process.env.CLIENT_ID,
     API_URL: process.env.API_URL,
     DEV_API_URL: process.env.DEV_API_URL,
+    EXPIRE_YEAR: process.env.EXPIRE_YEAR,
   },
 };

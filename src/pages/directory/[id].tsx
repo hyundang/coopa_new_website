@@ -11,7 +11,7 @@ import { DirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 import getApi from "@api/getApi";
 import postApi from "@api/postApi";
-import CookieModule from "@modules/CookieModule";
+import DirDetailModule from "@modules/DirDetailModule";
 import DirModule from "@modules/DirModule";
 import { useToastMsg } from "src/hooks";
 import { useState } from "react";
@@ -35,10 +35,10 @@ const DirDetailPage = ({
   // toast msg visible state
   const { isVisible, setIsVisible } = useToastMsg();
 
-  // 쿠키 모듈
-  const cookieModule = CookieModule({
+  // 디렉토리 상세 모듈
+  const dirDetailModule = DirDetailModule({
     key: `/directories/${queryID}`,
-    initAllCookieData: initDirDetailData.cookies,
+    initDirDetailData,
     isVisible,
     setIsVisible,
   });
@@ -68,23 +68,23 @@ const DirDetailPage = ({
         <DirDetail
           imgUrl={initUserData?.profileImage}
           nickname={initUserData?.name || ""}
-          dirInfo={initDirDetailData?.directoryInfo || { name: "", id: 0 }}
-          allDir={initAllDirData}
-          cookies={cookieModule.filteredCookieData || []}
-          filterType={cookieModule.cookieFilter}
-          onClickType={cookieModule.handleCookieFilter}
+          dirInfo={dirDetailModule.dirInfo || { name: "", id: 0 }}
+          allDir={dirModule.filteredDirData}
+          cookies={dirDetailModule.filteredCookieData || []}
+          filterType={dirDetailModule.cookieFilter}
+          onClickType={dirDetailModule.handleCookieFilter}
           shareLink={shareLink}
           shareClick={handleShareClick}
           isToastMsgVisible={isVisible}
           setIsToastMsgVisible={setIsVisible}
           postDir={dirModule.handlePostDir}
-          copyCookieLink={cookieModule.copyCookieLink}
-          delCookieHandler={cookieModule.handleDelCookie}
-          handleEditCookie={cookieModule.handleEditCookie}
+          copyCookieLink={dirDetailModule.copyCookieLink}
+          delCookieHandler={dirDetailModule.handleDelCookie}
+          handleEditCookie={dirDetailModule.handleEditCookie}
           handleDelDirectory={handleDelDir}
-          handleDirAddCookie={cookieModule.handleAddCookieToDir}
-          handleUpdateDirectory={dirModule.handleEditDir}
-          handleAddCookieCount={cookieModule.handleAddCookieCount}
+          handleDirAddCookie={dirDetailModule.handleAddCookieToDir}
+          handleUpdateDirectory={dirDetailModule.handleEditDir}
+          handleAddCookieCount={dirDetailModule.handleAddCookieCount}
         />
       ) : (
         <div>error: login</div>
@@ -105,38 +105,9 @@ DirDetailPage.getInitialProps = async (ctx: any) => {
     const initDirDetailData = await getApi.getDirCookieData(
       `/directories/${queryID}`,
     );
-    const { cookieFilter } = allCookies;
-    if (cookieFilter) {
-      switch (cookieFilter) {
-        case "readMost":
-          initDirDetailData?.cookies.sort(readCountDesc);
-          break;
-        case "readLeast":
-          initDirDetailData?.cookies.sort(readCountAsc);
-          break;
-        case "oldest":
-          initDirDetailData?.cookies.reverse();
-          break;
-        default:
-          break;
-      }
-    }
 
     // 디렉토리 데이터
     const initAllDirData = await getApi.getAllDirData("/directories");
-    const { dirFilter } = allCookies;
-    if (dirFilter) {
-      switch (dirFilter) {
-        case "latest":
-          initAllDirData?.sort(idCountDesc);
-          break;
-        case "oldest":
-          initAllDirData?.sort(idCountAsc);
-          break;
-        default:
-          break;
-      }
-    }
 
     return {
       isLogin: true,

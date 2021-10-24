@@ -50,22 +50,6 @@ SharePage.getInitialProps = async (ctx: any) => {
   const initSharedDirDetailData = await getApi.getSharedDirectoryData(
     `/share/${queryID}`,
   );
-  const { cookieFilter } = allCookies;
-  if (cookieFilter) {
-    switch (cookieFilter) {
-      case "readMost":
-        initSharedDirDetailData?.cookies.sort(readCountDesc);
-        break;
-      case "readLeast":
-        initSharedDirDetailData?.cookies.sort(readCountAsc);
-        break;
-      case "oldest":
-        initSharedDirDetailData?.cookies.reverse();
-        break;
-      default:
-        break;
-    }
-  }
 
   return {
     initSharedDirDetailData,
