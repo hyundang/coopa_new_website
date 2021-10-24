@@ -89,7 +89,7 @@ const Header = ({
           <LogoImg className="logo_img" />
         </Icon>
         <div style={{ flexGrow: 1 }} />
-        {isSearchIconAtv && (
+        {isSearchIconAtv !== undefined && (
           <Icon
             className="content__search"
             role="button"
