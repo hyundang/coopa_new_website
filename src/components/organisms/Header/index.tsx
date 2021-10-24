@@ -6,8 +6,7 @@ import { useRouter } from "next/dist/client/router";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
-import NotiModal from "../NotiModal";
-import Onboarding from "../Onboarding";
+import { NotiModal, Onboarding } from "@components/organisms";
 
 export interface HeaderProps {
   /** id */

@@ -24,6 +24,17 @@ export interface CookieDeleteDataProps {
   thumbnail: string;
   title: string;
 }
+
+/** 쿠키 추가 */
+export interface PostCookieProps {
+  content: string;
+  favicon: string;
+  link: string;
+  provider: string;
+  thumbnail: string;
+  title: string;
+}
+
 /** 쿠키 수정 */
 export interface PatchCookieProps {
   title: string;

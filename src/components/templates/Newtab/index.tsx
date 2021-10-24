@@ -1,11 +1,6 @@
 // components
 import { SearchBar, Tab, ToastMsg } from "@components/atoms";
-import {
-  DirectoryModal,
-  Footer,
-  Header,
-  ListHeader,
-} from "@components/organisms";
+import { Footer, Header, ListHeader } from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
 // interfaces
 import {
@@ -133,12 +128,8 @@ const Newtab = ({
   const [tabOptions, setTabOptions] = useState(["모든 쿠키", "디렉토리"]);
   const [tabValue, setTabValue] = useState("모든 쿠키");
 
-  // 디렉토리 생성 모달 오픈
-  const [isDirAddOpen, setIsDirAddOpen] = useState(false);
-  const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
-    emoji: "",
-    name: "",
-  });
+  // 쿠키or디렉토리 생성 모달 오픈
+  const [isAddOpen, setIsAddOpen] = useState(false);
 
   // 온보딩 모달 오픈
   const [isOnboardOpen, setIsOnboardOpen] = useState(false);
@@ -318,8 +309,8 @@ const Newtab = ({
               onClickType={
                 tabValue === "모든 쿠키" ? setCookieFilter : setDirFilter
               }
-              isDirAddOpen={isDirAddOpen}
-              setIsDirAddOpen={setIsDirAddOpen}
+              isAddOpen={isAddOpen}
+              setIsAddOpen={setIsAddOpen}
             />
           )}
           {isSearched && isSearchVisible ? (
@@ -362,7 +353,7 @@ const Newtab = ({
               ) : (
                 <Directories
                   data={dirData}
-                  setIsDirAddOpen={setIsDirAddOpen}
+                  setIsDirAddOpen={setIsAddOpen}
                   handleDelDirectory={handleDelDirectory}
                   handleUpdateDirectory={handleUpdateDirectory}
                 />
@@ -372,14 +363,6 @@ const Newtab = ({
         </main>
       </Container>
       <Footer />
-      <DirectoryModal
-        isOpen={isDirAddOpen}
-        setIsOpen={setIsDirAddOpen}
-        type="new"
-        value={newDirData}
-        setValue={setNewDirData}
-        postDir={postDir}
-      />
       <ToastMsg
         isVisible={isToastMsgVisible.dirCreate}
         setIsVisible={(e: boolean) => handleToastMsgVisible("dirCreate", e)}

@@ -19,9 +19,6 @@ export interface DirectoryModalProps {
   /** modal open */
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  /** directory value */
-  value: PostDirectoryProps;
-  setValue: Dispatch<SetStateAction<PostDirectoryProps>>;
   /** post directory data */
   postDir?: (e: PostDirectoryProps) => void;
   /** put directory data */
@@ -35,8 +32,6 @@ const DirectoryModal = ({
   type = "new",
   isOpen,
   setIsOpen,
-  value,
-  setValue,
   postDir,
   putDir,
   delDir,
@@ -55,6 +50,12 @@ const DirectoryModal = ({
     borderRaduis: "12px",
     boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
   };
+
+  // 새 디렉토리 데이터
+  const [value, setValue] = useState<PostDirectoryProps>({
+    emoji: "",
+    name: "",
+  });
 
   const name_input = useRef<HTMLInputElement>(null);
 

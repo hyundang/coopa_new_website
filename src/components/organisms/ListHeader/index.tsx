@@ -1,9 +1,14 @@
 import styled, { css } from "styled-components";
 import { FilterIcon, PlusIcon22 } from "@assets/icons/common";
 import { Icon } from "@components/atoms";
-import { FilterModal } from "@components/molecules";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  CookieAddModal,
+  DirectoryModal,
+  FilterModal,
+} from "@components/organisms";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { PostDirectoryProps } from "@interfaces/directory";
+import { useWindowSize } from "src/hooks";
 
 export interface ListHeaderProps {
   /** list type */
@@ -24,9 +29,9 @@ export interface ListHeaderProps {
   onClickType: (
     e: "latest" | "oldest" | "readMost" | "readLeast" | "abc",
   ) => void;
-  /** 디렉토리 모달 오픈 */
-  isDirAddOpen?: boolean;
-  setIsDirAddOpen?: Dispatch<SetStateAction<boolean>>;
+  /** 생성 모달 오픈 */
+  isAddOpen: boolean;
+  setIsAddOpen: Dispatch<SetStateAction<boolean>>;
   /** post dir */
   postDir?: (e: PostDirectoryProps) => void;
 }
@@ -39,10 +44,16 @@ const ListHeader = ({
   nickname,
   filterType,
   onClickType,
-  isDirAddOpen,
-  setIsDirAddOpen,
+  isAddOpen,
+  setIsAddOpen,
+  postDir,
 }: ListHeaderProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // cookie 추가 모달 x좌표
+  const [locationX, setLocationX] = useState(0);
+  const windowSize = useWindowSize();
+  const plusIconLocation = useRef<HTMLButtonElement>(null);
 
   // 키 떼어냈을 때
   const handleKeyUp = (e: any) => {
@@ -51,6 +62,11 @@ const ListHeader = ({
       setIsFilterOpen(true);
     }
   };
+
+  useEffect(() => {
+    plusIconLocation.current &&
+      setLocationX(plusIconLocation.current.getBoundingClientRect().x);
+  }, [windowSize.width]);
 
   useEffect(() => {
     window.addEventListener("keyup", handleKeyUp);
@@ -95,15 +111,14 @@ const ListHeader = ({
         )}
         {!isSearched && (
           <div className="button-wrap">
-            {type === "dir" && (
-              <StyledIcon
-                className="create"
-                onClick={() => setIsDirAddOpen && setIsDirAddOpen(true)}
-                isAtv={isDirAddOpen}
-              >
-                <PlusIcon22 className="plus-icon" />
-              </StyledIcon>
-            )}
+            <StyledIcon
+              className="create"
+              onClick={() => setIsAddOpen(true)}
+              isAtv={isAddOpen}
+              ref={plusIconLocation}
+            >
+              <PlusIcon22 className="plus-icon" />
+            </StyledIcon>
             <StyledIcon
               className="filter"
               onClick={() => setIsFilterOpen(true)}
@@ -122,6 +137,21 @@ const ListHeader = ({
           </div>
         )}
       </ListHeaderWrap>
+      {type === "cookie" && (
+        <CookieAddModal
+          isOpen={type === "cookie" && isAddOpen}
+          setIsOpen={setIsAddOpen}
+          locationX={locationX - 430}
+        />
+      )}
+      {type === "dir" && (
+        <DirectoryModal
+          isOpen={type === "dir" && isAddOpen}
+          setIsOpen={setIsAddOpen}
+          type="new"
+          postDir={postDir}
+        />
+      )}
     </>
   );
 };

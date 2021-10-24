@@ -30,7 +30,8 @@ module.exports = {
       ...config.resolve.alias,
       "@components": path.resolve(__dirname, "../src/components"),
       "@assets": path.resolve(__dirname, "../src/assets"),
-      "@api/": path.resolve(__dirname, "../src/lib/api"),
+      "@lib": path.resolve(__dirname, "../src/lib"),
+      "@api": path.resolve(__dirname, "../src/lib/api"),
       "@interfaces": path.resolve(__dirname, "../src/lib/interfaces"),
     };
 

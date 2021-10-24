@@ -1,3 +1,4 @@
+import { PostCookieProps } from "@interfaces/cookie";
 import {
   PostAddCookieToDirProps,
   PostDirAddCookieResponseProps,
@@ -100,6 +101,17 @@ const postCookieCount = async (id: number) => {
   }
 };
 
+const postCookie = async (body: PostCookieProps) => {
+  try {
+    const { data } = await client.post(`/cookies`, body);
+    console.log("[SUCCESS] POST ADD COOKIE", data);
+    return data;
+  } catch (e) {
+    console.log("[FAIL] POST ADD COOKIE", e);
+    return e;
+  }
+};
+
 const postApi = {
   postUserData,
   postBookmarkData,
@@ -107,6 +119,7 @@ const postApi = {
   postDirectoryData,
   postDirAddCookie,
   postCookieCount,
+  postCookie,
 };
 
 export default postApi;
