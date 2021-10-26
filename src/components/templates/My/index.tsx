@@ -609,9 +609,9 @@ const MyCntnr = styled.section<MyCntnrProps>`
 const StyledBubble = styled(Bubble)`
   position: absolute;
   z-index: 2;
-  left: -86px;
-  margin-top: 25px;
+  margin-top: 22px;
   font-size: 13px;
+  transform: translateX(-102px);
   ${({ isHover }) =>
     isHover
       ? css`

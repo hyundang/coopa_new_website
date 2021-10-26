@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, RefObject, forwardRef } from "react";
 import styled from "styled-components";
 // assets
 import { PlusIcon } from "@assets/icons/common";
+import { HomeboardIcon } from "@assets/icons/homeboard";
 import bookmarkAnimation from "@components/animations/bookmark";
 
 export interface BookmarkTileProps {
@@ -60,7 +61,9 @@ const BookmarkTile = (
               className="content__favicon"
               src={url}
               alt="favicon"
-              onError={(e) => (e.target.src = "/favicon.ico")}
+              onError={(e: SyntheticEvent<HTMLImageElement, Event>) =>
+                (e.currentTarget.src = HomeboardIcon)
+              }
             />
             <cite className="content__text">{siteName}</cite>
           </div>
