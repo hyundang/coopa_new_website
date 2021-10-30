@@ -1,5 +1,5 @@
 import styled from "styled-components";
-// import { CopyToClipboard } from "react-copy-to-clipboard";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import { ImgBox, Icon } from "@components/atoms";
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { DeleteIcon, PinAtvIcon, PinIcon } from "@assets/icons/card";
@@ -93,11 +93,11 @@ const CookieImg = ({
               <Icon className="hover_icon" onClick={editIconClickHandler}>
                 <EditIcon className="hover_icon__edit" />
               </Icon>
-              {/* <CopyToClipboard text={cookie.link} onCopy={copyCookieLink}> */}
-              <Icon className="hover_icon">
-                <LinkIcon32 className="hover_icon__link" />
-              </Icon>
-              {/* </CopyToClipboard> */}
+              <CopyToClipboard text={cookie.link} onCopy={copyCookieLink}>
+                <Icon className="hover_icon">
+                  <LinkIcon32 className="hover_icon__link" />
+                </Icon>
+              </CopyToClipboard>
               <Icon className="hover_icon">
                 <DeleteIcon
                   className="hover_icon__delete"
@@ -162,9 +162,7 @@ const StyledImgBox = styled(ImgBox)<StyledImgBoxProps>`
 const StyledPinImg = styled(PinImg)`
   position: absolute;
   z-index: 2;
-  /* top: 26px; */
   transform: translate(24px, -5px);
-  /* left: 24px; */
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
 `;
 
