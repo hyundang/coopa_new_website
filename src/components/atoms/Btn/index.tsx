@@ -7,7 +7,7 @@ export interface BtnProps {
   /** className */
   className?: string;
   /** 버튼 안의 내용 */
-  children: React.ReactNode;
+  children?: React.ReactNode;
   /**  버튼 클릭시 실행되는 함수 */
   onClick: React.MouseEventHandler<HTMLButtonElement>;
   /** 버튼 색깔 판단 (true -> 주황색 버튼) */
