@@ -33,6 +33,8 @@ export interface CookiesProps {
   postDir?: (body: PostDirectoryProps) => void;
   /** add cookie count */
   handleAddCookieCount: (id: number) => void;
+  /** fix cookie handler */
+  fixCookieHandler: () => void;
 }
 
 const Cookies = ({
@@ -46,6 +48,7 @@ const Cookies = ({
   handleDirAddCookie,
   handleAddCookieCount,
   postDir,
+  fixCookieHandler,
 }: CookiesProps) => {
   const size = useWindowSize();
   const [isError, setIsError] = useState(false);
@@ -84,6 +87,7 @@ const Cookies = ({
                   handleDirAddCookie={handleDirAddCookie}
                   postDir={postDir}
                   handleAddCookieCount={handleAddCookieCount}
+                  fixCookieHandler={fixCookieHandler}
                 />
               ))}
             </CookieWrap>

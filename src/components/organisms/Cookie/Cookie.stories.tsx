@@ -1,11 +1,12 @@
-import Cookie from ".";
+import { Meta, Story } from "@storybook/react";
+import Cookie, { CookieProps } from ".";
 
 export default {
   title: "components/organisms/Cookie",
   component: Cookie,
-};
+} as Meta;
 
-export const cookie270 = () => {
+export const cookie270: Story<CookieProps> = (args) => {
   const cookie = {
     content:
       "이번 플리는 오래전부터 좋아했던 아티스트 'Justice Der'의 기타 커버곡으로 이루어져 있습니다. 음악을 듣다 보면 한번쯤은 들어보셨을 만한 유명한 팝송 위주로 선곡했습니다. 봄밤과 어울리는 은은한 분위기의 jazzy한 기타 커버곡 플레이리스트 좋아하셨으면 좋겠네요 :)+ 아...",
@@ -25,16 +26,12 @@ export const cookie270 = () => {
   };
   return (
     <div style={{ width: "270px" }}>
-      <Cookie cookie={cookie} allDir={allDir} />
+      <Cookie {...args} cookie={cookie} allDir={allDir} />
     </div>
   );
 };
 
-cookie270.story = {
-  name: "Default",
-};
-
-export const cookie270NoContent = () => {
+export const cookie270NoContent: Story<CookieProps> = (args) => {
   const cookie = {
     content: "",
     directoryInfo: {
@@ -53,12 +50,12 @@ export const cookie270NoContent = () => {
   };
   return (
     <div style={{ width: "270px" }}>
-      <Cookie cookie={cookie} allDir={allDir} />
+      <Cookie {...args} cookie={cookie} allDir={allDir} />
     </div>
   );
 };
 
-export const cookie300 = () => {
+export const cookie300: Story<CookieProps> = (args) => {
   const cookie = {
     content:
       "이번 플리는 오래전부터 좋아했던 아티스트 'Justice Der'의 기타 커버곡으로 이루어져 있습니다. 음악을 듣다 보면 한번쯤은 들어보셨을 만한 유명한 팝송 위주로 선곡했습니다. 봄밤과 어울리는 은은한 분위기의 jazzy한 기타 커버곡 플레이리스트 좋아하셨으면 좋겠네요 :)+ 아...",
@@ -78,7 +75,7 @@ export const cookie300 = () => {
   };
   return (
     <div style={{ width: "300px" }}>
-      <Cookie cookie={cookie} allDir={allDir} />
+      <Cookie {...args} cookie={cookie} allDir={allDir} />
     </div>
   );
 };
