@@ -8,6 +8,7 @@ import {
 import styled from "styled-components";
 import { Btn, Input, List, DropDown } from "@components/atoms";
 import { DirectoryDataProps } from "@interfaces/directory";
+import { directoryInfoType } from "@interfaces/cookie";
 
 export interface CookieHoverProps {
   /** id */
@@ -38,17 +39,20 @@ const CookieHover = ({
   const [isActive, setIsActive] = useState(false);
   // 디렉토리명 입력 input
   const [text, setText] = useState("");
-  const [searchedDir, setSearchedDir] = useState(allDir);
+  const [searchedDir, setSearchedDir] = useState<DirectoryDataProps[]>([]);
   const postHandler = () => {
     setCurrDir(text);
   };
   // 리스트 하단 블러 표시 여부
   const [isBlur, setIsBlur] = useState(true);
+  //디렉토리 검색
   useEffect(() => {
     setSearchedDir(
-      allDir.filter((dir) =>
-        dir.name.toLowerCase().includes(text.toLowerCase()),
-      ),
+      text === ""
+        ? []
+        : allDir.filter((dir) =>
+            dir.name.toLowerCase().includes(text.toLowerCase()),
+          ),
     );
   }, [text]);
 
@@ -64,7 +68,9 @@ const CookieHover = ({
       <div className="list-content">
         <List
           className="directory-list"
-          allDir={searchedDir}
+          allDir={allDir}
+          searchedDir={searchedDir}
+          fixedDir={[]}
           setIsBlur={setIsBlur}
           setCurrDir={setCurrDir}
         />

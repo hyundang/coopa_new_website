@@ -15,10 +15,22 @@ export interface ListProps {
   setCurrDir: Dispatch<SetStateAction<string>>;
   /** directory list data */
   allDir: Dirtype[];
+  /** fixed directory */
+  fixedDir: Dirtype[];
+  /** searched directory */
+  searchedDir: Dirtype[];
   /** 하단 블러 처리 표시 여부 setState */
   setIsBlur?: Dispatch<SetStateAction<boolean>>;
 }
-const List = ({ id, className, allDir, setCurrDir, setIsBlur }: ListProps) => {
+const List = ({
+  id,
+  className,
+  allDir,
+  fixedDir,
+  searchedDir,
+  setCurrDir,
+  setIsBlur,
+}: ListProps) => {
   const viewport = useRef<HTMLUListElement>(null);
   const [target, setTarget] = useState<HTMLDivElement>();
 
@@ -40,24 +52,48 @@ const List = ({ id, className, allDir, setCurrDir, setIsBlur }: ListProps) => {
 
   return (
     <ListWrap id={id} className={className} ref={viewport} role="menu">
-      {allDir?.map((dir) => (
-        <li
-          className="list-item"
-          key={dir.name}
-          role="menuitem"
-          onClick={(e) => {
-            e.stopPropagation();
-            setCurrDir(dir.name);
-          }}
-        >
-          {dir.emoji ? (
-            <span className="list-item__emoji">{dir.emoji}</span>
-          ) : (
-            <DefaultEmojiIcon className="list-item__emoji" />
-          )}
-          <span className="list-item__name">{dir.name}</span>
-        </li>
-      ))}
+      {searchedDir.length !== 0 ? (
+        <>
+          <span>검색결과</span>
+          {searchedDir?.map((dir) => (
+            <li
+              className="list-item"
+              key={dir.name}
+              role="menuitem"
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrDir(dir.name);
+              }}
+            >
+              {dir.emoji ? (
+                <span className="list-item__emoji">{dir.emoji}</span>
+              ) : (
+                <DefaultEmojiIcon className="list-item__emoji" />
+              )}
+              <span className="list-item__name">{dir.name}</span>
+            </li>
+          ))}
+        </>
+      ) : (
+        allDir?.map((dir) => (
+          <li
+            className="list-item"
+            key={dir.name}
+            role="menuitem"
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrDir(dir.name);
+            }}
+          >
+            {dir.emoji ? (
+              <span className="list-item__emoji">{dir.emoji}</span>
+            ) : (
+              <DefaultEmojiIcon className="list-item__emoji" />
+            )}
+            <span className="list-item__name">{dir.name}</span>
+          </li>
+        ))
+      )}
       <div
         style={{ marginTop: "1px", height: "1px" }}
         ref={(e: HTMLDivElement) => setTarget(e)}
