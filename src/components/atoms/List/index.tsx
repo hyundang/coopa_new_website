@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { DefaultEmojiIcon } from "@assets/icons/card";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { DirectoryDataProps } from "@interfaces/directory";
 
 export type Dirtype = {
   emoji?: string;
@@ -11,6 +12,8 @@ export interface ListProps {
   id?: string;
   /** className */
   className?: string;
+  /** 검색 중인가 */
+  isSearched: boolean;
   /** 현재 디렉토리 변경 setState */
   setCurrDir: Dispatch<SetStateAction<string>>;
   /** directory list data */
@@ -25,6 +28,7 @@ export interface ListProps {
 const List = ({
   id,
   className,
+  isSearched,
   allDir,
   fixedDir,
   searchedDir,
@@ -33,6 +37,27 @@ const List = ({
 }: ListProps) => {
   const viewport = useRef<HTMLUListElement>(null);
   const [target, setTarget] = useState<HTMLDivElement>();
+
+  const returnLists = (data: Dirtype[]) => {
+    return data?.map((dir) => (
+      <li
+        className="list-item"
+        key={dir.name}
+        role="menuitem"
+        onClick={(e) => {
+          e.stopPropagation();
+          setCurrDir(dir.name);
+        }}
+      >
+        {dir.emoji ? (
+          <span className="list-item__emoji">{dir.emoji}</span>
+        ) : (
+          <DefaultEmojiIcon className="list-item__emoji" />
+        )}
+        <span className="list-item__name">{dir.name}</span>
+      </li>
+    ));
+  };
 
   useEffect(() => {
     // for bottom shadow
@@ -52,47 +77,18 @@ const List = ({
 
   return (
     <ListWrap id={id} className={className} ref={viewport} role="menu">
-      {searchedDir.length !== 0 ? (
+      {isSearched ? (
         <>
           <span>검색결과</span>
-          {searchedDir?.map((dir) => (
-            <li
-              className="list-item"
-              key={dir.name}
-              role="menuitem"
-              onClick={(e) => {
-                e.stopPropagation();
-                setCurrDir(dir.name);
-              }}
-            >
-              {dir.emoji ? (
-                <span className="list-item__emoji">{dir.emoji}</span>
-              ) : (
-                <DefaultEmojiIcon className="list-item__emoji" />
-              )}
-              <span className="list-item__name">{dir.name}</span>
-            </li>
-          ))}
+          {returnLists(searchedDir)}
         </>
       ) : (
-        allDir?.map((dir) => (
-          <li
-            className="list-item"
-            key={dir.name}
-            role="menuitem"
-            onClick={(e) => {
-              e.stopPropagation();
-              setCurrDir(dir.name);
-            }}
-          >
-            {dir.emoji ? (
-              <span className="list-item__emoji">{dir.emoji}</span>
-            ) : (
-              <DefaultEmojiIcon className="list-item__emoji" />
-            )}
-            <span className="list-item__name">{dir.name}</span>
-          </li>
-        ))
+        <>
+          {fixedDir.length !== 0 && <span> 고정됨</span>}
+          {returnLists(fixedDir)}
+          <span>기본</span>
+          {returnLists(allDir)}
+        </>
       )}
       <div
         style={{ marginTop: "1px", height: "1px" }}
@@ -105,10 +101,19 @@ const List = ({
 export default List;
 
 const ListWrap = styled.ul`
+  display: flex;
+  flex-direction: column;
   height: 184px;
   padding: 0;
   margin: 0;
   overflow: auto;
+  & > span {
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.3rem;
+    color: var(--gray_5);
+    margin: 0.5rem;
+  }
   @media screen and (min-width: 1600px) {
     height: 20.2rem;
   }

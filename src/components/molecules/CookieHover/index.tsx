@@ -4,6 +4,7 @@ import {
   SetStateAction,
   Dispatch,
   useEffect,
+  KeyboardEventHandler,
 } from "react";
 import styled from "styled-components";
 import { Btn, Input, List, DropDown } from "@components/atoms";
@@ -40,9 +41,6 @@ const CookieHover = ({
   // 디렉토리명 입력 input
   const [text, setText] = useState("");
   const [searchedDir, setSearchedDir] = useState<DirectoryDataProps[]>([]);
-  const postHandler = () => {
-    setCurrDir(text);
-  };
   // 리스트 하단 블러 표시 여부
   const [isBlur, setIsBlur] = useState(true);
   //디렉토리 검색
@@ -68,6 +66,7 @@ const CookieHover = ({
       <div className="list-content">
         <List
           className="directory-list"
+          isSearched={!!text}
           allDir={allDir}
           searchedDir={searchedDir}
           fixedDir={[]}
@@ -84,7 +83,6 @@ const CookieHover = ({
               setText(e.target.value);
               setCardState("input");
             }}
-            onKeyPress={(e) => (e.key === "Enter" ? postHandler() : {})}
             onBlur={(e) =>
               e.target.className !== "form" && setCardState("normal")
             }
