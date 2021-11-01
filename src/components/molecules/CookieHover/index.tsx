@@ -1,4 +1,10 @@
-import { useState, ChangeEvent, SetStateAction, Dispatch } from "react";
+import {
+  useState,
+  ChangeEvent,
+  SetStateAction,
+  Dispatch,
+  useEffect,
+} from "react";
 import styled from "styled-components";
 import { Btn, Input, List, DropDown } from "@components/atoms";
 import { DirectoryDataProps } from "@interfaces/directory";
@@ -32,11 +38,19 @@ const CookieHover = ({
   const [isActive, setIsActive] = useState(false);
   // 디렉토리명 입력 input
   const [text, setText] = useState("");
+  const [searchedDir, setSearchedDir] = useState(allDir);
   const postHandler = () => {
     setCurrDir(text);
   };
   // 리스트 하단 블러 표시 여부
   const [isBlur, setIsBlur] = useState(true);
+  useEffect(() => {
+    setSearchedDir(
+      allDir.filter((dir) =>
+        dir.name.toLowerCase().includes(text.toLowerCase()),
+      ),
+    );
+  }, [text]);
 
   return (
     <CookieHoverWrap
@@ -50,7 +64,7 @@ const CookieHover = ({
       <div className="list-content">
         <List
           className="directory-list"
-          allDir={allDir}
+          allDir={searchedDir}
           setIsBlur={setIsBlur}
           setCurrDir={setCurrDir}
         />
