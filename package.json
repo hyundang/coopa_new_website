@@ -38,7 +38,7 @@
     "@storybook/addon-links": "^6.3.6",
     "@types/cheerio": "^0.22.30",
     "@types/next": "^9.0.0",
-    "@types/node": "^16.3.2",
+    "@types/node": "^16.11.6",
     "@types/react": "^17.0.14",
     "@types/react-cookies": "^0.1.0",
     "@types/react-copy-to-clipboard": "^5.0.2",
