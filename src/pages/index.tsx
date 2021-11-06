@@ -4,12 +4,6 @@ import { BookmarkDataProps } from "@interfaces/homeboard";
 import { CookieDataProps } from "@interfaces/cookie";
 import { DirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
-import {
-  readCountDesc,
-  readCountAsc,
-  idCountAsc,
-  idCountDesc,
-} from "@lib/filter";
 import { getApi } from "@lib/api";
 import { useEffect, useState } from "react";
 import nextCookie from "next-cookies";
@@ -33,9 +27,6 @@ export default function NewtabPage({
   initBookmarkData,
   initHomeboardImgUrl,
 }: NewtabPageProps) {
-  // 로딩 여부
-  const isLoading = useRouterLoading();
-
   // 검색 여부
   const [isSearched, setIsSearched] = useState(false);
   // 검색어
@@ -54,7 +45,6 @@ export default function NewtabPage({
 
   // 쿠키 모듈
   const cookieModule = CookieModule({
-    key: "/cookies",
     initAllCookieData,
     isVisible,
     setIsVisible,
@@ -108,7 +98,6 @@ export default function NewtabPage({
     <>
       {isLogin ? (
         <Newtab
-          isLoading={isLoading}
           isSearched={isSearched}
           setIsSearched={setIsSearched}
           searchValue={searchValue}
@@ -124,7 +113,15 @@ export default function NewtabPage({
           bookmarkDatas={homebrdModule.bookmarkData || []}
           onClickBookmarkSave={homebrdModule.handleAddBookmark}
           onClickBookmarkDel={homebrdModule.handleDelBookmark}
-          cookieData={cookieModule.filteredCookieData || []}
+          isCookieLoading={cookieModule.isLoading}
+          cookieData={
+            cookieModule.cookieData?.reduce(
+              (acc, curr) => curr && acc?.concat(curr),
+              [],
+            ) || []
+          }
+          cookieDataPageIndex={cookieModule.pageIndex}
+          setCookieDataPageIndex={cookieModule.setPageIndex}
           searchedCookieData={cookieModule.searchedCookieData || []}
           cookieFilter={cookieModule.cookieFilter}
           setCookieFilter={cookieModule.handleCookieFilter}
@@ -166,7 +163,9 @@ NewtabPage.getInitialProps = async (ctx: any) => {
   // 로그인 되어 있을 때
   if (userToken) {
     // 쿠키 데이터
-    const initAllCookieData = await getApi.getAllCookieData("/cookies");
+    const initAllCookieData = await getApi.getAllCookieData(
+      `/cookies?size=${COOKIE_PAGE_SIZE}&page=0`,
+    );
 
     // 디렉토리 데이터
     const initAllDirData = await getApi.getAllDirData("/directories");

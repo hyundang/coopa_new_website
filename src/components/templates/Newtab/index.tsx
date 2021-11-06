@@ -19,8 +19,6 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
 export interface NewtablProps {
-  /** 로딩 여부 */
-  isLoading: boolean;
   /** 검색 여부 */
   isSearched: boolean;
   setIsSearched: Dispatch<SetStateAction<boolean>>;
@@ -47,6 +45,8 @@ export interface NewtablProps {
   onClickBookmarkSave: (newBookmark: PostBookmarkDataProps) => Promise<void>;
   /** bookmark 삭제 함수 */
   onClickBookmarkDel: (bookmarkID: number) => Promise<void>;
+  /** 쿠키 데이터 로딩 여부 */
+  isCookieLoading: boolean;
   /** all cookie data */
   cookieData: CookieDataProps[];
   /** 검색된 쿠키 데이터 */
@@ -84,9 +84,13 @@ export interface NewtablProps {
   handleUpdateDirectory: (id: number, body: PostDirectoryProps) => void;
   /** add cookie count */
   handleAddCookieCount: (id: number) => void;
+  /** for getting cookie data */
+  cookieDataPageIndex: number;
+  setCookieDataPageIndex: (
+    size: number,
+  ) => Promise<(CookieDataProps[] | undefined)[] | undefined>;
 }
 const Newtab = ({
-  isLoading,
   isSearched,
   setIsSearched,
   searchValue,
@@ -102,7 +106,10 @@ const Newtab = ({
   bookmarkDatas,
   onClickBookmarkSave,
   onClickBookmarkDel,
+  isCookieLoading,
   cookieData,
+  cookieDataPageIndex,
+  setCookieDataPageIndex,
   searchedCookieData,
   cookieFilter,
   setCookieFilter,
@@ -326,6 +333,7 @@ const Newtab = ({
                   handleDirAddCookie={handleDirAddCookie}
                   handleAddCookieCount={handleAddCookieCount}
                   postDir={postDir}
+                  isLoading={false}
                 />
               ) : (
                 <Directories
@@ -349,6 +357,9 @@ const Newtab = ({
                   handleDirAddCookie={handleDirAddCookie}
                   handleAddCookieCount={handleAddCookieCount}
                   postDir={postDir}
+                  isLoading={isCookieLoading}
+                  pageIndex={cookieDataPageIndex}
+                  setPageIndex={setCookieDataPageIndex}
                 />
               ) : (
                 <Directories

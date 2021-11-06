@@ -3,7 +3,13 @@ import { CookieDataProps } from "src/lib/interfaces/cookie";
 import { Btn } from "@components/atoms";
 import { Cookie, CookieMobile, Empty } from "@components/organisms";
 import { CookieIcon } from "@assets/icons/common";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   DirectoryDataProps,
   PostAddCookieToDirProps,
