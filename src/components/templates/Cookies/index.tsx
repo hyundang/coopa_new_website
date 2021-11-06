@@ -30,15 +30,15 @@ export interface CookiesProps {
   /** copy cookie link */
   copyCookieLink: () => void;
   /** del cookie handler */
-  delCookieHandler: (id: number) => void;
+  delCookieHandler: (id: number) => Promise<void>;
   /** edit cookie handler */
-  handleEditCookie: (data: FormData) => void;
+  handleEditCookie: (data: FormData) => Promise<void>;
   /** add cookie to dir */
-  handleDirAddCookie: (body: PostAddCookieToDirProps) => void;
+  handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
   /** add dir */
   postDir?: (body: PostDirectoryProps) => void;
   /** add cookie count */
-  handleAddCookieCount: (id: number) => void;
+  handleAddCookieCount: (id: number) => Promise<void>;
   /** cookie data loading */
   isLoading: boolean;
   /** for getting cookie data */

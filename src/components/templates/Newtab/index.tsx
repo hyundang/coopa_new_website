@@ -73,17 +73,17 @@ export interface NewtablProps {
   /** copy cookie link */
   copyCookieLink: () => void;
   /** delete cookie handler */
-  delCookieHandler: (id: number) => void;
+  delCookieHandler: (id: number) => Promise<void>;
   /** edit cookie */
-  handleEditCookie: (data: FormData) => void;
+  handleEditCookie: (data: FormData) => Promise<void>;
   /** delete dir */
   handleDelDirectory: (id: number) => void;
   /** dir cookie 추가 */
-  handleDirAddCookie: (body: PostAddCookieToDirProps) => void;
+  handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
   /** update dir */
   handleUpdateDirectory: (id: number, body: PostDirectoryProps) => void;
   /** add cookie count */
-  handleAddCookieCount: (id: number) => void;
+  handleAddCookieCount: (id: number) => Promise<void>;
   /** for getting cookie data */
   cookieDataPageIndex: number;
   setCookieDataPageIndex: (

@@ -29,15 +29,15 @@ export interface CookieProps {
   /** copy cookie link */
   copyCookieLink: () => void;
   /** cookie delete handler */
-  deleteCookieHandler: (id: number) => void;
+  deleteCookieHandler: (id: number) => Promise<void>;
   /** cookie edit handler */
-  handleEditCookie: (data: FormData) => void;
+  handleEditCookie: (data: FormData) => Promise<void>;
   /** add cookie to dir */
-  handleDirAddCookie: (data: PostAddCookieToDirProps) => void;
+  handleDirAddCookie: (data: PostAddCookieToDirProps) => Promise<void>;
   /** post dir */
   postDir?: (data: PostDirectoryProps) => void;
   /** post cookie count */
-  handleAddCookieCount: (data: number) => void;
+  handleAddCookieCount: (data: number) => Promise<void>;
   /** cookie data loading */
   isLoading: boolean;
 }
