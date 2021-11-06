@@ -20,13 +20,13 @@ export interface CookieImgProps {
     SetStateAction<"hover" | "parking" | "normal" | "input">
   >;
   /** cookie */
-  cookie: CookieDataProps;
+  cookie?: CookieDataProps;
   /** copy cookie handler */
   copyCookieLink: () => void;
   /** delete cookie handler */
-  deleteCookieHanlder: (id: number) => void;
+  deleteCookieHanlder: (id: number) => Promise<void>;
   /** edit cookie handler */
-  handleEditCookie: (data: FormData) => void;
+  handleEditCookie: (data: FormData) => Promise<void>;
 }
 
 const CookieImg = ({
@@ -40,15 +40,15 @@ const CookieImg = ({
   handleEditCookie,
 }: CookieImgProps) => {
   const [patchData, setPatchData] = useState<PatchCookieProps>({
-    title: cookie.title,
-    content: cookie.content,
-    thumbnail: cookie.thumbnail,
-    cookieId: cookie.id,
+    title: cookie?.title || "",
+    content: cookie?.content || "",
+    thumbnail: cookie?.thumbnail || "",
+    cookieId: cookie?.id || -1,
   });
   const [isError, setIsError] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const isLoading = false;
+  const isUpdateLoading = false;
 
   const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -69,7 +69,10 @@ const CookieImg = ({
               <Icon className="hover_icon" onClick={editIconClickHandler}>
                 <EditIcon className="hover_icon__edit" />
               </Icon>
-              <CopyToClipboard text={cookie.link} onCopy={copyCookieLink}>
+              <CopyToClipboard
+                text={cookie?.link || ""}
+                onCopy={copyCookieLink}
+              >
                 <Icon className="hover_icon">
                   <LinkIcon32 className="hover_icon__link" />
                 </Icon>
@@ -86,13 +89,13 @@ const CookieImg = ({
         {cardState === "parking" && (
           <ParkingDiv>
             <div className="parking--title">
-              {cookie.directoryInfo?.emoji && (
+              {cookie?.directoryInfo?.emoji && (
                 <div className="parking--title__emoji">
                   {cookie.directoryInfo.emoji}
                 </div>
               )}
               <div className="parking--title__name">
-                {cookie.directoryInfo?.name}
+                {cookie?.directoryInfo?.name}
               </div>
             </div>
             <div className="parking--desc">에 파킹했어요!</div>
@@ -111,12 +114,12 @@ const CookieImg = ({
         setIsError={setIsError}
         isOpen={isEditOpen}
         setIsOpen={setIsEditOpen}
-        isLoading={isLoading}
+        isLoading={isUpdateLoading}
       />
       <DelModal
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
-        onClickDel={() => deleteCookieHanlder(cookie.id)}
+        onClickDel={() => deleteCookieHanlder(cookie?.id || -1)}
       />
     </>
   );
@@ -125,7 +128,7 @@ const CookieImg = ({
 export default CookieImg;
 
 interface StyledImgBoxProps {
-  cookieContent: string;
+  cookieContent?: string;
 }
 const StyledImgBox = styled(ImgBox)<StyledImgBoxProps>`
   position: relative;

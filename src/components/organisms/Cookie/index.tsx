@@ -1,5 +1,5 @@
 import { CookieHover, CookieImg } from "@components/molecules";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { SyntheticEvent, useState, useEffect } from "react";
 import { fvcOnErrorImg } from "@assets/icons/card";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
@@ -15,7 +15,7 @@ export interface CookieProps {
   /** className */
   className?: string;
   /** cookie */
-  cookie: CookieDataProps;
+  cookie?: CookieDataProps;
   /** all directory */
   allDir?: DirectoryDataProps[];
   /** share cookie */
@@ -32,6 +32,8 @@ export interface CookieProps {
   postDir?: (data: PostDirectoryProps) => void;
   /** post cookie count */
   handleAddCookieCount: (data: number) => void;
+  /** cookie data loading */
+  isLoading: boolean;
 }
 const Cookie = ({
   id,
@@ -53,21 +55,21 @@ const Cookie = ({
 
   //현재 디렉토리
   const [currDir, setCurrDir] = useState(
-    cookie.directoryInfo?.name === undefined
+    cookie?.directoryInfo?.name === undefined
       ? "모든 쿠키"
-      : cookie.directoryInfo.name,
+      : cookie?.directoryInfo.name,
   );
   useEffect(() => {
     (async () => {
-      if (currDir !== cookie.directoryInfo?.name && currDir !== "모든 쿠키") {
+      if (currDir !== cookie?.directoryInfo?.name && currDir !== "모든 쿠키") {
         if (allDir?.filter((dir) => dir.name === currDir).length === 0) {
           postDir && (await postDir({ name: currDir }));
         }
-        if (currDir !== cookie.directoryInfo?.name) {
+        if (currDir !== cookie?.directoryInfo?.name) {
           setCardState("parking");
           setTimeout(() => setCardState("normal"), 1500);
           const body: PostAddCookieToDirProps = {
-            cookieId: cookie.id,
+            cookieId: cookie?.id || -1,
             directoryId:
               allDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,
           };
@@ -81,15 +83,16 @@ const Cookie = ({
       id={id}
       className={className}
       onClick={() => {
-        window.open(cookie.link);
-        handleAddCookieCount(cookie.id);
+        window.open(cookie?.link);
+        handleAddCookieCount(cookie?.id || -1);
       }}
       onMouseEnter={() => {
-        if (cardState !== "input") setCardState("hover");
+        if (cardState !== "input" && !isLoading) setCardState("hover");
       }}
       onMouseLeave={() => {
-        if (cardState !== "input") setCardState("normal");
+        if (cardState !== "input" && !isLoading) setCardState("normal");
       }}
+      isLoading={isLoading}
     >
       <CookieImg
         cardState={isShared ? "normal" : cardState}
@@ -110,26 +113,30 @@ const Cookie = ({
         </div>
       )}
       <section className="cookie--desc">
-        <h1 className="cookie--title">{cookie.title}</h1>
-        <div className="cookie--content">{cookie.content}</div>
+        <h1 className="cookie--title">{cookie?.title}</h1>
+        <div className="cookie--content">{cookie?.content}</div>
         <div style={{ flexGrow: 1 }} />
         <div className="cookie--profile">
           <img
             className="cookie--profile__favicon"
-            src={cookie.favicon}
+            src={cookie?.favicon}
             alt={fvcOnErrorImg}
             onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
               e.currentTarget.src = fvcOnErrorImg;
             }}
           />
-          <cite className="cookie--profile__author">{cookie.provider}</cite>
+          <div className="cookie--profile__favicon--loading" />
+          <cite className="cookie--profile__author">{cookie?.provider}</cite>
         </div>
       </section>
     </CookieWrap>
   );
 };
 
-const CookieWrap = styled.article`
+interface CookieWrapProps {
+  isLoading: boolean;
+}
+const CookieWrap = styled.article<CookieWrapProps>`
   cursor: pointer;
   position: relative;
   width: 100%;
@@ -155,7 +162,18 @@ const CookieWrap = styled.article`
     flex-grow: 1;
 
     .cookie--title {
-      all: unset;
+      ${({ isLoading }) =>
+        isLoading
+          ? css`
+              width: 100%;
+              height: 20px;
+              background-color: var(--gray_3);
+              border-radius: 4px;
+            `
+          : css`
+              all: unset;
+            `}
+
       color: var(--black_1);
       line-height: 26px;
       font-size: 17px;
@@ -170,6 +188,17 @@ const CookieWrap = styled.article`
     }
 
     .cookie--content {
+      ${({ isLoading }) =>
+        isLoading
+          ? css`
+              width: 100%;
+              height: 20px;
+              background-color: var(--gray_2);
+              border-radius: 4px;
+            `
+          : css`
+              all: unset;
+            `}
       font-weight: 400;
       line-height: 22px;
       font-size: 14px;
@@ -183,12 +212,21 @@ const CookieWrap = styled.article`
     }
 
     .cookie--profile {
-      /* margin-top: auto; */
       line-height: normal;
       display: flex;
       align-items: center;
       &__author {
-        all: unset;
+        ${({ isLoading }) =>
+          isLoading
+            ? css`
+                width: 57px;
+                height: 12px;
+                background-color: var(--gray_3);
+                border-radius: 4px;
+              `
+            : css`
+                all: unset;
+              `}
         font-size: 13px;
         color: var(--gray_5);
         display: -webkit-box;
@@ -199,14 +237,34 @@ const CookieWrap = styled.article`
         word-break: break-all;
       }
       &__favicon {
+        ${({ isLoading }) =>
+          isLoading &&
+          css`
+            display: none;
+          `}
         margin-right: 8px;
         width: 22px;
         height: 22px;
         border-radius: 4px;
         object-fit: cover;
       }
+      &__favicon--loading {
+        ${({ isLoading }) =>
+          isLoading
+            ? css`
+                display: block;
+                margin-right: 8px;
+                width: 22px;
+                height: 22px;
+                border-radius: 4px;
+                background-color: var(--gray_3);
+              `
+            : css`
+                display: none;
+              `}
+      }
     }
   }
 `;
 
-export default Cookie;
+export default forwardRef(Cookie);
