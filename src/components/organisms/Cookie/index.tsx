@@ -1,6 +1,12 @@
 import { CookieHover, CookieImg } from "@components/molecules";
 import styled, { css } from "styled-components";
-import { SyntheticEvent, useState, useEffect } from "react";
+import {
+  SyntheticEvent,
+  useState,
+  useEffect,
+  forwardRef,
+  RefObject,
+} from "react";
 import { fvcOnErrorImg } from "@assets/icons/card";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
 import {
@@ -35,19 +41,27 @@ export interface CookieProps {
   /** cookie data loading */
   isLoading: boolean;
 }
-const Cookie = ({
-  id,
-  className,
-  cookie,
-  allDir,
-  isShared,
-  copyCookieLink,
-  deleteCookieHandler,
-  handleEditCookie,
-  handleDirAddCookie,
-  handleAddCookieCount,
-  postDir,
-}: CookieProps) => {
+const Cookie = (
+  {
+    id,
+    className,
+    cookie,
+    allDir,
+    isShared,
+    copyCookieLink,
+    deleteCookieHandler,
+    handleEditCookie,
+    handleDirAddCookie,
+    handleAddCookieCount,
+    postDir,
+    isLoading,
+  }: CookieProps,
+  ref?:
+    | ((instance: HTMLButtonElement | null) => void)
+    | RefObject<HTMLButtonElement>
+    | null
+    | undefined,
+) => {
   //normal: 기본 | hover: 호버 | parking: 파킹중 | input: 인풋입력중
   const [cardState, setCardState] = useState<
     "hover" | "normal" | "parking" | "input"
@@ -93,6 +107,7 @@ const Cookie = ({
         if (cardState !== "input" && !isLoading) setCardState("normal");
       }}
       isLoading={isLoading}
+      ref={ref}
     >
       <CookieImg
         cardState={isShared ? "normal" : cardState}
