@@ -125,7 +125,7 @@ export default function NewtabPage({
           searchedCookieData={cookieModule.searchedCookieData || []}
           cookieFilter={cookieModule.cookieFilter}
           setCookieFilter={cookieModule.handleCookieFilter}
-          dirData={dirModule.filteredDirData || []}
+          dirData={dirModule.allDirData || []}
           searchedDirData={dirModule.searchedDirData || []}
           dirFilter={dirModule.dirFilter}
           setDirFilter={dirModule.handleDirFilter}
@@ -159,6 +159,13 @@ export default function NewtabPage({
 NewtabPage.getInitialProps = async (ctx: any) => {
   const allCookies = nextCookie(ctx);
   const userToken = allCookies["x-access-token"];
+  const { dirFilter } = allCookies;
+
+  const returnDirFilter = (filterType: string | undefined) => {
+    if (filterType === "oldest") return 1;
+    if (filterType === "latest") return 2;
+    return 0;
+  };
 
   // 로그인 되어 있을 때
   if (userToken) {
@@ -168,7 +175,9 @@ NewtabPage.getInitialProps = async (ctx: any) => {
     );
 
     // 디렉토리 데이터
-    const initAllDirData = await getApi.getAllDirData("/directories");
+    const initAllDirData = await getApi.getAllDirData(
+      `/directories?filter=${returnDirFilter(dirFilter)}`,
+    );
 
     // 북마크 데이터
     const initBookmarkData = await getApi.getBookmarkData("/users/favorites");

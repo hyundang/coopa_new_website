@@ -17,9 +17,12 @@ export interface DirectoriesProps {
   /** 디렉토리 생성 모달 오픈 여부 */
   setIsDirAddOpen?: Dispatch<SetStateAction<boolean>>;
   /** delete dir */
-  handleDelDirectory: (id: number) => void;
+  handleDelDirectory: (id: number) => Promise<void>;
   /** update dir */
-  handleUpdateDirectory: (id: number, data: PostDirectoryProps) => void;
+  handleUpdateDirectory: (
+    id: number,
+    data: PostDirectoryProps,
+  ) => Promise<void>;
 }
 
 const Directories = ({

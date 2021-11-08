@@ -10,18 +10,17 @@ import { DelModal, DirectoryModal } from "..";
 
 export interface DirectoryProps {
   dir: DirectoryDataProps;
-  handleDelDirectory: (id: number) => void;
-  handleUpdateDirectory: (id: number, data: PostDirectoryProps) => void;
+  handleDelDirectory: (id: number) => Promise<void>;
+  handleUpdateDirectory: (
+    id: number,
+    data: PostDirectoryProps,
+  ) => Promise<void>;
 }
 const Directory = ({
   dir,
   handleDelDirectory,
   handleUpdateDirectory,
 }: DirectoryProps) => {
-  const [postData, setPostData] = useState<PostDirectoryProps>({
-    name: dir.name,
-    emoji: dir?.emoji || "",
-  });
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setISDeleteOpen] = useState(false);
   return (
@@ -49,14 +48,17 @@ const Directory = ({
         type="edit"
         isOpen={isEditOpen}
         setIsOpen={setIsEditOpen}
-        value={postData}
-        setValue={setPostData}
         postDir={() => {}}
-        putDir={() => handleUpdateDirectory(dir.id, postData)}
+        putDir={handleUpdateDirectory}
         delDir={() => {
           setISDeleteOpen(true);
           setIsEditOpen(false);
         }}
+        initValue={{
+          emoji: dir.emoji,
+          name: dir.name,
+        }}
+        dirId={dir.id}
       />
       <DelModal
         type="directory"

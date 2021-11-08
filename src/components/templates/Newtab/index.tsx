@@ -66,7 +66,7 @@ export interface NewtablProps {
     f: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => void;
   /** 디렉토리 생성 */
-  postDir: (e: PostDirectoryProps) => void;
+  postDir: (e: PostDirectoryProps) => Promise<void>;
   /** toast msg state */
   isToastMsgVisible: ToastMsgVisibleStateProps;
   setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
@@ -77,11 +77,14 @@ export interface NewtablProps {
   /** edit cookie */
   handleEditCookie: (data: FormData) => Promise<void>;
   /** delete dir */
-  handleDelDirectory: (id: number) => void;
+  handleDelDirectory: (id: number) => Promise<void>;
   /** dir cookie 추가 */
   handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
   /** update dir */
-  handleUpdateDirectory: (id: number, body: PostDirectoryProps) => void;
+  handleUpdateDirectory: (
+    id: number,
+    body: PostDirectoryProps,
+  ) => Promise<void>;
   /** add cookie count */
   handleAddCookieCount: (id: number) => Promise<void>;
   /** for getting cookie data */
@@ -318,6 +321,7 @@ const Newtab = ({
               }
               isAddOpen={isAddOpen}
               setIsAddOpen={setIsAddOpen}
+              postDir={postDir}
             />
           )}
           {isSearched && isSearchVisible ? (
