@@ -76,10 +76,17 @@ export default function NewtabPage({
   };
 
   useEffect(() => {
-    // 홈보드 이미지 세팅
+    // 홈보드, 홈보드 모달 이미지 세팅
     const homeboardImgUrl = localStorage.getItem("homeboardImgUrl");
     homeboardImgUrl?.length === 1
-      ? homebrdModule.setHomeboardImg(`/theme_img/img_${homeboardImgUrl}.jpg`)
+      ? (() => {
+          homebrdModule.setHomeboardImg(
+            `/theme_img/img_${homeboardImgUrl}.jpg`,
+          );
+          homebrdModule.setHomeboardModalImg(
+            `/theme_img/img_${homeboardImgUrl}.jpg`,
+          );
+        })()
       : !initHomeboardImgUrl &&
         (homeboardImgUrl !== null
           ? (() => {
