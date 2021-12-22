@@ -52,6 +52,7 @@ export interface CookiesProps {
   ) => Promise<
     (CookieDataProps[] | undefined | DirectoryCookieDataProps)[] | undefined
   >;
+  fixCookieHandler: () => void;
 }
 
 const Cookies = ({
@@ -149,6 +150,7 @@ const Cookies = ({
                     handleAddCookieCount={handleAddCookieCount}
                     isLoading={isLoading}
                     ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
+                    fixCookieHandler={fixCookieHandler}
                   />
                 ) : (
                   <Cookie

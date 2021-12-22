@@ -73,6 +73,7 @@ export interface DirDetailProps {
   setCookieDataPageIndex: (
     size: number,
   ) => Promise<(DirectoryCookieDataProps | undefined)[] | undefined>;
+  fixCookieHandler: () => void;
 }
 const DirDetail = ({
   isShared = false,
@@ -98,6 +99,7 @@ const DirDetail = ({
   handleDirAddCookie,
   handleUpdateDirectory,
   handleAddCookieCount,
+  fixCookieHandler,
 }: DirDetailProps) => {
   // 디렉토리 수정 모달 오픈
   const [isDirEditOpen, setIsDirEditOpen] = useState(false);
@@ -195,6 +197,7 @@ const DirDetail = ({
             isLoading={isCookieLoading}
             pageIndex={cookieDataPageIndex}
             setPageIndex={setCookieDataPageIndex}
+            fixCookieHandler={fixCookieHandler}
           />
         </DirDetailWrap>
         <Footer />

@@ -12,6 +12,8 @@ import { Dispatch, SetStateAction } from "react";
 
 export interface DirectoriesProps {
   data: DirectoryDataProps[];
+  /** 고정된 데이터 */
+  pinnedData?: DirectoryDataProps[];
   /** 검색 디렉토리 여부 */
   isSearched?: boolean;
   /** 디렉토리 생성 모달 오픈 여부 */
@@ -23,25 +25,38 @@ export interface DirectoriesProps {
     id: number,
     data: PostDirectoryProps,
   ) => Promise<void>;
+  fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
 }
 
 const Directories = ({
   data,
+  pinnedData,
   isSearched = false,
   setIsDirAddOpen,
   handleDelDirectory,
   handleUpdateDirectory,
+  fixDirHandler,
 }: DirectoriesProps) => {
   return (
     <>
-      {data.length !== 0 ? (
+      {data?.length !== 0 || pinnedData?.length !== 0 ? (
         <DirectoiresWrap>
-          {data.map((dir) => (
+          {pinnedData?.map((dir) => (
             <Directory
               key={dir.id}
               dir={dir}
               handleDelDirectory={handleDelDirectory}
               handleUpdateDirectory={handleUpdateDirectory}
+              fixDirHandler={fixDirHandler}
+            />
+          ))}
+          {data?.map((dir) => (
+            <Directory
+              key={dir.id}
+              dir={dir}
+              handleDelDirectory={handleDelDirectory}
+              handleUpdateDirectory={handleUpdateDirectory}
+              fixDirHandler={fixDirHandler}
             />
           ))}
         </DirectoiresWrap>

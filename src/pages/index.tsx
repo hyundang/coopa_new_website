@@ -4,7 +4,7 @@ import { BookmarkDataProps } from "@interfaces/homeboard";
 import { CookieDataProps } from "@interfaces/cookie";
 import { GetDirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
-import { getApi } from "@lib/api";
+import { getApi, putApi } from "@lib/api";
 import { useEffect, useState } from "react";
 import nextCookie from "next-cookies";
 import { mutate } from "swr";
@@ -99,13 +99,16 @@ export default function NewtabPage({
     <>
       {isLogin ? (
         <Newtab
+          // 쿠키, 디렉토리 검색
           isSearched={isSearched}
           setIsSearched={setIsSearched}
           searchValue={searchValue}
           setSearchValue={setSearchValue}
           onKeyPress={handleKeyPress}
+          // 유저 데이터 관련
           imgUrl={initUserData?.profileImage}
           nickname={initUserData?.name}
+          // 홈보드 데이터 관련
           homeboardModalImg={homebrdModule.homeboardModalImg}
           setHomeboardModalImg={homebrdModule.setHomeboardModalImg}
           homeboardImg={homebrdModule.homeboardImg}
@@ -114,6 +117,7 @@ export default function NewtabPage({
           bookmarkDatas={homebrdModule.bookmarkData || []}
           onClickBookmarkSave={homebrdModule.handleAddBookmark}
           onClickBookmarkDel={homebrdModule.handleDelBookmark}
+          // 쿠키 데이터 관련
           isCookieLoading={cookieModule.isLoading}
           cookieData={
             cookieModule.cookieData?.reduce(
@@ -126,20 +130,23 @@ export default function NewtabPage({
           searchedCookieData={cookieModule.searchedCookieData || []}
           cookieFilter={cookieModule.cookieFilter}
           setCookieFilter={cookieModule.handleCookieFilter}
-          dirData={dirModule.allDirData?.common || []}
-          searchedDirData={dirModule.searchedDirData || []}
-          dirFilter={dirModule.dirFilter}
-          setDirFilter={dirModule.handleDirFilter}
-          isToastMsgVisible={isVisible}
-          setIsToastMsgVisible={setIsVisible}
-          postDir={dirModule.handlePostDir}
           copyCookieLink={cookieModule.copyCookieLink}
           delCookieHandler={cookieModule.handleDelCookie}
           handleEditCookie={cookieModule.handleEditCookie}
-          handleDelDirectory={dirModule.handleDelDir}
           handleDirAddCookie={cookieModule.handleAddCookieToDir}
-          handleUpdateDirectory={dirModule.handleEditDir}
           handleAddCookieCount={cookieModule.handleAddCookieCount}
+          // 디렉토리 데이터 관련
+          dirData={dirModule.allDirData || { common: [], pinned: [] }}
+          searchedDirData={dirModule.searchedDirData || []}
+          dirFilter={dirModule.dirFilter}
+          setDirFilter={dirModule.handleDirFilter}
+          postDir={dirModule.handlePostDir}
+          fixDirHandler={dirModule.handleFixDir}
+          handleDelDirectory={dirModule.handleDelDir}
+          handleUpdateDirectory={dirModule.handleEditDir}
+          // 토스트 메시지 관련
+          isToastMsgVisible={isVisible}
+          setIsToastMsgVisible={setIsVisible}
         />
       ) : (
         <NewtabError

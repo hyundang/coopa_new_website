@@ -53,11 +53,23 @@ const updateDirectoryData = async (id: number, body: PostDirectoryProps) => {
   }
 };
 
+const updateDirectoryPin = async (id: number, isPinned: boolean) => {
+  try {
+    const { data } = await client.put(`/directories/pin/${id}`, { isPinned });
+    console.log("[SUCCESS] UPDATE DIRECTORY PIN", data.data);
+    return data.data;
+  } catch (e) {
+    console.log("[FAIL] UPDATE DIRECTORY PIN", e);
+    return e;
+  }
+};
+
 const putApi = {
   putUserData,
   putHomeboardData,
   updateCookie,
   updateDirectoryData,
+  updateDirectoryPin,
 };
 
 export default putApi;

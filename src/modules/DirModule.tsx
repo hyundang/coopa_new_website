@@ -80,6 +80,7 @@ const DirModule = ({
           id: res?.directoryId || -1,
           name: res?.name || "",
           cookieCnt: 0,
+          isPinned: false,
         };
         return { common: [...(prev?.common || []), newDir] };
       },
@@ -194,6 +195,12 @@ const DirModule = ({
     });
   };
 
+  // 디렉토리 pin
+  const handleFixDir = async (id: number, isPinned: boolean) => {
+    const res = await putApi.updateDirectoryPin(id, isPinned);
+    mutate(`/directories?filter=${returnDirFilter(dirFilter)}`, true);
+  };
+
   return {
     dirFilter,
     handleDirFilter,
@@ -202,6 +209,7 @@ const DirModule = ({
     handlePostDir,
     handleDelDir,
     handleEditDir,
+    handleFixDir,
   };
 };
 

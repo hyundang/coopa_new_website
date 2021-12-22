@@ -17,7 +17,7 @@ export interface DirectoryProps {
     id: number,
     data: PostDirectoryProps,
   ) => Promise<void>;
-  fixDirHandler: () => void;
+  fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
 }
 const Directory = ({
   dir,
@@ -29,15 +29,15 @@ const Directory = ({
   const [isDeleteOpen, setISDeleteOpen] = useState(false);
 
   // dir 고정 여부
-  const [isDirFixed, setIsDirFixed] = useState(false);
+  const [isDirFixed, setIsDirFixed] = useState(dir.isPinned);
 
   return (
     <>
-      {isDirFixed && <StyledPinImg className="pin_img" />}
       <DirectoryWrap
         thumbnail={dir.thumbnail}
         onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_self")}
       >
+        {isDirFixed && <StyledPinImg className="pin_img" />}
         <section className="content">
           <h1 className="content__title">
             {dir.emoji ? `${dir.emoji} ${dir.name}` : dir.name}
@@ -50,7 +50,10 @@ const Directory = ({
         <div className="icon">
           <Icon
             className="hover_icon"
-            onClick={() => setIsDirFixed(!isDirFixed)}
+            onClick={() => {
+              fixDirHandler(dir.id, !isDirFixed);
+              setIsDirFixed(!isDirFixed);
+            }}
           >
             {isDirFixed ? <PinAtvIcon /> : <PinIcon />}
           </Icon>
@@ -90,7 +93,8 @@ export default Directory;
 const StyledPinImg = styled(PinImg)`
   position: absolute;
   z-index: 2;
-  transform: translate(24px, -5px);
+  top: -5px;
+  left: 24px;
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
 `;
 

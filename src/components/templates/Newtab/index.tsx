@@ -10,6 +10,7 @@ import {
 import { CookieDataProps } from "@interfaces/cookie";
 import {
   DirectoryDataProps,
+  GetDirectoryDataProps,
   PostAddCookieToDirProps,
   PostDirectoryProps,
 } from "@interfaces/directory";
@@ -57,7 +58,7 @@ export interface NewtablProps {
     f: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => void;
   /** all directory data */
-  dirData: DirectoryDataProps[];
+  dirData: GetDirectoryDataProps;
   /** 검색된 디렉토리 데이터 */
   searchedDirData: DirectoryDataProps[];
   /** 디렉토리 필터 */
@@ -92,6 +93,7 @@ export interface NewtablProps {
   setCookieDataPageIndex: (
     size: number,
   ) => Promise<(CookieDataProps[] | undefined)[] | undefined>;
+  fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
 }
 const Newtab = ({
   isSearched,
@@ -130,6 +132,7 @@ const Newtab = ({
   handleDirAddCookie,
   handleUpdateDirectory,
   handleAddCookieCount,
+  fixDirHandler,
 }: NewtablProps) => {
   // 검색창 불필요한 fadeout 방지
   const [preventFadeout, setPreventFadeout] = useState(true);
@@ -303,7 +306,9 @@ const Newtab = ({
             isSearchVisible &&
             (tabValue === "쿠키" || tabValue === "디렉토리")) ||
             (tabValue === "모든 쿠키" && cookieData.length !== 0) ||
-            (tabValue === "디렉토리" && dirData.length !== 0)) && (
+            (tabValue === "디렉토리" &&
+              dirData.common?.length !== 0 &&
+              dirData.pinned?.length !== 0)) && (
             <ListHeader
               isSearched={isSearched && isSearchVisible}
               cookieNum={searchedCookieData.length}
@@ -329,7 +334,11 @@ const Newtab = ({
               {tabValue === "쿠키" ? (
                 <Cookies
                   data={searchedCookieData}
-                  allDir={dirData}
+                  allDir={
+                    dirData.pinned
+                      ? [...dirData.pinned, ...dirData.common]
+                      : [...dirData.common]
+                  }
                   type="searched"
                   copyCookieLink={copyCookieLink}
                   delCookieHandler={delCookieHandler}
@@ -338,6 +347,7 @@ const Newtab = ({
                   handleAddCookieCount={handleAddCookieCount}
                   postDir={postDir}
                   isLoading={false}
+                  fixCookieHandler={() => {}}
                 />
               ) : (
                 <Directories
@@ -345,6 +355,7 @@ const Newtab = ({
                   isSearched
                   handleDelDirectory={handleDelDirectory}
                   handleUpdateDirectory={handleUpdateDirectory}
+                  fixDirHandler={fixDirHandler}
                 />
               )}
             </>
@@ -353,7 +364,11 @@ const Newtab = ({
               {tabValue === "모든 쿠키" ? (
                 <Cookies
                   data={cookieData}
-                  allDir={dirData}
+                  allDir={
+                    dirData.pinned
+                      ? [...dirData.pinned, ...dirData.common]
+                      : [...dirData.common]
+                  }
                   setIsOnboardOpen={setIsOnboardOpen}
                   copyCookieLink={copyCookieLink}
                   delCookieHandler={delCookieHandler}
@@ -364,13 +379,16 @@ const Newtab = ({
                   isLoading={isCookieLoading}
                   pageIndex={cookieDataPageIndex}
                   setPageIndex={setCookieDataPageIndex}
+                  fixCookieHandler={() => {}}
                 />
               ) : (
                 <Directories
-                  data={dirData}
+                  data={dirData.common}
+                  pinnedData={dirData.pinned}
                   setIsDirAddOpen={setIsAddOpen}
                   handleDelDirectory={handleDelDirectory}
                   handleUpdateDirectory={handleUpdateDirectory}
+                  fixDirHandler={fixDirHandler}
                 />
               )}
             </>

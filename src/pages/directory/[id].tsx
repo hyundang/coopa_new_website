@@ -89,6 +89,7 @@ const DirDetailPage = ({
           isCookieLoading={dirDetailModule.isLoading}
           cookieDataPageIndex={dirDetailModule.pageIndex}
           setCookieDataPageIndex={dirDetailModule.setPageIndex}
+          fixCookieHandler={() => {}}
         />
       ) : (
         <div>error: login</div>
