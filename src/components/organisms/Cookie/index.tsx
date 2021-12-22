@@ -40,6 +40,8 @@ export interface CookieProps {
   handleAddCookieCount: (data: number) => Promise<void>;
   /** cookie data loading */
   isLoading: boolean;
+  /** fix cookie handler */
+  fixCookieHandler: () => void;
 }
 const Cookie = (
   {
@@ -55,6 +57,7 @@ const Cookie = (
     handleAddCookieCount,
     postDir,
     isLoading,
+    fixCookieHandler,
   }: CookieProps,
   ref?:
     | ((instance: HTMLButtonElement | null) => void)
@@ -66,6 +69,9 @@ const Cookie = (
   const [cardState, setCardState] = useState<
     "hover" | "normal" | "parking" | "input"
   >("normal");
+
+  // cookie 고정 여부
+  const [isCookieFixed, setIsCookieFixed] = useState(false);
 
   //현재 디렉토리
   const [currDir, setCurrDir] = useState(
@@ -116,6 +122,9 @@ const Cookie = (
         copyCookieLink={copyCookieLink}
         deleteCookieHanlder={deleteCookieHandler}
         handleEditCookie={handleEditCookie}
+        fixCookieHandler={fixCookieHandler}
+        isCookieFixed={isCookieFixed}
+        setIsCookieFixed={setIsCookieFixed}
       />
       {!isShared && (cardState === "hover" || cardState === "input") && (
         <div className="hover-div">

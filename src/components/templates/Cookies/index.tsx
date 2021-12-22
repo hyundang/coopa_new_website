@@ -46,6 +46,8 @@ export interface CookiesProps {
   setPageIndex?: (
     size: number,
   ) => Promise<(CookieDataProps[] | undefined)[] | undefined>;
+  /** fix cookie handler */
+  fixCookieHandler: () => void;
 }
 
 const Cookies = ({
@@ -62,6 +64,7 @@ const Cookies = ({
   isLoading,
   pageIndex,
   setPageIndex,
+  fixCookieHandler,
 }: CookiesProps) => {
   const size = useWindowSize();
   const [isError, setIsError] = useState(false);
@@ -156,6 +159,7 @@ const Cookies = ({
                     postDir={postDir}
                     handleAddCookieCount={handleAddCookieCount}
                     isLoading={isLoading}
+                    fixCookieHandler={fixCookieHandler}
                   />
                 ),
               )}

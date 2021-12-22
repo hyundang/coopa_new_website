@@ -1,5 +1,7 @@
 import styled, { css } from "styled-components";
 import { EmptyCookieIcon, EditIcon } from "@assets/icons/common";
+import { PinAtvIcon, PinIcon } from "@assets/icons/card";
+import { PinImg } from "@assets/imgs/card";
 import {
   DirectoryDataProps,
   PostDirectoryProps,
@@ -15,16 +17,23 @@ export interface DirectoryProps {
     id: number,
     data: PostDirectoryProps,
   ) => Promise<void>;
+  fixDirHandler: () => void;
 }
 const Directory = ({
   dir,
   handleDelDirectory,
   handleUpdateDirectory,
+  fixDirHandler,
 }: DirectoryProps) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setISDeleteOpen] = useState(false);
+
+  // dir 고정 여부
+  const [isDirFixed, setIsDirFixed] = useState(false);
+
   return (
     <>
+      {isDirFixed && <StyledPinImg className="pin_img" />}
       <DirectoryWrap
         thumbnail={dir.thumbnail}
         onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_self")}
@@ -39,7 +48,13 @@ const Directory = ({
           </div>
         </section>
         <div className="icon">
-          <Icon onClick={() => setIsEditOpen(true)}>
+          <Icon
+            className="hover_icon"
+            onClick={() => setIsDirFixed(!isDirFixed)}
+          >
+            {isDirFixed ? <PinAtvIcon /> : <PinIcon />}
+          </Icon>
+          <Icon className="hover_icon" onClick={() => setIsEditOpen(true)}>
             <EditIcon />
           </Icon>
         </div>
@@ -72,10 +87,16 @@ const Directory = ({
 
 export default Directory;
 
+const StyledPinImg = styled(PinImg)`
+  position: absolute;
+  z-index: 2;
+  transform: translate(24px, -5px);
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
+`;
+
 export interface DirectoryWrapProps {
   thumbnail?: string;
 }
-
 const DirectoryWrap = styled.article<DirectoryWrapProps>`
   cursor: pointer;
 
@@ -84,12 +105,7 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
 
   width: 100%;
   height: 134px;
-  ${({ theme }) => theme.media.desktop_3`
-    height: 120px;
-  `}
-  ${({ theme }) => theme.media.mobile`
-    height: 73px;
-  `}
+
   background-color: var(--gray_1);
   border-radius: 12px;
   color: var(--black_2);
@@ -102,7 +118,19 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
   &:hover {
     background: rgba(0, 0, 0, 0.7);
     .icon {
-      display: block;
+      display: flex;
+      flex-direction: row;
+      .hover_icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        background-color: transparent;
+        -webkit-filter: drop-shadow(0px 0px 12px rgba(0, 0, 0, 0.9));
+        &:hover {
+          background-color: rgba(243, 243, 243, 0.4);
+          -webkit-filter: none;
+        }
+      }
     }
     .content > * {
       color: var(--white);
@@ -213,9 +241,21 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
   }
   .icon {
     position: absolute;
-    bottom: 1.7rem;
-    right: 1.7rem;
+    bottom: 1.3rem;
+    right: 1.3rem;
 
     display: none;
   }
+
+  ${({ theme }) => theme.media.desktop_3`
+    height: 120px;
+  `}
+  ${({ theme }) => theme.media.mobile`
+    height: 73px;
+    &:hover {
+      .icon {
+        display: none;
+      }
+    }
+  `}
 `;
