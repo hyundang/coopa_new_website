@@ -2,20 +2,21 @@ import { NotFoundErrorImg } from "@assets/imgs/error";
 import { NewtabError, Newtab } from "@components/templates";
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import { CookieDataProps } from "@interfaces/cookie";
-import { DirectoryDataProps } from "@interfaces/directory";
+import { GetDirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 import { getApi } from "@lib/api";
 import { useEffect, useState } from "react";
 import nextCookie from "next-cookies";
 import { mutate } from "swr";
-import { useRouterLoading, useToastMsg } from "src/hooks";
+import { useToastMsg } from "src/hooks";
 import { CookieModule, DirModule, HomebrdModule } from "src/modules";
+import { returnCookieFilter, returnDirFilter } from "@lib/filter";
 
 interface NewtabPageProps {
   isLogin: boolean;
   initUserData: UserDataProps;
   initAllCookieData: CookieDataProps[];
-  initAllDirData: DirectoryDataProps[];
+  initAllDirData: GetDirectoryDataProps;
   initBookmarkData: BookmarkDataProps[];
   initHomeboardImgUrl?: string;
 }
@@ -125,7 +126,7 @@ export default function NewtabPage({
           searchedCookieData={cookieModule.searchedCookieData || []}
           cookieFilter={cookieModule.cookieFilter}
           setCookieFilter={cookieModule.handleCookieFilter}
-          dirData={dirModule.allDirData || []}
+          dirData={dirModule.allDirData?.common || []}
           searchedDirData={dirModule.searchedDirData || []}
           dirFilter={dirModule.dirFilter}
           setDirFilter={dirModule.handleDirFilter}
@@ -160,18 +161,15 @@ NewtabPage.getInitialProps = async (ctx: any) => {
   const allCookies = nextCookie(ctx);
   const userToken = allCookies["x-access-token"];
   const { dirFilter } = allCookies;
-
-  const returnDirFilter = (filterType: string | undefined) => {
-    if (filterType === "oldest") return 1;
-    if (filterType === "latest") return 2;
-    return 0;
-  };
+  const { cookieFilter } = allCookies;
 
   // 로그인 되어 있을 때
   if (userToken) {
     // 쿠키 데이터
     const initAllCookieData = await getApi.getAllCookieData(
-      `/cookies?size=${COOKIE_PAGE_SIZE}&page=0`,
+      `/cookies?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
+        cookieFilter,
+      )}`,
     );
 
     // 디렉토리 데이터

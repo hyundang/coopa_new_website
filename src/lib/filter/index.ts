@@ -1,4 +1,2 @@
-export { default as readCountAsc } from "./readCountAsc";
-export { default as readCountDesc } from "./readCountDesc";
-export { default as idCountAsc } from "./idCountAsc";
-export { default as idCountDesc } from "./idCountDesc";
+export { default as returnCookieFilter } from "./returnCookieFilter";
+export { default as returnDirFilter } from "./returnDirFilter";

@@ -1,3 +1,7 @@
+export interface GetDirectoryDataProps {
+  common: DirectoryDataProps[];
+}
+
 export interface DirectoryDataProps {
   emoji?: string;
   id: number;

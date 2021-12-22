@@ -8,6 +8,7 @@ import getApi from "@api/getApi";
 import delApi from "@api/delApi";
 import putApi from "@api/putApi";
 import postApi from "@api/postApi";
+import { returnCookieFilter } from "@lib/filter";
 
 interface CookieModuleProps {
   /** initial cookie datas */
@@ -29,8 +30,11 @@ const CookieModule = ({
 
   // 쿠키 데이터 key 함수
   const getKey = (pageIndex: number, previousPageData: any) => {
+    console.log(pageIndex);
     if (previousPageData && !previousPageData.length) return null; // 끝에 도달
-    return `/cookies?size=${COOKIE_PAGE_SIZE}&page=${pageIndex}`;
+    return `/cookies?size=${COOKIE_PAGE_SIZE}&page=${pageIndex}&filter=${returnCookieFilter(
+      cookieFilter,
+    )}`;
   };
   // 쿠키 데이터 get
   const {
@@ -41,13 +45,8 @@ const CookieModule = ({
     mutate,
   } = useSWRInfinite(getKey, getApi.getAllCookieData, {
     initialData: [initAllCookieData],
-    // initialSize: 1, // 초기에 로드하는 pageIndex size?
     revalidateAll: false, // 항상 모든 페이지의 갱신을 시도하지 않음
-    onErrorRetry: ({ retryCount }) => {
-      // 3번 까지만 재시도함
-      if (retryCount >= 3) return undefined;
-      return true;
-    },
+    errorRetryCount: 3, // 재시도 3번까지만
   });
 
   // 쿠키 필터 변경
@@ -65,10 +64,6 @@ const CookieModule = ({
       expires,
       httpOnly: JSON.parse(HTTP_ONLY),
     });
-    // 필터에 따른 쿠키 데이터 재요청
-    /* 코드 추가하기
-     *
-     */
   };
 
   // 검색된 쿠키 데이터 get
@@ -90,11 +85,18 @@ const CookieModule = ({
   const handleDelCookie = async (cookieId: number) => {
     mutate(async (prevDepth1) => {
       const res = await delApi.delCookieData(cookieId);
-      return prevDepth1?.map((prevDepth2) => {
-        if (res)
-          return prevDepth2?.filter((cookie) => cookie.id !== res.cookieId);
-        return prevDepth2;
-      });
+      if (prevDepth1) {
+        return prevDepth1?.map((prevDepth2) => {
+          if (res)
+            return prevDepth2?.filter((cookie) => cookie.id !== res.cookieId);
+          return prevDepth2;
+        });
+      }
+      // initial data 일 때
+      const newCookieData = initAllCookieData.filter(
+        (cookie) => cookie.id !== res?.cookieId,
+      );
+      return [newCookieData];
     }, false);
     setIsVisible({
       ...isVisible,
@@ -103,25 +105,68 @@ const CookieModule = ({
   };
 
   // 쿠키 edit
+  /* 
+  1. shouldRevalidate=true, revalidateAll=true 
+  -> 수정한 쿠키의 데이터,위치 바뀜. initial 쿠키도 데이터, 위치 바로 바뀜.
+  -> 그렇지만 전체 api call을 하기 때문에 인피니티 스크롤 장점이 떨어짐 
+  2. shouldrevalidate=false, revalidateAll=false 
+  -> 수정한 쿠키의 데이터는 바뀌는데 위치는 안바뀜. initial 쿠키의 경우 데이터, 위치 안바뀜
+  3. shouldrevalidate=true, revalidateAll=false
+  -> 수정한 쿠키의 데이터, 위치 안바뀜. initial 쿠키의 경우 데이터, 위치 바뀜.
+  */
   const handleEditCookie = async (formData: FormData) => {
     mutate(async (prevDepth1) => {
       const res = await putApi.updateCookie(formData);
-      return prevDepth1?.map((prevDepth2) => {
-        if (res)
-          return prevDepth2?.map((cookie) => {
-            if (cookie.id === res.cookieId) {
-              return {
-                ...cookie,
-                content: res.content,
-                thumbnail: res.thumbnail,
-                title: res.title,
-              };
-            }
+      // 갱신된 데이터일 때
+      if (prevDepth1) {
+        const newDepth1 = prevDepth1?.map((prevDepth2) => {
+          // 최신순
+          if (cookieFilter === "latest") {
+            return [
+              res,
+              ...(prevDepth2?.filter((cookie) => cookie.id !== res.id) || []),
+            ];
+          }
+          // 오래된순
+          if (cookieFilter === "oldest") {
+            return [
+              ...(prevDepth2?.filter((cookie) => cookie.id !== res.id) || []),
+              res,
+            ];
+          }
+          // 그 외
+          const newDepth2 = prevDepth2?.map((cookie) => {
+            if (cookie.id === res.id) return res;
             return cookie;
           });
-        return prevDepth2;
+          return newDepth2;
+        });
+        return newDepth1;
+      }
+
+      // initial data 일 때
+      // 최신순
+      if (cookieFilter === "latest") {
+        return [
+          res,
+          ...(initAllCookieData.filter((cookie) => cookie.id !== res.id) || []),
+        ];
+      }
+      // 오래된순
+      if (cookieFilter === "oldest") {
+        return [
+          ...(initAllCookieData.filter((cookie) => cookie.id !== res.id) || []),
+          res,
+        ];
+      }
+      // 그 외
+      const newCookieData = initAllCookieData.map((cookie) => {
+        if (cookie.id === res.cookieId) return res;
+        return cookie;
       });
-    }, true);
+      return [newCookieData];
+    }, false);
+    // toast msg 띄우기
     setIsVisible({
       ...isVisible,
       cookieEdit: true,

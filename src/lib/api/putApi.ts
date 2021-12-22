@@ -34,7 +34,7 @@ const putHomeboardData = async (imgFile: File): Promise<string | unknown> => {
 const updateCookie = async (body: FormData) => {
   try {
     const { data } = await client.patch(`/cookies`, body);
-    console.log("[SUCCESS] PUT COOKIE DATA", data);
+    console.log("[SUCCESS] PUT COOKIE DATA", data.data);
     return data.data;
   } catch (e) {
     console.log("[FAIL] PUT COOKIE DATA", e);
@@ -45,8 +45,10 @@ const updateCookie = async (body: FormData) => {
 const updateDirectoryData = async (id: number, body: PostDirectoryProps) => {
   try {
     const result = await client.put(`/directories/${id}`, body);
-    return result;
+    console.log("[SUCCESS] PUT DIRECTORY DATA", result.data.data);
+    return result.data.data;
   } catch (e) {
+    console.log("[FAIL] PUT DIRECTORY DATA", e);
     return e;
   }
 };

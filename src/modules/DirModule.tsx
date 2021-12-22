@@ -1,17 +1,21 @@
 import useSWR, { mutate } from "swr";
 import reactCookie from "react-cookies";
 import { Dispatch, SetStateAction, useState } from "react";
-import { idCountAsc, idCountDesc } from "@lib/filter";
-import { DirectoryDataProps, PostDirectoryProps } from "@interfaces/directory";
+import {
+  DirectoryDataProps,
+  GetDirectoryDataProps,
+  PostDirectoryProps,
+} from "@interfaces/directory";
 import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
 import getApi from "@api/getApi";
 import delApi from "@api/delApi";
 import putApi from "@api/putApi";
 import postApi from "@api/postApi";
+import { returnDirFilter } from "@lib/filter";
 
 interface DirModuleProps {
   /** initial directory datas */
-  initAllDirData: DirectoryDataProps[];
+  initAllDirData: GetDirectoryDataProps;
   /** toast msg */
   isVisible: ToastMsgVisibleStateProps;
   setIsVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
@@ -27,23 +31,13 @@ const DirModule = ({
     initFilter || "latest",
   );
 
-  const returnDirFilter = (filterType: "latest" | "oldest" | "abc") => {
-    if (filterType === "oldest") return 1;
-    if (filterType === "latest") return 2;
-    return 0;
-  };
-
   // 모든 디렉토리 데이터 get
   const { data: allDirData } = useSWR(
     () => `/directories?filter=${returnDirFilter(dirFilter)}`,
     getApi.getAllDirData,
     {
       initialData: initAllDirData,
-      onErrorRetry: ({ retryCount }) => {
-        // 3번 까지만 재시도함
-        if (retryCount >= 3) return undefined;
-        return true;
-      },
+      errorRetryCount: 3,
     },
   );
 
@@ -79,7 +73,7 @@ const DirModule = ({
   const handlePostDir = async (newValue: PostDirectoryProps) => {
     mutate(
       `/directories?filter=${returnDirFilter(dirFilter)}`,
-      async (prev: DirectoryDataProps[]) => {
+      async (prev: GetDirectoryDataProps) => {
         const res = await postApi.postDirectoryData(newValue);
         const newDir: DirectoryDataProps = {
           emoji: res?.emoji,
@@ -87,7 +81,7 @@ const DirModule = ({
           name: res?.name || "",
           cookieCnt: 0,
         };
-        return [...prev, newDir];
+        return { common: [...(prev?.common || []), newDir] };
       },
       true,
     );
@@ -101,13 +95,22 @@ const DirModule = ({
   const handleDelDir = async (dirId: number) => {
     mutate(
       `/directories?filter=${returnDirFilter(dirFilter)}`,
-      async (prev: DirectoryDataProps[]) => {
+      async (prev: GetDirectoryDataProps) => {
         const res = await delApi.delDirData(dirId);
-        if (prev) return prev.filter((dir) => dir.id !== res?.directoryId);
-        return initAllDirData.filter((dir) => dir.id !== res?.directoryId);
+        let newCommon;
+        if (prev)
+          newCommon = prev.common.filter((dir) => dir.id !== res?.directoryId);
+        else
+          newCommon = initAllDirData.common.filter(
+            (dir) => dir.id !== res?.directoryId,
+          );
+        return {
+          common: newCommon,
+        };
       },
       false,
     );
+    // toast msg
     setIsVisible({
       ...isVisible,
       dirDel: true,
@@ -118,33 +121,73 @@ const DirModule = ({
   const handleEditDir = async (id: number, body: PostDirectoryProps) => {
     mutate(
       `/directories?filter=${returnDirFilter(dirFilter)}`,
-      async (prev: DirectoryDataProps[]) => {
-        await putApi.updateDirectoryData(id, body);
+      async (prev: GetDirectoryDataProps) => {
+        const res = await putApi.updateDirectoryData(id, body);
+
+        // 갱신된 데이터일 때
         if (prev) {
-          return prev.map((dir) => {
-            if (dir.id === id) {
+          let newCommon;
+          // 최신순
+          if (dirFilter === "latest") {
+            newCommon = [res, ...prev.common.filter((dir) => dir.id !== id)];
+          }
+          // 오래된순
+          if (dirFilter === "oldest") {
+            newCommon = [...prev.common.filter((dir) => dir.id !== id), res];
+          }
+          // 가나다순
+          if (dirFilter === "abc") {
+            newCommon = prev.common.map((dir) => {
+              if (dir.id === id)
+                return {
+                  ...dir,
+                  name: res.name,
+                  emoji: res.emoji,
+                };
+              return dir;
+            });
+          }
+
+          return {
+            common: newCommon,
+          };
+        }
+
+        // 초기 데이터일 때
+        let newCommon;
+        if (dirFilter === "latest") {
+          newCommon = [
+            res,
+            ...initAllDirData.common.filter((dir) => dir.id !== id),
+          ];
+        }
+        // 오래된순
+        if (dirFilter === "oldest") {
+          newCommon = [
+            ...initAllDirData.common.filter((dir) => dir.id !== id),
+            res,
+          ];
+        }
+        // 가나다순
+        if (dirFilter === "abc") {
+          newCommon = initAllDirData.common.map((dir) => {
+            if (dir.id === id)
               return {
                 ...dir,
-                name: body.name || "",
-                emoji: body.emoji || "",
+                name: res.name,
+                emoji: res.emoji,
               };
-            }
             return dir;
           });
         }
-        return initAllDirData.map((dir) => {
-          if (dir.id === id) {
-            return {
-              ...dir,
-              name: body.name || "",
-              emoji: body.emoji || "",
-            };
-          }
-          return dir;
-        });
+
+        return {
+          common: newCommon,
+        };
       },
-      true,
+      false,
     );
+    // toast msg
     setIsVisible({
       ...isVisible,
       dirEdit: true,
