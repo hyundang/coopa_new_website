@@ -119,7 +119,7 @@ const Cookies = ({
                     delCookieHandler={delCookieHandler}
                     handleEditCookie={handleEditCookie}
                     handleAddCookieCount={handleAddCookieCount}
-                    // ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
+                    ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
                   />
                 ) : (
                   <CookieMobile
