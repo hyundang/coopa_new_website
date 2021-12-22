@@ -334,11 +334,8 @@ const Newtab = ({
               {tabValue === "쿠키" ? (
                 <Cookies
                   data={searchedCookieData}
-                  allDir={
-                    dirData.pinned
-                      ? [...dirData.pinned, ...dirData.common]
-                      : [...dirData.common]
-                  }
+                  allDir={dirData.common}
+                  fixedDir={dirData.pinned || []}
                   type="searched"
                   copyCookieLink={copyCookieLink}
                   delCookieHandler={delCookieHandler}
@@ -364,11 +361,8 @@ const Newtab = ({
               {tabValue === "모든 쿠키" ? (
                 <Cookies
                   data={cookieData}
-                  allDir={
-                    dirData.pinned
-                      ? [...dirData.pinned, ...dirData.common]
-                      : [...dirData.common]
-                  }
+                  allDir={dirData.common}
+                  fixedDir={dirData.pinned || []}
                   setIsOnboardOpen={setIsOnboardOpen}
                   copyCookieLink={copyCookieLink}
                   delCookieHandler={delCookieHandler}

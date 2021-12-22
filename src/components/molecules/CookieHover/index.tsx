@@ -18,6 +18,8 @@ export interface CookieHoverProps {
   className?: string;
   /** 모든 디렉토리 data */
   allDir: DirectoryDataProps[];
+  /** 고정 디렉토리 */
+  fixedDir: DirectoryDataProps[];
   /** cardState를 parking으로 변경 */
   setCardState: Dispatch<
     SetStateAction<"hover" | "normal" | "parking" | "input">
@@ -26,12 +28,14 @@ export interface CookieHoverProps {
   currDir: string;
   //set currDir
   setCurrDir: Dispatch<SetStateAction<string>>;
+  // postHandler:
 }
 
 const CookieHover = ({
   id,
   className,
   allDir,
+  fixedDir,
   setCardState,
   currDir,
   setCurrDir,
@@ -48,9 +52,15 @@ const CookieHover = ({
     setSearchedDir(
       text === ""
         ? []
-        : allDir.filter((dir) =>
-            dir.name.toLowerCase().includes(text.toLowerCase()),
-          ),
+        : fixedDir
+            .filter((dir) =>
+              dir.name.toLowerCase().includes(text.toLowerCase()),
+            )
+            .concat(
+              allDir.filter((dir) =>
+                dir.name.toLowerCase().includes(text.toLowerCase()),
+              ),
+            ),
     );
   }, [text]);
 
@@ -69,7 +79,7 @@ const CookieHover = ({
           isSearched={!!text}
           allDir={allDir}
           searchedDir={searchedDir}
-          fixedDir={[]}
+          fixedDir={fixedDir}
           setIsBlur={setIsBlur}
           setCurrDir={setCurrDir}
         />
@@ -89,12 +99,12 @@ const CookieHover = ({
           />
           <Btn
             className="directory-form__button"
-            onClick={() => postHandler()}
+            // onClick={() => postHandler()}
             isOrange
             isCookieDirBtn
             isAtvBtn={!!text.length}
           >
-            저장
+            만들기
           </Btn>
         </div>
       </div>

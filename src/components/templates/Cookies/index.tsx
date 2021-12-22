@@ -29,6 +29,8 @@ export interface CookiesProps {
   type?: "normal" | "searched" | "dirDetail" | "dirShare";
   /** 전체 디렉토리 data */
   allDir: DirectoryDataProps[];
+  /** 고정 디렉토리 */
+  fixedDir: DirectoryDataProps[];
   /** 온보딩 모달 오픈 */
   setIsOnboardOpen?: Dispatch<SetStateAction<boolean>>;
   /** copy cookie link */
@@ -58,6 +60,7 @@ export interface CookiesProps {
 const Cookies = ({
   data,
   allDir,
+  fixedDir,
   type = "normal",
   setIsOnboardOpen,
   copyCookieLink,
@@ -141,6 +144,7 @@ const Cookies = ({
                     cookie={cookie}
                     key={cookie.id}
                     allDir={allDir}
+                    fixedDir={fixedDir}
                     isShared={type === "dirShare"}
                     copyCookieLink={copyCookieLink}
                     deleteCookieHandler={delCookieHandler}
@@ -157,6 +161,7 @@ const Cookies = ({
                     cookie={cookie}
                     key={cookie.id}
                     allDir={allDir}
+                    fixedDir={fixedDir}
                     isShared={type === "dirShare"}
                     copyCookieLink={copyCookieLink}
                     deleteCookieHandler={delCookieHandler}

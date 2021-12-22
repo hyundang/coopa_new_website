@@ -24,6 +24,8 @@ export interface CookieProps {
   cookie?: CookieDataProps;
   /** all directory */
   allDir?: DirectoryDataProps[];
+  /** 고정 디렉토리 */
+  fixedDir?: DirectoryDataProps[];
   /** share cookie */
   isShared?: boolean;
   /** copy cookie link */
@@ -49,6 +51,7 @@ const Cookie = (
     className,
     cookie,
     allDir,
+    fixedDir,
     isShared,
     copyCookieLink,
     deleteCookieHandler,
@@ -130,6 +133,7 @@ const Cookie = (
         <div className="hover-div">
           <CookieHover
             allDir={allDir || []}
+            fixedDir={fixedDir || []}
             setCardState={setCardState}
             currDir={currDir}
             setCurrDir={setCurrDir}
