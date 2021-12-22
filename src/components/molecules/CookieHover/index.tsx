@@ -134,7 +134,7 @@ const CookieHoverWrap = styled(DropDown)<CookieHoverWrapProps>`
       justify-content: space-between;
       margin-top: 12px;
       box-shadow: ${(props) =>
-        props.isBlur ? "-60px 0 30px 30px rgba(255,255,255,1)" : "none"};
+        props.isBlur ? "0 -20px 10px 0px rgba(255,255,255,1)" : "none"};
 
       &__input {
         width: 170px;

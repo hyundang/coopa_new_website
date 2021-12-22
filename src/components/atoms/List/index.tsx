@@ -91,7 +91,7 @@ const List = ({
         </>
       )}
       <div
-        style={{ marginTop: "1px", height: "1px" }}
+        style={{ marginTop: "1px", height: "1px", marginBottom: "5px" }}
         ref={(e: HTMLDivElement) => setTarget(e)}
       />
     </ListWrap>
