@@ -34,6 +34,8 @@ export interface DirDetailProps {
   dirInfo: directoryInfoType;
   /** directory data */
   allDir?: DirectoryDataProps[];
+  /** 고정 디렉토리 */
+  fixedDir?: DirectoryDataProps[];
   /** 쿠키 데이터 로딩 여부 */
   isCookieLoading: boolean;
   /** cookie data */
@@ -81,6 +83,7 @@ const DirDetail = ({
   nickname,
   dirInfo,
   allDir,
+  fixedDir,
   cookies,
   isCookieLoading,
   cookieDataPageIndex,
@@ -187,6 +190,7 @@ const DirDetail = ({
             type={isShared ? "dirShare" : "dirDetail"}
             data={cookies}
             allDir={allDir || []}
+            fixedDir={fixedDir || []}
             setIsOnboardOpen={setIsOnboardOpen}
             copyCookieLink={copyCookieLink || (() => {})}
             delCookieHandler={delCookieHandler}
@@ -206,9 +210,9 @@ const DirDetail = ({
         isOpen={isDirEditOpen}
         setIsOpen={setIsDirEditOpen}
         type="edit"
-        putDir={async () =>
-          handleUpdateDirectory && handleUpdateDirectory(dirInfo.id, newDirData)
-        }
+        initValue={newDirData}
+        dirId={dirInfo.id}
+        putDir={handleUpdateDirectory}
         delDir={() => {
           setIsDelOpen(true);
           setIsDirEditOpen(false);

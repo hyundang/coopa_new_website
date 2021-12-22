@@ -190,21 +190,8 @@ const DirDetailModule = ({
 
   // 디렉토리 edit
   const handleEditDir = async (id: number, body: PostDirectoryProps) => {
-    // const res = await putApi.updateDirectoryData(id, body);
-    // res &&
-    //   (() => {
-    //     mutate(key, {
-    //       ...DirDetailData,
-    //       directoryInfo: {
-    //         name: res.name,
-    //         emoji: res.emoji,
-    //       },
-    //     });
-    //     setIsVisible({
-    //       ...isVisible,
-    //       dirEdit: true,
-    //     });
-    //   })();
+    const res = await putApi.updateDirectoryData(id, body);
+    setDirInfo(res);
   };
 
   return {

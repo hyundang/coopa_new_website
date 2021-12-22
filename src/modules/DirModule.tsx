@@ -128,30 +128,67 @@ const DirModule = ({
         // 갱신된 데이터일 때
         if (prev) {
           let newCommon;
+          let newPinned;
           // 최신순
           if (dirFilter === "latest") {
-            newCommon = [res, ...prev.common.filter((dir) => dir.id !== id)];
+            if (res.isPinned) {
+              newCommon = [
+                res,
+                ...(prev.pinned?.filter((dir) => dir.id !== id) || []),
+                ...prev.common,
+              ];
+            } else {
+              newCommon = [
+                ...(prev.pinned || []),
+                res,
+                ...prev.common.filter((dir) => dir.id !== id),
+              ];
+            }
           }
           // 오래된순
           if (dirFilter === "oldest") {
+            if (res.isPinned) {
+              newCommon = [
+                ...(prev.pinned?.filter((dir) => dir.id !== id) || []),
+                res,
+                ...prev.common,
+              ];
+            } else {
+              newCommon = [
+                ...(prev.pinned || []),
+                ...prev.common.filter((dir) => dir.id !== id),
+                res,
+              ];
+            }
             newCommon = [...prev.common.filter((dir) => dir.id !== id), res];
           }
           // 가나다순
           if (dirFilter === "abc") {
-            newCommon = prev.common.map((dir) => {
-              if (dir.id === id)
-                return {
-                  ...dir,
-                  name: res.name,
-                  emoji: res.emoji,
-                };
-              return dir;
-            });
+            if (res.isPinned) {
+              newCommon = prev.pinned?.map((dir) => {
+                if (dir.id === id)
+                  return {
+                    ...dir,
+                    name: res.name,
+                    emoji: res.emoji,
+                  };
+                return dir;
+              });
+            } else {
+              newCommon = prev.common.map((dir) => {
+                if (dir.id === id)
+                  return {
+                    ...dir,
+                    name: res.name,
+                    emoji: res.emoji,
+                  };
+                return dir;
+              });
+            }
           }
 
-          return {
-            common: newCommon,
-          };
+          if (res.isPinned) return { pinned: newPinned, common: prev.common };
+          return { pinned: prev.pinned, common: newCommon };
         }
 
         // 초기 데이터일 때
