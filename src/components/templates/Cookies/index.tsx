@@ -1,5 +1,8 @@
 import styled from "styled-components";
-import { CookieDataProps } from "src/lib/interfaces/cookie";
+import {
+  CookieDataProps,
+  DirectoryCookieDataProps,
+} from "src/lib/interfaces/cookie";
 import { Btn } from "@components/atoms";
 import { Cookie, CookieMobile, Empty } from "@components/organisms";
 import { CookieIcon } from "@assets/icons/common";
@@ -11,6 +14,7 @@ import React, {
   useState,
 } from "react";
 import {
+  DirDeleteDataProps,
   DirectoryDataProps,
   PostAddCookieToDirProps,
   PostDirectoryProps,
@@ -45,9 +49,9 @@ export interface CookiesProps {
   pageIndex?: number;
   setPageIndex?: (
     size: number,
-  ) => Promise<(CookieDataProps[] | undefined)[] | undefined>;
-  /** fix cookie handler */
-  fixCookieHandler: () => void;
+  ) => Promise<
+    (CookieDataProps[] | undefined | DirectoryCookieDataProps)[] | undefined
+  >;
 }
 
 const Cookies = ({

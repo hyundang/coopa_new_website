@@ -11,6 +11,7 @@ export interface CookieAddModalProps {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   locationX: number;
+  type: "cookie" | "dirDetail";
 }
 const CookieAddModal = ({
   id,
@@ -18,6 +19,7 @@ const CookieAddModal = ({
   isOpen,
   setIsOpen,
   locationX,
+  type,
 }: CookieAddModalProps) => {
   const link_input = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState<string>("https://");
@@ -56,6 +58,7 @@ const CookieAddModal = ({
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       locationX={locationX}
+      type={type}
     >
       <h1 className="modal-title">쿠키 추가</h1>
       <Input
@@ -94,10 +97,11 @@ export default CookieAddModal;
 
 interface CookieAddModalWrapProps {
   locationX: number;
+  type: "cookie" | "dirDetail";
 }
 const CookieAddModalWrap = styled(MoveModal)<CookieAddModalWrapProps>`
   position: absolute;
-  top: 412px;
+  top: ${({ type }) => (type === "cookie" ? 412 : 287)}px;
   left: ${({ locationX }) => locationX}px;
   z-index: 2;
 
@@ -109,6 +113,10 @@ const CookieAddModalWrap = styled(MoveModal)<CookieAddModalWrapProps>`
 
   display: flex;
   flex-direction: column;
+
+  ${({ theme, type }) => theme.media.tablet`
+    top: ${type === "cookie" ? 205 : 287}px;
+  `}
 
   ${({ theme, isOpen }) => theme.media.mobile`
     position: fixed;

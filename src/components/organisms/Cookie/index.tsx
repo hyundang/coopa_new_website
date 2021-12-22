@@ -86,14 +86,14 @@ const Cookie = (
           postDir && (await postDir({ name: currDir }));
         }
         if (currDir !== cookie?.directoryInfo?.name) {
-          setCardState("parking");
-          setTimeout(() => setCardState("normal"), 1500);
           const body: PostAddCookieToDirProps = {
             cookieId: cookie?.id || -1,
             directoryId:
               allDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,
           };
           body.directoryId && handleDirAddCookie(body);
+          setCardState("parking");
+          setTimeout(() => setCardState("normal"), 1500);
         }
       }
     })();
