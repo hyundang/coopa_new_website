@@ -10,6 +10,7 @@ import {
 import { CookieDataProps } from "@interfaces/cookie";
 import {
   DirectoryDataProps,
+  GetDirectoryDataProps,
   PostAddCookieToDirProps,
   PostDirectoryProps,
 } from "@interfaces/directory";
@@ -19,8 +20,6 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
 export interface NewtablProps {
-  /** 로딩 여부 */
-  isLoading: boolean;
   /** 검색 여부 */
   isSearched: boolean;
   setIsSearched: Dispatch<SetStateAction<boolean>>;
@@ -47,6 +46,8 @@ export interface NewtablProps {
   onClickBookmarkSave: (newBookmark: PostBookmarkDataProps) => Promise<void>;
   /** bookmark 삭제 함수 */
   onClickBookmarkDel: (bookmarkID: number) => Promise<void>;
+  /** 쿠키 데이터 로딩 여부 */
+  isCookieLoading: boolean;
   /** all cookie data */
   cookieData: CookieDataProps[];
   /** 검색된 쿠키 데이터 */
@@ -57,7 +58,7 @@ export interface NewtablProps {
     f: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => void;
   /** all directory data */
-  dirData: DirectoryDataProps[];
+  dirData: GetDirectoryDataProps;
   /** 검색된 디렉토리 데이터 */
   searchedDirData: DirectoryDataProps[];
   /** 디렉토리 필터 */
@@ -66,27 +67,35 @@ export interface NewtablProps {
     f: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => void;
   /** 디렉토리 생성 */
-  postDir: (e: PostDirectoryProps) => void;
+  postDir: (e: PostDirectoryProps) => Promise<void>;
   /** toast msg state */
   isToastMsgVisible: ToastMsgVisibleStateProps;
   setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
   /** copy cookie link */
   copyCookieLink: () => void;
   /** delete cookie handler */
-  delCookieHandler: (id: number) => void;
+  delCookieHandler: (id: number) => Promise<void>;
   /** edit cookie */
-  handleEditCookie: (data: FormData) => void;
+  handleEditCookie: (data: FormData) => Promise<void>;
   /** delete dir */
-  handleDelDirectory: (id: number) => void;
+  handleDelDirectory: (id: number) => Promise<void>;
   /** dir cookie 추가 */
-  handleDirAddCookie: (body: PostAddCookieToDirProps) => void;
+  handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
   /** update dir */
-  handleUpdateDirectory: (id: number, body: PostDirectoryProps) => void;
+  handleUpdateDirectory: (
+    id: number,
+    body: PostDirectoryProps,
+  ) => Promise<void>;
   /** add cookie count */
-  handleAddCookieCount: (id: number) => void;
+  handleAddCookieCount: (id: number) => Promise<void>;
+  /** for getting cookie data */
+  cookieDataPageIndex: number;
+  setCookieDataPageIndex: (
+    size: number,
+  ) => Promise<(CookieDataProps[] | undefined)[] | undefined>;
+  fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
 }
 const Newtab = ({
-  isLoading,
   isSearched,
   setIsSearched,
   searchValue,
@@ -102,7 +111,10 @@ const Newtab = ({
   bookmarkDatas,
   onClickBookmarkSave,
   onClickBookmarkDel,
+  isCookieLoading,
   cookieData,
+  cookieDataPageIndex,
+  setCookieDataPageIndex,
   searchedCookieData,
   cookieFilter,
   setCookieFilter,
@@ -120,6 +132,7 @@ const Newtab = ({
   handleDirAddCookie,
   handleUpdateDirectory,
   handleAddCookieCount,
+  fixDirHandler,
 }: NewtablProps) => {
   // 검색창 불필요한 fadeout 방지
   const [preventFadeout, setPreventFadeout] = useState(true);
@@ -293,7 +306,9 @@ const Newtab = ({
             isSearchVisible &&
             (tabValue === "쿠키" || tabValue === "디렉토리")) ||
             (tabValue === "모든 쿠키" && cookieData.length !== 0) ||
-            (tabValue === "디렉토리" && dirData.length !== 0)) && (
+            (tabValue === "디렉토리" &&
+              dirData.common?.length !== 0 &&
+              dirData.pinned?.length !== 0)) && (
             <ListHeader
               isSearched={isSearched && isSearchVisible}
               cookieNum={searchedCookieData.length}
@@ -311,6 +326,7 @@ const Newtab = ({
               }
               isAddOpen={isAddOpen}
               setIsAddOpen={setIsAddOpen}
+              postDir={postDir}
             />
           )}
           {isSearched && isSearchVisible ? (
@@ -318,7 +334,8 @@ const Newtab = ({
               {tabValue === "쿠키" ? (
                 <Cookies
                   data={searchedCookieData}
-                  allDir={dirData}
+                  allDir={dirData.common}
+                  fixedDir={dirData.pinned || []}
                   type="searched"
                   copyCookieLink={copyCookieLink}
                   delCookieHandler={delCookieHandler}
@@ -326,6 +343,8 @@ const Newtab = ({
                   handleDirAddCookie={handleDirAddCookie}
                   handleAddCookieCount={handleAddCookieCount}
                   postDir={postDir}
+                  isLoading={false}
+                  fixCookieHandler={() => {}}
                 />
               ) : (
                 <Directories
@@ -333,6 +352,7 @@ const Newtab = ({
                   isSearched
                   handleDelDirectory={handleDelDirectory}
                   handleUpdateDirectory={handleUpdateDirectory}
+                  fixDirHandler={fixDirHandler}
                 />
               )}
             </>
@@ -341,7 +361,8 @@ const Newtab = ({
               {tabValue === "모든 쿠키" ? (
                 <Cookies
                   data={cookieData}
-                  allDir={dirData}
+                  allDir={dirData.common}
+                  fixedDir={dirData.pinned || []}
                   setIsOnboardOpen={setIsOnboardOpen}
                   copyCookieLink={copyCookieLink}
                   delCookieHandler={delCookieHandler}
@@ -349,13 +370,19 @@ const Newtab = ({
                   handleDirAddCookie={handleDirAddCookie}
                   handleAddCookieCount={handleAddCookieCount}
                   postDir={postDir}
+                  isLoading={isCookieLoading}
+                  pageIndex={cookieDataPageIndex}
+                  setPageIndex={setCookieDataPageIndex}
+                  fixCookieHandler={() => {}}
                 />
               ) : (
                 <Directories
-                  data={dirData}
+                  data={dirData.common}
+                  pinnedData={dirData.pinned}
                   setIsDirAddOpen={setIsAddOpen}
                   handleDelDirectory={handleDelDirectory}
                   handleUpdateDirectory={handleUpdateDirectory}
+                  fixDirHandler={fixDirHandler}
                 />
               )}
             </>

@@ -1,13 +1,7 @@
 import { DirDetail } from "@components/templates";
 import nextCookie from "next-cookies";
-import {
-  idCountAsc,
-  idCountDesc,
-  readCountAsc,
-  readCountDesc,
-} from "@lib/filter";
 import { DirectoryCookieDataProps } from "@interfaces/cookie";
-import { DirectoryDataProps } from "@interfaces/directory";
+import { GetDirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 import getApi from "@api/getApi";
 import postApi from "@api/postApi";
@@ -15,12 +9,14 @@ import DirDetailModule from "@modules/DirDetailModule";
 import DirModule from "@modules/DirModule";
 import { useToastMsg } from "src/hooks";
 import { useState } from "react";
+import { NextPageContext } from "next";
+import { returnCookieFilter } from "@lib/filter";
 
 interface DirDetailPageProps {
   isLogin: boolean;
   initUserData: UserDataProps;
   initDirDetailData: DirectoryCookieDataProps;
-  initAllDirData: DirectoryDataProps[];
+  initAllDirData: GetDirectoryDataProps;
   queryID: number;
 }
 const DirDetailPage = ({
@@ -69,8 +65,13 @@ const DirDetailPage = ({
           imgUrl={initUserData?.profileImage}
           nickname={initUserData?.name || ""}
           dirInfo={dirDetailModule.dirInfo || { name: "", id: 0 }}
-          allDir={dirModule.filteredDirData}
-          cookies={dirDetailModule.filteredCookieData || []}
+          allDir={dirModule.allDirData?.common}
+          cookies={
+            dirDetailModule.cookieData?.reduce(
+              (acc, curr) => curr && acc?.concat(curr),
+              [],
+            ) || []
+          }
           filterType={dirDetailModule.cookieFilter}
           onClickType={dirDetailModule.handleCookieFilter}
           shareLink={shareLink}
@@ -85,6 +86,10 @@ const DirDetailPage = ({
           handleDirAddCookie={dirDetailModule.handleAddCookieToDir}
           handleUpdateDirectory={dirDetailModule.handleEditDir}
           handleAddCookieCount={dirDetailModule.handleAddCookieCount}
+          isCookieLoading={dirDetailModule.isLoading}
+          cookieDataPageIndex={dirDetailModule.pageIndex}
+          setCookieDataPageIndex={dirDetailModule.setPageIndex}
+          fixCookieHandler={() => {}}
         />
       ) : (
         <div>error: login</div>
@@ -94,16 +99,19 @@ const DirDetailPage = ({
 };
 export default DirDetailPage;
 
-DirDetailPage.getInitialProps = async (ctx: any) => {
+DirDetailPage.getInitialProps = async (ctx: NextPageContext) => {
   const allCookies = nextCookie(ctx);
   const userToken = allCookies["x-access-token"];
   const queryID = ctx.query.id;
+  const { cookieFilter } = allCookies;
 
   // 로그인 되어 있을 때
   if (userToken) {
     // 쿠키 데이터
     const initDirDetailData = await getApi.getDirCookieData(
-      `/directories/${queryID}`,
+      `/directories/${queryID}?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
+        cookieFilter,
+      )}`,
     );
 
     // 디렉토리 데이터
@@ -117,6 +125,9 @@ DirDetailPage.getInitialProps = async (ctx: any) => {
     };
   }
   // 로그인 안 되어 있을 때
+  // 로그인 페이지로 리다이렉트
+  ctx.res?.writeHead(307, { Location: "/login" });
+  ctx.res?.end();
   return {
     isLogin: false,
   };

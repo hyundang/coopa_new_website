@@ -22,9 +22,12 @@ export interface DirectoryModalProps {
   /** post directory data */
   postDir?: (e: PostDirectoryProps) => void;
   /** put directory data */
-  putDir?: () => void;
+  putDir?: (dirId: number, e: PostDirectoryProps) => Promise<void>;
   /** delete directory data */
   delDir?: () => void;
+  /** directory Data */
+  initValue?: PostDirectoryProps;
+  dirId?: number;
 }
 const DirectoryModal = ({
   id,
@@ -35,6 +38,8 @@ const DirectoryModal = ({
   postDir,
   putDir,
   delDir,
+  initValue,
+  dirId,
 }: DirectoryModalProps) => {
   const size = useWindowSize();
   // for emoji picker
@@ -73,7 +78,9 @@ const DirectoryModal = ({
   const handleClickButton = () => {
     value.name !== ""
       ? (() => {
-          type === "new" ? postDir && postDir(value) : putDir && putDir();
+          type === "new"
+            ? postDir && postDir(value)
+            : putDir && dirId && putDir(dirId, value);
           setIsOpen(false);
         })()
       : name_input.current?.focus();
@@ -82,6 +89,7 @@ const DirectoryModal = ({
   // 제일 처음에 link input focus 상태로 설정
   useEffect(() => {
     isOpen && name_input.current?.focus();
+    type === "edit" && initValue && setValue(initValue);
   }, [isOpen]);
 
   return (
@@ -119,7 +127,7 @@ const DirectoryModal = ({
         </Icon>
         {isPickerOpen && (
           <div className="picker-wrap" onClick={(e) => e.stopPropagation()}>
-            <Picker
+            {/* <Picker
               pickerStyle={pickerStyle}
               onEmojiClick={(e, emojiObject) =>
                 setValue({
@@ -127,7 +135,7 @@ const DirectoryModal = ({
                   emoji: emojiObject.emoji,
                 })
               }
-            />
+            /> */}
           </div>
         )}
       </div>

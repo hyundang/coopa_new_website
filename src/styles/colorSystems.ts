@@ -13,13 +13,14 @@ const colorSystems = css`
     --gray_6: #777777;
     --gray_7: #555555;
     --gray_7_active: #555352;
+    --gray_8: #f6f6f6;
     --gray_hover_1: #f5f3f2;
     --gray_hover_2: #f7f6f5;
     --gray_active: #555352;
     --black_1: #363636;
     --black_2: #242424;
     --black_3: #000000;
-    --title_strong: #222222;
+    --black_4: #222222;
     --white: #ffffff;
     --orange_box_shadow: "0 0.4rem 1rem rgba(0, 0, 0, 0.25)";
   }

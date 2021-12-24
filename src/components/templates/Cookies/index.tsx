@@ -1,9 +1,12 @@
 import styled from "styled-components";
-import { CookieDataProps } from "src/lib/interfaces/cookie";
+import {
+  CookieDataProps,
+  DirectoryCookieDataProps,
+} from "src/lib/interfaces/cookie";
 import { Btn } from "@components/atoms";
 import { Cookie, CookieMobile, Empty } from "@components/organisms";
 import { CookieIcon } from "@assets/icons/common";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   DirectoryDataProps,
   PostAddCookieToDirProps,
@@ -19,25 +22,38 @@ export interface CookiesProps {
   type?: "normal" | "searched" | "dirDetail" | "dirShare";
   /** 전체 디렉토리 data */
   allDir: DirectoryDataProps[];
+  /** 고정 디렉토리 */
+  fixedDir: DirectoryDataProps[];
   /** 온보딩 모달 오픈 */
   setIsOnboardOpen?: Dispatch<SetStateAction<boolean>>;
   /** copy cookie link */
   copyCookieLink: () => void;
   /** del cookie handler */
-  delCookieHandler: (id: number) => void;
+  delCookieHandler: (id: number) => Promise<void>;
   /** edit cookie handler */
-  handleEditCookie: (data: FormData) => void;
+  handleEditCookie: (data: FormData) => Promise<void>;
   /** add cookie to dir */
-  handleDirAddCookie: (body: PostAddCookieToDirProps) => void;
+  handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
   /** add dir */
   postDir?: (body: PostDirectoryProps) => void;
   /** add cookie count */
-  handleAddCookieCount: (id: number) => void;
+  handleAddCookieCount: (id: number) => Promise<void>;
+  /** cookie data loading */
+  isLoading: boolean;
+  /** for getting cookie data */
+  pageIndex?: number;
+  setPageIndex?: (
+    size: number,
+  ) => Promise<
+    (CookieDataProps[] | undefined | DirectoryCookieDataProps)[] | undefined
+  >;
+  fixCookieHandler: () => void;
 }
 
 const Cookies = ({
   data,
   allDir,
+  fixedDir,
   type = "normal",
   setIsOnboardOpen,
   copyCookieLink,
@@ -46,9 +62,37 @@ const Cookies = ({
   handleDirAddCookie,
   handleAddCookieCount,
   postDir,
+  isLoading,
+  pageIndex,
+  setPageIndex,
+  fixCookieHandler,
 }: CookiesProps) => {
   const size = useWindowSize();
   const [isError, setIsError] = useState(false);
+
+  const [target, setTarget] = useState<HTMLElement>();
+
+  useEffect(() => {
+    // for infinite scroll
+    const option = {
+      threshold: 0.05,
+    };
+    const handleIntersection = (entries: any) => {
+      entries.forEach((entry: any) => {
+        if (entry.isIntersecting) {
+          // 쿠키 데이터 get하기
+          setPageIndex &&
+            pageIndex &&
+            pageIndex !== null &&
+            setPageIndex(pageIndex + 1);
+        }
+      });
+    };
+    const io = new IntersectionObserver(handleIntersection, option);
+    if (target) io.observe(target);
+
+    return () => io && io.disconnect();
+  }, [target]);
 
   return (
     <CookiesCntnr>
@@ -56,36 +100,73 @@ const Cookies = ({
         <>
           {size.width && size.width < 600 ? (
             <CookieMobileWrap>
-              {data.map((cookie) => (
-                <CookieMobile
-                  key={cookie.id}
-                  cookie={cookie}
-                  isLoading
-                  setIsError={setIsError}
-                  isShared={type === "dirShare"}
-                  copyCookieLink={copyCookieLink}
-                  delCookieHandler={delCookieHandler}
-                  handleEditCookie={handleEditCookie}
-                  handleAddCookieCount={handleAddCookieCount}
-                />
-              ))}
+              {data.map((cookie, idx) =>
+                idx === data.length - 1 ? (
+                  <CookieMobile
+                    key={cookie.id}
+                    cookie={cookie}
+                    isLoading
+                    setIsError={setIsError}
+                    isShared={type === "dirShare"}
+                    copyCookieLink={copyCookieLink}
+                    delCookieHandler={delCookieHandler}
+                    handleEditCookie={handleEditCookie}
+                    handleAddCookieCount={handleAddCookieCount}
+                    ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
+                  />
+                ) : (
+                  <CookieMobile
+                    key={cookie.id}
+                    cookie={cookie}
+                    isLoading
+                    setIsError={setIsError}
+                    isShared={type === "dirShare"}
+                    copyCookieLink={copyCookieLink}
+                    delCookieHandler={delCookieHandler}
+                    handleEditCookie={handleEditCookie}
+                    handleAddCookieCount={handleAddCookieCount}
+                  />
+                ),
+              )}
             </CookieMobileWrap>
           ) : (
             <CookieWrap>
-              {data.map((cookie) => (
-                <Cookie
-                  cookie={cookie}
-                  key={cookie.id}
-                  allDir={allDir}
-                  isShared={type === "dirShare"}
-                  copyCookieLink={copyCookieLink}
-                  deleteCookieHandler={delCookieHandler}
-                  handleEditCookie={handleEditCookie}
-                  handleDirAddCookie={handleDirAddCookie}
-                  postDir={postDir}
-                  handleAddCookieCount={handleAddCookieCount}
-                />
-              ))}
+              {data.map((cookie, idx) =>
+                idx === data.length - 1 ? (
+                  <Cookie
+                    cookie={cookie}
+                    key={cookie.id}
+                    allDir={allDir}
+                    fixedDir={fixedDir}
+                    isShared={type === "dirShare"}
+                    copyCookieLink={copyCookieLink}
+                    deleteCookieHandler={delCookieHandler}
+                    handleEditCookie={handleEditCookie}
+                    handleDirAddCookie={handleDirAddCookie}
+                    postDir={postDir}
+                    handleAddCookieCount={handleAddCookieCount}
+                    isLoading={isLoading}
+                    ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
+                    fixCookieHandler={fixCookieHandler}
+                  />
+                ) : (
+                  <Cookie
+                    cookie={cookie}
+                    key={cookie.id}
+                    allDir={allDir}
+                    fixedDir={fixedDir}
+                    isShared={type === "dirShare"}
+                    copyCookieLink={copyCookieLink}
+                    deleteCookieHandler={delCookieHandler}
+                    handleEditCookie={handleEditCookie}
+                    handleDirAddCookie={handleDirAddCookie}
+                    postDir={postDir}
+                    handleAddCookieCount={handleAddCookieCount}
+                    isLoading={isLoading}
+                    fixCookieHandler={fixCookieHandler}
+                  />
+                ),
+              )}
             </CookieWrap>
           )}
         </>

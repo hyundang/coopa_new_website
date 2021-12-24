@@ -29,7 +29,7 @@ export interface CookieEditModalProps {
   /** data post 시 loading 여부 */
   isLoading: boolean;
   /** cookie edit handler */
-  handleEditCookie: (data: FormData) => void;
+  handleEditCookie: (data: FormData) => Promise<void>;
 }
 
 const CookieEditModal = ({
@@ -142,15 +142,15 @@ const CookieEditModal = ({
             className="button"
             isOrange
             isAtvBtn
-            onClick={() => {
+            onClick={async () => {
               const formData = new FormData();
-              formData.append("cookieId", value.cookieId);
+              formData.append("cookieId", String(value.cookieId));
               value?.image && formData.append("image", value.image);
               formData.append("title", value.title);
               formData.append("content", value.content);
-              handleEditCookie(formData);
+              await handleEditCookie(formData);
               setIsOpen(false);
-              setCardState ? setCardState("normal"): () => {};
+              setCardState ? setCardState("normal") : () => {};
             }}
           >
             수정

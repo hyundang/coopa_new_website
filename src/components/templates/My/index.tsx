@@ -168,6 +168,16 @@ const My = ({
           </div>
         </Info>
         <div className="button-wrap">
+          <Btn
+            className="leave__button"
+            isAtvBtn
+            onClick={() =>
+              window.open(
+                "https://docs.google.com/forms/d/e/1FAIpQLScsKV9w4q5qiygm51COk5dhVoqn5U99qe-SxcuNru31dXhwuw/viewform",
+                "_blank",
+              )
+            }
+          />
           <span className="logout">
             <img
               src={LogoutDuribunImg}
@@ -434,7 +444,29 @@ const MyCntnr = styled.section<MyCntnrProps>`
     margin-bottom: 140px;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: flex-end;
+    .leave__button {
+      justify-content: flex-start;
+      width: 140px;
+      height: 48px;
+      border-radius: 24px;
+      background-color: unset;
+      padding-left: 22px;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--gray_6);
+      &::after {
+        content: "탈퇴할래요";
+      }
+      &:hover {
+        background-color: var(--gray_hover_1);
+        color: var(--black_1);
+        &::after {
+          content: "탈퇴할래요 🤢";
+        }
+      }
+    }
     .logout {
       display: flex;
       flex-direction: column;
@@ -623,9 +655,9 @@ const MyCntnr = styled.section<MyCntnrProps>`
 const StyledBubble = styled(Bubble)`
   position: absolute;
   z-index: 2;
-  left: -86px;
-  margin-top: 25px;
+  margin-top: 22px;
   font-size: 13px;
+  transform: translateX(-102px);
   ${({ isHover }) =>
     isHover
       ? css`

@@ -137,11 +137,12 @@ const ListHeader = ({
           </div>
         )}
       </ListHeaderWrap>
-      {type === "cookie" && (
+      {(type === "cookie" || type === "dirDetail") && (
         <CookieAddModal
-          isOpen={type === "cookie" && isAddOpen}
+          isOpen={isAddOpen}
           setIsOpen={setIsAddOpen}
           locationX={locationX - 430}
+          type={type}
         />
       )}
       {type === "dir" && (

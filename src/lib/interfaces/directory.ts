@@ -1,9 +1,15 @@
+export interface GetDirectoryDataProps {
+  common: DirectoryDataProps[];
+  pinned?: DirectoryDataProps[];
+}
+
 export interface DirectoryDataProps {
   emoji?: string;
   id: number;
   name: string;
   thumbnail?: string;
   cookieCnt: number;
+  isPinned: boolean;
 }
 
 export interface PostDirectoryProps {

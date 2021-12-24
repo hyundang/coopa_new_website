@@ -1,5 +1,12 @@
 import styled from "styled-components";
-import { useState, Dispatch, SetStateAction, SyntheticEvent } from "react";
+import {
+  useState,
+  Dispatch,
+  SetStateAction,
+  SyntheticEvent,
+  RefObject,
+  forwardRef,
+} from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { DeleteIcon } from "@assets/icons/card";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
@@ -25,24 +32,31 @@ export interface CookieMobileProps {
   /** copy cookie link */
   copyCookieLink: () => void;
   /** del cookie handler */
-  delCookieHandler: (id: number) => void;
+  delCookieHandler: (id: number) => Promise<void>;
   /** edit cookie handler */
-  handleEditCookie: (data: FormData) => void;
+  handleEditCookie: (data: FormData) => Promise<void>;
   /** add cookie count*/
-  handleAddCookieCount: (id: number) => void;
+  handleAddCookieCount: (id: number) => Promise<void>;
 }
-const CookieMobile = ({
-  id,
-  className,
-  cookie,
-  isShared = false,
-  isLoading,
-  setIsError,
-  copyCookieLink,
-  delCookieHandler,
-  handleEditCookie,
-  handleAddCookieCount,
-}: CookieMobileProps) => {
+const CookieMobile = (
+  {
+    id,
+    className,
+    cookie,
+    isShared = false,
+    isLoading,
+    setIsError,
+    copyCookieLink,
+    delCookieHandler,
+    handleEditCookie,
+    handleAddCookieCount,
+  }: CookieMobileProps,
+  ref?:
+    | ((instance: HTMLButtonElement | null) => void)
+    | RefObject<HTMLButtonElement>
+    | null
+    | undefined,
+) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
 
@@ -62,6 +76,7 @@ const CookieMobile = ({
           handleAddCookieCount(cookie.id);
           window.open(cookie.link);
         }}
+        ref={ref}
       >
         <div className="thumbnail-wrap">
           <img
@@ -215,4 +230,4 @@ const CookieWrap = styled.article`
   }
 `;
 
-export default CookieMobile;
+export default forwardRef(CookieMobile);

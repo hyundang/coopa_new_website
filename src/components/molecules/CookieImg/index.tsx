@@ -2,11 +2,12 @@ import styled from "styled-components";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { ImgBox, Icon } from "@components/atoms";
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
-import { DeleteIcon } from "@assets/icons/card";
+import { DeleteIcon, PinAtvIcon, PinIcon } from "@assets/icons/card";
 import { cookieimgAnimation } from "@components/animations";
 import { CookieDataProps, PatchCookieProps } from "@interfaces/cookie";
 import { CookieEditModal, DelModal } from "@components/organisms";
 import { Dispatch, SetStateAction, useState } from "react";
+import { PinImg } from "@assets/imgs/card";
 
 export interface CookieImgProps {
   /** id */
@@ -20,13 +21,18 @@ export interface CookieImgProps {
     SetStateAction<"hover" | "parking" | "normal" | "input">
   >;
   /** cookie */
-  cookie: CookieDataProps;
+  cookie?: CookieDataProps;
   /** copy cookie handler */
   copyCookieLink: () => void;
   /** delete cookie handler */
-  deleteCookieHanlder: (id: number) => void;
+  deleteCookieHanlder: (id: number) => Promise<void>;
   /** edit cookie handler */
-  handleEditCookie: (data: FormData) => void;
+  handleEditCookie: (data: FormData) => Promise<void>;
+  /** fix cookie handler */
+  fixCookieHandler: () => void;
+  /** is cookie fixed */
+  isCookieFixed: boolean;
+  setIsCookieFixed: Dispatch<SetStateAction<boolean>>;
 }
 
 const CookieImg = ({
@@ -38,24 +44,35 @@ const CookieImg = ({
   copyCookieLink,
   deleteCookieHanlder,
   handleEditCookie,
+  fixCookieHandler,
+  isCookieFixed,
+  setIsCookieFixed,
 }: CookieImgProps) => {
   const [patchData, setPatchData] = useState<PatchCookieProps>({
-    title: cookie.title,
-    content: cookie.content,
-    thumbnail: cookie.thumbnail,
-    cookieId: cookie.id,
+    title: cookie?.title || "",
+    content: cookie?.content || "",
+    thumbnail: cookie?.thumbnail || "",
+    cookieId: cookie?.id || -1,
   });
   const [isError, setIsError] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const isLoading = false;
+  const isUpdateLoading = false;
 
   const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> = (
     e: React.MouseEvent<HTMLButtonElement>,
   ) => setIsEditOpen(true);
 
+  const pinIconClickHandler = () => {
+    // fixCookieHandler();
+    setIsCookieFixed(!isCookieFixed);
+  };
+
   return (
     <>
+      {cardState === "hover" && isCookieFixed && (
+        <StyledPinImg className="pin_img" />
+      )}
       <StyledImgBox
         id={id}
         className={className}
@@ -66,10 +83,20 @@ const CookieImg = ({
         {cardState === "hover" && (
           <HoverDiv>
             <div className="hover_icon_wrap">
+              <Icon className="hover_icon" onClick={pinIconClickHandler}>
+                {isCookieFixed ? (
+                  <PinAtvIcon className="hover_icon__pin" />
+                ) : (
+                  <PinIcon className="hover_icon__pin" />
+                )}
+              </Icon>
               <Icon className="hover_icon" onClick={editIconClickHandler}>
                 <EditIcon className="hover_icon__edit" />
               </Icon>
-              <CopyToClipboard text={cookie.link} onCopy={copyCookieLink}>
+              <CopyToClipboard
+                text={cookie?.link || ""}
+                onCopy={copyCookieLink}
+              >
                 <Icon className="hover_icon">
                   <LinkIcon32 className="hover_icon__link" />
                 </Icon>
@@ -86,13 +113,13 @@ const CookieImg = ({
         {cardState === "parking" && (
           <ParkingDiv>
             <div className="parking--title">
-              {cookie.directoryInfo?.emoji && (
+              {cookie?.directoryInfo?.emoji && (
                 <div className="parking--title__emoji">
                   {cookie.directoryInfo.emoji}
                 </div>
               )}
               <div className="parking--title__name">
-                {cookie.directoryInfo?.name}
+                {cookie?.directoryInfo?.name}
               </div>
             </div>
             <div className="parking--desc">에 파킹했어요!</div>
@@ -111,12 +138,12 @@ const CookieImg = ({
         setIsError={setIsError}
         isOpen={isEditOpen}
         setIsOpen={setIsEditOpen}
-        isLoading={isLoading}
+        isLoading={isUpdateLoading}
       />
       <DelModal
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
-        onClickDel={() => deleteCookieHanlder(cookie.id)}
+        onClickDel={() => deleteCookieHanlder(cookie?.id || -1)}
       />
     </>
   );
@@ -125,7 +152,7 @@ const CookieImg = ({
 export default CookieImg;
 
 interface StyledImgBoxProps {
-  cookieContent: string;
+  cookieContent?: string;
 }
 const StyledImgBox = styled(ImgBox)<StyledImgBoxProps>`
   position: relative;
@@ -135,10 +162,18 @@ const StyledImgBox = styled(ImgBox)<StyledImgBoxProps>`
   border-radius: 10px;
 `;
 
+const StyledPinImg = styled(PinImg)`
+  position: absolute;
+  z-index: 2;
+  transform: translate(24px, -5px);
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
+`;
+
 const HoverDiv = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
+
   .hover_icon_wrap {
     display: flex;
     position: absolute;

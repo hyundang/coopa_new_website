@@ -42,6 +42,7 @@ export const cookieHover = () => {
   return (
     <CookieHover
       allDir={allDir}
+      fixedDir={allDir}
       setCardState={setCardState}
       currDir={currDir}
       setCurrDir={setCurrDir}

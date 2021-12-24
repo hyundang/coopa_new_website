@@ -14,7 +14,11 @@ import {
   DirectoryDataProps,
   PostAddCookieToDirProps,
 } from "@interfaces/directory";
-import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
+import {
+  CookieDataProps,
+  DirectoryCookieDataProps,
+  directoryInfoType,
+} from "@interfaces/cookie";
 import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
 import { Dispatch, SetStateAction, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -30,6 +34,10 @@ export interface DirDetailProps {
   dirInfo: directoryInfoType;
   /** directory data */
   allDir?: DirectoryDataProps[];
+  /** 고정 디렉토리 */
+  fixedDir?: DirectoryDataProps[];
+  /** 쿠키 데이터 로딩 여부 */
+  isCookieLoading: boolean;
   /** cookie data */
   cookies: CookieDataProps[];
   filterType: "latest" | "readMost" | "readLeast" | "oldest";
@@ -46,19 +54,28 @@ export interface DirDetailProps {
   /** copy cookie link */
   copyCookieLink?: () => void;
   /** delete cookie handler */
-  delCookieHandler: (id: number) => void;
+  delCookieHandler: (id: number) => Promise<void>;
   /** edit cookie */
-  handleEditCookie: (data: FormData) => void;
+  handleEditCookie: (data: FormData) => Promise<void>;
   /** dir cookie 추가 */
-  handleDirAddCookie: (body: PostAddCookieToDirProps) => void;
+  handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
   /** 디렉토리 생성 */
-  postDir?: (e: PostDirectoryProps) => void;
+  postDir?: (e: PostDirectoryProps) => Promise<void>;
   /** delete dir */
-  handleDelDirectory?: (id: number) => void;
+  handleDelDirectory?: (id: number) => Promise<void>;
   /** update dir */
-  handleUpdateDirectory?: (id: number, body: PostDirectoryProps) => void;
+  handleUpdateDirectory?: (
+    id: number,
+    body: PostDirectoryProps,
+  ) => Promise<void>;
   /** add cookie count */
-  handleAddCookieCount: (id: number) => void;
+  handleAddCookieCount: (id: number) => Promise<void>;
+  /** for getting cookie data */
+  cookieDataPageIndex: number;
+  setCookieDataPageIndex: (
+    size: number,
+  ) => Promise<(DirectoryCookieDataProps | undefined)[] | undefined>;
+  fixCookieHandler: () => void;
 }
 const DirDetail = ({
   isShared = false,
@@ -66,7 +83,11 @@ const DirDetail = ({
   nickname,
   dirInfo,
   allDir,
+  fixedDir,
   cookies,
+  isCookieLoading,
+  cookieDataPageIndex,
+  setCookieDataPageIndex,
   filterType,
   onClickType,
   shareClick,
@@ -81,6 +102,7 @@ const DirDetail = ({
   handleDirAddCookie,
   handleUpdateDirectory,
   handleAddCookieCount,
+  fixCookieHandler,
 }: DirDetailProps) => {
   // 디렉토리 수정 모달 오픈
   const [isDirEditOpen, setIsDirEditOpen] = useState(false);
@@ -92,6 +114,8 @@ const DirDetail = ({
   const [isDelOpen, setIsDelOpen] = useState(false);
   // 온보딩 모달 오픈
   const [isOnboardOpen, setIsOnboardOpen] = useState(false);
+  // 쿠키 추가 모달 오픈
+  const [isCookieAddOpen, setIsCookieAddOpen] = useState(false);
 
   // toast msg visible handling
   const handleToastMsgVisible = (
@@ -159,11 +183,14 @@ const DirDetail = ({
             cookieNum={cookies.length}
             filterType={filterType}
             onClickType={onClickType}
+            isAddOpen={isCookieAddOpen}
+            setIsAddOpen={setIsCookieAddOpen}
           />
           <Cookies
             type={isShared ? "dirShare" : "dirDetail"}
             data={cookies}
             allDir={allDir || []}
+            fixedDir={fixedDir || []}
             setIsOnboardOpen={setIsOnboardOpen}
             copyCookieLink={copyCookieLink || (() => {})}
             delCookieHandler={delCookieHandler}
@@ -171,6 +198,10 @@ const DirDetail = ({
             handleDirAddCookie={handleDirAddCookie}
             handleAddCookieCount={handleAddCookieCount}
             postDir={postDir}
+            isLoading={isCookieLoading}
+            pageIndex={cookieDataPageIndex}
+            setPageIndex={setCookieDataPageIndex}
+            fixCookieHandler={fixCookieHandler}
           />
         </DirDetailWrap>
         <Footer />
@@ -179,11 +210,9 @@ const DirDetail = ({
         isOpen={isDirEditOpen}
         setIsOpen={setIsDirEditOpen}
         type="edit"
-        value={newDirData}
-        setValue={setNewDirData}
-        putDir={() =>
-          handleUpdateDirectory && handleUpdateDirectory(dirInfo.id, newDirData)
-        }
+        initValue={newDirData}
+        dirId={dirInfo.id}
+        putDir={handleUpdateDirectory}
         delDir={() => {
           setIsDelOpen(true);
           setIsDirEditOpen(false);
@@ -193,7 +222,9 @@ const DirDetail = ({
         type="directory"
         isOpen={isDelOpen}
         setIsOpen={setIsDelOpen}
-        onClickDel={() => handleDelDirectory && handleDelDirectory(dirInfo.id)}
+        onClickDel={async () =>
+          handleDelDirectory && handleDelDirectory(dirInfo.id)
+        }
       />
       <ToastMsg
         isVisible={isToastMsgVisible.copyShareLink}

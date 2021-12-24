@@ -2,26 +2,21 @@ import { NotFoundErrorImg } from "@assets/imgs/error";
 import { NewtabError, Newtab } from "@components/templates";
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import { CookieDataProps } from "@interfaces/cookie";
-import { DirectoryDataProps } from "@interfaces/directory";
+import { GetDirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
-import {
-  readCountDesc,
-  readCountAsc,
-  idCountAsc,
-  idCountDesc,
-} from "@lib/filter";
 import { getApi } from "@lib/api";
 import { useEffect, useState } from "react";
 import nextCookie from "next-cookies";
 import { mutate } from "swr";
-import { useRouterLoading, useToastMsg } from "src/hooks";
-import { CookieModule, DirModule, HomebrdModule } from "src/modules";
+import { useToastMsg } from "src/hooks";
+import { CookieModule, DirModule, HomebrdModule } from "@modules/index";
+import { returnCookieFilter, returnDirFilter } from "@lib/filter";
 
 interface NewtabPageProps {
   isLogin: boolean;
   initUserData: UserDataProps;
   initAllCookieData: CookieDataProps[];
-  initAllDirData: DirectoryDataProps[];
+  initAllDirData: GetDirectoryDataProps;
   initBookmarkData: BookmarkDataProps[];
   initHomeboardImgUrl?: string;
 }
@@ -33,9 +28,6 @@ export default function NewtabPage({
   initBookmarkData,
   initHomeboardImgUrl,
 }: NewtabPageProps) {
-  // 로딩 여부
-  const isLoading = useRouterLoading();
-
   // 검색 여부
   const [isSearched, setIsSearched] = useState(false);
   // 검색어
@@ -54,7 +46,6 @@ export default function NewtabPage({
 
   // 쿠키 모듈
   const cookieModule = CookieModule({
-    key: "/cookies",
     initAllCookieData,
     isVisible,
     setIsVisible,
@@ -85,10 +76,17 @@ export default function NewtabPage({
   };
 
   useEffect(() => {
-    // 홈보드 이미지 세팅
+    // 홈보드, 홈보드 모달 이미지 세팅
     const homeboardImgUrl = localStorage.getItem("homeboardImgUrl");
     homeboardImgUrl?.length === 1
-      ? homebrdModule.setHomeboardImg(`/theme_img/img_${homeboardImgUrl}.jpg`)
+      ? (() => {
+          homebrdModule.setHomeboardImg(
+            `/theme_img/img_${homeboardImgUrl}.jpg`,
+          );
+          homebrdModule.setHomeboardModalImg(
+            `/theme_img/img_${homeboardImgUrl}.jpg`,
+          );
+        })()
       : !initHomeboardImgUrl &&
         (homeboardImgUrl !== null
           ? (() => {
@@ -108,14 +106,16 @@ export default function NewtabPage({
     <>
       {isLogin ? (
         <Newtab
-          isLoading={isLoading}
+          // 쿠키, 디렉토리 검색
           isSearched={isSearched}
           setIsSearched={setIsSearched}
           searchValue={searchValue}
           setSearchValue={setSearchValue}
           onKeyPress={handleKeyPress}
+          // 유저 데이터 관련
           imgUrl={initUserData?.profileImage}
           nickname={initUserData?.name}
+          // 홈보드 데이터 관련
           homeboardModalImg={homebrdModule.homeboardModalImg}
           setHomeboardModalImg={homebrdModule.setHomeboardModalImg}
           homeboardImg={homebrdModule.homeboardImg}
@@ -124,24 +124,36 @@ export default function NewtabPage({
           bookmarkDatas={homebrdModule.bookmarkData || []}
           onClickBookmarkSave={homebrdModule.handleAddBookmark}
           onClickBookmarkDel={homebrdModule.handleDelBookmark}
-          cookieData={cookieModule.filteredCookieData || []}
+          // 쿠키 데이터 관련
+          isCookieLoading={cookieModule.isLoading}
+          cookieData={
+            cookieModule.cookieData?.reduce(
+              (acc, curr) => curr && acc?.concat(curr),
+              [],
+            ) || []
+          }
+          cookieDataPageIndex={cookieModule.pageIndex}
+          setCookieDataPageIndex={cookieModule.setPageIndex}
           searchedCookieData={cookieModule.searchedCookieData || []}
           cookieFilter={cookieModule.cookieFilter}
           setCookieFilter={cookieModule.handleCookieFilter}
-          dirData={dirModule.filteredDirData || []}
-          searchedDirData={dirModule.searchedDirData || []}
-          dirFilter={dirModule.dirFilter}
-          setDirFilter={dirModule.handleDirFilter}
-          isToastMsgVisible={isVisible}
-          setIsToastMsgVisible={setIsVisible}
-          postDir={dirModule.handlePostDir}
           copyCookieLink={cookieModule.copyCookieLink}
           delCookieHandler={cookieModule.handleDelCookie}
           handleEditCookie={cookieModule.handleEditCookie}
-          handleDelDirectory={dirModule.handleDelDir}
           handleDirAddCookie={cookieModule.handleAddCookieToDir}
-          handleUpdateDirectory={dirModule.handleEditDir}
           handleAddCookieCount={cookieModule.handleAddCookieCount}
+          // 디렉토리 데이터 관련
+          dirData={dirModule.allDirData || { common: [], pinned: [] }}
+          searchedDirData={dirModule.searchedDirData || []}
+          dirFilter={dirModule.dirFilter}
+          setDirFilter={dirModule.handleDirFilter}
+          postDir={dirModule.handlePostDir}
+          fixDirHandler={dirModule.handleFixDir}
+          handleDelDirectory={dirModule.handleDelDir}
+          handleUpdateDirectory={dirModule.handleEditDir}
+          // 토스트 메시지 관련
+          isToastMsgVisible={isVisible}
+          setIsToastMsgVisible={setIsVisible}
         />
       ) : (
         <NewtabError
@@ -162,14 +174,22 @@ export default function NewtabPage({
 NewtabPage.getInitialProps = async (ctx: any) => {
   const allCookies = nextCookie(ctx);
   const userToken = allCookies["x-access-token"];
+  const { dirFilter } = allCookies;
+  const { cookieFilter } = allCookies;
 
   // 로그인 되어 있을 때
   if (userToken) {
     // 쿠키 데이터
-    const initAllCookieData = await getApi.getAllCookieData("/cookies");
+    const initAllCookieData = await getApi.getAllCookieData(
+      `/cookies?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
+        cookieFilter,
+      )}`,
+    );
 
     // 디렉토리 데이터
-    const initAllDirData = await getApi.getAllDirData("/directories");
+    const initAllDirData = await getApi.getAllDirData(
+      `/directories?filter=${returnDirFilter(dirFilter)}`,
+    );
 
     // 북마크 데이터
     const initBookmarkData = await getApi.getBookmarkData("/users/favorites");

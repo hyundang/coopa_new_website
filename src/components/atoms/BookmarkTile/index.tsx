@@ -8,6 +8,7 @@ import {
 import styled from "styled-components";
 // assets
 import { PlusIcon } from "@assets/icons/common";
+import { HomeboardIcon } from "@assets/icons/homeboard";
 import bookmarkAnimation from "@components/animations/bookmark";
 
 export interface BookmarkTileProps {

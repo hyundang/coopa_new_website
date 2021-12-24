@@ -3,11 +3,11 @@ import styled from "styled-components";
 // assets
 import { GoogleIcon } from "@assets/icons/btn";
 
-export interface IProps {
+export interface LoginBtnProps {
   /** 로그인 버튼을 클릭했을 때 실행되는 함수 */
-  onClick: React.MouseEventHandler<HTMLDivElement> | undefined;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
-const LoginBtn = ({ onClick }: IProps) => {
+const LoginBtn = ({ onClick }: LoginBtnProps) => {
   return (
     <BtnWrap onClick={onClick}>
       <GoogleIcon className="google_icon" />
@@ -18,7 +18,9 @@ const LoginBtn = ({ onClick }: IProps) => {
 
 export default LoginBtn;
 
-const BtnWrap = styled.div`
+const BtnWrap = styled.button`
+  all: unset;
+  box-sizing: border-box;
   cursor: pointer;
 
   position: relative;

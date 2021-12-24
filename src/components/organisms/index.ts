@@ -8,7 +8,7 @@ export { default as Empty } from "./Empty";
 // modals
 export { default as BookmarkAddModal } from "./Modals/BookmarkAddModal";
 export { default as CookieEditModal } from "./Modals/CookieEditModal";
-export { default as HomeboardEditModal } from "./HomeboardEditModal";
+export { default as HomeboardEditModal } from "./Modals/HomeboardEditModal";
 export { default as NotiModal } from "./Modals/NotiModal";
 export { default as DelModal } from "./Modals/DelModal";
 export { default as DirectoryModal } from "./Modals/DirectoryModal";

@@ -13,7 +13,7 @@ export interface DelModalProps {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   /** delete cookie or directory data */
-  onClickDel: () => void;
+  onClickDel: () => Promise<void>;
 }
 const DelModal = ({
   id,

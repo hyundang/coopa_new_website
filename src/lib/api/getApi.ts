@@ -3,7 +3,10 @@ import {
   DirectoryCookieDataProps,
   SharedDirectoryCookieDataProps,
 } from "@interfaces/cookie";
-import { DirectoryDataProps } from "@interfaces/directory";
+import {
+  DirectoryDataProps,
+  GetDirectoryDataProps,
+} from "@interfaces/directory";
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import axios from "axios";
 import { UserDataProps } from "../interfaces/user";
@@ -26,7 +29,7 @@ const getHomeboardData = async (): Promise<string> => {
     return homeboard;
   } catch (e) {
     console.log("[FAIL] GET HOMEBOARD IMAGE DATA", e);
-    return e;
+    return "";
   }
 };
 
@@ -48,7 +51,7 @@ const getAllCookieData = (
 
 const getAllDirData = (
   url: string,
-): Promise<DirectoryDataProps[] | undefined> =>
+): Promise<GetDirectoryDataProps | undefined> =>
   client.get(url).then((res) => {
     console.log("[SUCCESS] GET ALL DIRECTORY DATA", res.data.data);
     return res.data.data;
@@ -56,7 +59,7 @@ const getAllDirData = (
 
 const getSearchedCookieData = async (
   word: string,
-): Promise<CookieDataProps[]> => {
+): Promise<CookieDataProps[] | undefined> => {
   try {
     const {
       data: { data },
@@ -65,13 +68,13 @@ const getSearchedCookieData = async (
     return data;
   } catch (e) {
     console.log("[FAIL] GET SEARCHED COOKIE DATA", e);
-    return e;
+    return undefined;
   }
 };
 
 const getSearchedDirData = async (
   word: string,
-): Promise<DirectoryDataProps[]> => {
+): Promise<DirectoryDataProps[] | undefined> => {
   try {
     const {
       data: { data },
@@ -80,7 +83,7 @@ const getSearchedDirData = async (
     return data;
   } catch (e) {
     console.log("[FAIL] GET SEARCHED dIRECTORIES DATA", e);
-    return e;
+    return undefined;
   }
 };
 

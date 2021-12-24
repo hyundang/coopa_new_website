@@ -1,13 +1,11 @@
-import useSWR, { mutate } from "swr";
+import { useSWRInfinite } from "swr";
 import reactCookie from "react-cookies";
 import { Dispatch, SetStateAction, useState } from "react";
 import {
-  idCountAsc,
-  idCountDesc,
-  readCountAsc,
-  readCountDesc,
-} from "@lib/filter";
-import { CookieDataProps, DirectoryCookieDataProps } from "@interfaces/cookie";
+  CookieDataProps,
+  DirectoryCookieDataProps,
+  directoryInfoType,
+} from "@interfaces/cookie";
 import {
   PostAddCookieToDirProps,
   PostDirectoryProps,
@@ -17,6 +15,7 @@ import getApi from "@api/getApi";
 import delApi from "@api/delApi";
 import putApi from "@api/putApi";
 import postApi from "@api/postApi";
+import { returnCookieFilter } from "@lib/filter";
 
 interface DirDetailModuleProps {
   /** swr key */
@@ -38,42 +37,40 @@ const DirDetailModule = ({
   const [cookieFilter, setCookieFilter] = useState<
     "latest" | "readMost" | "readLeast" | "oldest"
   >(initFilter || "latest");
+  const [cookieData, setCookieData] = useState<CookieDataProps[][]>([
+    initDirDetailData.cookies,
+  ]);
+  const [DirInfo, setDirInfo] = useState<directoryInfoType>(
+    initDirDetailData.directoryInfo,
+  );
 
-  // 필터링 된 쿠키 데이터 반환
-  const returnFilteredCookieData = (
-    cookies: CookieDataProps[],
-    filter: "latest" | "readMost" | "readLeast" | "oldest" | undefined,
-  ) => {
-    if (cookies && filter) {
-      switch (filter) {
-        case "readMost":
-          return cookies.sort(readCountDesc);
-        case "readLeast":
-          return cookies.sort(readCountAsc);
-        case "oldest":
-          return cookies.sort(idCountAsc);
-        default:
-          return cookies.sort(idCountDesc);
-      }
-    } else if (cookies && !filter) {
-      return cookies.sort(idCountDesc);
-    }
+  // 쿠키 데이터 key 함수
+  const getKey = (pageIndex: number, previousPageData: any) => {
+    console.log("pageIndex: ", pageIndex);
+    if (previousPageData && !previousPageData.length) return null; // 끝에 도달
+    return `${key}?size=${COOKIE_PAGE_SIZE}&page=${pageIndex}&filter=${returnCookieFilter(
+      cookieFilter,
+    )}`;
   };
 
   // 디렉토리 상세 데이터 get
-  const { data: DirDetailData } = useSWR(key, getApi.getDirCookieData, {
-    initialData: initDirDetailData,
-    onErrorRetry: ({ retryCount }) => {
-      // 3번 까지만 재시도함
-      if (retryCount >= 3) return undefined;
-      return true;
-    },
+  const {
+    data: DirDetailData,
+    error,
+    size: pageIndex,
+    setSize: setPageIndex,
+    mutate,
+  } = useSWRInfinite(getKey, getApi.getDirCookieData, {
+    initialData: [initDirDetailData],
+    revalidateAll: false,
+    errorRetryCount: 3,
     onSuccess: (data) => {
-      // 필터에 따라 쿠키 데이터 정렬
-      data &&
-        setFilteredCookieData(
-          returnFilteredCookieData(data.cookies || [], cookieFilter),
-        );
+      console.log(data);
+      setCookieData(
+        data.map((prev1) => {
+          return prev1?.cookies || [];
+        }),
+      );
     },
   });
 
@@ -92,19 +89,7 @@ const DirDetailModule = ({
       expires,
       httpOnly: JSON.parse(HTTP_ONLY),
     });
-    // 필터에 따라 쿠키 데이터 정렬
-    setFilteredCookieData(
-      returnFilteredCookieData(
-        (DirDetailData && DirDetailData.cookies) || [],
-        filter !== "abc" ? filter : "latest",
-      ),
-    );
   };
-
-  // 필터링 된 쿠키 데이터 get
-  const [filteredCookieData, setFilteredCookieData] = useState<
-    CookieDataProps[] | undefined
-  >(returnFilteredCookieData(initDirDetailData.cookies, initFilter));
 
   //쿠키 링크 복사
   const copyCookieLink = () => {
@@ -116,106 +101,114 @@ const DirDetailModule = ({
 
   // 쿠키 delete
   const handleDelCookie = async (cookieId: number) => {
-    const res = await delApi.delCookieData(cookieId);
-    res &&
-      (() => {
-        mutate(
-          key,
-          setFilteredCookieData((prev) =>
-            prev?.filter((cookie) => cookie.id !== res.cookieId),
-          ),
-          false,
-        );
-        setIsVisible({
-          ...isVisible,
-          cookieDel: true,
+    mutate(async (prevDepth1) => {
+      const res = await delApi.delCookieData(cookieId);
+      // 갱신된 데이터일 때
+      if (prevDepth1) {
+        const newData = prevDepth1?.map((prevDepth2) => {
+          if (res)
+            return {
+              directoryInfo: prevDepth2?.directoryInfo || DirInfo,
+              cookies:
+                prevDepth2?.cookies?.filter(
+                  (cookie) => cookie.id !== res.cookieId,
+                ) || [],
+            };
+          return prevDepth2;
         });
-      })();
+        return newData;
+      }
+      // initial data 일 때
+      const newCookies = initDirDetailData.cookies.filter(
+        (cookie) => cookie.id !== res?.cookieId,
+      );
+      return [
+        {
+          ...initDirDetailData,
+          cookies: newCookies,
+        },
+      ];
+    }, false);
+    setIsVisible({
+      ...isVisible,
+      cookieDel: true,
+    });
   };
 
   // 쿠키 edit
   const handleEditCookie = async (formData: FormData) => {
-    const res = await putApi.updateCookie(formData);
-    res &&
-      (() => {
-        mutate(
-          key,
-          setFilteredCookieData((prev) =>
-            prev?.map((cookie) => {
-              if (cookie.id === res.cookieId) {
-                return {
-                  ...cookie,
-                  content: res.content,
-                  thumbnail: res.thumbnail,
-                  title: res.title,
-                };
-              }
-              return cookie;
-            }),
-          ),
-          false,
-        );
-        setIsVisible({
-          ...isVisible,
-          cookieEdit: true,
-        });
-      })();
+    // const res = await putApi.updateCookie(formData);
+    // res &&
+    //   (() => {
+    //     mutate(
+    //       key,
+    //       setFilteredCookieData((prev) =>
+    //         prev?.map((cookie) => {
+    //           if (cookie.id === res.cookieId) {
+    //             return {
+    //               ...cookie,
+    //               content: res.content,
+    //               thumbnail: res.thumbnail,
+    //               title: res.title,
+    //             };
+    //           }
+    //           return cookie;
+    //         }),
+    //       ),
+    //       false,
+    //     );
+    //     setIsVisible({
+    //       ...isVisible,
+    //       cookieEdit: true,
+    //     });
+    //   })();
   };
 
   // 디렉토리에 쿠키 추가
   const handleAddCookieToDir = async (body: PostAddCookieToDirProps) => {
-    const res = await postApi.postDirAddCookie(body);
-    res &&
-      (() => {
-        mutate(
-          key,
-          setFilteredCookieData((cookies) =>
-            cookies?.filter((cookie) => cookie.id !== res.cookieId),
-          ),
-          false,
-        );
-      })();
+    // const res = await postApi.postDirAddCookie(body);
+    // res &&
+    //   (() => {
+    //     mutate(
+    //       key,
+    //       setFilteredCookieData((cookies) =>
+    //         cookies?.filter((cookie) => cookie.id !== res.cookieId),
+    //       ),
+    //       false,
+    //     );
+    //   })();
   };
 
   // 쿠키 read 횟수
   const handleAddCookieCount = async (id: number) => {
-    const res = await postApi.postCookieCount(id);
-    res &&
-      (() => {
-        mutate(key, () => {}, false);
-      })();
+    // const res = await postApi.postCookieCount(id);
+    // res &&
+    //   (() => {
+    //     mutate(key, () => {}, false);
+    //   })();
   };
 
   // 디렉토리 edit
   const handleEditDir = async (id: number, body: PostDirectoryProps) => {
     const res = await putApi.updateDirectoryData(id, body);
-    res &&
-      (() => {
-        mutate(key, {
-          ...DirDetailData,
-          directoryInfo: {
-            name: res.name,
-            emoji: res.emoji,
-          },
-        });
-        setIsVisible({
-          ...isVisible,
-          dirEdit: true,
-        });
-      })();
+    setDirInfo(res);
   };
 
   return {
-    dirInfo: DirDetailData?.directoryInfo,
+    dirInfo: DirInfo,
     cookieFilter,
     handleCookieFilter,
-    filteredCookieData,
+    cookieData,
+    pageIndex,
+    setPageIndex,
     copyCookieLink,
     handleDelCookie,
     handleEditCookie,
     handleAddCookieToDir,
     handleAddCookieCount,
     handleEditDir,
+    isError: error,
+    isLoading: !DirDetailData && !error,
   };
 };
 
