@@ -4,10 +4,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { CookieDataProps } from "@interfaces/cookie";
 import { PostAddCookieToDirProps } from "@interfaces/directory";
 import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
-import getApi from "@api/getApi";
-import delApi from "@api/delApi";
-import putApi from "@api/putApi";
-import postApi from "@api/postApi";
+import { getApi, delApi, putApi, postApi } from "@api/index";
 import { returnCookieFilter } from "@lib/filter";
 
 interface CookieModuleProps {

@@ -4,12 +4,12 @@ import { BookmarkDataProps } from "@interfaces/homeboard";
 import { CookieDataProps } from "@interfaces/cookie";
 import { GetDirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
-import { getApi, putApi } from "@lib/api";
+import { getApi } from "@lib/api";
 import { useEffect, useState } from "react";
 import nextCookie from "next-cookies";
 import { mutate } from "swr";
 import { useToastMsg } from "src/hooks";
-import { CookieModule, DirModule, HomebrdModule } from "src/modules";
+import { CookieModule, DirModule, HomebrdModule } from "@modules/index";
 import { returnCookieFilter, returnDirFilter } from "@lib/filter";
 
 interface NewtabPageProps {

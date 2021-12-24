@@ -8,7 +8,7 @@ import { BookmarkDataProps } from "@interfaces/homeboard";
 import { RefreshIcon } from "@assets/icons/error";
 import { useState } from "react";
 import styled from "styled-components";
-import { useRouter } from "next/dist/client/router";
+import { useRouter } from "next/router";
 import { CookieIcon } from "@assets/icons/common";
 
 export interface NewtabErrorProps {

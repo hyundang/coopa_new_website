@@ -6,15 +6,8 @@ import {
 import { Btn } from "@components/atoms";
 import { Cookie, CookieMobile, Empty } from "@components/organisms";
 import { CookieIcon } from "@assets/icons/common";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
-  DirDeleteDataProps,
   DirectoryDataProps,
   PostAddCookieToDirProps,
   PostDirectoryProps,

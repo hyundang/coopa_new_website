@@ -18,7 +18,7 @@ const getUserData = (url: string): Promise<UserDataProps | undefined> =>
     return res.data.data;
   });
 
-const getHomeboardData = async (): Promise<string | undefined> => {
+const getHomeboardData = async (): Promise<string> => {
   try {
     const {
       data: {
@@ -29,7 +29,7 @@ const getHomeboardData = async (): Promise<string | undefined> => {
     return homeboard;
   } catch (e) {
     console.log("[FAIL] GET HOMEBOARD IMAGE DATA", e);
-    return undefined;
+    return "";
   }
 };
 
