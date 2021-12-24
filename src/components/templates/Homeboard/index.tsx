@@ -136,15 +136,12 @@ const Homeboard = ({
         setIsError &&
         setIsSuccess && (
           <HomeboardEditModal
+            locationX={locationX - 518 + 36}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
-            value={homeboardModalImg}
-            setValue={setHomeboardModalImg}
-            setHomeboardImg={setHomeboardImg}
-            postHomeboardImg={postHomeboardImg}
-            locationX={locationX - 518 + 36}
             setIsError={setIsError}
             setIsSuccess={setIsSuccess}
+            postHomeboardImg={postHomeboardImg}
           />
         )}
     </HomeboardWrap>

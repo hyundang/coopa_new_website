@@ -21,13 +21,13 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { HomeboardState, ToastMsgState } from "@modules/states";
 
 export interface NewtablProps {
-  // 검색관련
-  /** 검색창 enter key 클릭 */
-  onKeyPress: React.KeyboardEventHandler<HTMLInputElement>;
   /** 프로필 이미지 url */
   imgUrl?: string;
   /** 프로필 닉네임 */
   nickname: string;
+  // 홈보드 관련
+  /** 검색창 enter key 클릭 */
+  onKeyPress: React.KeyboardEventHandler<HTMLInputElement>;
   /** input img post */
   postHomeboardImg: (e: File) => Promise<string>;
   /** bookmark data list */
@@ -36,10 +36,16 @@ export interface NewtablProps {
   onClickBookmarkSave: (newBookmark: PostBookmarkDataProps) => Promise<void>;
   /** bookmark 삭제 함수 */
   onClickBookmarkDel: (bookmarkID: number) => Promise<void>;
+  // 쿠키 관련
   /** 쿠키 데이터 로딩 여부 */
   isCookieLoading: boolean;
   /** all cookie data */
   cookieData: CookieDataProps[];
+  /** for getting cookie data */
+  cookieDataPageIndex: number;
+  setCookieDataPageIndex: (
+    size: number,
+  ) => Promise<(CookieDataProps[] | undefined)[] | undefined>;
   /** 검색된 쿠키 데이터 */
   searchedCookieData: CookieDataProps[];
   /** 쿠키 필터 */
@@ -47,6 +53,17 @@ export interface NewtablProps {
   setCookieFilter: (
     f: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => void;
+  /** copy cookie link */
+  copyCookieLink: () => void;
+  /** delete cookie handler */
+  delCookieHandler: (id: number) => Promise<void>;
+  /** edit cookie */
+  handleEditCookie: (data: FormData) => Promise<void>;
+  /** dir cookie 추가 */
+  handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
+  /** add cookie count */
+  handleAddCookieCount: (id: number) => Promise<void>;
+  // 디렉토리 관련
   /** all directory data */
   dirData: GetDirectoryDataProps;
   /** 검색된 디렉토리 데이터 */
@@ -58,28 +75,14 @@ export interface NewtablProps {
   ) => void;
   /** 디렉토리 생성 */
   postDir: (e: PostDirectoryProps) => Promise<void>;
-  /** copy cookie link */
-  copyCookieLink: () => void;
-  /** delete cookie handler */
-  delCookieHandler: (id: number) => Promise<void>;
-  /** edit cookie */
-  handleEditCookie: (data: FormData) => Promise<void>;
   /** delete dir */
   handleDelDirectory: (id: number) => Promise<void>;
-  /** dir cookie 추가 */
-  handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
   /** update dir */
   handleUpdateDirectory: (
     id: number,
     body: PostDirectoryProps,
   ) => Promise<void>;
-  /** add cookie count */
-  handleAddCookieCount: (id: number) => Promise<void>;
-  /** for getting cookie data */
-  cookieDataPageIndex: number;
-  setCookieDataPageIndex: (
-    size: number,
-  ) => Promise<(CookieDataProps[] | undefined)[] | undefined>;
+  /** fix dir */
   fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
 }
 const Newtab = ({
