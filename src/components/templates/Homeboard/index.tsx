@@ -10,25 +10,16 @@ import {
   BookmarkDataProps,
   PostBookmarkDataProps,
 } from "@interfaces/homeboard";
+import { useRecoilValue } from "recoil";
+import { HomeboardState } from "@modules/states";
 
 export interface HomeboardProps {
   /** id */
   id?: string;
   /** className */
   className?: string;
-  /** 검색창 visible 여부 */
-  visible?: boolean;
-  setVisible?: Dispatch<SetStateAction<boolean>>;
-  /** 검색 여부 */
-  isSearched?: boolean;
-  setIsSearched?: Dispatch<SetStateAction<boolean>>;
-  /** 검색어 */
-  searchValue?: string;
-  setSearchValue?: Dispatch<SetStateAction<string>>;
   /** onKeyPress event handler */
   onSearchBarKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
-  /** onKeyDown event handler */
-  onSearchBarKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   /** 모달 안의 홈보드 배경 이미지 */
   homeboardModalImg?: string;
   setHomeboardModalImg?: Dispatch<SetStateAction<string>>;
@@ -47,20 +38,10 @@ export interface HomeboardProps {
   onClickBookmarkSave?: (newBookmark: PostBookmarkDataProps) => Promise<void>;
   /** bookmark 삭제 함수 */
   onClickBookmarkDel?: (bookmarkID: number) => Promise<void>;
-  /** 검색창 불필요한 fadeout 방지 */
-  preventFadeout?: boolean;
-  setPreventFadeout?: Dispatch<SetStateAction<boolean>>;
 }
 const Homeboard = ({
   id,
   className,
-  visible,
-  setVisible,
-  isSearched,
-  setIsSearched,
-  searchValue,
-  setSearchValue,
-  onSearchBarKeyDown,
   onSearchBarKeyPress,
   homeboardModalImg,
   setHomeboardModalImg,
@@ -72,9 +53,14 @@ const Homeboard = ({
   bookmarkDatas,
   onClickBookmarkDel,
   onClickBookmarkSave,
-  preventFadeout,
-  setPreventFadeout,
-}: HomeboardProps) => {
+}: // preventFadeout,
+// setPreventFadeout,
+HomeboardProps) => {
+  // 검색 여부
+  const isSearched = useRecoilValue(HomeboardState.IsSearchedState);
+  // 검색창 활성화 여부
+  const isSearchVisible = useRecoilValue(HomeboardState.IsSearchVisibleState);
+
   // homeboard edit modal open 여부
   const [isOpen, setIsOpen] = useState(false);
   // homeboard edit modal x좌표
@@ -108,14 +94,18 @@ const Homeboard = ({
       className={className}
       homeboardImg={homeboardImg}
       isSettingIconAtv={isOpen}
-      visible={visible}
-      isSearched={isSearched && visible}
+      visible={isSearchVisible}
+      isSearched={isSearched && isSearchVisible}
     >
       <div className="inner-wrap">
-        {!visible && <DuribunLImg role="img" className="duribun-left" />}
-        {!visible && <DuribunRImg role="img" className="duribun-right" />}
-        {visible && <SearchImg role="img" className="duribun-search" />}
-        {!visible && setHomeboardImg && (
+        {!isSearchVisible && (
+          <DuribunLImg role="img" className="duribun-left" />
+        )}
+        {!isSearchVisible && (
+          <DuribunRImg role="img" className="duribun-right" />
+        )}
+        {isSearchVisible && <SearchImg role="img" className="duribun-search" />}
+        {!isSearchVisible && setHomeboardImg && (
           <Icon
             className="setting"
             ref={settingIconLocation}
@@ -126,22 +116,10 @@ const Homeboard = ({
             <SettingIcon className="setting__icon" />
           </Icon>
         )}
-        {visible !== undefined && (
-          <SearchBar
-            className="search"
-            visible={visible}
-            setVisible={setVisible}
-            isSearched={isSearched}
-            setIsSearched={setIsSearched}
-            searchValue={searchValue}
-            setSearchValue={setSearchValue}
-            preventFadeout={preventFadeout}
-            setPreventFadeout={setPreventFadeout}
-            onKeyDown={onSearchBarKeyDown}
-            onKeyPress={onSearchBarKeyPress}
-          />
+        {isSearchVisible !== undefined && (
+          <SearchBar className="search" onKeyPress={onSearchBarKeyPress} />
         )}
-        {!visible && (
+        {!isSearchVisible && (
           <Bookmark
             className="bookmark"
             datas={bookmarkDatas}

@@ -1,52 +1,25 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import { CloseIcon } from "src/assets/icons/searchbar";
 import { SearchIcon } from "@assets/icons/common";
 import { searchbarAnimation } from "@components/animations";
 import { Icon } from "@components/atoms";
+import { HomeboardState } from "@modules/states";
+import { useRecoilState } from "recoil";
 
 export interface SearchBarProps {
   /** id */
   id?: string;
   /** className */
   className?: string;
-  /** 검색창 표시 여부 */
-  visible?: boolean;
-  setVisible?: Dispatch<SetStateAction<boolean>>;
-  /** 검색 여부 */
-  isSearched?: boolean;
-  setIsSearched?: Dispatch<SetStateAction<boolean>>;
-  /** 검색어 */
-  searchValue?: string;
-  setSearchValue?: Dispatch<SetStateAction<string>>;
   /** onKeyPress event handler */
   onKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
-  /** onKeyDown event handler */
-  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
-  /** 검색창 불필요한 fadeout 방지 */
-  preventFadeout?: boolean;
-  setPreventFadeout?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function SearchBar({
   id,
   className,
-  visible,
-  setVisible,
-  isSearched,
-  setIsSearched,
-  searchValue,
-  setSearchValue,
   onKeyPress,
-  onKeyDown,
-  preventFadeout,
-  setPreventFadeout,
 }: SearchBarProps) {
   // input focus
   const [isFocus, setIsFocus] = useState(false);
@@ -54,23 +27,70 @@ export default function SearchBar({
   // for input refs
   const search_input = useRef<HTMLInputElement>(null);
 
+  // 검색 여부
+  const [isSearched, setIsSearched] = useRecoilState(
+    HomeboardState.IsSearchedState,
+  );
+  // 검색어
+  const [searchValue, setSearchValue] = useRecoilState(
+    HomeboardState.SearchValueState,
+  );
+  // 불필요한 검색창 렌더링 방지
+  const [preventFadeout, setPreventFadeout] = useRecoilState(
+    HomeboardState.PreventFadeoutState,
+  );
+  // 검색창 활성화 여부
+  const [isSearchVisible, setIsSearchVisible] = useRecoilState(
+    HomeboardState.IsSearchVisibleState,
+  );
+
   // close button click
   const handleClickClose = () => {
-    setPreventFadeout && setPreventFadeout(false);
-    setIsSearched && setIsSearched(false);
-    setVisible && setVisible(false);
+    setPreventFadeout(false);
+    setIsSearched(false);
+    setIsSearchVisible(false);
+  };
+
+  // 키 클릭 시
+  // esc = 검색창 닫기
+  const handleKeyDown = async (e: any) => {
+    if (e.key === "Escape" && isSearchVisible) {
+      setPreventFadeout(false);
+      setIsSearchVisible(false);
+    }
+  };
+
+  // 키 떼어냈을 때
+  // shift + s = 검색창 열기
+  const handleKeyUp = (e: any) => {
+    if (e.key === "S" && e.shiftKey && !isSearchVisible) {
+      setIsSearchVisible(true);
+      setSearchValue("");
+      setIsSearched(false);
+    }
   };
 
   // 제일 처음에 search bar focus 상태로 설정
   useEffect(() => {
-    visible && search_input.current?.focus();
-  }, [visible]);
+    isSearchVisible && search_input.current?.focus();
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [isSearchVisible]);
+
+  // 불필요한 검색창 렌더링 방지
+  useEffect(() => {
+    setTimeout(() => !preventFadeout && setPreventFadeout(true), 1000);
+  }, [preventFadeout]);
 
   return (
     <SearchBarWrap
       id={id}
       className={className}
-      visible={visible}
+      visible={isSearchVisible}
       preventFadeout={preventFadeout}
       isSearched={isSearched}
       isFocus={isFocus}
@@ -81,17 +101,17 @@ export default function SearchBar({
           className="search-bar__input"
           placeholder="무엇을 찾아드릴까요?"
           value={searchValue}
-          onChange={(e) => setSearchValue && setSearchValue(e.target.value)}
+          onChange={(e) => setSearchValue(e.target.value)}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onKeyPress={onKeyPress}
-          onKeyDown={onKeyDown}
+          onKeyDown={handleKeyDown}
           ref={search_input}
         />
       </span>
       <Icon
         className="search-close"
-        onClick={visible ? handleClickClose : undefined}
+        onClick={isSearchVisible ? handleClickClose : undefined}
       >
         <CloseIcon className="search-close__icon" />
       </Icon>

@@ -15,17 +15,20 @@ import {
   PostDirectoryProps,
 } from "@interfaces/directory";
 import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
-// asset
+// libs
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
+import { useRecoilValue } from "recoil";
+import { HomeboardState } from "@modules/states";
 
 export interface NewtablProps {
+  // 검색관련
   /** 검색 여부 */
-  isSearched: boolean;
-  setIsSearched: Dispatch<SetStateAction<boolean>>;
-  /** 검색어 */
-  searchValue: string;
-  setSearchValue: Dispatch<SetStateAction<string>>;
+  // isSearched: boolean;
+  // setIsSearched: Dispatch<SetStateAction<boolean>>;
+  // /** 검색어 */
+  // searchValue: string;
+  // setSearchValue: Dispatch<SetStateAction<string>>;
   /** enter key 클릭 */
   onKeyPress: React.KeyboardEventHandler<HTMLInputElement>;
   /** 프로필 이미지 url */
@@ -96,10 +99,10 @@ export interface NewtablProps {
   fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
 }
 const Newtab = ({
-  isSearched,
-  setIsSearched,
-  searchValue,
-  setSearchValue,
+  // isSearched,
+  // setIsSearched,
+  // searchValue,
+  // setSearchValue,
   onKeyPress,
   imgUrl,
   nickname,
@@ -134,9 +137,11 @@ const Newtab = ({
   handleAddCookieCount,
   fixDirHandler,
 }: NewtablProps) => {
-  // 검색창 불필요한 fadeout 방지
-  const [preventFadeout, setPreventFadeout] = useState(true);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  // 검색 여부
+  const isSearched = useRecoilValue(HomeboardState.IsSearchedState);
+  // 검색창 활성화 여부
+  const isSearchVisible = useRecoilValue(HomeboardState.IsSearchVisibleState);
+
   // tab
   const [tabOptions, setTabOptions] = useState(["모든 쿠키", "디렉토리"]);
   const [tabValue, setTabValue] = useState("모든 쿠키");
@@ -168,30 +173,8 @@ const Newtab = ({
       [key]: value,
     });
 
-  // 검색 아이콘 클릭 시
-  const handleClickSearchIcon = () => {
-    isSearchVisible && setPreventFadeout(false);
-    setIsSearchVisible(!isSearchVisible);
-    setSearchValue("");
-    setIsSearched(false);
-  };
-
-  // 키 클릭 시
-  const handleKeyDown = async (e: any) => {
-    // esc = 검색창 닫기
-    if (e.key === "Escape" && isSearchVisible) {
-      setPreventFadeout(false);
-      setIsSearchVisible(false);
-    }
-  };
   // 키 떼어냈을 때
   const handleKeyUp = (e: any) => {
-    // shift + s = 검색창 열기
-    if (e.key === "S" && e.shiftKey && !isSearchVisible) {
-      setIsSearchVisible(true);
-      setSearchValue("");
-      setIsSearched(false);
-    }
     // shift + c = 모든 쿠키 탭
     if (e.key === "C" && e.shiftKey) {
       isSearched && isSearchVisible
@@ -204,10 +187,10 @@ const Newtab = ({
     }
   };
 
-  // 불필요한 검색창 렌더링 방지
   useEffect(() => {
-    setTimeout(() => !preventFadeout && setPreventFadeout(true), 1000);
-  }, [preventFadeout]);
+    console.log("isSearched: ", isSearched);
+    console.log("isSearchVisible: ", isSearchVisible);
+  }, [isSearchVisible, isSearched]);
 
   // 검색 여부에 따른 tab option 변경
   useEffect(() => {
@@ -220,29 +203,27 @@ const Newtab = ({
           setTabOptions(["모든 쿠키", "디렉토리"]);
           tabValue === "쿠키" && setTabValue("모든 쿠키");
         })();
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-    };
+    // window.addEventListener("keydown", handleKeyDown);
+    // window.addEventListener("keyup", handleKeyUp);
+    // return () => {
+    //   window.removeEventListener("keydown", handleKeyDown);
+    //   window.removeEventListener("keyup", handleKeyUp);
+    // };
   }, [isSearched, isSearchVisible]);
 
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, []);
+  // useEffect(() => {
+  //   window.addEventListener("keydown", handleKeyDown);
+  //   window.addEventListener("keyup", handleKeyUp);
+  //   return () => {
+  //     window.removeEventListener("keydown", handleKeyDown);
+  //     window.removeEventListener("keyup", handleKeyUp);
+  //   };
+  // }, []);
 
   return (
     <>
       <Header
         className="header"
-        onClickSearch={handleClickSearchIcon}
-        isSearchIconAtv={isSearchVisible}
         imgUrl={imgUrl}
         isOnboardOpen={isOnboardOpen}
         setIsOnboardOpen={setIsOnboardOpen}
@@ -250,13 +231,6 @@ const Newtab = ({
       <Container className="container" isSearched={isSearched}>
         <Homeboard
           className="homeboard"
-          visible={isSearchVisible}
-          setVisible={setIsSearchVisible}
-          isSearched={isSearched}
-          setIsSearched={setIsSearched}
-          searchValue={searchValue}
-          setSearchValue={setSearchValue}
-          onSearchBarKeyDown={handleKeyDown}
           onSearchBarKeyPress={onKeyPress}
           homeboardModalImg={homeboardModalImg}
           setHomeboardModalImg={setHomeboardModalImg}
@@ -268,24 +242,10 @@ const Newtab = ({
           bookmarkDatas={bookmarkDatas}
           onClickBookmarkDel={onClickBookmarkDel}
           onClickBookmarkSave={onClickBookmarkSave}
-          preventFadeout={preventFadeout}
-          setPreventFadeout={setPreventFadeout}
         />
         {isSearchVisible && (
           <div className="search-wrap">
-            <SearchBar
-              className="search--tablet"
-              visible={isSearchVisible}
-              setVisible={setIsSearchVisible}
-              isSearched={isSearched}
-              setIsSearched={setIsSearched}
-              searchValue={searchValue}
-              setSearchValue={setSearchValue}
-              preventFadeout={preventFadeout}
-              setPreventFadeout={setPreventFadeout}
-              onKeyDown={handleKeyDown}
-              onKeyPress={onKeyPress}
-            />
+            <SearchBar className="search--tablet" onKeyPress={onKeyPress} />
           </div>
         )}
         <nav className="tab-wrap">

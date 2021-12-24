@@ -11,6 +11,8 @@ import { mutate } from "swr";
 import { useToastMsg } from "src/hooks";
 import { CookieModule, DirModule, HomebrdModule } from "@modules/index";
 import { returnCookieFilter, returnDirFilter } from "@lib/filter";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { HomeboardState } from "@modules/states";
 
 interface NewtabPageProps {
   isLogin: boolean;
@@ -29,9 +31,9 @@ export default function NewtabPage({
   initHomeboardImgUrl,
 }: NewtabPageProps) {
   // 검색 여부
-  const [isSearched, setIsSearched] = useState(false);
+  const setIsSearched = useSetRecoilState(HomeboardState.IsSearchedState);
   // 검색어
-  const [searchValue, setSearchValue] = useState("");
+  const searchValue = useRecoilValue(HomeboardState.SearchValueState);
 
   // toast msg visible state
   const { isVisible, setIsVisible } = useToastMsg();
@@ -107,10 +109,6 @@ export default function NewtabPage({
       {isLogin ? (
         <Newtab
           // 쿠키, 디렉토리 검색
-          isSearched={isSearched}
-          setIsSearched={setIsSearched}
-          searchValue={searchValue}
-          setSearchValue={setSearchValue}
           onKeyPress={handleKeyPress}
           // 유저 데이터 관련
           imgUrl={initUserData?.profileImage}
