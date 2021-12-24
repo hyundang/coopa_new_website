@@ -179,22 +179,18 @@ const Newtab = ({
           setTabOptions(["모든 쿠키", "디렉토리"]);
           tabValue === "쿠키" && setTabValue("모든 쿠키");
         })();
-    // window.addEventListener("keydown", handleKeyDown);
-    // window.addEventListener("keyup", handleKeyUp);
-    // return () => {
-    //   window.removeEventListener("keydown", handleKeyDown);
-    //   window.removeEventListener("keyup", handleKeyUp);
-    // };
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
   }, [isSearched, isSearchVisible]);
 
-  // useEffect(() => {
-  //   window.addEventListener("keydown", handleKeyDown);
-  //   window.addEventListener("keyup", handleKeyUp);
-  //   return () => {
-  //     window.removeEventListener("keydown", handleKeyDown);
-  //     window.removeEventListener("keyup", handleKeyUp);
-  //   };
-  // }, []);
+  useEffect(() => {
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   return (
     <>
