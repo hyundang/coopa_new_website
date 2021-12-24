@@ -128,6 +128,9 @@ const ListWrap = styled.ul`
     border-radius: 5px;
     box-sizing: border-box;
   }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--gray_3);
+  }
   .list-item {
     display: flex;
     align-items: center;
