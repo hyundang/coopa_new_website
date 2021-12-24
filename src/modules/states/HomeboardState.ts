@@ -24,11 +24,25 @@ const PreventFadeoutState = atom<boolean>({
   default: true,
 });
 
+// 홈보드 배경 이미지
+const HomeboardImgState = atom<string>({
+  key: "HOMEBOARD/img",
+  default: "",
+});
+
+// 홈보드 수정 모달 이미지
+const HomeboardModalImgState = atom<string>({
+  key: "HOMEBOARD/modal/img",
+  default: "",
+});
+
 const HomeboardState = {
   IsSearchedState,
   SearchValueState,
   IsSearchVisibleState,
   PreventFadeoutState,
+  HomeboardImgState,
+  HomeboardModalImgState,
 };
 
 export default HomeboardState;

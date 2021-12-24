@@ -14,33 +14,20 @@ import {
   PostAddCookieToDirProps,
   PostDirectoryProps,
 } from "@interfaces/directory";
-import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
 // libs
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-import { useRecoilValue } from "recoil";
-import { HomeboardState } from "@modules/states";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { HomeboardState, ToastMsgState } from "@modules/states";
 
 export interface NewtablProps {
   // 검색관련
-  /** 검색 여부 */
-  // isSearched: boolean;
-  // setIsSearched: Dispatch<SetStateAction<boolean>>;
-  // /** 검색어 */
-  // searchValue: string;
-  // setSearchValue: Dispatch<SetStateAction<string>>;
-  /** enter key 클릭 */
+  /** 검색창 enter key 클릭 */
   onKeyPress: React.KeyboardEventHandler<HTMLInputElement>;
   /** 프로필 이미지 url */
   imgUrl?: string;
   /** 프로필 닉네임 */
   nickname: string;
-  /** 모달 안의 홈보드 배경 이미지 */
-  homeboardModalImg: string;
-  setHomeboardModalImg: Dispatch<SetStateAction<string>>;
-  /** 홈보드 배경 이미지 */
-  homeboardImg: string;
-  setHomeboardImg: Dispatch<SetStateAction<string>>;
   /** input img post */
   postHomeboardImg: (e: File) => Promise<string>;
   /** bookmark data list */
@@ -96,17 +83,9 @@ export interface NewtablProps {
   fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
 }
 const Newtab = ({
-  // isSearched,
-  // setIsSearched,
-  // searchValue,
-  // setSearchValue,
   onKeyPress,
   imgUrl,
   nickname,
-  homeboardModalImg,
-  setHomeboardModalImg,
-  homeboardImg,
-  setHomeboardImg,
   postHomeboardImg,
   bookmarkDatas,
   onClickBookmarkSave,
@@ -186,11 +165,6 @@ const Newtab = ({
     }
   };
 
-  useEffect(() => {
-    console.log("isSearched: ", isSearched);
-    console.log("isSearchVisible: ", isSearchVisible);
-  }, [isSearchVisible, isSearched]);
-
   // 검색 여부에 따른 tab option 변경
   useEffect(() => {
     isSearched && isSearchVisible
@@ -231,10 +205,6 @@ const Newtab = ({
         <Homeboard
           className="homeboard"
           onSearchBarKeyPress={onKeyPress}
-          homeboardModalImg={homeboardModalImg}
-          setHomeboardModalImg={setHomeboardModalImg}
-          homeboardImg={homeboardImg}
-          setHomeboardImg={setHomeboardImg}
           postHomeboardImg={postHomeboardImg}
           setIsSuccess={(e) => handleToastMsgVisible("homeboardEdit", e)}
           setIsError={(e) => handleToastMsgVisible("imgSizeOver", e)}

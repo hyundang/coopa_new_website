@@ -10,7 +10,7 @@ import {
   BookmarkDataProps,
   PostBookmarkDataProps,
 } from "@interfaces/homeboard";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { HomeboardState } from "@modules/states";
 
 export interface HomeboardProps {
@@ -18,20 +18,17 @@ export interface HomeboardProps {
   id?: string;
   /** className */
   className?: string;
+  // 검색창 관련
   /** onKeyPress event handler */
   onSearchBarKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
-  /** 모달 안의 홈보드 배경 이미지 */
-  homeboardModalImg?: string;
-  setHomeboardModalImg?: Dispatch<SetStateAction<string>>;
-  /** 홈보드 배경 이미지 */
-  homeboardImg: string;
-  setHomeboardImg?: Dispatch<SetStateAction<string>>;
+  // 홈보드 관련
   /** homeboard img post 함수 */
   postHomeboardImg?: (e: File) => Promise<string>;
   /** homeboard img 변경 성공 */
   setIsSuccess?: (e: boolean) => void;
   /** img input 시 img size 에러 */
   setIsError?: (e: boolean) => void;
+  // 북마크 관련
   /** bookmark data list */
   bookmarkDatas: BookmarkDataProps[];
   /** bookmark 추가 함수 */
@@ -43,23 +40,26 @@ const Homeboard = ({
   id,
   className,
   onSearchBarKeyPress,
-  homeboardModalImg,
-  setHomeboardModalImg,
-  homeboardImg,
-  setHomeboardImg,
   postHomeboardImg,
   setIsSuccess,
   setIsError,
   bookmarkDatas,
   onClickBookmarkDel,
   onClickBookmarkSave,
-}: // preventFadeout,
-// setPreventFadeout,
-HomeboardProps) => {
+}: HomeboardProps) => {
   // 검색 여부
   const isSearched = useRecoilValue(HomeboardState.IsSearchedState);
   // 검색창 활성화 여부
   const isSearchVisible = useRecoilValue(HomeboardState.IsSearchVisibleState);
+
+  // 홈보드 배경 이미지
+  const [homeboardImg, setHomeboardImg] = useRecoilState(
+    HomeboardState.HomeboardImgState,
+  );
+  // 홈보드 수정 모달 이미지
+  const [homeboardModalImg, setHomeboardModalImg] = useRecoilState(
+    HomeboardState.HomeboardModalImgState,
+  );
 
   // homeboard edit modal open 여부
   const [isOpen, setIsOpen] = useState(false);
@@ -69,13 +69,14 @@ HomeboardProps) => {
   const settingIconLocation = useRef<HTMLButtonElement>(null);
 
   // 키 떼어냈을 때
+  // shift + e = 홈보드 수정 모달 열기
   const handleKeyUp = (e: any) => {
-    // shift + e = 홈보드 수정 모달 열기
     if (e.key === "E" && e.shiftKey) {
       setIsOpen(true);
     }
   };
 
+  // 홈보드 수정 모달 x좌표 찾기
   useEffect(() => {
     settingIconLocation.current &&
       setLocationX(settingIconLocation.current.getBoundingClientRect().x);

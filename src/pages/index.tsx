@@ -1,17 +1,22 @@
+// assets
 import { NotFoundErrorImg } from "@assets/imgs/error";
+// apis
+import { getApi } from "@api/index";
+// components
 import { NewtabError, Newtab } from "@components/templates";
+// interfaces
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import { CookieDataProps } from "@interfaces/cookie";
 import { GetDirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
-import { getApi } from "@lib/api";
-import { useEffect, useState } from "react";
+// libs
+import { useEffect } from "react";
 import nextCookie from "next-cookies";
 import { mutate } from "swr";
-import { useToastMsg } from "src/hooks";
-import { CookieModule, DirModule, HomebrdModule } from "@modules/index";
 import { returnCookieFilter, returnDirFilter } from "@lib/filter";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+// modules
+import { CookieModule, DirModule, HomebrdModule } from "@modules/index";
 import { HomeboardState } from "@modules/states";
 
 interface NewtabPageProps {
@@ -77,7 +82,8 @@ export default function NewtabPage({
             `/theme_img/img_${homeboardImgUrl}.jpg`,
           );
           homebrdModule.setHomeboardModalImg(
-            `/theme_img/img_${homeboardImgUrl}.jpg`,
+            // `/theme_img/img_${homeboardImgUrl}.jpg`,
+            "",
           );
         })()
       : !initHomeboardImgUrl &&
@@ -105,10 +111,6 @@ export default function NewtabPage({
           imgUrl={initUserData?.profileImage}
           nickname={initUserData?.name}
           // 홈보드 데이터 관련
-          homeboardModalImg={homebrdModule.homeboardModalImg}
-          setHomeboardModalImg={homebrdModule.setHomeboardModalImg}
-          homeboardImg={homebrdModule.homeboardImg}
-          setHomeboardImg={homebrdModule.setHomeboardImg}
           postHomeboardImg={homebrdModule.handlePostHomeboardImg}
           bookmarkDatas={homebrdModule.bookmarkData || []}
           onClickBookmarkSave={homebrdModule.handleAddBookmark}

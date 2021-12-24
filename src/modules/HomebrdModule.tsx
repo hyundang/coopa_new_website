@@ -1,14 +1,16 @@
-import useSWR, { mutate } from "swr";
-import { Dispatch, SetStateAction, useState } from "react";
+// apis
+import { getApi, delApi, postApi, putApi } from "@api/index";
+// interfaces
 import {
   BookmarkDataProps,
   PostBookmarkDataProps,
 } from "@interfaces/homeboard";
 // libs
-import getApi from "@api/getApi";
-import delApi from "@api/delApi";
-import putApi from "@api/putApi";
-import postApi from "@api/postApi";
+import useSWR, { mutate } from "swr";
+import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+// modules
+import { HomeboardState, ToastMsgState } from "./states";
 
 interface HomebrdModuleProps {
   /** initial homeboard datas */
@@ -23,11 +25,18 @@ const HomebrdModule = ({
   const [isToastMsgVisible, setIsToastMsgVisible] =
     useRecoilState(ToastMsgState);
   // 홈보드 배경 이미지
-  const [homeboardImg, setHomeboardImg] = useState(initHomeboardImgUrl || "");
-  // 홈보드 모달 이미지
-  const [homeboardModalImg, setHomeboardModalImg] = useState(
-    initHomeboardImgUrl || "",
+  const [homeboardImg, setHomeboardImg] = useRecoilState(
+    HomeboardState.HomeboardImgState,
   );
+  // 홈보드 수정 모달 이미지
+  const [homeboardModalImg, setHomeboardModalImg] = useRecoilState(
+    HomeboardState.HomeboardModalImgState,
+  );
+
+  useEffect(() => {
+    setHomeboardImg(initHomeboardImgUrl || "");
+    setHomeboardModalImg(initHomeboardImgUrl || "");
+  }, []);
 
   // 홈보드 이미지 get
   const handleGetHomeboardImg = async () => {
