@@ -1,30 +1,28 @@
-import useSWR, { mutate } from "swr";
-import reactCookie from "react-cookies";
-import { Dispatch, SetStateAction, useState } from "react";
+// apis
+import { getApi, delApi, postApi, putApi } from "@api/index";
+// interfaces
 import {
   DirectoryDataProps,
   GetDirectoryDataProps,
   PostDirectoryProps,
 } from "@interfaces/directory";
-import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
-import getApi from "@api/getApi";
-import delApi from "@api/delApi";
-import putApi from "@api/putApi";
-import postApi from "@api/postApi";
+// libs
+import useSWR, { mutate } from "swr";
+import reactCookie from "react-cookies";
+import { useState } from "react";
 import { returnDirFilter } from "@lib/filter";
+import { useRecoilState } from "recoil";
+// modules
+import { ToastMsgState } from "./states";
 
 interface DirModuleProps {
   /** initial directory datas */
   initAllDirData: GetDirectoryDataProps;
-  /** toast msg */
-  isVisible: ToastMsgVisibleStateProps;
-  setIsVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
 }
-const DirModule = ({
-  initAllDirData,
-  isVisible,
-  setIsVisible,
-}: DirModuleProps) => {
+const DirModule = ({ initAllDirData }: DirModuleProps) => {
+  // toast msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
   // 디렉토리 필터
   const initFilter = reactCookie.load("dirFilter");
   const [dirFilter, setDirFilter] = useState<"latest" | "oldest" | "abc">(
@@ -86,8 +84,8 @@ const DirModule = ({
       },
       true,
     );
-    setIsVisible({
-      ...isVisible,
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
       dirCreate: true,
     });
   };
@@ -112,8 +110,8 @@ const DirModule = ({
       false,
     );
     // toast msg
-    setIsVisible({
-      ...isVisible,
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
       dirDel: true,
     });
   };
@@ -226,8 +224,8 @@ const DirModule = ({
       false,
     );
     // toast msg
-    setIsVisible({
-      ...isVisible,
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
       dirEdit: true,
     });
   };

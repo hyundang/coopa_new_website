@@ -71,9 +71,6 @@ export interface NewtablProps {
   ) => void;
   /** 디렉토리 생성 */
   postDir: (e: PostDirectoryProps) => Promise<void>;
-  /** toast msg state */
-  isToastMsgVisible: ToastMsgVisibleStateProps;
-  setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
   /** copy cookie link */
   copyCookieLink: () => void;
   /** delete cookie handler */
@@ -126,8 +123,6 @@ const Newtab = ({
   dirFilter,
   setDirFilter,
   postDir,
-  isToastMsgVisible,
-  setIsToastMsgVisible,
   copyCookieLink,
   delCookieHandler,
   handleEditCookie,
@@ -151,6 +146,10 @@ const Newtab = ({
 
   // 온보딩 모달 오픈
   const [isOnboardOpen, setIsOnboardOpen] = useState(false);
+
+  // tost msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
 
   // toast msg visible handling
   const handleToastMsgVisible = (

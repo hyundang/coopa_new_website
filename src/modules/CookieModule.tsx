@@ -1,24 +1,25 @@
-import useSWR, { useSWRInfinite } from "swr";
-import reactCookie from "react-cookies";
-import { Dispatch, SetStateAction, useState } from "react";
+// apis
+import { getApi, delApi, putApi, postApi } from "@api/index";
+// interfaces
 import { CookieDataProps } from "@interfaces/cookie";
 import { PostAddCookieToDirProps } from "@interfaces/directory";
-import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
-import { getApi, delApi, putApi, postApi } from "@api/index";
+// libs
 import { returnCookieFilter } from "@lib/filter";
+import reactCookie from "react-cookies";
+import { useState } from "react";
+import useSWR, { useSWRInfinite } from "swr";
+import { useRecoilState } from "recoil";
+// modules
+import { ToastMsgState } from "./states";
 
 interface CookieModuleProps {
   /** initial cookie datas */
   initAllCookieData: CookieDataProps[];
-  /** toast msg */
-  isVisible: ToastMsgVisibleStateProps;
-  setIsVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
 }
-const CookieModule = ({
-  initAllCookieData,
-  isVisible,
-  setIsVisible,
-}: CookieModuleProps) => {
+const CookieModule = ({ initAllCookieData }: CookieModuleProps) => {
+  // toast msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
   // 쿠키 필터
   const initFilter = reactCookie.load("cookieFilter");
   const [cookieFilter, setCookieFilter] = useState<
@@ -72,8 +73,8 @@ const CookieModule = ({
 
   //쿠키 링크 복사
   const copyCookieLink = () => {
-    setIsVisible({
-      ...isVisible,
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
       copyLink: true,
     });
   };
@@ -95,8 +96,8 @@ const CookieModule = ({
       );
       return [newCookieData];
     }, false);
-    setIsVisible({
-      ...isVisible,
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
       cookieDel: true,
     });
   };
@@ -164,8 +165,8 @@ const CookieModule = ({
       return [newCookieData];
     }, false);
     // toast msg 띄우기
-    setIsVisible({
-      ...isVisible,
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
       cookieEdit: true,
     });
   };

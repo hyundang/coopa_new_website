@@ -35,29 +35,20 @@ export default function NewtabPage({
   // 검색어
   const searchValue = useRecoilValue(HomeboardState.SearchValueState);
 
-  // toast msg visible state
-  const { isVisible, setIsVisible } = useToastMsg();
-
   // 홈보드 모듈
   const homebrdModule = HomebrdModule({
     initHomeboardImgUrl,
     initBookmarkData,
-    isVisible,
-    setIsVisible,
   });
 
   // 쿠키 모듈
   const cookieModule = CookieModule({
     initAllCookieData,
-    isVisible,
-    setIsVisible,
   });
 
   // 디렉토리 모듈
   const dirModule = DirModule({
     initAllDirData,
-    isVisible,
-    setIsVisible,
   });
 
   // 검색창 enter 키 클릭 시
@@ -149,9 +140,6 @@ export default function NewtabPage({
           fixDirHandler={dirModule.handleFixDir}
           handleDelDirectory={dirModule.handleDelDir}
           handleUpdateDirectory={dirModule.handleEditDir}
-          // 토스트 메시지 관련
-          isToastMsgVisible={isVisible}
-          setIsToastMsgVisible={setIsVisible}
         />
       ) : (
         <NewtabError
