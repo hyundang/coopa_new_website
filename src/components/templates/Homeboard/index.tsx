@@ -1,17 +1,14 @@
 import { SettingIcon } from "@assets/icons/homeboard";
 import { DuribunLImg, DuribunRImg, SearchImg } from "@assets/imgs/homeboard";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import { Icon, SearchBar } from "@components/atoms";
 import { HomeboardEditModal, Bookmark } from "@components/organisms";
 import { homeboardAnimation } from "@components/animations";
 import { useWindowSize } from "src/hooks";
-import {
-  BookmarkDataProps,
-  PostBookmarkDataProps,
-} from "@interfaces/homeboard";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { HomeboardState } from "@modules/states";
+import HomebrdModule from "@modules/HomebrdModule";
 
 export interface HomeboardProps {
   /** id */
@@ -22,30 +19,20 @@ export interface HomeboardProps {
   /** onKeyPress event handler */
   onSearchBarKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
   // 홈보드 관련
-  /** homeboard img post 함수 */
-  postHomeboardImg?: (e: File) => Promise<string>;
+  /** homeboard module */
+  homeboardModule: ReturnType<typeof HomebrdModule>;
   /** homeboard img 변경 성공 */
   setIsSuccess?: (e: boolean) => void;
   /** img input 시 img size 에러 */
   setIsError?: (e: boolean) => void;
-  // 북마크 관련
-  /** bookmark data list */
-  bookmarkDatas: BookmarkDataProps[];
-  /** bookmark 추가 함수 */
-  onClickBookmarkSave?: (newBookmark: PostBookmarkDataProps) => Promise<void>;
-  /** bookmark 삭제 함수 */
-  onClickBookmarkDel?: (bookmarkID: number) => Promise<void>;
 }
 const Homeboard = ({
   id,
   className,
   onSearchBarKeyPress,
-  postHomeboardImg,
+  homeboardModule,
   setIsSuccess,
   setIsError,
-  bookmarkDatas,
-  onClickBookmarkDel,
-  onClickBookmarkSave,
 }: HomeboardProps) => {
   // 검색 여부
   const isSearched = useRecoilValue(HomeboardState.IsSearchedState);
@@ -123,16 +110,15 @@ const Homeboard = ({
         {!isSearchVisible && (
           <Bookmark
             className="bookmark"
-            datas={bookmarkDatas}
-            onClickSave={onClickBookmarkSave}
-            onClickDel={onClickBookmarkDel}
+            datas={homeboardModule.bookmarkData || []}
+            onClickSave={homeboardModule.handleAddBookmark}
+            onClickDel={homeboardModule.handleDelBookmark}
           />
         )}
       </div>
       {homeboardModalImg !== undefined &&
         setHomeboardModalImg &&
         setHomeboardImg &&
-        postHomeboardImg &&
         setIsError &&
         setIsSuccess && (
           <HomeboardEditModal
@@ -141,7 +127,7 @@ const Homeboard = ({
             setIsOpen={setIsOpen}
             setIsError={setIsError}
             setIsSuccess={setIsSuccess}
-            postHomeboardImg={postHomeboardImg}
+            postHomeboardImg={homeboardModule.handlePostHomeboardImg}
           />
         )}
     </HomeboardWrap>

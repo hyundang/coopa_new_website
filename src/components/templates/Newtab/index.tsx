@@ -3,10 +3,6 @@ import { SearchBar, Tab, ToastMsg } from "@components/atoms";
 import { Footer, Header, ListHeader } from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
 // interfaces
-import {
-  BookmarkDataProps,
-  PostBookmarkDataProps,
-} from "@interfaces/homeboard";
 import { CookieDataProps } from "@interfaces/cookie";
 import {
   DirectoryDataProps,
@@ -19,6 +15,7 @@ import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { HomeboardState, ToastMsgState } from "@modules/states";
+import HomebrdModule from "@modules/HomebrdModule";
 
 export interface NewtablProps {
   /** 프로필 이미지 url */
@@ -28,14 +25,8 @@ export interface NewtablProps {
   // 홈보드 관련
   /** 검색창 enter key 클릭 */
   onKeyPress: React.KeyboardEventHandler<HTMLInputElement>;
-  /** input img post */
-  postHomeboardImg: (e: File) => Promise<string>;
-  /** bookmark data list */
-  bookmarkDatas: BookmarkDataProps[];
-  /** bookmark 추가 함수 */
-  onClickBookmarkSave: (newBookmark: PostBookmarkDataProps) => Promise<void>;
-  /** bookmark 삭제 함수 */
-  onClickBookmarkDel: (bookmarkID: number) => Promise<void>;
+  /** homeboard module */
+  homeboardModule: ReturnType<typeof HomebrdModule>;
   // 쿠키 관련
   /** 쿠키 데이터 로딩 여부 */
   isCookieLoading: boolean;
@@ -86,13 +77,10 @@ export interface NewtablProps {
   fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
 }
 const Newtab = ({
-  onKeyPress,
   imgUrl,
   nickname,
-  postHomeboardImg,
-  bookmarkDatas,
-  onClickBookmarkSave,
-  onClickBookmarkDel,
+  onKeyPress,
+  homeboardModule,
   isCookieLoading,
   cookieData,
   cookieDataPageIndex,
@@ -204,12 +192,9 @@ const Newtab = ({
         <Homeboard
           className="homeboard"
           onSearchBarKeyPress={onKeyPress}
-          postHomeboardImg={postHomeboardImg}
+          homeboardModule={homeboardModule}
           setIsSuccess={(e) => handleToastMsgVisible("homeboardEdit", e)}
           setIsError={(e) => handleToastMsgVisible("imgSizeOver", e)}
-          bookmarkDatas={bookmarkDatas}
-          onClickBookmarkDel={onClickBookmarkDel}
-          onClickBookmarkSave={onClickBookmarkSave}
         />
         {isSearchVisible && (
           <div className="search-wrap">

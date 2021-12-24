@@ -105,16 +105,12 @@ export default function NewtabPage({
     <>
       {isLogin ? (
         <Newtab
-          // 쿠키, 디렉토리 검색
-          onKeyPress={handleKeyPress}
           // 유저 데이터 관련
           imgUrl={initUserData?.profileImage}
           nickname={initUserData?.name}
-          // 홈보드 데이터 관련
-          postHomeboardImg={homebrdModule.handlePostHomeboardImg}
-          bookmarkDatas={homebrdModule.bookmarkData || []}
-          onClickBookmarkSave={homebrdModule.handleAddBookmark}
-          onClickBookmarkDel={homebrdModule.handleDelBookmark}
+          // 홈보드 관련
+          onKeyPress={handleKeyPress}
+          homeboardModule={homebrdModule}
           // 쿠키 데이터 관련
           isCookieLoading={cookieModule.isLoading}
           cookieData={
