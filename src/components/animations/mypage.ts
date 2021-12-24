@@ -36,11 +36,11 @@ const countDuribunHandRule = css(
 
 const bubbleFadeIn = keyframes`
     from {
-      transform: translateY(3px);
+      transform: translate(-102px, 3px);
       opacity: 0;
     }
     to {
-      transform: translateY(0px);
+      transform: translate(-102px, 0px);
       opacity: 1;
     }
 `;
@@ -51,12 +51,12 @@ const bubbleFadeInRule = css(
 
 const bubbleFadeOut = keyframes`
     from {
-      transform: translateY(0px);
+      transform: translate(-102px, 0px);
       opacity: 1;
       visibility: visible;
     }
     to {
-      transform: translateY(3px);
+      transform: translate(-102px, 3px);
       opacity: 0;
       visibility: hidden;
     }
