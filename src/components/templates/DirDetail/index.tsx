@@ -22,6 +22,9 @@ import {
 import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
 import { Dispatch, SetStateAction, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { useRecoilState } from "recoil";
+import { ToastMsgState } from "@modules/states";
+import DirDetailModule from "@modules/DirDetailModule";
 
 export interface DirDetailProps {
   /** 공유 디렉토리 여부 */
@@ -36,45 +39,16 @@ export interface DirDetailProps {
   allDir?: DirectoryDataProps[];
   /** 고정 디렉토리 */
   fixedDir?: DirectoryDataProps[];
-  /** 쿠키 데이터 로딩 여부 */
-  isCookieLoading: boolean;
-  /** cookie data */
-  cookies: CookieDataProps[];
-  filterType: "latest" | "readMost" | "readLeast" | "oldest";
-  onClickType: (
-    filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
-  ) => void;
+  /** 디렉토리 생성 */
+  handlePostDir?: (e: PostDirectoryProps) => Promise<void>;
+  /** 디렉토리 상세 모듈 */
+  dirDetailModule: ReturnType<typeof DirDetailModule>;
   /** 공유 버튼 눌렀을 때 함수 */
   shareClick?: React.MouseEventHandler<HTMLButtonElement>;
   /** 공유 링크 */
   shareLink?: string;
-  /** toast msg state */
-  isToastMsgVisible: ToastMsgVisibleStateProps;
-  setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
-  /** copy cookie link */
-  copyCookieLink?: () => void;
-  /** delete cookie handler */
-  delCookieHandler: (id: number) => Promise<void>;
-  /** edit cookie */
-  handleEditCookie: (data: FormData) => Promise<void>;
-  /** dir cookie 추가 */
-  handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
-  /** 디렉토리 생성 */
-  postDir?: (e: PostDirectoryProps) => Promise<void>;
   /** delete dir */
   handleDelDirectory?: (id: number) => Promise<void>;
-  /** update dir */
-  handleUpdateDirectory?: (
-    id: number,
-    body: PostDirectoryProps,
-  ) => Promise<void>;
-  /** add cookie count */
-  handleAddCookieCount: (id: number) => Promise<void>;
-  /** for getting cookie data */
-  cookieDataPageIndex: number;
-  setCookieDataPageIndex: (
-    size: number,
-  ) => Promise<(DirectoryCookieDataProps | undefined)[] | undefined>;
   fixCookieHandler: () => void;
 }
 const DirDetail = ({
@@ -84,28 +58,20 @@ const DirDetail = ({
   dirInfo,
   allDir,
   fixedDir,
-  cookies,
-  isCookieLoading,
-  cookieDataPageIndex,
-  setCookieDataPageIndex,
-  filterType,
-  onClickType,
+  handlePostDir,
+  handleDelDirectory,
   shareClick,
   shareLink,
-  isToastMsgVisible,
-  setIsToastMsgVisible,
-  postDir,
-  copyCookieLink,
-  delCookieHandler,
-  handleEditCookie,
-  handleDelDirectory,
-  handleDirAddCookie,
-  handleUpdateDirectory,
-  handleAddCookieCount,
+  dirDetailModule,
   fixCookieHandler,
 }: DirDetailProps) => {
+  // toast msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
+
   // 디렉토리 수정 모달 오픈
   const [isDirEditOpen, setIsDirEditOpen] = useState(false);
+  // 디렉토리 수정 데이터
   const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
     emoji: dirInfo?.emoji || "",
     name: dirInfo.name,
@@ -159,7 +125,7 @@ const DirDetail = ({
               </p>
               <p className="info">
                 <EmptyCookieIcon className="cookie-icon" />
-                {cookies.length}개
+                {dirDetailModule.cookieData?.length || 0}개
               </p>
               {!isShared && (
                 <CopyToClipboard text={shareLink || ""}>
@@ -180,27 +146,26 @@ const DirDetail = ({
             type={isShared ? "dirShare" : "dirDetail"}
             imgUrl={imgUrl}
             nickname={nickname}
-            cookieNum={cookies.length}
-            filterType={filterType}
-            onClickType={onClickType}
+            cookieNum={dirDetailModule.cookieData?.length || 0}
+            filterType={dirDetailModule.cookieFilter}
+            onClickType={dirDetailModule.handleCookieFilter}
             isAddOpen={isCookieAddOpen}
             setIsAddOpen={setIsCookieAddOpen}
           />
           <Cookies
             type={isShared ? "dirShare" : "dirDetail"}
-            data={cookies}
+            data={
+              dirDetailModule.cookieData?.reduce(
+                (acc, curr) => curr && acc?.concat(curr),
+                [],
+              ) || []
+            }
+            isLoading={dirDetailModule.isLoading}
             allDir={allDir || []}
             fixedDir={fixedDir || []}
+            postDir={handlePostDir}
             setIsOnboardOpen={setIsOnboardOpen}
-            copyCookieLink={copyCookieLink || (() => {})}
-            delCookieHandler={delCookieHandler}
-            handleEditCookie={handleEditCookie}
-            handleDirAddCookie={handleDirAddCookie}
-            handleAddCookieCount={handleAddCookieCount}
-            postDir={postDir}
-            isLoading={isCookieLoading}
-            pageIndex={cookieDataPageIndex}
-            setPageIndex={setCookieDataPageIndex}
+            cookieModule={dirDetailModule}
             fixCookieHandler={fixCookieHandler}
           />
         </DirDetailWrap>
@@ -212,7 +177,7 @@ const DirDetail = ({
         type="edit"
         initValue={newDirData}
         dirId={dirInfo.id}
-        putDir={handleUpdateDirectory}
+        putDir={dirDetailModule.handleEditDir}
         delDir={() => {
           setIsDelOpen(true);
           setIsDirEditOpen(false);

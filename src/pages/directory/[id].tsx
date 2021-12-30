@@ -7,10 +7,11 @@ import getApi from "@api/getApi";
 import postApi from "@api/postApi";
 import DirDetailModule from "@modules/DirDetailModule";
 import DirModule from "@modules/DirModule";
-import { useToastMsg } from "src/hooks";
 import { useState } from "react";
 import { NextPageContext } from "next";
 import { returnCookieFilter } from "@lib/filter";
+import { useRecoilState } from "recoil";
+import { ToastMsgState } from "@modules/states";
 
 interface DirDetailPageProps {
   isLogin: boolean;
@@ -28,22 +29,20 @@ const DirDetailPage = ({
 }: DirDetailPageProps) => {
   // share link url
   const [shareLink, setShareLink] = useState("");
-  // toast msg visible state
-  const { isVisible, setIsVisible } = useToastMsg();
+
+  // toast msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
 
   // 디렉토리 상세 모듈
   const dirDetailModule = DirDetailModule({
     key: `/directories/${queryID}`,
     initDirDetailData,
-    isVisible,
-    setIsVisible,
   });
 
   // 디렉토리 모듈
   const dirModule = DirModule({
     initAllDirData,
-    isVisible,
-    setIsVisible,
   });
 
   // 디렉토리 delete
@@ -54,7 +53,7 @@ const DirDetailPage = ({
 
   const handleShareClick = async () => {
     const shareToken = await postApi.postShareToken(queryID);
-    setIsVisible({ ...isVisible, copyShareLink: true });
+    setIsToastMsgVisible({ ...isToastMsgVisible, copyShareLink: true });
     setShareLink(`${DOMAIN}/share/${shareToken}`);
   };
 
@@ -66,29 +65,12 @@ const DirDetailPage = ({
           nickname={initUserData?.name || ""}
           dirInfo={dirDetailModule.dirInfo || { name: "", id: 0 }}
           allDir={dirModule.allDirData?.common}
-          cookies={
-            dirDetailModule.cookieData?.reduce(
-              (acc, curr) => curr && acc?.concat(curr),
-              [],
-            ) || []
-          }
-          filterType={dirDetailModule.cookieFilter}
-          onClickType={dirDetailModule.handleCookieFilter}
+          fixedDir={dirModule.allDirData?.pinned}
+          handlePostDir={dirModule.handlePostDir}
+          handleDelDirectory={handleDelDir}
           shareLink={shareLink}
           shareClick={handleShareClick}
-          isToastMsgVisible={isVisible}
-          setIsToastMsgVisible={setIsVisible}
-          postDir={dirModule.handlePostDir}
-          copyCookieLink={dirDetailModule.copyCookieLink}
-          delCookieHandler={dirDetailModule.handleDelCookie}
-          handleEditCookie={dirDetailModule.handleEditCookie}
-          handleDelDirectory={handleDelDir}
-          handleDirAddCookie={dirDetailModule.handleAddCookieToDir}
-          handleUpdateDirectory={dirDetailModule.handleEditDir}
-          handleAddCookieCount={dirDetailModule.handleAddCookieCount}
-          isCookieLoading={dirDetailModule.isLoading}
-          cookieDataPageIndex={dirDetailModule.pageIndex}
-          setCookieDataPageIndex={dirDetailModule.setPageIndex}
+          dirDetailModule={dirDetailModule}
           fixCookieHandler={() => {}}
         />
       ) : (
