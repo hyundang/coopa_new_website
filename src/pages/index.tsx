@@ -1,16 +1,23 @@
+// assets
 import { NotFoundErrorImg } from "@assets/imgs/error";
+// apis
+import { getApi } from "@api/index";
+// components
 import { NewtabError, Newtab } from "@components/templates";
+// interfaces
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import { CookieDataProps } from "@interfaces/cookie";
 import { GetDirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
-import { getApi } from "@lib/api";
-import { useEffect, useState } from "react";
+// libs
+import { useEffect } from "react";
 import nextCookie from "next-cookies";
 import { mutate } from "swr";
-import { useToastMsg } from "src/hooks";
-import { CookieModule, DirModule, HomebrdModule } from "@modules/index";
 import { returnCookieFilter, returnDirFilter } from "@lib/filter";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+// modules
+import { CookieModule, DirModule, HomebrdModule } from "@modules/index";
+import { HomeboardState } from "@modules/states";
 
 interface NewtabPageProps {
   isLogin: boolean;
@@ -29,33 +36,24 @@ export default function NewtabPage({
   initHomeboardImgUrl,
 }: NewtabPageProps) {
   // 검색 여부
-  const [isSearched, setIsSearched] = useState(false);
+  const setIsSearched = useSetRecoilState(HomeboardState.IsSearchedState);
   // 검색어
-  const [searchValue, setSearchValue] = useState("");
-
-  // toast msg visible state
-  const { isVisible, setIsVisible } = useToastMsg();
+  const searchValue = useRecoilValue(HomeboardState.SearchValueState);
 
   // 홈보드 모듈
   const homebrdModule = HomebrdModule({
     initHomeboardImgUrl,
     initBookmarkData,
-    isVisible,
-    setIsVisible,
   });
 
   // 쿠키 모듈
   const cookieModule = CookieModule({
     initAllCookieData,
-    isVisible,
-    setIsVisible,
   });
 
   // 디렉토리 모듈
   const dirModule = DirModule({
     initAllDirData,
-    isVisible,
-    setIsVisible,
   });
 
   // 검색창 enter 키 클릭 시
@@ -84,7 +82,8 @@ export default function NewtabPage({
             `/theme_img/img_${homeboardImgUrl}.jpg`,
           );
           homebrdModule.setHomeboardModalImg(
-            `/theme_img/img_${homeboardImgUrl}.jpg`,
+            // `/theme_img/img_${homeboardImgUrl}.jpg`,
+            "",
           );
         })()
       : !initHomeboardImgUrl &&
@@ -106,24 +105,12 @@ export default function NewtabPage({
     <>
       {isLogin ? (
         <Newtab
-          // 쿠키, 디렉토리 검색
-          isSearched={isSearched}
-          setIsSearched={setIsSearched}
-          searchValue={searchValue}
-          setSearchValue={setSearchValue}
-          onKeyPress={handleKeyPress}
           // 유저 데이터 관련
           imgUrl={initUserData?.profileImage}
           nickname={initUserData?.name}
-          // 홈보드 데이터 관련
-          homeboardModalImg={homebrdModule.homeboardModalImg}
-          setHomeboardModalImg={homebrdModule.setHomeboardModalImg}
-          homeboardImg={homebrdModule.homeboardImg}
-          setHomeboardImg={homebrdModule.setHomeboardImg}
-          postHomeboardImg={homebrdModule.handlePostHomeboardImg}
-          bookmarkDatas={homebrdModule.bookmarkData || []}
-          onClickBookmarkSave={homebrdModule.handleAddBookmark}
-          onClickBookmarkDel={homebrdModule.handleDelBookmark}
+          // 홈보드 관련
+          onKeyPress={handleKeyPress}
+          homeboardModule={homebrdModule}
           // 쿠키 데이터 관련
           isCookieLoading={cookieModule.isLoading}
           cookieData={
@@ -151,9 +138,6 @@ export default function NewtabPage({
           fixDirHandler={dirModule.handleFixDir}
           handleDelDirectory={dirModule.handleDelDir}
           handleUpdateDirectory={dirModule.handleEditDir}
-          // 토스트 메시지 관련
-          isToastMsgVisible={isVisible}
-          setIsToastMsgVisible={setIsVisible}
         />
       ) : (
         <NewtabError

@@ -7,16 +7,14 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
 import { NotiModal, Onboarding } from "@components/organisms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { HomeboardState } from "@modules/states";
 
 export interface HeaderProps {
   /** id */
   id?: string;
   /** className */
   className?: string;
-  /** click search icon event handler */
-  onClickSearch?: React.MouseEventHandler<HTMLButtonElement>;
-  /** search icon active 여부 */
-  isSearchIconAtv?: boolean;
   /** onboarding open 여부 */
   isOnboardOpen: boolean;
   setIsOnboardOpen: Dispatch<SetStateAction<boolean>>;
@@ -30,8 +28,6 @@ export interface HeaderProps {
 const Header = ({
   id,
   className,
-  onClickSearch,
-  isSearchIconAtv,
   isOnboardOpen,
   setIsOnboardOpen,
   imgUrl,
@@ -41,10 +37,28 @@ const Header = ({
   const router = useRouter();
   const [isNotiOpen, setIsNotiOpen] = useState(false);
 
+  // 검색창 관련
+  const setPreventFadeout = useSetRecoilState(
+    HomeboardState.PreventFadeoutState,
+  );
+  const [isSearchVisible, setIsSearchVisible] = useRecoilState(
+    HomeboardState.IsSearchVisibleState,
+  );
+  const setIsSearched = useSetRecoilState(HomeboardState.IsSearchedState);
+  const setSearchValue = useSetRecoilState(HomeboardState.SearchValueState);
+
   // noti modal x좌표
   const [locationX, setLocationX] = useState(0);
   const windowSize = useWindowSize();
   const notiIconLocation = useRef<HTMLButtonElement>(null);
+
+  // 검색 아이콘 클릭했을 때
+  const handleClickSearchIcon = () => {
+    isSearchVisible && setPreventFadeout(false);
+    setIsSearchVisible(!isSearchVisible);
+    setSearchValue("");
+    setIsSearched(false);
+  };
 
   // 키 떼어냈을 때
   const handleKeyUp = (e: any) => {
@@ -74,7 +88,7 @@ const Header = ({
     <HeaderWrap
       id={id}
       className={className}
-      isSearchIconAtv={isSearchIconAtv}
+      isSearchIconAtv={isSearchVisible}
       isInfoIconAtv={isOnboardOpen}
       isNotiIconAtv={isNotiOpen}
       isMypageIconAtv={isMypage}
@@ -89,11 +103,11 @@ const Header = ({
           <LogoImg className="logo_img" />
         </Icon>
         <div style={{ flexGrow: 1 }} />
-        {isSearchIconAtv !== undefined && (
+        {isSearchVisible !== undefined && (
           <Icon
             className="content__search"
             role="button"
-            onClick={onClickSearch}
+            onClick={handleClickSearchIcon}
           >
             <SearchIcon className="search_icon" />
           </Icon>

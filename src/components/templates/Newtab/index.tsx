@@ -3,10 +3,6 @@ import { SearchBar, Tab, ToastMsg } from "@components/atoms";
 import { Footer, Header, ListHeader } from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
 // interfaces
-import {
-  BookmarkDataProps,
-  PostBookmarkDataProps,
-} from "@interfaces/homeboard";
 import { CookieDataProps } from "@interfaces/cookie";
 import {
   DirectoryDataProps,
@@ -14,42 +10,33 @@ import {
   PostAddCookieToDirProps,
   PostDirectoryProps,
 } from "@interfaces/directory";
-import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
-// asset
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+// libs
+import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { HomeboardState, ToastMsgState } from "@modules/states";
+import HomebrdModule from "@modules/HomebrdModule";
 
 export interface NewtablProps {
-  /** 검색 여부 */
-  isSearched: boolean;
-  setIsSearched: Dispatch<SetStateAction<boolean>>;
-  /** 검색어 */
-  searchValue: string;
-  setSearchValue: Dispatch<SetStateAction<string>>;
-  /** enter key 클릭 */
-  onKeyPress: React.KeyboardEventHandler<HTMLInputElement>;
   /** 프로필 이미지 url */
   imgUrl?: string;
   /** 프로필 닉네임 */
   nickname: string;
-  /** 모달 안의 홈보드 배경 이미지 */
-  homeboardModalImg: string;
-  setHomeboardModalImg: Dispatch<SetStateAction<string>>;
-  /** 홈보드 배경 이미지 */
-  homeboardImg: string;
-  setHomeboardImg: Dispatch<SetStateAction<string>>;
-  /** input img post */
-  postHomeboardImg: (e: File) => Promise<string>;
-  /** bookmark data list */
-  bookmarkDatas: BookmarkDataProps[];
-  /** bookmark 추가 함수 */
-  onClickBookmarkSave: (newBookmark: PostBookmarkDataProps) => Promise<void>;
-  /** bookmark 삭제 함수 */
-  onClickBookmarkDel: (bookmarkID: number) => Promise<void>;
+  // 홈보드 관련
+  /** 검색창 enter key 클릭 */
+  onKeyPress: React.KeyboardEventHandler<HTMLInputElement>;
+  /** homeboard module */
+  homeboardModule: ReturnType<typeof HomebrdModule>;
+  // 쿠키 관련
   /** 쿠키 데이터 로딩 여부 */
   isCookieLoading: boolean;
   /** all cookie data */
   cookieData: CookieDataProps[];
+  /** for getting cookie data */
+  cookieDataPageIndex: number;
+  setCookieDataPageIndex: (
+    size: number,
+  ) => Promise<(CookieDataProps[] | undefined)[] | undefined>;
   /** 검색된 쿠키 데이터 */
   searchedCookieData: CookieDataProps[];
   /** 쿠키 필터 */
@@ -57,6 +44,17 @@ export interface NewtablProps {
   setCookieFilter: (
     f: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => void;
+  /** copy cookie link */
+  copyCookieLink: () => void;
+  /** delete cookie handler */
+  delCookieHandler: (id: number) => Promise<void>;
+  /** edit cookie */
+  handleEditCookie: (data: FormData) => Promise<void>;
+  /** dir cookie 추가 */
+  handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
+  /** add cookie count */
+  handleAddCookieCount: (id: number) => Promise<void>;
+  // 디렉토리 관련
   /** all directory data */
   dirData: GetDirectoryDataProps;
   /** 검색된 디렉토리 데이터 */
@@ -68,49 +66,21 @@ export interface NewtablProps {
   ) => void;
   /** 디렉토리 생성 */
   postDir: (e: PostDirectoryProps) => Promise<void>;
-  /** toast msg state */
-  isToastMsgVisible: ToastMsgVisibleStateProps;
-  setIsToastMsgVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
-  /** copy cookie link */
-  copyCookieLink: () => void;
-  /** delete cookie handler */
-  delCookieHandler: (id: number) => Promise<void>;
-  /** edit cookie */
-  handleEditCookie: (data: FormData) => Promise<void>;
   /** delete dir */
   handleDelDirectory: (id: number) => Promise<void>;
-  /** dir cookie 추가 */
-  handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
   /** update dir */
   handleUpdateDirectory: (
     id: number,
     body: PostDirectoryProps,
   ) => Promise<void>;
-  /** add cookie count */
-  handleAddCookieCount: (id: number) => Promise<void>;
-  /** for getting cookie data */
-  cookieDataPageIndex: number;
-  setCookieDataPageIndex: (
-    size: number,
-  ) => Promise<(CookieDataProps[] | undefined)[] | undefined>;
+  /** fix dir */
   fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
 }
 const Newtab = ({
-  isSearched,
-  setIsSearched,
-  searchValue,
-  setSearchValue,
-  onKeyPress,
   imgUrl,
   nickname,
-  homeboardModalImg,
-  setHomeboardModalImg,
-  homeboardImg,
-  setHomeboardImg,
-  postHomeboardImg,
-  bookmarkDatas,
-  onClickBookmarkSave,
-  onClickBookmarkDel,
+  onKeyPress,
+  homeboardModule,
   isCookieLoading,
   cookieData,
   cookieDataPageIndex,
@@ -123,8 +93,6 @@ const Newtab = ({
   dirFilter,
   setDirFilter,
   postDir,
-  isToastMsgVisible,
-  setIsToastMsgVisible,
   copyCookieLink,
   delCookieHandler,
   handleEditCookie,
@@ -134,9 +102,11 @@ const Newtab = ({
   handleAddCookieCount,
   fixDirHandler,
 }: NewtablProps) => {
-  // 검색창 불필요한 fadeout 방지
-  const [preventFadeout, setPreventFadeout] = useState(true);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  // 검색 여부
+  const isSearched = useRecoilValue(HomeboardState.IsSearchedState);
+  // 검색창 활성화 여부
+  const isSearchVisible = useRecoilValue(HomeboardState.IsSearchVisibleState);
+
   // tab
   const [tabOptions, setTabOptions] = useState(["모든 쿠키", "디렉토리"]);
   const [tabValue, setTabValue] = useState("모든 쿠키");
@@ -146,6 +116,10 @@ const Newtab = ({
 
   // 온보딩 모달 오픈
   const [isOnboardOpen, setIsOnboardOpen] = useState(false);
+
+  // tost msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
 
   // toast msg visible handling
   const handleToastMsgVisible = (
@@ -168,30 +142,8 @@ const Newtab = ({
       [key]: value,
     });
 
-  // 검색 아이콘 클릭 시
-  const handleClickSearchIcon = () => {
-    isSearchVisible && setPreventFadeout(false);
-    setIsSearchVisible(!isSearchVisible);
-    setSearchValue("");
-    setIsSearched(false);
-  };
-
-  // 키 클릭 시
-  const handleKeyDown = async (e: any) => {
-    // esc = 검색창 닫기
-    if (e.key === "Escape" && isSearchVisible) {
-      setPreventFadeout(false);
-      setIsSearchVisible(false);
-    }
-  };
   // 키 떼어냈을 때
   const handleKeyUp = (e: any) => {
-    // shift + s = 검색창 열기
-    if (e.key === "S" && e.shiftKey && !isSearchVisible) {
-      setIsSearchVisible(true);
-      setSearchValue("");
-      setIsSearched(false);
-    }
     // shift + c = 모든 쿠키 탭
     if (e.key === "C" && e.shiftKey) {
       isSearched && isSearchVisible
@@ -204,11 +156,6 @@ const Newtab = ({
     }
   };
 
-  // 불필요한 검색창 렌더링 방지
-  useEffect(() => {
-    setTimeout(() => !preventFadeout && setPreventFadeout(true), 1000);
-  }, [preventFadeout]);
-
   // 검색 여부에 따른 tab option 변경
   useEffect(() => {
     isSearched && isSearchVisible
@@ -220,19 +167,15 @@ const Newtab = ({
           setTabOptions(["모든 쿠키", "디렉토리"]);
           tabValue === "쿠키" && setTabValue("모든 쿠키");
         })();
-    window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
   }, [isSearched, isSearchVisible]);
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
@@ -241,8 +184,6 @@ const Newtab = ({
     <>
       <Header
         className="header"
-        onClickSearch={handleClickSearchIcon}
-        isSearchIconAtv={isSearchVisible}
         imgUrl={imgUrl}
         isOnboardOpen={isOnboardOpen}
         setIsOnboardOpen={setIsOnboardOpen}
@@ -250,42 +191,14 @@ const Newtab = ({
       <Container className="container" isSearched={isSearched}>
         <Homeboard
           className="homeboard"
-          visible={isSearchVisible}
-          setVisible={setIsSearchVisible}
-          isSearched={isSearched}
-          setIsSearched={setIsSearched}
-          searchValue={searchValue}
-          setSearchValue={setSearchValue}
-          onSearchBarKeyDown={handleKeyDown}
           onSearchBarKeyPress={onKeyPress}
-          homeboardModalImg={homeboardModalImg}
-          setHomeboardModalImg={setHomeboardModalImg}
-          homeboardImg={homeboardImg}
-          setHomeboardImg={setHomeboardImg}
-          postHomeboardImg={postHomeboardImg}
+          homeboardModule={homeboardModule}
           setIsSuccess={(e) => handleToastMsgVisible("homeboardEdit", e)}
           setIsError={(e) => handleToastMsgVisible("imgSizeOver", e)}
-          bookmarkDatas={bookmarkDatas}
-          onClickBookmarkDel={onClickBookmarkDel}
-          onClickBookmarkSave={onClickBookmarkSave}
-          preventFadeout={preventFadeout}
-          setPreventFadeout={setPreventFadeout}
         />
         {isSearchVisible && (
           <div className="search-wrap">
-            <SearchBar
-              className="search--tablet"
-              visible={isSearchVisible}
-              setVisible={setIsSearchVisible}
-              isSearched={isSearched}
-              setIsSearched={setIsSearched}
-              searchValue={searchValue}
-              setSearchValue={setSearchValue}
-              preventFadeout={preventFadeout}
-              setPreventFadeout={setPreventFadeout}
-              onKeyDown={handleKeyDown}
-              onKeyPress={onKeyPress}
-            />
+            <SearchBar className="search--tablet" onKeyPress={onKeyPress} />
           </div>
         )}
         <nav className="tab-wrap">

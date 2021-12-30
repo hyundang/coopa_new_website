@@ -10,6 +10,8 @@ import styled, { css } from "styled-components";
 import { ImgBoxForm } from "@components/molecules";
 import { ImgBox, MoveModal, Tab } from "@components/atoms";
 import { modalAnimation } from "@components/animations";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { HomeboardState } from "@modules/states";
 
 const imgs = [
   "/theme_img/img_1_small.png",
@@ -27,41 +29,40 @@ export interface HomeboardEditModalProps {
   id?: string;
   /** className */
   className?: string;
-  /** 모달 안의 홈보드 배경 이미지 */
-  value: string;
-  /** 모달 안의 홈보드 배경 이미지 setState */
-  setValue: Dispatch<SetStateAction<string>>;
-  /** homeboard img 변경 성공 */
-  setIsSuccess: (e: boolean) => void;
-  /** img input 시 img size 에러 */
-  setIsError: (e: boolean) => void;
+  /** location x좌표 */
+  locationX: number;
   /** 모달 open 여부 */
   isOpen: boolean;
   /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  /** homeboard img setState */
-  setHomeboardImg: Dispatch<SetStateAction<string>>;
+  /** homeboard img 변경 성공 */
+  setIsSuccess: (e: boolean) => void;
+  /** img input 시 img size 에러 */
+  setIsError: (e: boolean) => void;
   /** input img post */
   postHomeboardImg: (e: File) => Promise<string>;
-  /** location x좌표 */
-  locationX: number;
 }
 
 const HomeboardEditModal = ({
   id,
   className,
-  value,
-  setValue,
-  setIsSuccess,
-  setIsError,
+  locationX,
   isOpen,
   setIsOpen,
-  setHomeboardImg,
+  setIsSuccess,
+  setIsError,
   postHomeboardImg,
-  locationX,
 }: HomeboardEditModalProps) => {
   // 탭 선택값
   const [tabValue, setTabValue] = useState("기본 테마");
+
+  // 홈보드 이미지
+  const setHomeboardImg = useSetRecoilState(HomeboardState.HomeboardImgState);
+  // 홈보드 수정 모달 이미지
+  const [homeboardModalImg, setHomeboardModalImg] = useRecoilState(
+    HomeboardState.HomeboardModalImgState,
+  );
+
   // img box hover 여부
   const [isHover, setIsHover] = useState(false);
   const img_input = useRef<HTMLInputElement>(null);
@@ -83,7 +84,7 @@ const HomeboardEditModal = ({
   // theme img click event handling
   const handleClickThemeImg = (e: any) => {
     localStorage.setItem("homeboardImgUrl", e?.target?.id);
-    setValue("");
+    setHomeboardModalImg("");
     setHomeboardImg(`/theme_img/img_${e.target.id}.jpg`);
     setIsSuccess(true);
   };
@@ -93,7 +94,7 @@ const HomeboardEditModal = ({
     if (e.target.files) {
       if (e.target.files[0].size < 5000001) {
         setIsLoading(true);
-        setValue(URL.createObjectURL(e.target.files[0]));
+        setHomeboardModalImg(URL.createObjectURL(e.target.files[0]));
         const imgUrl = await postHomeboardImg(e.target.files[0]);
         setHomeboardImg(imgUrl);
         setIsLoading(false);
@@ -148,7 +149,7 @@ const HomeboardEditModal = ({
       ) : (
         <ImgBoxForm
           className="input-img"
-          imgUrl={value}
+          imgUrl={homeboardModalImg}
           isHover={isHover}
           setIsHover={setIsHover}
           isLoading={isLoading}

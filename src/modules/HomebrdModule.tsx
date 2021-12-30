@@ -1,35 +1,42 @@
-import useSWR, { mutate } from "swr";
-import { Dispatch, SetStateAction, useState } from "react";
+// apis
+import { getApi, delApi, postApi, putApi } from "@api/index";
+// interfaces
 import {
   BookmarkDataProps,
   PostBookmarkDataProps,
 } from "@interfaces/homeboard";
-import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
-import getApi from "@api/getApi";
-import delApi from "@api/delApi";
-import putApi from "@api/putApi";
-import postApi from "@api/postApi";
+// libs
+import useSWR, { mutate } from "swr";
+import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+// modules
+import { HomeboardState, ToastMsgState } from "./states";
 
 interface HomebrdModuleProps {
   /** initial homeboard datas */
   initBookmarkData: BookmarkDataProps[];
   initHomeboardImgUrl?: string;
-  /** toast msg */
-  isVisible: ToastMsgVisibleStateProps;
-  setIsVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
 }
 const HomebrdModule = ({
   initHomeboardImgUrl,
   initBookmarkData,
-  isVisible,
-  setIsVisible,
 }: HomebrdModuleProps) => {
+  // toast msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
   // 홈보드 배경 이미지
-  const [homeboardImg, setHomeboardImg] = useState(initHomeboardImgUrl || "");
-  // 홈보드 모달 이미지
-  const [homeboardModalImg, setHomeboardModalImg] = useState(
-    initHomeboardImgUrl || "",
+  const [homeboardImg, setHomeboardImg] = useRecoilState(
+    HomeboardState.HomeboardImgState,
   );
+  // 홈보드 수정 모달 이미지
+  const [homeboardModalImg, setHomeboardModalImg] = useRecoilState(
+    HomeboardState.HomeboardModalImgState,
+  );
+
+  useEffect(() => {
+    setHomeboardImg(initHomeboardImgUrl || "");
+    setHomeboardModalImg(initHomeboardImgUrl || "");
+  }, []);
 
   // 홈보드 이미지 get
   const handleGetHomeboardImg = async () => {
@@ -63,8 +70,8 @@ const HomebrdModule = ({
     res &&
       (() => {
         mutate("/users/favorites", bookmarkData?.concat([res]), false);
-        setIsVisible({
-          ...isVisible,
+        setIsToastMsgVisible({
+          ...isToastMsgVisible,
           bookmarkCreate: true,
         });
       })();
@@ -80,8 +87,8 @@ const HomebrdModule = ({
           bookmarkData?.filter((bd) => res.id !== bd.id),
           false,
         );
-        setIsVisible({
-          ...isVisible,
+        setIsToastMsgVisible({
+          ...isToastMsgVisible,
           bookmarkDel: true,
         });
       })();
