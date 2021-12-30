@@ -1,6 +1,6 @@
-import { useSWRInfinite } from "swr";
-import reactCookie from "react-cookies";
-import { Dispatch, SetStateAction, useState } from "react";
+// apis
+import { getApi, delApi, putApi } from "@api/index";
+// interfaces
 import {
   CookieDataProps,
   DirectoryCookieDataProps,
@@ -10,28 +10,25 @@ import {
   PostAddCookieToDirProps,
   PostDirectoryProps,
 } from "@interfaces/directory";
-import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
-import getApi from "@api/getApi";
-import delApi from "@api/delApi";
-import putApi from "@api/putApi";
-import postApi from "@api/postApi";
+// libs
+import { useSWRInfinite } from "swr";
+import reactCookie from "react-cookies";
+import { useState } from "react";
 import { returnCookieFilter } from "@lib/filter";
+import { useRecoilState } from "recoil";
+// modules
+import { ToastMsgState } from "./states";
 
 interface DirDetailModuleProps {
   /** swr key */
   key: string;
   /** initial cookie datas */
   initDirDetailData: DirectoryCookieDataProps;
-  /** toast msg */
-  isVisible: ToastMsgVisibleStateProps;
-  setIsVisible: Dispatch<SetStateAction<ToastMsgVisibleStateProps>>;
 }
-const DirDetailModule = ({
-  key,
-  initDirDetailData,
-  isVisible,
-  setIsVisible,
-}: DirDetailModuleProps) => {
+const DirDetailModule = ({ key, initDirDetailData }: DirDetailModuleProps) => {
+  // toast msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
   // 쿠키 필터
   const initFilter = reactCookie.load("cookieFilter");
   const [cookieFilter, setCookieFilter] = useState<
@@ -43,6 +40,9 @@ const DirDetailModule = ({
   const [DirInfo, setDirInfo] = useState<directoryInfoType>(
     initDirDetailData.directoryInfo,
   );
+
+  // 쿠키 수정 로딩
+  const [isEditLoading, setIsEditLoading] = useState(false);
 
   // 쿠키 데이터 key 함수
   const getKey = (pageIndex: number, previousPageData: any) => {
@@ -93,8 +93,8 @@ const DirDetailModule = ({
 
   //쿠키 링크 복사
   const copyCookieLink = () => {
-    setIsVisible({
-      ...isVisible,
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
       copyLink: true,
     });
   };
@@ -129,14 +129,15 @@ const DirDetailModule = ({
         },
       ];
     }, false);
-    setIsVisible({
-      ...isVisible,
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
       cookieDel: true,
     });
   };
 
   // 쿠키 edit
   const handleEditCookie = async (formData: FormData) => {
+    setIsEditLoading(true);
     // const res = await putApi.updateCookie(formData);
     // res &&
     //   (() => {
@@ -162,6 +163,7 @@ const DirDetailModule = ({
     //       cookieEdit: true,
     //     });
     //   })();
+    setIsEditLoading(false);
   };
 
   // 디렉토리에 쿠키 추가
@@ -209,6 +211,8 @@ const DirDetailModule = ({
     handleEditDir,
     isError: error,
     isLoading: !DirDetailData && !error,
+    isEditLoading,
+    setIsEditLoading,
   };
 };
 
