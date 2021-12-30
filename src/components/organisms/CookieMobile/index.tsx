@@ -1,12 +1,5 @@
 import styled from "styled-components";
-import {
-  useState,
-  Dispatch,
-  SetStateAction,
-  SyntheticEvent,
-  RefObject,
-  forwardRef,
-} from "react";
+import { useState, SyntheticEvent, RefObject, forwardRef } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { DeleteIcon } from "@assets/icons/card";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
@@ -15,6 +8,7 @@ import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { CookieEditModal, DelModal } from "@components/organisms";
 import { PatchCookieProps } from "@interfaces/cookie";
 import { NoThumbImg } from "@assets/imgs/card";
+import CookieModule from "@modules/CookieModule";
 
 export interface CookieMobileProps {
   /** id */
@@ -27,16 +21,8 @@ export interface CookieMobileProps {
   isShared?: boolean;
   /** 쿠키 수정 로딩 여부 */
   isLoading: boolean;
-  /** 쿠키 수정or삭제 에러 여부 */
-  setIsError: Dispatch<SetStateAction<boolean>>;
-  /** copy cookie link */
-  copyCookieLink: () => void;
-  /** del cookie handler */
-  delCookieHandler: (id: number) => Promise<void>;
-  /** edit cookie handler */
-  handleEditCookie: (data: FormData) => Promise<void>;
-  /** add cookie count*/
-  handleAddCookieCount: (id: number) => Promise<void>;
+  /** 쿠키 모듈 */
+  cookieModule: ReturnType<typeof CookieModule>;
 }
 const CookieMobile = (
   {
@@ -45,11 +31,7 @@ const CookieMobile = (
     cookie,
     isShared = false,
     isLoading,
-    setIsError,
-    copyCookieLink,
-    delCookieHandler,
-    handleEditCookie,
-    handleAddCookieCount,
+    cookieModule,
   }: CookieMobileProps,
   ref?:
     | ((instance: HTMLButtonElement | null) => void)
@@ -67,13 +49,16 @@ const CookieMobile = (
     thumbnail: cookie.thumbnail,
   });
 
+  /** 쿠키 수정or삭제 에러 여부 */
+  const [isSizeError, setIsSizeError] = useState(false);
+
   return (
     <>
       <CookieWrap
         id={id}
         className={className}
         onClick={() => {
-          handleAddCookieCount(cookie.id);
+          cookieModule.handleAddCookieCount(cookie.id);
           window.open(cookie.link);
         }}
         ref={ref}
@@ -99,7 +84,10 @@ const CookieMobile = (
                 <Icon className="icon" onClick={() => setIsEditModalOpen(true)}>
                   <EditIcon className="icon__asset" />
                 </Icon>
-                <CopyToClipboard text={cookie.link} onCopy={copyCookieLink}>
+                <CopyToClipboard
+                  text={cookie.link}
+                  onCopy={cookieModule.copyCookieLink}
+                >
                   <Icon className="icon">
                     <LinkIcon32 className="icon__asset--link" />
                   </Icon>
@@ -117,20 +105,18 @@ const CookieMobile = (
         setIsOpen={setIsEditModalOpen}
         value={cookieValue}
         setValue={setCookieValue}
-        // onClickDel={() => {}}
-        // onClickSave={() => { }}
-        handleEditCookie={handleEditCookie}
+        handleEditCookie={cookieModule.handleEditCookie}
         onClickDel={() => {
           setIsEditModalOpen(false);
           setIsDelModalOpen(true);
         }}
-        setIsError={setIsError}
+        setIsError={setIsSizeError}
         isLoading={isLoading}
       />
       <DelModal
         isOpen={isDelModalOpen}
         setIsOpen={setIsDelModalOpen}
-        onClickDel={() => delCookieHandler(cookie.id)}
+        onClickDel={() => cookieModule.handleDelCookie(cookie.id)}
       />
     </>
   );

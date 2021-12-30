@@ -25,6 +25,8 @@ const CookieModule = ({ initAllCookieData }: CookieModuleProps) => {
   const [cookieFilter, setCookieFilter] = useState<
     "latest" | "readMost" | "readLeast" | "oldest"
   >(initFilter || "latest");
+  // 쿠키 수정 로딩
+  const [isEditLoading, setIsEditLoading] = useState(false);
 
   // 쿠키 데이터 key 함수
   const getKey = (pageIndex: number, previousPageData: any) => {
@@ -113,6 +115,7 @@ const CookieModule = ({ initAllCookieData }: CookieModuleProps) => {
   -> 수정한 쿠키의 데이터, 위치 안바뀜. initial 쿠키의 경우 데이터, 위치 바뀜.
   */
   const handleEditCookie = async (formData: FormData) => {
+    setIsEditLoading(true);
     mutate(async (prevDepth1) => {
       const res = await putApi.updateCookie(formData);
       // 갱신된 데이터일 때
@@ -164,6 +167,8 @@ const CookieModule = ({ initAllCookieData }: CookieModuleProps) => {
       });
       return [newCookieData];
     }, false);
+
+    setIsEditLoading(false);
     // toast msg 띄우기
     setIsToastMsgVisible({
       ...isToastMsgVisible,
@@ -227,6 +232,8 @@ const CookieModule = ({ initAllCookieData }: CookieModuleProps) => {
     handleAddCookieCount, // 쿠키 읽은 횟수 갱신
     isError: error,
     isLoading: !cookieData && !error,
+    isEditLoading,
+    setIsEditLoading,
   };
 };
 

@@ -111,17 +111,9 @@ export default function NewtabPage({
           // 홈보드 관련
           onKeyPress={handleKeyPress}
           homeboardModule={homebrdModule}
-          // 쿠키 데이터 관련
-          isCookieLoading={cookieModule.isLoading}
-          cookieData={
-            cookieModule.cookieData?.reduce(
-              (acc, curr) => curr && acc?.concat(curr),
-              [],
-            ) || []
-          }
-          searchedCookieData={cookieModule.searchedCookieData || []}
+          // 쿠키 관련
           cookieModule={cookieModule}
-          // 디렉토리 데이터 관련
+          // 디렉토리 관련
           dirData={dirModule.allDirData || { common: [], pinned: [] }}
           searchedDirData={dirModule.searchedDirData || []}
           dirModule={dirModule}

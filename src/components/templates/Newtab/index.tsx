@@ -30,12 +30,6 @@ export interface NewtablProps {
   /** homeboard module */
   homeboardModule: ReturnType<typeof HomebrdModule>;
   // 쿠키 관련
-  /** 쿠키 데이터 로딩 여부 */
-  isCookieLoading: boolean;
-  /** all cookie data */
-  cookieData: CookieDataProps[];
-  /** 검색된 쿠키 데이터 */
-  searchedCookieData: CookieDataProps[];
   /** 쿠키 모듈 */
   cookieModule: ReturnType<typeof CookieModule>;
   // 디렉토리 관련
@@ -51,9 +45,6 @@ const Newtab = ({
   nickname,
   onKeyPress,
   homeboardModule,
-  isCookieLoading,
-  cookieData,
-  searchedCookieData,
   cookieModule,
   dirData,
   searchedDirData,
@@ -175,13 +166,14 @@ const Newtab = ({
           {((isSearched &&
             isSearchVisible &&
             (tabValue === "쿠키" || tabValue === "디렉토리")) ||
-            (tabValue === "모든 쿠키" && cookieData.length !== 0) ||
+            (tabValue === "모든 쿠키" &&
+              cookieModule.cookieData?.length !== 0) ||
             (tabValue === "디렉토리" &&
               dirData.common?.length !== 0 &&
               dirData.pinned?.length !== 0)) && (
             <ListHeader
               isSearched={isSearched && isSearchVisible}
-              cookieNum={searchedCookieData.length}
+              cookieNum={cookieModule.searchedCookieData?.length || 0}
               dirNum={searchedDirData.length}
               type={
                 tabValue === "모든 쿠키" || tabValue === "쿠키"
@@ -209,18 +201,13 @@ const Newtab = ({
             <>
               {tabValue === "쿠키" ? (
                 <Cookies
-                  data={searchedCookieData}
+                  type="searched"
+                  data={cookieModule.searchedCookieData || []}
+                  isLoading={false}
+                  cookieModule={cookieModule}
                   allDir={dirData.common}
                   fixedDir={dirData.pinned || []}
-                  type="searched"
-                  copyCookieLink={cookieModule.copyCookieLink}
-                  delCookieHandler={cookieModule.handleDelCookie}
-                  handleEditCookie={cookieModule.handleEditCookie}
-                  isUpdateLoading={cookieModule.isEditLoading}
-                  handleDirAddCookie={cookieModule.handleAddCookieToDir}
-                  handleAddCookieCount={cookieModule.handleAddCookieCount}
                   postDir={dirModule.handlePostDir}
-                  isLoading={false}
                   fixCookieHandler={() => {}}
                 />
               ) : (
@@ -237,21 +224,19 @@ const Newtab = ({
             <>
               {tabValue === "모든 쿠키" ? (
                 <Cookies
-                  isLoading={isCookieLoading}
-                  data={cookieData}
+                  fixCookieHandler={() => {}}
+                  isLoading={cookieModule.isLoading}
+                  data={
+                    cookieModule.cookieData?.reduce(
+                      (acc, curr) => curr && acc?.concat(curr),
+                      [],
+                    ) || []
+                  }
+                  cookieModule={cookieModule}
                   allDir={dirData.common}
                   fixedDir={dirData.pinned || []}
                   setIsOnboardOpen={setIsOnboardOpen}
-                  copyCookieLink={cookieModule.copyCookieLink}
-                  delCookieHandler={cookieModule.handleDelCookie}
-                  handleEditCookie={cookieModule.handleEditCookie}
-                  isUpdateLoading={cookieModule.isEditLoading}
-                  handleDirAddCookie={cookieModule.handleAddCookieToDir}
-                  handleAddCookieCount={cookieModule.handleAddCookieCount}
                   postDir={dirModule.handlePostDir}
-                  pageIndex={cookieModule.pageIndex}
-                  setPageIndex={cookieModule.setPageIndex}
-                  fixCookieHandler={() => {}}
                 />
               ) : (
                 <Directories
