@@ -30,7 +30,6 @@ const CookieModule = ({ initAllCookieData }: CookieModuleProps) => {
 
   // 쿠키 데이터 key 함수
   const getKey = (pageIndex: number, previousPageData: any) => {
-    console.log(pageIndex);
     if (previousPageData && !previousPageData.length) return null; // 끝에 도달
     return `/cookies?size=${COOKIE_PAGE_SIZE}&page=${pageIndex}&filter=${returnCookieFilter(
       cookieFilter,

@@ -10,7 +10,7 @@ import { CookieDataProps } from "@interfaces/cookie";
 import { GetDirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 // libs
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import nextCookie from "next-cookies";
 import { mutate } from "swr";
 import { returnCookieFilter, returnDirFilter } from "@lib/filter";
@@ -114,8 +114,6 @@ export default function NewtabPage({
           // 쿠키 관련
           cookieModule={cookieModule}
           // 디렉토리 관련
-          dirData={dirModule.allDirData || { common: [], pinned: [] }}
-          searchedDirData={dirModule.searchedDirData || []}
           dirModule={dirModule}
         />
       ) : (

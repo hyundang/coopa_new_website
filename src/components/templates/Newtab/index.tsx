@@ -2,16 +2,8 @@
 import { SearchBar, Tab, ToastMsg } from "@components/atoms";
 import { Footer, Header, ListHeader } from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
-// interfaces
-import { CookieDataProps } from "@interfaces/cookie";
-import {
-  DirectoryDataProps,
-  GetDirectoryDataProps,
-  PostAddCookieToDirProps,
-  PostDirectoryProps,
-} from "@interfaces/directory";
 // libs
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { HomeboardState, ToastMsgState } from "@modules/states";
@@ -24,19 +16,12 @@ export interface NewtablProps {
   imgUrl?: string;
   /** 프로필 닉네임 */
   nickname: string;
-  // 홈보드 관련
   /** 검색창 enter key 클릭 */
   onKeyPress: React.KeyboardEventHandler<HTMLInputElement>;
   /** homeboard module */
   homeboardModule: ReturnType<typeof HomebrdModule>;
-  // 쿠키 관련
   /** 쿠키 모듈 */
   cookieModule: ReturnType<typeof CookieModule>;
-  // 디렉토리 관련
-  /** all directory data */
-  dirData: GetDirectoryDataProps;
-  /** 검색된 디렉토리 데이터 */
-  searchedDirData: DirectoryDataProps[];
   /** 디렉토리 모듈 */
   dirModule: ReturnType<typeof DirModule>;
 }
@@ -46,8 +31,6 @@ const Newtab = ({
   onKeyPress,
   homeboardModule,
   cookieModule,
-  dirData,
-  searchedDirData,
   dirModule,
 }: NewtablProps) => {
   // 검색 여부
@@ -169,12 +152,12 @@ const Newtab = ({
             (tabValue === "모든 쿠키" &&
               cookieModule.cookieData?.length !== 0) ||
             (tabValue === "디렉토리" &&
-              dirData.common?.length !== 0 &&
-              dirData.pinned?.length !== 0)) && (
+              dirModule.allDirData?.common?.length !== 0 &&
+              dirModule.allDirData?.pinned?.length !== 0)) && (
             <ListHeader
               isSearched={isSearched && isSearchVisible}
               cookieNum={cookieModule.searchedCookieData?.length || 0}
-              dirNum={searchedDirData.length}
+              dirNum={dirModule.searchedDirData?.length || 0}
               type={
                 tabValue === "모든 쿠키" || tabValue === "쿠키"
                   ? "cookie"
@@ -198,6 +181,7 @@ const Newtab = ({
             />
           )}
           {isSearched && isSearchVisible ? (
+            // 검색된 쿠키 & 디렉토리
             <>
               {tabValue === "쿠키" ? (
                 <Cookies
@@ -205,14 +189,14 @@ const Newtab = ({
                   data={cookieModule.searchedCookieData || []}
                   isLoading={false}
                   cookieModule={cookieModule}
-                  allDir={dirData.common}
-                  fixedDir={dirData.pinned || []}
+                  allDir={dirModule.allDirData?.common || []}
+                  fixedDir={dirModule.allDirData?.pinned || []}
                   postDir={dirModule.handlePostDir}
                   fixCookieHandler={() => {}}
                 />
               ) : (
                 <Directories
-                  data={searchedDirData}
+                  data={dirModule.searchedDirData || []}
                   isSearched
                   handleDelDirectory={dirModule.handleDelDir}
                   handleUpdateDirectory={dirModule.handleEditDir}
@@ -221,10 +205,10 @@ const Newtab = ({
               )}
             </>
           ) : (
+            // 뉴탭 쿠키 & 디렉토리
             <>
               {tabValue === "모든 쿠키" ? (
                 <Cookies
-                  fixCookieHandler={() => {}}
                   isLoading={cookieModule.isLoading}
                   data={
                     cookieModule.cookieData?.reduce(
@@ -233,15 +217,16 @@ const Newtab = ({
                     ) || []
                   }
                   cookieModule={cookieModule}
-                  allDir={dirData.common}
-                  fixedDir={dirData.pinned || []}
+                  fixCookieHandler={() => {}}
+                  allDir={dirModule.allDirData?.common || []}
+                  fixedDir={dirModule.allDirData?.pinned || []}
                   setIsOnboardOpen={setIsOnboardOpen}
                   postDir={dirModule.handlePostDir}
                 />
               ) : (
                 <Directories
-                  pinnedData={dirData.pinned}
-                  data={dirData.common}
+                  pinnedData={dirModule.allDirData?.pinned}
+                  data={dirModule.allDirData?.common || []}
                   setIsDirAddOpen={setIsAddOpen}
                   handleDelDirectory={dirModule.handleDelDir}
                   handleUpdateDirectory={dirModule.handleEditDir}
