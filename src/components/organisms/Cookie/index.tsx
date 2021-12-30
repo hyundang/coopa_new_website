@@ -15,6 +15,7 @@ import {
   PostDirectoryProps,
 } from "src/lib/interfaces/directory";
 import CookieModule from "@modules/CookieModule";
+import DirDetailModule from "@modules/DirDetailModule";
 
 export interface CookieProps {
   /** id */
@@ -26,7 +27,7 @@ export interface CookieProps {
   /** cookie data loading */
   isLoading: boolean;
   /** 쿠키 모듈 */
-  cookieModule: ReturnType<typeof CookieModule>;
+  cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
   /** fix cookie handler */
   fixCookieHandler: () => void;
   /** all directory */

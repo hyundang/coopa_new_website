@@ -1,13 +1,20 @@
-import styled from "styled-components";
-import { CookieDataProps } from "src/lib/interfaces/cookie";
+// assets
+import { CookieIcon } from "@assets/icons/common";
+import { EmptyImg } from "@assets/imgs/error";
+// components
 import { Btn } from "@components/atoms";
 import { Cookie, CookieMobile, Empty } from "@components/organisms";
-import { CookieIcon } from "@assets/icons/common";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { DirectoryDataProps, PostDirectoryProps } from "@interfaces/directory";
-import { EmptyImg } from "@assets/imgs/error";
+// hooks
 import { useWindowSize } from "src/hooks";
+// interfaces
+import { CookieDataProps } from "@interfaces/cookie";
+import { DirectoryDataProps, PostDirectoryProps } from "@interfaces/directory";
+// libs
+import styled from "styled-components";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+// modules
 import CookieModule from "@modules/CookieModule";
+import DirDetailModule from "@modules/DirDetailModule";
 
 export interface CookiesProps {
   /** cookie type */
@@ -17,7 +24,7 @@ export interface CookiesProps {
   /** cookie data loading */
   isLoading: boolean;
   /** 쿠키 모듈 */
-  cookieModule: ReturnType<typeof CookieModule>;
+  cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
   // 나중에 모듈 안에 구현하기
   fixCookieHandler: () => void;
   /** 전체 디렉토리 data */

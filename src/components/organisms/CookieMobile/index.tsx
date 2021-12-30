@@ -9,6 +9,7 @@ import { CookieEditModal, DelModal } from "@components/organisms";
 import { PatchCookieProps } from "@interfaces/cookie";
 import { NoThumbImg } from "@assets/imgs/card";
 import CookieModule from "@modules/CookieModule";
+import DirDetailModule from "@modules/DirDetailModule";
 
 export interface CookieMobileProps {
   /** id */
@@ -22,7 +23,7 @@ export interface CookieMobileProps {
   /** 쿠키 수정 로딩 여부 */
   isLoading: boolean;
   /** 쿠키 모듈 */
-  cookieModule: ReturnType<typeof CookieModule>;
+  cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
 }
 const CookieMobile = (
   {
