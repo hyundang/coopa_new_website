@@ -119,25 +119,12 @@ export default function NewtabPage({
               [],
             ) || []
           }
-          cookieDataPageIndex={cookieModule.pageIndex}
-          setCookieDataPageIndex={cookieModule.setPageIndex}
           searchedCookieData={cookieModule.searchedCookieData || []}
-          cookieFilter={cookieModule.cookieFilter}
-          setCookieFilter={cookieModule.handleCookieFilter}
-          copyCookieLink={cookieModule.copyCookieLink}
-          delCookieHandler={cookieModule.handleDelCookie}
-          handleEditCookie={cookieModule.handleEditCookie}
-          handleDirAddCookie={cookieModule.handleAddCookieToDir}
-          handleAddCookieCount={cookieModule.handleAddCookieCount}
+          cookieModule={cookieModule}
           // 디렉토리 데이터 관련
           dirData={dirModule.allDirData || { common: [], pinned: [] }}
           searchedDirData={dirModule.searchedDirData || []}
-          dirFilter={dirModule.dirFilter}
-          setDirFilter={dirModule.handleDirFilter}
-          postDir={dirModule.handlePostDir}
-          fixDirHandler={dirModule.handleFixDir}
-          handleDelDirectory={dirModule.handleDelDir}
-          handleUpdateDirectory={dirModule.handleEditDir}
+          dirModule={dirModule}
         />
       ) : (
         <NewtabError
