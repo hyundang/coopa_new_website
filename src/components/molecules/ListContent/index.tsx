@@ -31,16 +31,20 @@ const ListContent = ({
 }: ListContentProps) => {
   // 디렉토리명 입력 input
   const [text, setText] = useState("");
+  const [searchedDir, setSearchedDir] = useState<DirectoryDataProps[]>([]);
+  // 리스트 하단 블러 표시 여부
+  const [isBlur, setIsBlur] = useState(true);
+  const [isError, setIsError] = useState(false);
+
   const postHandler = () => {
     setCurrDir(text);
   };
-  const [searchedDir, setSearchedDir] = useState<DirectoryDataProps[]>([]);
-
-  // 리스트 하단 블러 표시 여부
-  const [isBlur, setIsBlur] = useState(true);
 
   //디렉토리 검색
   useEffect(() => {
+    allDir.find((dir) => dir.name === text)
+      ? setIsError(true)
+      : setIsError(false);
     setSearchedDir(
       text === ""
         ? []
@@ -68,11 +72,12 @@ const ListContent = ({
         setCurrDir={setCurrDir}
       />
       <div className="directory-form" onClick={(e) => e.stopPropagation()}>
-        <Input
+        <CookieInput
           className="directory-form__input"
-          placeholder="새 디렉토리 명을 입력하세요"
+          placeholder="검색 혹은 새 디랙토리 생성"
           maxLength={13}
           value={text}
+          isError={isError}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             setText(e.target.value);
             setCardState("input");
@@ -101,6 +106,7 @@ export default ListContent;
 interface ListContentWrapProps {
   isBlur?: boolean;
 }
+
 const Wrap = styled.div<ListContentWrapProps>`
   .directory-form {
     position: relative;
@@ -112,23 +118,6 @@ const Wrap = styled.div<ListContentWrapProps>`
     margin-top: 12px;
     box-shadow: ${(props) =>
       props.isBlur ? "0px -20px 10px 0px rgba(255,255,255,1)" : "none"};
-
-    &__input {
-      width: 170px;
-      height: 40px;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 13px;
-      line-height: 13px;
-      padding: 0px 8px;
-
-      ${({ theme }) => theme.media.desktop_3`
-          width: 155px;
-          height: 36px;
-          font-size: 11px;
-          line-height: 11px;
-        `}
-    }
 
     &__button {
       width: 66px;
@@ -146,4 +135,30 @@ const Wrap = styled.div<ListContentWrapProps>`
         `}
     }
   }
+`;
+
+type CookieInputProps = {
+  isError?: boolean;
+};
+
+const CookieInput = styled(Input)<CookieInputProps>`
+  width: 170px;
+  height: 40px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 13px;
+  padding: 0px 8px;
+  ${({ theme }) => theme.media.desktop_3`
+    width: 155px;
+    height: 36px;
+    font-size: 12px;
+    line-height: 11px;
+  `};
+  ${({ isError }) =>
+    isError &&
+    `
+        border-color:#FF2E00;
+        box-shadow: 0px 0px 5px rgba(255, 0, 0, 0.35);
+    `};
 `;
