@@ -72,21 +72,26 @@ const ListContent = ({
         setCurrDir={setCurrDir}
       />
       <div className="directory-form" onClick={(e) => e.stopPropagation()}>
-        <CookieInput
-          className="directory-form__input"
-          placeholder="검색 혹은 새 디랙토리 생성"
-          maxLength={13}
-          value={text}
-          isError={isError}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            setText(e.target.value);
-            setCardState("input");
-          }}
-          onKeyPress={(e) => (e.key === "Enter" ? postHandler() : {})}
-          onBlur={(e) =>
-            e.target.className !== "form" && setCardState("normal")
-          }
-        />
+        <InputWrapper>
+          <CookieInput
+            className="directory-form__input"
+            placeholder="검색 혹은 새 디랙토리 생성"
+            maxLength={13}
+            value={text}
+            isError={isError}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              setText(e.target.value);
+              setCardState("input");
+            }}
+            onKeyPress={(e) => (e.key === "Enter" ? postHandler() : {})}
+            onBlur={(e) =>
+              e.target.className !== "form" && setCardState("normal")
+            }
+          />
+          {isError && (
+            <div className="alert">동일한 이름의 디렉토리가 있습니다</div>
+          )}
+        </InputWrapper>
         <Btn
           className="directory-form__button"
           onClick={() => postHandler()}
@@ -161,4 +166,21 @@ const CookieInput = styled(Input)<CookieInputProps>`
         border-color:#FF2E00;
         box-shadow: 0px 0px 5px rgba(255, 0, 0, 0.35);
     `};
+`;
+
+const InputWrapper = styled.div`
+  position: relative;
+  & > .alert {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: -4.2rem;
+    width: 100%;
+    padding: 1rem 0;
+    border-radius: 1rem;
+    color: #ff2e00;
+    background-color: var(--orange_sub);
+    box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.12);
+  }
 `;
