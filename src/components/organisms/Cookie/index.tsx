@@ -5,7 +5,7 @@ import { fvcOnErrorImg } from "@assets/icons/card";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
 import {
   DirectoryDataProps,
-  PostAddCookieToDirProps,
+  PostCookieToDirProps,
   PostDirectoryProps,
 } from "src/lib/interfaces/directory";
 import CookieModule from "@modules/CookieModule";
@@ -70,7 +70,7 @@ const Cookie = (
           postDir && (await postDir({ name: currDir }));
         }
         if (currDir !== cookie?.directoryInfo?.name) {
-          const body: PostAddCookieToDirProps = {
+          const body: PostCookieToDirProps = {
             cookieId: cookie?.id || -1,
             directoryId:
               allDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,

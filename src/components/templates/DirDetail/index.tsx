@@ -12,7 +12,7 @@ import Cookies from "@components/templates/Cookies";
 import {
   PostDirectoryProps,
   DirectoryDataProps,
-  PostAddCookieToDirProps,
+  PostCookieToDirProps,
 } from "@interfaces/directory";
 import {
   CookieDataProps,
