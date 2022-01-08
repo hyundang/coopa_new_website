@@ -1,12 +1,6 @@
 import { CookieHover, CookieImg } from "@components/molecules";
 import styled, { css } from "styled-components";
-import {
-  SyntheticEvent,
-  useState,
-  useEffect,
-  forwardRef,
-  RefObject,
-} from "react";
+import { useState, useEffect, forwardRef, RefObject } from "react";
 import { fvcOnErrorImg } from "@assets/icons/card";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
 import {
@@ -14,6 +8,8 @@ import {
   PostAddCookieToDirProps,
   PostDirectoryProps,
 } from "src/lib/interfaces/directory";
+import CookieModule from "@modules/CookieModule";
+import DirDetailModule from "@modules/DirDetailModule";
 
 export interface CookieProps {
   /** id */
@@ -22,44 +18,32 @@ export interface CookieProps {
   className?: string;
   /** cookie */
   cookie?: CookieDataProps;
+  /** cookie data loading */
+  isLoading: boolean;
+  /** 쿠키 모듈 */
+  cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
+  /** fix cookie handler */
+  fixCookieHandler: () => void;
   /** all directory */
   allDir?: DirectoryDataProps[];
   /** 고정 디렉토리 */
   fixedDir?: DirectoryDataProps[];
   /** share cookie */
   isShared?: boolean;
-  /** copy cookie link */
-  copyCookieLink: () => void;
-  /** cookie delete handler */
-  deleteCookieHandler: (id: number) => Promise<void>;
-  /** cookie edit handler */
-  handleEditCookie: (data: FormData) => Promise<void>;
-  /** add cookie to dir */
-  handleDirAddCookie: (data: PostAddCookieToDirProps) => Promise<void>;
   /** post dir */
   postDir?: (data: PostDirectoryProps) => void;
-  /** post cookie count */
-  handleAddCookieCount: (data: number) => Promise<void>;
-  /** cookie data loading */
-  isLoading: boolean;
-  /** fix cookie handler */
-  fixCookieHandler: () => void;
 }
 const Cookie = (
   {
     id,
     className,
     cookie,
+    isLoading,
+    cookieModule,
     allDir,
     fixedDir,
     isShared,
-    copyCookieLink,
-    deleteCookieHandler,
-    handleEditCookie,
-    handleDirAddCookie,
-    handleAddCookieCount,
     postDir,
-    isLoading,
     fixCookieHandler,
   }: CookieProps,
   ref?:
@@ -72,9 +56,6 @@ const Cookie = (
   const [cardState, setCardState] = useState<
     "hover" | "normal" | "parking" | "input"
   >("normal");
-
-  // cookie 고정 여부
-  const [isCookieFixed, setIsCookieFixed] = useState(false);
 
   //현재 디렉토리
   const [currDir, setCurrDir] = useState(
@@ -94,7 +75,7 @@ const Cookie = (
             directoryId:
               allDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,
           };
-          body.directoryId && handleDirAddCookie(body);
+          body.directoryId && cookieModule.handleAddCookieToDir(body);
           setCardState("parking");
           setTimeout(() => setCardState("normal"), 1500);
         }
@@ -107,13 +88,13 @@ const Cookie = (
       className={className}
       onClick={() => {
         window.open(cookie?.link);
-        handleAddCookieCount(cookie?.id || -1);
+        cookieModule.handleAddCookieCount(cookie?.id || -1);
       }}
       onMouseEnter={() => {
-        if (cardState !== "input" && !isLoading) setCardState("hover");
+        if (cardState === "normal" && !isLoading) setCardState("hover");
       }}
       onMouseLeave={() => {
-        if (cardState !== "input" && !isLoading) setCardState("normal");
+        if (cardState === "hover" && !isLoading) setCardState("normal");
       }}
       isLoading={isLoading}
       ref={ref}
@@ -122,12 +103,11 @@ const Cookie = (
         cardState={isShared ? "normal" : cardState}
         setCardState={setCardState}
         cookie={cookie}
-        copyCookieLink={copyCookieLink}
-        deleteCookieHanlder={deleteCookieHandler}
-        handleEditCookie={handleEditCookie}
+        copyCookieLink={cookieModule.copyCookieLink}
+        deleteCookieHanlder={cookieModule.handleDelCookie}
+        handleEditCookie={cookieModule.handleEditCookie}
+        isUpdateLoading={cookieModule.isEditLoading}
         fixCookieHandler={fixCookieHandler}
-        isCookieFixed={isCookieFixed}
-        setIsCookieFixed={setIsCookieFixed}
       />
       {!isShared && (cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
@@ -149,7 +129,7 @@ const Cookie = (
             className="cookie--profile__favicon"
             src={cookie?.favicon}
             alt={fvcOnErrorImg}
-            onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
+            onError={(e) => {
               e.currentTarget.src = fvcOnErrorImg;
             }}
           />

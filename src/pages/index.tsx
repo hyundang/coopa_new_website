@@ -10,7 +10,7 @@ import { CookieDataProps } from "@interfaces/cookie";
 import { GetDirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 // libs
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import nextCookie from "next-cookies";
 import { mutate } from "swr";
 import { returnCookieFilter, returnDirFilter } from "@lib/filter";
@@ -111,33 +111,10 @@ export default function NewtabPage({
           // 홈보드 관련
           onKeyPress={handleKeyPress}
           homeboardModule={homebrdModule}
-          // 쿠키 데이터 관련
-          isCookieLoading={cookieModule.isLoading}
-          cookieData={
-            cookieModule.cookieData?.reduce(
-              (acc, curr) => curr && acc?.concat(curr),
-              [],
-            ) || []
-          }
-          cookieDataPageIndex={cookieModule.pageIndex}
-          setCookieDataPageIndex={cookieModule.setPageIndex}
-          searchedCookieData={cookieModule.searchedCookieData || []}
-          cookieFilter={cookieModule.cookieFilter}
-          setCookieFilter={cookieModule.handleCookieFilter}
-          copyCookieLink={cookieModule.copyCookieLink}
-          delCookieHandler={cookieModule.handleDelCookie}
-          handleEditCookie={cookieModule.handleEditCookie}
-          handleDirAddCookie={cookieModule.handleAddCookieToDir}
-          handleAddCookieCount={cookieModule.handleAddCookieCount}
-          // 디렉토리 데이터 관련
-          dirData={dirModule.allDirData || { common: [], pinned: [] }}
-          searchedDirData={dirModule.searchedDirData || []}
-          dirFilter={dirModule.dirFilter}
-          setDirFilter={dirModule.handleDirFilter}
-          postDir={dirModule.handlePostDir}
-          fixDirHandler={dirModule.handleFixDir}
-          handleDelDirectory={dirModule.handleDelDir}
-          handleUpdateDirectory={dirModule.handleEditDir}
+          // 쿠키 관련
+          cookieModule={cookieModule}
+          // 디렉토리 관련
+          dirModule={dirModule}
         />
       ) : (
         <NewtabError

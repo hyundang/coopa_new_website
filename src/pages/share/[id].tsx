@@ -1,7 +1,6 @@
 import { DirDetail } from "@components/templates";
 import nextCookie from "next-cookies";
 import getApi from "@api/getApi";
-import { readCountAsc, readCountDesc } from "@lib/filter";
 import { SharedDirectoryCookieDataProps } from "@interfaces/cookie";
 import CookieModule from "@modules/CookieModule";
 import { useToastMsg } from "src/hooks";

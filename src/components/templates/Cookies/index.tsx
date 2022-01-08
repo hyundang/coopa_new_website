@@ -1,74 +1,59 @@
-import styled from "styled-components";
-import {
-  CookieDataProps,
-  DirectoryCookieDataProps,
-} from "src/lib/interfaces/cookie";
-import { Btn } from "@components/atoms";
-import { Cookie, CookieMobile, Empty } from "@components/organisms";
+// assets
 import { CookieIcon } from "@assets/icons/common";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import {
-  DirectoryDataProps,
-  PostAddCookieToDirProps,
-  PostDirectoryProps,
-} from "@interfaces/directory";
 import { EmptyImg } from "@assets/imgs/error";
+// components
+import { Btn } from "@components/atoms";
+import {
+  Cookie,
+  CookieMobile,
+  CookieTablet,
+  Empty,
+} from "@components/organisms";
+// hooks
 import { useWindowSize } from "src/hooks";
+// interfaces
+import { CookieDataProps } from "@interfaces/cookie";
+import { DirectoryDataProps, PostDirectoryProps } from "@interfaces/directory";
+// libs
+import styled from "styled-components";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+// modules
+import CookieModule from "@modules/CookieModule";
+import DirDetailModule from "@modules/DirDetailModule";
 
 export interface CookiesProps {
-  /** cookie data */
-  data: CookieDataProps[];
   /** cookie type */
   type?: "normal" | "searched" | "dirDetail" | "dirShare";
+  /** cookie data */
+  data: CookieDataProps[];
+  /** cookie data loading */
+  isLoading: boolean;
+  /** 쿠키 모듈 */
+  cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
+  // 나중에 모듈 안에 구현하기
+  fixCookieHandler: () => void;
   /** 전체 디렉토리 data */
   allDir: DirectoryDataProps[];
   /** 고정 디렉토리 */
   fixedDir: DirectoryDataProps[];
   /** 온보딩 모달 오픈 */
   setIsOnboardOpen?: Dispatch<SetStateAction<boolean>>;
-  /** copy cookie link */
-  copyCookieLink: () => void;
-  /** del cookie handler */
-  delCookieHandler: (id: number) => Promise<void>;
-  /** edit cookie handler */
-  handleEditCookie: (data: FormData) => Promise<void>;
-  /** add cookie to dir */
-  handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
   /** add dir */
   postDir?: (body: PostDirectoryProps) => void;
-  /** add cookie count */
-  handleAddCookieCount: (id: number) => Promise<void>;
-  /** cookie data loading */
-  isLoading: boolean;
-  /** for getting cookie data */
-  pageIndex?: number;
-  setPageIndex?: (
-    size: number,
-  ) => Promise<
-    (CookieDataProps[] | undefined | DirectoryCookieDataProps)[] | undefined
-  >;
-  fixCookieHandler: () => void;
 }
 
 const Cookies = ({
+  type = "normal",
   data,
+  isLoading,
+  cookieModule,
   allDir,
   fixedDir,
-  type = "normal",
   setIsOnboardOpen,
-  copyCookieLink,
-  delCookieHandler,
-  handleEditCookie,
-  handleDirAddCookie,
-  handleAddCookieCount,
   postDir,
-  isLoading,
-  pageIndex,
-  setPageIndex,
   fixCookieHandler,
 }: CookiesProps) => {
   const size = useWindowSize();
-  const [isError, setIsError] = useState(false);
 
   const [target, setTarget] = useState<HTMLElement>();
 
@@ -81,10 +66,10 @@ const Cookies = ({
       entries.forEach((entry: any) => {
         if (entry.isIntersecting) {
           // 쿠키 데이터 get하기
-          setPageIndex &&
-            pageIndex &&
-            pageIndex !== null &&
-            setPageIndex(pageIndex + 1);
+          cookieModule.setPageIndex &&
+            cookieModule.pageIndex &&
+            cookieModule.pageIndex !== null &&
+            cookieModule.setPageIndex(cookieModule.pageIndex + 1);
         }
       });
     };
@@ -106,12 +91,8 @@ const Cookies = ({
                     key={cookie.id}
                     cookie={cookie}
                     isLoading
-                    setIsError={setIsError}
                     isShared={type === "dirShare"}
-                    copyCookieLink={copyCookieLink}
-                    delCookieHandler={delCookieHandler}
-                    handleEditCookie={handleEditCookie}
-                    handleAddCookieCount={handleAddCookieCount}
+                    cookieModule={cookieModule}
                     ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
                   />
                 ) : (
@@ -119,51 +100,62 @@ const Cookies = ({
                     key={cookie.id}
                     cookie={cookie}
                     isLoading
-                    setIsError={setIsError}
+                    cookieModule={cookieModule}
                     isShared={type === "dirShare"}
-                    copyCookieLink={copyCookieLink}
-                    delCookieHandler={delCookieHandler}
-                    handleEditCookie={handleEditCookie}
-                    handleAddCookieCount={handleAddCookieCount}
                   />
                 ),
               )}
             </CookieMobileWrap>
+          ) : size.width && size.width < 1024 ? (
+            <CookieWrap>
+              {data.map((cookie, idx) =>
+                idx === data.length - 1 ? (
+                  <CookieTablet
+                    key={cookie.id}
+                    cookie={cookie}
+                    isLoading
+                    isShared={type === "dirShare"}
+                    cookieModule={cookieModule}
+                    ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
+                  />
+                ) : (
+                  <CookieTablet
+                    key={cookie.id}
+                    cookie={cookie}
+                    isLoading
+                    cookieModule={cookieModule}
+                    isShared={type === "dirShare"}
+                  />
+                ),
+              )}
+            </CookieWrap>
           ) : (
             <CookieWrap>
               {data.map((cookie, idx) =>
                 idx === data.length - 1 ? (
                   <Cookie
-                    cookie={cookie}
                     key={cookie.id}
+                    isShared={type === "dirShare"}
+                    cookie={cookie}
+                    isLoading={isLoading}
+                    cookieModule={cookieModule}
+                    fixCookieHandler={fixCookieHandler}
                     allDir={allDir}
                     fixedDir={fixedDir}
-                    isShared={type === "dirShare"}
-                    copyCookieLink={copyCookieLink}
-                    deleteCookieHandler={delCookieHandler}
-                    handleEditCookie={handleEditCookie}
-                    handleDirAddCookie={handleDirAddCookie}
                     postDir={postDir}
-                    handleAddCookieCount={handleAddCookieCount}
-                    isLoading={isLoading}
                     ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
-                    fixCookieHandler={fixCookieHandler}
                   />
                 ) : (
                   <Cookie
-                    cookie={cookie}
                     key={cookie.id}
+                    isShared={type === "dirShare"}
+                    cookie={cookie}
+                    cookieModule={cookieModule}
+                    fixCookieHandler={fixCookieHandler}
+                    isLoading={isLoading}
                     allDir={allDir}
                     fixedDir={fixedDir}
-                    isShared={type === "dirShare"}
-                    copyCookieLink={copyCookieLink}
-                    deleteCookieHandler={delCookieHandler}
-                    handleEditCookie={handleEditCookie}
-                    handleDirAddCookie={handleDirAddCookie}
                     postDir={postDir}
-                    handleAddCookieCount={handleAddCookieCount}
-                    isLoading={isLoading}
-                    fixCookieHandler={fixCookieHandler}
                   />
                 ),
               )}

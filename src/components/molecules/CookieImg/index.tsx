@@ -28,11 +28,10 @@ export interface CookieImgProps {
   deleteCookieHanlder: (id: number) => Promise<void>;
   /** edit cookie handler */
   handleEditCookie: (data: FormData) => Promise<void>;
+  /** 쿠키 수정 로딩 */
+  isUpdateLoading: boolean;
   /** fix cookie handler */
   fixCookieHandler: () => void;
-  /** is cookie fixed */
-  isCookieFixed: boolean;
-  setIsCookieFixed: Dispatch<SetStateAction<boolean>>;
 }
 
 const CookieImg = ({
@@ -44,9 +43,8 @@ const CookieImg = ({
   copyCookieLink,
   deleteCookieHanlder,
   handleEditCookie,
+  isUpdateLoading,
   fixCookieHandler,
-  isCookieFixed,
-  setIsCookieFixed,
 }: CookieImgProps) => {
   const [patchData, setPatchData] = useState<PatchCookieProps>({
     title: cookie?.title || "",
@@ -57,11 +55,11 @@ const CookieImg = ({
   const [isError, setIsError] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const isUpdateLoading = false;
+  // cookie 고정 여부
+  const [isCookieFixed, setIsCookieFixed] = useState(false);
 
-  const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> = (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => setIsEditOpen(true);
+  const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> = () =>
+    setIsEditOpen(true);
 
   const pinIconClickHandler = () => {
     // fixCookieHandler();
@@ -166,7 +164,8 @@ const StyledPinImg = styled(PinImg)`
   position: absolute;
   z-index: 2;
   transform: translate(24px, -5px);
-  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
+  background-color: transparent;
+  -webkit-filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.1));
 `;
 
 const HoverDiv = styled.div`

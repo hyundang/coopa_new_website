@@ -1,16 +1,21 @@
+// apis
+import { getApi, postApi } from "@api/index";
+// components
 import { DirDetail } from "@components/templates";
-import nextCookie from "next-cookies";
+// interfaces
 import { DirectoryCookieDataProps } from "@interfaces/cookie";
 import { GetDirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
-import getApi from "@api/getApi";
-import postApi from "@api/postApi";
-import DirDetailModule from "@modules/DirDetailModule";
-import DirModule from "@modules/DirModule";
-import { useToastMsg } from "src/hooks";
+// libs
+import nextCookie from "next-cookies";
 import { useState } from "react";
 import { NextPageContext } from "next";
+import { useRecoilState } from "recoil";
 import { returnCookieFilter } from "@lib/filter";
+// modules
+import DirDetailModule from "@modules/DirDetailModule";
+import DirModule from "@modules/DirModule";
+import { ToastMsgState } from "@modules/states";
 
 interface DirDetailPageProps {
   isLogin: boolean;
@@ -28,22 +33,20 @@ const DirDetailPage = ({
 }: DirDetailPageProps) => {
   // share link url
   const [shareLink, setShareLink] = useState("");
-  // toast msg visible state
-  const { isVisible, setIsVisible } = useToastMsg();
+
+  // toast msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
 
   // 디렉토리 상세 모듈
   const dirDetailModule = DirDetailModule({
     key: `/directories/${queryID}`,
     initDirDetailData,
-    isVisible,
-    setIsVisible,
   });
 
   // 디렉토리 모듈
   const dirModule = DirModule({
     initAllDirData,
-    isVisible,
-    setIsVisible,
   });
 
   // 디렉토리 delete
@@ -54,7 +57,7 @@ const DirDetailPage = ({
 
   const handleShareClick = async () => {
     const shareToken = await postApi.postShareToken(queryID);
-    setIsVisible({ ...isVisible, copyShareLink: true });
+    setIsToastMsgVisible({ ...isToastMsgVisible, copyShareLink: true });
     setShareLink(`${DOMAIN}/share/${shareToken}`);
   };
 
@@ -62,33 +65,19 @@ const DirDetailPage = ({
     <>
       {isLogin ? (
         <DirDetail
+          // 유저 관련
           imgUrl={initUserData?.profileImage}
           nickname={initUserData?.name || ""}
+          // 디렉토리 관련
           dirInfo={dirDetailModule.dirInfo || { name: "", id: 0 }}
           allDir={dirModule.allDirData?.common}
-          cookies={
-            dirDetailModule.cookieData?.reduce(
-              (acc, curr) => curr && acc?.concat(curr),
-              [],
-            ) || []
-          }
-          filterType={dirDetailModule.cookieFilter}
-          onClickType={dirDetailModule.handleCookieFilter}
+          fixedDir={dirModule.allDirData?.pinned}
+          handlePostDir={dirModule.handlePostDir}
+          handleDelDirectory={handleDelDir}
           shareLink={shareLink}
           shareClick={handleShareClick}
-          isToastMsgVisible={isVisible}
-          setIsToastMsgVisible={setIsVisible}
-          postDir={dirModule.handlePostDir}
-          copyCookieLink={dirDetailModule.copyCookieLink}
-          delCookieHandler={dirDetailModule.handleDelCookie}
-          handleEditCookie={dirDetailModule.handleEditCookie}
-          handleDelDirectory={handleDelDir}
-          handleDirAddCookie={dirDetailModule.handleAddCookieToDir}
-          handleUpdateDirectory={dirDetailModule.handleEditDir}
-          handleAddCookieCount={dirDetailModule.handleAddCookieCount}
-          isCookieLoading={dirDetailModule.isLoading}
-          cookieDataPageIndex={dirDetailModule.pageIndex}
-          setCookieDataPageIndex={dirDetailModule.setPageIndex}
+          // 쿠키 관련
+          dirDetailModule={dirDetailModule}
           fixCookieHandler={() => {}}
         />
       ) : (

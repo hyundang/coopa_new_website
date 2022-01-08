@@ -128,17 +128,17 @@ const CookieWrap = styled.article`
   position: relative;
   width: 100%;
   padding: 28px 0;
-  border-bottom: 1px solid var(--gray_3);
+  margin-bottom: 5px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 
   .thumbnail-wrap {
-    width: 108px;
-    height: 72px;
-    margin-right: 18px;
+    width: 270px;
+    height: 136px;
+    margin-bottom: 16px;
     .thumbnail {
-      width: 108px;
-      height: 72px;
+      width: 270px;
+      height: 136px;
       border-radius: 8px;
       object-fit: cover;
     }

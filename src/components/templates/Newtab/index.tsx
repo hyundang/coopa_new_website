@@ -2,105 +2,36 @@
 import { SearchBar, Tab, ToastMsg } from "@components/atoms";
 import { Footer, Header, ListHeader } from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
-// interfaces
-import { CookieDataProps } from "@interfaces/cookie";
-import {
-  DirectoryDataProps,
-  GetDirectoryDataProps,
-  PostAddCookieToDirProps,
-  PostDirectoryProps,
-} from "@interfaces/directory";
 // libs
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { HomeboardState, ToastMsgState } from "@modules/states";
 import HomebrdModule from "@modules/HomebrdModule";
+import CookieModule from "@modules/CookieModule";
+import DirModule from "@modules/DirModule";
 
 export interface NewtablProps {
   /** 프로필 이미지 url */
   imgUrl?: string;
   /** 프로필 닉네임 */
   nickname: string;
-  // 홈보드 관련
   /** 검색창 enter key 클릭 */
   onKeyPress: React.KeyboardEventHandler<HTMLInputElement>;
   /** homeboard module */
   homeboardModule: ReturnType<typeof HomebrdModule>;
-  // 쿠키 관련
-  /** 쿠키 데이터 로딩 여부 */
-  isCookieLoading: boolean;
-  /** all cookie data */
-  cookieData: CookieDataProps[];
-  /** for getting cookie data */
-  cookieDataPageIndex: number;
-  setCookieDataPageIndex: (
-    size: number,
-  ) => Promise<(CookieDataProps[] | undefined)[] | undefined>;
-  /** 검색된 쿠키 데이터 */
-  searchedCookieData: CookieDataProps[];
-  /** 쿠키 필터 */
-  cookieFilter: "latest" | "readMost" | "readLeast" | "oldest";
-  setCookieFilter: (
-    f: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
-  ) => void;
-  /** copy cookie link */
-  copyCookieLink: () => void;
-  /** delete cookie handler */
-  delCookieHandler: (id: number) => Promise<void>;
-  /** edit cookie */
-  handleEditCookie: (data: FormData) => Promise<void>;
-  /** dir cookie 추가 */
-  handleDirAddCookie: (body: PostAddCookieToDirProps) => Promise<void>;
-  /** add cookie count */
-  handleAddCookieCount: (id: number) => Promise<void>;
-  // 디렉토리 관련
-  /** all directory data */
-  dirData: GetDirectoryDataProps;
-  /** 검색된 디렉토리 데이터 */
-  searchedDirData: DirectoryDataProps[];
-  /** 디렉토리 필터 */
-  dirFilter: "latest" | "oldest" | "abc";
-  setDirFilter: (
-    f: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
-  ) => void;
-  /** 디렉토리 생성 */
-  postDir: (e: PostDirectoryProps) => Promise<void>;
-  /** delete dir */
-  handleDelDirectory: (id: number) => Promise<void>;
-  /** update dir */
-  handleUpdateDirectory: (
-    id: number,
-    body: PostDirectoryProps,
-  ) => Promise<void>;
-  /** fix dir */
-  fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
+  /** 쿠키 모듈 */
+  cookieModule: ReturnType<typeof CookieModule>;
+  /** 디렉토리 모듈 */
+  dirModule: ReturnType<typeof DirModule>;
 }
 const Newtab = ({
   imgUrl,
   nickname,
   onKeyPress,
   homeboardModule,
-  isCookieLoading,
-  cookieData,
-  cookieDataPageIndex,
-  setCookieDataPageIndex,
-  searchedCookieData,
-  cookieFilter,
-  setCookieFilter,
-  dirData,
-  searchedDirData,
-  dirFilter,
-  setDirFilter,
-  postDir,
-  copyCookieLink,
-  delCookieHandler,
-  handleEditCookie,
-  handleDelDirectory,
-  handleDirAddCookie,
-  handleUpdateDirectory,
-  handleAddCookieCount,
-  fixDirHandler,
+  cookieModule,
+  dirModule,
 }: NewtablProps) => {
   // 검색 여부
   const isSearched = useRecoilValue(HomeboardState.IsSearchedState);
@@ -218,14 +149,15 @@ const Newtab = ({
           {((isSearched &&
             isSearchVisible &&
             (tabValue === "쿠키" || tabValue === "디렉토리")) ||
-            (tabValue === "모든 쿠키" && cookieData.length !== 0) ||
+            (tabValue === "모든 쿠키" &&
+              cookieModule.cookieData?.length !== 0) ||
             (tabValue === "디렉토리" &&
-              dirData.common?.length !== 0 &&
-              dirData.pinned?.length !== 0)) && (
+              dirModule.allDirData?.common?.length !== 0 &&
+              dirModule.allDirData?.pinned?.length !== 0)) && (
             <ListHeader
               isSearched={isSearched && isSearchVisible}
-              cookieNum={searchedCookieData.length}
-              dirNum={searchedDirData.length}
+              cookieNum={cookieModule.searchedCookieData?.length || 0}
+              dirNum={dirModule.searchedDirData?.length || 0}
               type={
                 tabValue === "모든 쿠키" || tabValue === "쿠키"
                   ? "cookie"
@@ -233,69 +165,72 @@ const Newtab = ({
               }
               imgUrl={imgUrl}
               nickname={nickname}
-              filterType={tabValue === "모든 쿠키" ? cookieFilter : dirFilter}
+              filterType={
+                tabValue === "모든 쿠키"
+                  ? cookieModule.cookieFilter
+                  : dirModule.dirFilter
+              }
               onClickType={
-                tabValue === "모든 쿠키" ? setCookieFilter : setDirFilter
+                tabValue === "모든 쿠키"
+                  ? cookieModule.handleCookieFilter
+                  : dirModule.handleDirFilter
               }
               isAddOpen={isAddOpen}
               setIsAddOpen={setIsAddOpen}
-              postDir={postDir}
+              postDir={dirModule.handlePostDir}
             />
           )}
           {isSearched && isSearchVisible ? (
+            // 검색된 쿠키 & 디렉토리
             <>
               {tabValue === "쿠키" ? (
                 <Cookies
-                  data={searchedCookieData}
-                  allDir={dirData.common}
-                  fixedDir={dirData.pinned || []}
                   type="searched"
-                  copyCookieLink={copyCookieLink}
-                  delCookieHandler={delCookieHandler}
-                  handleEditCookie={handleEditCookie}
-                  handleDirAddCookie={handleDirAddCookie}
-                  handleAddCookieCount={handleAddCookieCount}
-                  postDir={postDir}
+                  data={cookieModule.searchedCookieData || []}
                   isLoading={false}
+                  cookieModule={cookieModule}
+                  allDir={dirModule.allDirData?.common || []}
+                  fixedDir={dirModule.allDirData?.pinned || []}
+                  postDir={dirModule.handlePostDir}
                   fixCookieHandler={() => {}}
                 />
               ) : (
                 <Directories
-                  data={searchedDirData}
+                  data={dirModule.searchedDirData || []}
                   isSearched
-                  handleDelDirectory={handleDelDirectory}
-                  handleUpdateDirectory={handleUpdateDirectory}
-                  fixDirHandler={fixDirHandler}
+                  handleDelDirectory={dirModule.handleDelDir}
+                  handleUpdateDirectory={dirModule.handleEditDir}
+                  fixDirHandler={dirModule.handleFixDir}
                 />
               )}
             </>
           ) : (
+            // 뉴탭 쿠키 & 디렉토리
             <>
               {tabValue === "모든 쿠키" ? (
                 <Cookies
-                  data={cookieData}
-                  allDir={dirData.common}
-                  fixedDir={dirData.pinned || []}
-                  setIsOnboardOpen={setIsOnboardOpen}
-                  copyCookieLink={copyCookieLink}
-                  delCookieHandler={delCookieHandler}
-                  handleEditCookie={handleEditCookie}
-                  handleDirAddCookie={handleDirAddCookie}
-                  handleAddCookieCount={handleAddCookieCount}
-                  postDir={postDir}
-                  isLoading={isCookieLoading}
-                  pageIndex={cookieDataPageIndex}
-                  setPageIndex={setCookieDataPageIndex}
+                  isLoading={cookieModule.isLoading}
+                  data={
+                    cookieModule.cookieData?.reduce(
+                      (acc, curr) => curr && acc?.concat(curr),
+                      [],
+                    ) || []
+                  }
+                  cookieModule={cookieModule}
                   fixCookieHandler={() => {}}
+                  allDir={dirModule.allDirData?.common || []}
+                  fixedDir={dirModule.allDirData?.pinned || []}
+                  setIsOnboardOpen={setIsOnboardOpen}
+                  postDir={dirModule.handlePostDir}
                 />
               ) : (
                 <Directories
-                  data={dirData.common}
-                  pinnedData={dirData.pinned}
+                  pinnedData={dirModule.allDirData?.pinned}
+                  data={dirModule.allDirData?.common || []}
                   setIsDirAddOpen={setIsAddOpen}
-                  handleDelDirectory={handleDelDirectory}
-                  handleUpdateDirectory={handleUpdateDirectory}
-                  fixDirHandler={fixDirHandler}
+                  handleDelDirectory={dirModule.handleDelDir}
+                  handleUpdateDirectory={dirModule.handleEditDir}
+                  fixDirHandler={dirModule.handleFixDir}
                 />
               )}
             </>
