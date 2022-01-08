@@ -1,12 +1,6 @@
 import { CookieHover, CookieImg } from "@components/molecules";
 import styled, { css } from "styled-components";
-import {
-  SyntheticEvent,
-  useState,
-  useEffect,
-  forwardRef,
-  RefObject,
-} from "react";
+import { useState, useEffect, forwardRef, RefObject } from "react";
 import { fvcOnErrorImg } from "@assets/icons/card";
 import { CookieDataProps } from "src/lib/interfaces/cookie";
 import {
