@@ -164,7 +164,8 @@ const StyledPinImg = styled(PinImg)`
   position: absolute;
   z-index: 2;
   transform: translate(24px, -5px);
-  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
+  background-color: transparent;
+  -webkit-filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.1));
 `;
 
 const HoverDiv = styled.div`

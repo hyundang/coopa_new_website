@@ -1,16 +1,20 @@
+// apis
+import { getApi, postApi } from "@api/index";
+// components
 import { DirDetail } from "@components/templates";
-import nextCookie from "next-cookies";
+// interfaces
 import { DirectoryCookieDataProps } from "@interfaces/cookie";
 import { GetDirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
-import getApi from "@api/getApi";
-import postApi from "@api/postApi";
-import DirDetailModule from "@modules/DirDetailModule";
-import DirModule from "@modules/DirModule";
+// libs
+import nextCookie from "next-cookies";
 import { useState } from "react";
 import { NextPageContext } from "next";
-import { returnCookieFilter } from "@lib/filter";
 import { useRecoilState } from "recoil";
+import { returnCookieFilter } from "@lib/filter";
+// modules
+import DirDetailModule from "@modules/DirDetailModule";
+import DirModule from "@modules/DirModule";
 import { ToastMsgState } from "@modules/states";
 
 interface DirDetailPageProps {
@@ -61,8 +65,10 @@ const DirDetailPage = ({
     <>
       {isLogin ? (
         <DirDetail
+          // 유저 관련
           imgUrl={initUserData?.profileImage}
           nickname={initUserData?.name || ""}
+          // 디렉토리 관련
           dirInfo={dirDetailModule.dirInfo || { name: "", id: 0 }}
           allDir={dirModule.allDirData?.common}
           fixedDir={dirModule.allDirData?.pinned}
@@ -70,6 +76,7 @@ const DirDetailPage = ({
           handleDelDirectory={handleDelDir}
           shareLink={shareLink}
           shareClick={handleShareClick}
+          // 쿠키 관련
           dirDetailModule={dirDetailModule}
           fixCookieHandler={() => {}}
         />

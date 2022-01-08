@@ -26,7 +26,7 @@ const Directory = ({
   fixDirHandler,
 }: DirectoryProps) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isDeleteOpen, setISDeleteOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   // dir 고정 여부
   const [isDirFixed, setIsDirFixed] = useState(dir.isPinned);
@@ -69,7 +69,7 @@ const Directory = ({
         postDir={() => {}}
         putDir={handleUpdateDirectory}
         delDir={() => {
-          setISDeleteOpen(true);
+          setIsDeleteOpen(true);
           setIsEditOpen(false);
         }}
         initValue={{
@@ -81,7 +81,7 @@ const Directory = ({
       <DelModal
         type="directory"
         isOpen={isDeleteOpen}
-        setIsOpen={setISDeleteOpen}
+        setIsOpen={setIsDeleteOpen}
         onClickDel={() => handleDelDirectory(dir.id)}
       />
     </>
@@ -95,7 +95,8 @@ const StyledPinImg = styled(PinImg)`
   z-index: 2;
   top: -5px;
   left: 24px;
-  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
+  background-color: transparent;
+  -webkit-filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.1));
 `;
 
 export interface DirectoryWrapProps {
