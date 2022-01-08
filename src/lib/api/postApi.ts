@@ -1,9 +1,10 @@
 import { PostCookieProps } from "@interfaces/cookie";
 import {
-  PostAddCookieToDirProps,
-  PostDirAddCookieResponseProps,
+  PostCookieToDirProps,
+  PostCookieToDirResponseProps,
   PostDirectoryProps,
   PostDirectoryResponseProps,
+  PostReadCntResponseProps,
 } from "@interfaces/directory";
 import {
   BookmarkDataProps,
@@ -75,9 +76,9 @@ const postDirectoryData = async (
   }
 };
 
-const postDirAddCookie = async (
-  body: PostAddCookieToDirProps,
-): Promise<PostDirAddCookieResponseProps | undefined> => {
+const postCookieToDir = async (
+  body: PostCookieToDirProps,
+): Promise<PostCookieToDirResponseProps | undefined> => {
   try {
     const {
       data: { data },
@@ -86,18 +87,18 @@ const postDirAddCookie = async (
     return data;
   } catch (e) {
     console.log("[FAIL] POST ADD COOKIE DATA", e);
-    return undefined;
   }
 };
 
-const postCookieCount = async (id: number) => {
+const postCookieReadCount = async (
+  id: number,
+): Promise<PostReadCntResponseProps | undefined> => {
   try {
     const { data } = await client.post(`/cookies/${id}/read`);
     console.log("[SUCCESS] POST ADD COOKIE COUNT", data);
     return data;
   } catch (e) {
     console.log("[FAIL] POST ADD COOKIE COUNT", e);
-    return e;
   }
 };
 
@@ -117,8 +118,8 @@ const postApi = {
   postBookmarkData,
   postShareToken,
   postDirectoryData,
-  postDirAddCookie,
-  postCookieCount,
+  postCookieToDir,
+  postCookieReadCount,
   postCookie,
 };
 

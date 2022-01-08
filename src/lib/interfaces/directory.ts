@@ -28,16 +28,28 @@ export interface DirDeleteDataProps {
   name: string;
 }
 
-export interface PostAddCookieToDirProps {
+export interface PostCookieToDirProps {
   directoryId: number;
   cookieId: number;
 }
 
-export interface PostDirAddCookieResponseProps {
+export interface PostCookieToDirResponseProps {
+  content: string;
   cookieId: number;
   directoryId: number;
   directoryName: string;
   directoryEmoji: string | null;
+  title: string;
+  link: string;
+  thumbnail: string;
+  favicon: string;
+  provider: string;
+}
+
+export interface PostReadCntResponseProps {
+  content: string;
+  cookieId: number;
+  readCnt: number;
   title: string;
   link: string;
   thumbnail: string;

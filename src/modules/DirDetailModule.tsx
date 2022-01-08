@@ -7,7 +7,7 @@ import {
   directoryInfoType,
 } from "@interfaces/cookie";
 import {
-  PostAddCookieToDirProps,
+  PostCookieToDirProps,
   PostDirectoryProps,
 } from "@interfaces/directory";
 // libs
@@ -167,7 +167,7 @@ const DirDetailModule = ({ key, initDirDetailData }: DirDetailModuleProps) => {
   };
 
   // 디렉토리에 쿠키 추가
-  const handleAddCookieToDir = async (body: PostAddCookieToDirProps) => {
+  const handleAddCookieToDir = async (body: PostCookieToDirProps) => {
     // const res = await postApi.postDirAddCookie(body);
     // res &&
     //   (() => {
