@@ -142,7 +142,7 @@ const Cookie = (
             setCardState={setCardState}
             currDir={
               cookie?.directoryInfo?.emoji !== null
-                ? `${cookie?.directoryInfo?.emoji} ${currDir}`
+                ? `${cookie?.directoryInfo?.emoji || ""} ${currDir}`
                 : currDir
             }
             setCurrDir={setCurrDir}
