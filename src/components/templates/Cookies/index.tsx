@@ -12,7 +12,7 @@ import {
 // hooks
 import { useWindowSize } from "src/hooks";
 // interfaces
-import { CookieDataProps } from "@interfaces/cookie";
+import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
 import { DirectoryDataProps, PostDirectoryProps } from "@interfaces/directory";
 // libs
 import styled from "styled-components";
@@ -28,6 +28,7 @@ export interface CookiesProps {
   pinnedCookieList: CookieDataProps[];
   /** unpinned cookie data */
   unpinnedCookieList: CookieDataProps[];
+  dirInfo?: directoryInfoType;
   /** cookie data loading */
   isLoading: boolean;
   /** 쿠키 모듈 */
@@ -49,6 +50,7 @@ const Cookies = ({
   type = "normal",
   pinnedCookieList,
   unpinnedCookieList,
+  dirInfo,
   isLoading,
   cookieModule,
   allDir,
@@ -104,7 +106,14 @@ const Cookies = ({
                 idx === unpinnedCookieList.length - 1 ? (
                   <CookieMobile
                     key={cookie.id}
-                    cookie={cookie}
+                    cookie={
+                      dirInfo
+                        ? {
+                            ...cookie,
+                            directoryInfo: dirInfo,
+                          }
+                        : cookie
+                    }
                     isLoading={false}
                     isShared={type === "dirShare"}
                     cookieModule={cookieModule}
@@ -113,7 +122,14 @@ const Cookies = ({
                 ) : (
                   <CookieMobile
                     key={cookie.id}
-                    cookie={cookie}
+                    cookie={
+                      dirInfo
+                        ? {
+                            ...cookie,
+                            directoryInfo: dirInfo,
+                          }
+                        : cookie
+                    }
                     isLoading={false}
                     cookieModule={cookieModule}
                     isShared={type === "dirShare"}
@@ -136,7 +152,14 @@ const Cookies = ({
                 idx === unpinnedCookieList.length - 1 ? (
                   <CookieTablet
                     key={cookie.id}
-                    cookie={cookie}
+                    cookie={
+                      dirInfo
+                        ? {
+                            ...cookie,
+                            directoryInfo: dirInfo,
+                          }
+                        : cookie
+                    }
                     isLoading={false}
                     isShared={type === "dirShare"}
                     cookieModule={cookieModule}
@@ -145,7 +168,14 @@ const Cookies = ({
                 ) : (
                   <CookieTablet
                     key={cookie.id}
-                    cookie={cookie}
+                    cookie={
+                      dirInfo
+                        ? {
+                            ...cookie,
+                            directoryInfo: dirInfo,
+                          }
+                        : cookie
+                    }
                     isLoading={false}
                     cookieModule={cookieModule}
                     isShared={type === "dirShare"}
@@ -172,7 +202,14 @@ const Cookies = ({
                   <Cookie
                     key={cookie.id}
                     type={type}
-                    cookie={cookie}
+                    cookie={
+                      dirInfo
+                        ? {
+                            ...cookie,
+                            directoryInfo: dirInfo,
+                          }
+                        : cookie
+                    }
                     isLoading={isLoading}
                     cookieModule={cookieModule}
                     allDir={allDir}
@@ -184,7 +221,14 @@ const Cookies = ({
                   <Cookie
                     key={cookie.id}
                     type={type}
-                    cookie={cookie}
+                    cookie={
+                      dirInfo
+                        ? {
+                            ...cookie,
+                            directoryInfo: dirInfo,
+                          }
+                        : cookie
+                    }
                     cookieModule={cookieModule}
                     isLoading={isLoading}
                     allDir={allDir}

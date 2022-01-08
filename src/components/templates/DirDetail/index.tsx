@@ -160,6 +160,7 @@ const DirDetail = ({
                 [],
               ) || []
             }
+            dirInfo={dirInfo}
             isLoading={dirDetailModule.isLoading}
             allDir={allDir || []}
             fixedDir={fixedDir || []}
