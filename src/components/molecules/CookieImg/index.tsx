@@ -58,9 +58,8 @@ const CookieImg = ({
   // cookie 고정 여부
   const [isCookieFixed, setIsCookieFixed] = useState(false);
 
-  const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> = (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => setIsEditOpen(true);
+  const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> = () =>
+    setIsEditOpen(true);
 
   const pinIconClickHandler = () => {
     // fixCookieHandler();

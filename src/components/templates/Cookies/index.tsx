@@ -3,7 +3,12 @@ import { CookieIcon } from "@assets/icons/common";
 import { EmptyImg } from "@assets/imgs/error";
 // components
 import { Btn } from "@components/atoms";
-import { Cookie, CookieMobile, Empty } from "@components/organisms";
+import {
+  Cookie,
+  CookieMobile,
+  CookieTablet,
+  Empty,
+} from "@components/organisms";
 // hooks
 import { useWindowSize } from "src/hooks";
 // interfaces
@@ -101,6 +106,29 @@ const Cookies = ({
                 ),
               )}
             </CookieMobileWrap>
+          ) : size.width && size.width < 1024 ? (
+            <CookieWrap>
+              {data.map((cookie, idx) =>
+                idx === data.length - 1 ? (
+                  <CookieTablet
+                    key={cookie.id}
+                    cookie={cookie}
+                    isLoading
+                    isShared={type === "dirShare"}
+                    cookieModule={cookieModule}
+                    ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
+                  />
+                ) : (
+                  <CookieTablet
+                    key={cookie.id}
+                    cookie={cookie}
+                    isLoading
+                    cookieModule={cookieModule}
+                    isShared={type === "dirShare"}
+                  />
+                ),
+              )}
+            </CookieWrap>
           ) : (
             <CookieWrap>
               {data.map((cookie, idx) =>
