@@ -97,10 +97,10 @@ const Cookie = (
         cookieModule.handleAddCookieCount(cookie?.id || -1);
       }}
       onMouseEnter={() => {
-        if (cardState !== "input" && !isLoading) setCardState("hover");
+        if (cardState === "normal" && !isLoading) setCardState("hover");
       }}
       onMouseLeave={() => {
-        if (cardState !== "input" && !isLoading) setCardState("normal");
+        if (cardState === "hover" && !isLoading) setCardState("normal");
       }}
       isLoading={isLoading}
       ref={ref}
@@ -135,7 +135,7 @@ const Cookie = (
             className="cookie--profile__favicon"
             src={cookie?.favicon}
             alt={fvcOnErrorImg}
-            onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
+            onError={(e) => {
               e.currentTarget.src = fvcOnErrorImg;
             }}
           />

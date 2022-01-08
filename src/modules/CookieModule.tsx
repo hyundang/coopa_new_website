@@ -13,7 +13,6 @@ import { useRecoilState } from "recoil";
 import { ToastMsgState } from "./states";
 
 interface CookieModuleProps {
-  /** initial cookie datas */
   initAllCookieData: CookieDataProps[];
 }
 const CookieModule = ({ initAllCookieData }: CookieModuleProps) => {
