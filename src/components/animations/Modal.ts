@@ -44,7 +44,7 @@ const mobileFadeIn = keyframes`
   }
 `;
 const mobileFadeInRule = css(
-  ["", " 0.4s linear"] as any as TemplateStringsArray,
+  ["", " 0.2s linear"] as any as TemplateStringsArray,
   mobileFadeIn,
 );
 
@@ -59,7 +59,7 @@ const mobileFadeOut = keyframes`
   }
 `;
 const mobileFadeOutRule = css(
-  ["", " 0.4s linear"] as any as TemplateStringsArray,
+  ["", " 0.2s linear"] as any as TemplateStringsArray,
   mobileFadeOut,
 );
 
