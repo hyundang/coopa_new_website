@@ -1,9 +1,14 @@
-import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
-import styled, { css } from "styled-components";
+// components
 import { Btn, Modal } from "@components/atoms";
 import { ImgBoxForm, InputForm, TextAreaForm } from "@components/molecules";
-import { modalAnimation } from "@components/animations";
+// interfaces
 import { PatchCookieProps } from "@interfaces/cookie";
+// libs
+import { useRecoilState } from "recoil";
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
+import styled from "styled-components";
+// modules
+import { ToastMsgState } from "@modules/states";
 
 export interface CookieEditModalProps {
   /** id */
@@ -20,8 +25,6 @@ export interface CookieEditModalProps {
   setCardState?: Dispatch<
     SetStateAction<"hover" | "parking" | "normal" | "input">
   >;
-  /** img input 시 img size 에러 여부 setState */
-  setIsError: Dispatch<SetStateAction<boolean>>;
   /** 모달 open 여부 */
   isOpen: boolean;
   /** 모달 open 여부 setState */
@@ -39,7 +42,6 @@ const CookieEditModal = ({
   setValue,
   onClickDel,
   setCardState,
-  setIsError,
   isOpen,
   setIsOpen,
   isLoading,
@@ -49,6 +51,9 @@ const CookieEditModal = ({
   const [isHover, setIsHover] = useState(false);
   // file input 시 file value 초기화를 위해 사용
   const img_input = useRef<HTMLInputElement>(null);
+
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
 
   // img input event handling 함수
   const handleChangeImg = (e: ChangeEvent<HTMLInputElement>) => {
@@ -60,7 +65,10 @@ const CookieEditModal = ({
           image: e.target.files[0],
         });
       } else {
-        setIsError(true);
+        setIsToastMsgVisible({
+          ...isToastMsgVisible,
+          imgSizeOver: true,
+        });
         if (img_input.current) img_input.current.value = "";
       }
     }
