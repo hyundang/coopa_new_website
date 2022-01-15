@@ -18,7 +18,7 @@ export interface CookieProps {
   /** cookie type */
   type: "normal" | "searched" | "dirDetail" | "dirShare";
   /** cookie */
-  cookie?: CookieDataProps;
+  cookie: CookieDataProps;
   /** cookie data loading */
   isLoading: boolean;
   /** 쿠키 모듈 */
@@ -39,8 +39,8 @@ const Cookie = (
     cookie,
     isLoading,
     cookieModule,
-    allDir,
-    fixedDir,
+    allDir = [],
+    fixedDir = [],
     postDir = () => {},
   }: CookieProps,
   ref?:
@@ -55,62 +55,58 @@ const Cookie = (
   >("normal");
 
   //현재 디렉토리
-  const [currDir, setCurrDir] = useState(
-    cookie?.directoryInfo?.name === undefined
-      ? "모든 쿠키"
-      : cookie?.directoryInfo.name,
-  );
+  const [currDir, setCurrDir] = useState(cookie.directoryInfo?.name || "");
 
   const [updatedDir, setUpdatedDir] = useState({
-    name: cookie?.directoryInfo?.name || "",
-    emoji: cookie?.directoryInfo?.emoji || "",
+    name: cookie.directoryInfo?.name || "",
+    emoji: cookie.directoryInfo?.emoji || "",
   });
 
   useEffect(() => {
     (async () => {
-      if (currDir !== cookie?.directoryInfo?.name && currDir !== "모든 쿠키") {
+      if (currDir !== cookie.directoryInfo?.name) {
         const isNewDir =
-          allDir?.filter((dir) => dir.name === currDir).length === 0;
+          allDir.filter((dir) => dir.name === currDir).length === 0 &&
+          fixedDir.filter((dir) => dir.name === currDir).length === 0;
 
         if (isNewDir) {
           await postDir({ name: currDir });
         }
 
-        if (currDir !== cookie?.directoryInfo?.name) {
-          const body: PostCookieToDirProps = {
-            cookieId: cookie?.id || -1,
-            directoryId:
-              allDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,
-          };
+        const body: PostCookieToDirProps = {
+          cookieId: cookie.id || -1,
+          directoryId: allDir.filter((dir) => dir.name === currDir)[0]?.id,
+        };
 
-          const result =
-            body.directoryId &&
-            (await cookieModule.changeDirOfCookie(
-              body,
-              cookie?.isPinned || false,
-              type === "searched",
-            ));
+        const result =
+          body.directoryId &&
+          (await cookieModule.changeDirOfCookie(
+            body,
+            cookie.isPinned || false,
+            type === "searched",
+          ));
 
-          cookieModule.isPostCookieToDirProps(result) &&
-            setUpdatedDir({
-              name: result.directoryName || "",
-              emoji: result?.directoryEmoji || "",
-            });
+        console.log(result);
 
-          setCardState("parking");
-          setTimeout(() => setCardState("normal"), 1500);
-        }
+        cookieModule.isPostCookieToDirProps(result) &&
+          setUpdatedDir({
+            name: result?.directoryName || "",
+            emoji: result?.directoryEmoji || "",
+          });
+
+        setCardState("parking");
+        setTimeout(() => setCardState("normal"), 1500);
       }
     })();
   }, [currDir, allDir]);
 
-  const deleteCookieHandler = cookie?.isPinned
+  const deleteCookieHandler = cookie.isPinned
     ? (cookieId: number) =>
         cookieModule.deleteCookie(cookieId, true, type === "searched")
     : (cookieId: number) =>
         cookieModule.deleteCookie(cookieId, false, type === "searched");
 
-  const handleEditCookie = cookie?.isPinned
+  const handleEditCookie = cookie.isPinned
     ? (payload: FormData) =>
         cookieModule.editCookie(payload, true, type === "searched")
     : (payload: FormData) =>
@@ -124,10 +120,10 @@ const Cookie = (
       id={id}
       className={className}
       onClick={() => {
-        window.open(cookie?.link);
+        window.open(cookie.link);
         cookieModule.editCookieReadCount(
-          cookie?.id || -1,
-          cookie?.isPinned || false,
+          cookie.id || -1,
+          cookie.isPinned || false,
           type === "searched",
         );
       }}
@@ -154,12 +150,12 @@ const Cookie = (
       {type !== "dirShare" && (cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
           <CookieHover
-            allDir={allDir || []}
-            fixedDir={fixedDir || []}
+            allDir={allDir}
+            fixedDir={fixedDir}
             setCardState={setCardState}
             currDir={
-              cookie?.directoryInfo?.emoji !== null
-                ? `${cookie?.directoryInfo?.emoji || ""} ${currDir}`
+              cookie.directoryInfo?.emoji !== null
+                ? `${cookie.directoryInfo?.emoji || ""} ${currDir}`
                 : currDir
             }
             setCurrDir={setCurrDir}
@@ -167,20 +163,20 @@ const Cookie = (
         </div>
       )}
       <section className="cookie--desc">
-        <h1 className="cookie--title">{cookie?.title}</h1>
-        <div className="cookie--content">{cookie?.content}</div>
+        <h1 className="cookie--title">{cookie.title}</h1>
+        <div className="cookie--content">{cookie.content}</div>
         <div style={{ flexGrow: 1 }} />
         <div className="cookie--profile">
           <img
             className="cookie--profile__favicon"
-            src={cookie?.favicon}
+            src={cookie.favicon}
             alt={fvcOnErrorImg}
             onError={(e) => {
               e.currentTarget.src = fvcOnErrorImg;
             }}
           />
           <div className="cookie--profile__favicon--loading" />
-          <cite className="cookie--profile__author">{cookie?.provider}</cite>
+          <cite className="cookie--profile__author">{cookie.provider}</cite>
         </div>
       </section>
     </CookieWrap>
