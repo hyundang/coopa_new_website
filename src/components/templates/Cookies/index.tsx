@@ -34,8 +34,6 @@ export interface CookiesProps {
   /** 쿠키 모듈 */
   // cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
   cookieModule: ReturnType<typeof CookieModule>;
-  // 나중에 모듈 안에 구현하기
-  fixCookieHandler: () => void;
   /** 전체 디렉토리 data */
   allDir: DirectoryDataProps[];
   /** 고정 디렉토리 */
@@ -57,7 +55,6 @@ const Cookies = ({
   fixedDir,
   setIsOnboardOpen,
   postDir,
-  fixCookieHandler,
 }: CookiesProps) => {
   const size = useWindowSize();
 
