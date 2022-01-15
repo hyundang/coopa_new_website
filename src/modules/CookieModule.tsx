@@ -8,7 +8,7 @@ import {
   PostReadCntResponseProps,
 } from "@interfaces/directory";
 // libs
-import { returnCookieFilter } from "@lib/filter";
+import { returnCookieFilter, returnDirFilter } from "@lib/filter";
 import SaveDataInWebCookie from "@lib/SaveDataInWebCookie";
 import reactCookie from "react-cookies";
 import { useState } from "react";
@@ -59,23 +59,13 @@ const CookieModule = ({
     errorRetryCount: 3, // 재시도 3번까지만
   });
 
-  // 고정 쿠키 데이터 key 함수
-  const getPinnedCookieSWRKey = (pageIndex: number, previousPageData: any) => {
-    if (previousPageData && !previousPageData.length) return null; // 끝에 도달
-    return `/cookies/pinned?size=${COOKIE_PAGE_SIZE}&page=${pageIndex}&filter=${returnCookieFilter(
-      cookieFilter,
-    )}`;
-  };
   // 고정 쿠키 데이터 get
   const {
     data: pinnedCookieData,
     error: pinnedError,
-    size: pinnedPageIndex,
-    setSize: setPinnedPageIndex,
     mutate: pinnedMutate,
-  } = useSWRInfinite(getPinnedCookieSWRKey, getApi.getAllCookieData, {
-    initialData: [initAllPinnedCookieData],
-    revalidateAll: false, // 항상 모든 페이지의 갱신을 시도하지 않음
+  } = useSWR(`/cookies/pinned`, getApi.getAllCookieData, {
+    initialData: initAllPinnedCookieData,
     errorRetryCount: 3, // 재시도 3번까지만
   });
 
@@ -88,7 +78,7 @@ const CookieModule = ({
   };
 
   // 검색된 쿠키 데이터 get
-  const { data: searchedCookieData } = useSWR(
+  const { data: searchedCookieData, mutate: searchedMutate } = useSWR(
     "/cookies/search",
     getApi.getSearchedCookieData,
     { revalidateOnFocus: false, revalidateOnMount: false },
@@ -113,7 +103,6 @@ const CookieModule = ({
   const filterDeletedCookie = (
     outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
     cookieId: number,
-    isPinned: boolean,
   ): CookieDataProps[][] => {
     if (outerCookieList) {
       const newCookieList = outerCookieList.map((innerCookieList) => {
@@ -125,41 +114,54 @@ const CookieModule = ({
     }
     // initial data 일 때
     const newCookieList = filterSpecificCookie(
-      isPinned ? initAllPinnedCookieData : initAllUnpinnedCookieData,
+      initAllUnpinnedCookieData,
       cookieId,
     );
     return [newCookieList];
   };
 
-  const callDeleteApiAndFilterCookie = async (
-    outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
+  const deleteCookie = async (
     cookieId: number,
     isPinned: boolean,
+    isSearched: boolean,
   ) => {
     const res = await delApi.delCookieData(cookieId);
-    if (res)
-      return filterDeletedCookie(outerCookieList, res.cookieId, isPinned);
+    if (res) {
+      if (isPinned)
+        pinnedMutate(
+          (cookieList) => filterSpecificCookie(cookieList || [], cookieId),
+          false,
+        );
+      else if (isSearched)
+        searchedMutate(async (cookieList) => {
+          return filterSpecificCookie(cookieList || [], cookieId);
+        }, false);
+      else {
+        unpinnedMutate(
+          (outerCookieList) =>
+            filterDeletedCookie(outerCookieList, res.cookieId),
+          false,
+        );
+      }
+      setIsToastMsgVisible({
+        ...isToastMsgVisible,
+        cookieDel: true,
+      });
+      return;
+    }
     alert("쿠키 삭제 실패");
   };
 
-  const deleteCookie = async (cookieId: number, isPinned: boolean) => {
-    if (isPinned) {
-      pinnedMutate(
-        (outerCookieList) =>
-          callDeleteApiAndFilterCookie(outerCookieList, cookieId, true),
-        false,
-      );
-    } else {
-      unpinnedMutate(
-        (outerCookieList) =>
-          callDeleteApiAndFilterCookie(outerCookieList, cookieId, false),
-        false,
-      );
+  const deleteSearchedCookie = async (cookieId: number) => {
+    const res = await delApi.delCookieData(cookieId);
+    if (res) {
+      setIsToastMsgVisible({
+        ...isToastMsgVisible,
+        cookieDel: true,
+      });
+      return;
     }
-    setIsToastMsgVisible({
-      ...isToastMsgVisible,
-      cookieDel: true,
-    });
+    alert("쿠키 삭제 실패");
   };
 
   // 쿠키 edit
@@ -198,7 +200,6 @@ const CookieModule = ({
   const filterEditedCookie = (
     outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
     editedCookieData: CookieDataProps,
-    isPinned: boolean,
   ): CookieDataProps[][] => {
     // 갱신된 데이터일 때
     if (outerCookieList) {
@@ -216,41 +217,47 @@ const CookieModule = ({
     }
     // initial data 일 때
     const newInnerCookieList = changeSequenceOfEditedCookieByFiltering(
-      isPinned ? initAllPinnedCookieData : initAllUnpinnedCookieData,
+      initAllUnpinnedCookieData,
       editedCookieData,
     );
     return [newInnerCookieList];
   };
 
-  const callEditApiAndFilterCookie = async (
-    outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
+  const editCookie = async (
     formData: FormData,
     isPinned: boolean,
+    isSearched: boolean,
   ) => {
-    const res = await putApi.updateCookie(formData);
-    if (res) return filterEditedCookie(outerCookieList, res, isPinned);
-    alert("쿠키 수정 실패");
-  };
-
-  const editCookie = async (formData: FormData, isPinned: boolean) => {
     setIsEditCookieLoading(true);
-    if (isPinned)
-      pinnedMutate(
-        (outerCookieList) =>
-          callEditApiAndFilterCookie(outerCookieList, formData, true),
-        false,
-      );
-    else
-      unpinnedMutate(
-        (outerCookieList) =>
-          callEditApiAndFilterCookie(outerCookieList, formData, false),
-        false,
-      );
+    const res = await putApi.updateCookie(formData);
+    if (res) {
+      if (isPinned)
+        pinnedMutate(
+          (cookieList) =>
+            changeSequenceOfEditedCookieByFiltering(cookieList || [], res),
+          false,
+        );
+      else if (isSearched)
+        searchedMutate((cookieList) => {
+          return cookieList?.map((cookie) => {
+            if (cookie.id === res.id) return res;
+            return cookie;
+          });
+        }, false);
+      else
+        unpinnedMutate(
+          (outerCookieList) => filterEditedCookie(outerCookieList, res),
+          false,
+        );
+      setIsEditCookieLoading(false);
+      setIsToastMsgVisible({
+        ...isToastMsgVisible,
+        cookieEdit: true,
+      });
+      return;
+    }
     setIsEditCookieLoading(false);
-    setIsToastMsgVisible({
-      ...isToastMsgVisible,
-      cookieEdit: true,
-    });
+    alert("쿠키 수정 실패");
   };
 
   // 쿠키의 디렉토리 변경
@@ -261,87 +268,145 @@ const CookieModule = ({
   }
 
   const filterAndChangeDataOfEditedCookie = (
-    outerCookieList: (CookieDataProps[] | undefined)[],
+    cookieList: CookieDataProps[],
     editedCookieData: PostCookieToDirResponseProps | PostReadCntResponseProps,
   ) => {
-    const newOuterCookieList = outerCookieList.map((innerCookieList) => {
-      const newInnerCookieList = innerCookieList?.map((cookie) => {
-        if (cookie.id === editedCookieData.cookieId) {
-          if (
-            isTypeOfObjectEqualsToPostCookieToDirResponseProps(editedCookieData)
-          )
-            return {
-              ...cookie,
-              directoryInfo: {
-                emoji: editedCookieData.directoryEmoji || null,
-                id: editedCookieData.directoryId,
-                name: editedCookieData.directoryName,
-              },
-            };
+    return cookieList.map((cookie) => {
+      if (cookie.id === editedCookieData.cookieId) {
+        if (
+          isTypeOfObjectEqualsToPostCookieToDirResponseProps(editedCookieData)
+        )
           return {
             ...cookie,
-            readCnt: editedCookieData.readCnt,
+            directoryInfo: {
+              emoji: editedCookieData.directoryEmoji || null,
+              id: editedCookieData.directoryId,
+              name: editedCookieData.directoryName,
+            },
           };
-        }
-        return cookie;
-      });
-      return newInnerCookieList;
+        return {
+          ...cookie,
+          readCnt: editedCookieData.readCnt,
+        };
+      }
+      return cookie;
     });
-    return newOuterCookieList;
   };
 
-  const callChangeDirOfCookieApiAndFilterCookie = async (
+  const filterOuterEditedCookie = (
     outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
-    body: PostCookieToDirProps,
+    editedCookieData: PostCookieToDirResponseProps | PostReadCntResponseProps,
   ) => {
-    const res = await postApi.postCookieToDir(body);
-    if (res && outerCookieList)
-      return filterAndChangeDataOfEditedCookie(outerCookieList, res);
-    alert("디렉토리 변경 실패");
+    if (outerCookieList) {
+      const newOuterCookieList = outerCookieList.map((innerCookieList) => {
+        const newInnerCookieList = filterAndChangeDataOfEditedCookie(
+          innerCookieList || [],
+          editedCookieData,
+        );
+        return newInnerCookieList;
+      });
+      return newOuterCookieList;
+    }
+    // initial data 일 때
+    const newInnerCookieList = filterAndChangeDataOfEditedCookie(
+      initAllUnpinnedCookieData,
+      editedCookieData,
+    );
+    return [newInnerCookieList];
   };
 
   const changeDirOfCookie = async (
     body: PostCookieToDirProps,
     isPinned: boolean,
+    isSearched: boolean,
   ) => {
-    if (isPinned)
-      pinnedMutate(
-        (outerCookieList) =>
-          callChangeDirOfCookieApiAndFilterCookie(outerCookieList, body),
-        true,
-      );
-    else
-      unpinnedMutate(
-        (outerCookieList) =>
-          callChangeDirOfCookieApiAndFilterCookie(outerCookieList, body),
-        true,
-      );
+    const res = await postApi.postCookieToDir(body);
+    if (res) {
+      if (isPinned)
+        pinnedMutate(
+          (cookieList) =>
+            filterAndChangeDataOfEditedCookie(cookieList || [], res),
+          true,
+        );
+      else if (isSearched)
+        searchedMutate(
+          (cookieList) =>
+            filterAndChangeDataOfEditedCookie(cookieList || [], res),
+          false,
+        );
+      else
+        unpinnedMutate(
+          (outerCookieList) => filterOuterEditedCookie(outerCookieList, res),
+          true,
+        );
+      return;
+    }
+    alert("디렉토리 변경 실패");
   };
 
   // 쿠키 읽은 횟수 갱신
-  const callEditCookieReadCountApiAndFilterCookie = async (
-    outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
+  const editCookieReadCount = async (
     cookieId: number,
+    isPinned: boolean,
+    isSearched: boolean,
   ) => {
     const res = await postApi.postCookieReadCount(cookieId);
-    if (res && outerCookieList)
-      return filterAndChangeDataOfEditedCookie(outerCookieList, res);
+    if (res) {
+      if (isPinned)
+        pinnedMutate(
+          (cookieList) =>
+            filterAndChangeDataOfEditedCookie(cookieList || [], res),
+          true,
+        );
+      else if (isSearched)
+        searchedMutate(
+          (cookieList) =>
+            filterAndChangeDataOfEditedCookie(cookieList || [], res),
+          false,
+        );
+      else
+        unpinnedMutate(
+          (outerCookieList) => filterOuterEditedCookie(outerCookieList, res),
+          true,
+        );
+      return;
+    }
     alert("쿠키 읽기 실패");
   };
 
-  const editCookieReadCount = async (id: number, isPinned: boolean) => {
-    if (isPinned)
-      pinnedMutate(
-        (outerCookieList) =>
-          callEditCookieReadCountApiAndFilterCookie(outerCookieList, id),
-        true,
-      );
-    else
-      unpinnedMutate(
-        (outerCookieList) =>
-          callEditCookieReadCountApiAndFilterCookie(outerCookieList, id),
-        true,
-      );
+  // 쿠키 고정
+  const editCookieIsPinned = async (
+    cookieId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => {
+    const res = await putApi.updateCookiePin(cookieId, !isPinned);
+    if (res) {
+      if (!isPinned) {
+        pinnedMutate(async (cookieList) => {
+          return changeSequenceOfEditedCookieByFiltering(cookieList || [], res);
+        }, false);
+        unpinnedMutate(async (outerCookieList) => {
+          return filterDeletedCookie(outerCookieList, cookieId);
+        }, false);
+      } else if (isSearched) {
+        searchedMutate(async (cookieList) => {
+          return cookieList?.map((cookie) => {
+            if (cookie.id === cookieId) return res;
+            return cookie;
+          });
+        });
+      } else {
+        pinnedMutate(async (cookieList) => {
+          return filterSpecificCookie(cookieList || [], cookieId);
+        }, false);
+        unpinnedMutate(async (outerCookieList) => {
+          return filterEditedCookie(outerCookieList, res);
+        }, false);
+      }
+      return;
+    }
+    alert("쿠키 읽기 실패");
   };
 
   return {
@@ -349,13 +414,12 @@ const CookieModule = ({
     changeAndSaveCookieFilter,
     pinnedCookieData,
     unpinnedCookieData,
-    pinnedPageIndex,
-    setPinnedPageIndex,
     unpinnedPageIndex,
     setUnpinnedPageIndex,
     searchedCookieData, // 검색된 쿠키 데이터(배열)
     copyCookieLink,
     deleteCookie,
+    deleteSearchedCookie,
     editCookie,
     changeDirOfCookie,
     editCookieReadCount,
@@ -367,6 +431,7 @@ const CookieModule = ({
       !unpinnedError,
     isEditCookieLoading,
     setIsEditCookieLoading,
+    editCookieIsPinned,
   };
 };
 
