@@ -1,8 +1,4 @@
-import {
-  CookieDataProps,
-  DirectoryCookieDataProps,
-  SharedDirectoryCookieDataProps,
-} from "@interfaces/cookie";
+import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
 import {
   DirectoryDataProps,
   GetDirectoryDataProps,
@@ -87,17 +83,13 @@ const getSearchedDirData = async (
   }
 };
 
-const getDirCookieData = (
-  url: string,
-): Promise<DirectoryCookieDataProps | undefined> =>
+const getDirInfo = (url: string): Promise<directoryInfoType | undefined> =>
   client.get(url).then((res) => {
-    console.log("[SUCCESS] GET DIRECTORY COOKIE DATA", res.data.data);
+    console.log("[SUCCESS] GET DIRECTORY INFO", res.data.data);
     return res.data.data;
   });
 
-const getSharedDirectoryData = (
-  url: string,
-): Promise<SharedDirectoryCookieDataProps | undefined> =>
+const getSharedDirectoryData = (url: string): Promise<any> =>
   axios.get(url, { baseURL: API_DOMAIN }).then((res) => {
     console.log("[SUCCESS] GET SHARED COOKIE DATA", res.data.data);
     return res.data.data;
@@ -111,7 +103,7 @@ const getApi = {
   getAllDirData,
   getSearchedCookieData,
   getSearchedDirData,
-  getDirCookieData,
+  getDirInfo,
   getSharedDirectoryData,
 };
 

@@ -13,6 +13,7 @@ export interface CookieDataProps {
   readCnt: number;
   thumbnail: string;
   title: string;
+  isPinned: boolean;
 }
 export interface CookieDeleteDataProps {
   content: string;
@@ -42,20 +43,4 @@ export interface PatchCookieProps {
   thumbnail: string;
   cookieId: number;
   image?: File;
-}
-
-/** 디렉토리 쿠키 */
-export interface DirectoryCookieDataProps {
-  directoryInfo: directoryInfoType;
-  cookies: CookieDataProps[];
-}
-
-/** 공유 디렉토리 쿠키 */
-export interface SharedDirectoryCookieDataProps {
-  directoryInfo: directoryInfoType;
-  cookies: CookieDataProps[];
-  userInfo: {
-    name: string;
-    profileImage: string;
-  };
 }

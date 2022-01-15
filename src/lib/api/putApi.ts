@@ -1,3 +1,4 @@
+import { CookieDataProps } from "@interfaces/cookie";
 import { PostDirectoryProps } from "@interfaces/directory";
 import { EditUserDataProps } from "../interfaces/user";
 import client from "./client";
@@ -31,14 +32,27 @@ const putHomeboardData = async (imgFile: File): Promise<string | unknown> => {
   }
 };
 
-const updateCookie = async (body: FormData) => {
+const updateCookie = async (
+  body: FormData,
+): Promise<CookieDataProps | undefined> => {
   try {
     const { data } = await client.patch(`/cookies`, body);
     console.log("[SUCCESS] PUT COOKIE DATA", data.data);
     return data.data;
   } catch (e) {
     console.log("[FAIL] PUT COOKIE DATA", e);
-    return e;
+  }
+};
+
+const updateCookiePin = async (id: number, isPinned: boolean) => {
+  try {
+    const { data } = await client.put(`/cookies/pin/${id}`, {
+      isPinned,
+    });
+    console.log("[SUCCESS] UPDATE COOKIE PIN", data.data);
+    return data.data;
+  } catch (e) {
+    console.log("[FAIL] UPDATE COOKIE PIN", e);
   }
 };
 
@@ -68,6 +82,7 @@ const putApi = {
   putUserData,
   putHomeboardData,
   updateCookie,
+  updateCookiePin,
   updateDirectoryData,
   updateDirectoryPin,
 };
