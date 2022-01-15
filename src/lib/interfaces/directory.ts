@@ -3,6 +3,12 @@ export interface GetDirectoryDataProps {
   pinned?: DirectoryDataProps[];
 }
 
+export interface DirectoryInfoProps {
+  directoryId: number;
+  emoji: string;
+  name: string;
+}
+
 export interface DirectoryDataProps {
   emoji?: string;
   id: number;

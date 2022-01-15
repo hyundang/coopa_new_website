@@ -95,15 +95,15 @@ const My = ({
                 </AllCookieNumWrap>
               )}
               개를 파킹했고
-              {userData.readCookieCount > 9999 ? (
+              {userData.readCookieCnt > 9999 ? (
                 <ReadCookieNumWrap width={5}>
                   <ReadCookieNum num={9999} isOver />
                 </ReadCookieNumWrap>
               ) : (
                 <ReadCookieNumWrap
-                  width={String(userData.readCookieCount).length}
+                  width={String(userData.readCookieCnt).length}
                 >
-                  <ReadCookieNum num={userData.readCookieCount} />
+                  <ReadCookieNum num={userData.readCookieCnt} />
                 </ReadCookieNumWrap>
               )}
               번 읽었어요!

@@ -50,6 +50,7 @@ export default function NewtabPage({
 
   // 쿠키 모듈
   const cookieModule = CookieModule({
+    type: "newtab",
     initAllPinnedCookieData,
     initAllUnpinnedCookieData,
   });
@@ -116,6 +117,12 @@ export default function NewtabPage({
           homeboardModule={homebrdModule}
           // 쿠키 관련
           cookieModule={cookieModule}
+          unpinnedCookieList={
+            cookieModule.unpinnedCookieData?.reduce(
+              (acc, curr) => curr && acc?.concat(curr),
+              [],
+            ) || []
+          }
           // 디렉토리 관련
           dirModule={dirModule}
         />

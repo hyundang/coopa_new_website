@@ -5,7 +5,7 @@ export interface UserDataProps {
   profileImage?: string;
   introduction?: string;
   cookieCount: number;
-  readCookieCount: number;
+  readCookieCnt: number;
 }
 
 export interface PostUserDataProps {

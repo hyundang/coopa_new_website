@@ -35,7 +35,7 @@ const Directory = ({
     <>
       <DirectoryWrap
         thumbnail={dir.thumbnail}
-        onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_self")}
+        onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_blank")}
       >
         {isDirFixed && <StyledPinImg className="pin_img" />}
         <section className="content">

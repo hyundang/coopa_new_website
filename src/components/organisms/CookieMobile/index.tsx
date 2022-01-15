@@ -59,7 +59,7 @@ const CookieMobile = (
         id={id}
         className={className}
         onClick={() => {
-          cookieModule.handleAddCookieCount(cookie.id);
+          cookieModule.editCookieReadCount(cookie.id);
           window.open(cookie.link);
         }}
         ref={ref}
@@ -106,7 +106,7 @@ const CookieMobile = (
         setIsOpen={setIsEditModalOpen}
         value={cookieValue}
         setValue={setCookieValue}
-        handleEditCookie={cookieModule.handleEditCookie}
+        handleEditCookie={cookieModule.editCookie}
         onClickDel={() => {
           setIsEditModalOpen(false);
           setIsDelModalOpen(true);
@@ -117,7 +117,7 @@ const CookieMobile = (
       <DelModal
         isOpen={isDelModalOpen}
         setIsOpen={setIsDelModalOpen}
-        onClickDel={() => cookieModule.handleDelCookie(cookie.id)}
+        onClickDel={() => cookieModule.deleteCookie(cookie.id)}
       />
     </>
   );
