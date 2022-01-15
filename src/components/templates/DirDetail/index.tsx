@@ -111,6 +111,7 @@ const DirDetail = ({
           isOnboardOpen={isOnboardOpen}
           setIsOnboardOpen={setIsOnboardOpen}
           isMypageIconExist={!isShared}
+          isSearchIconExist={false}
         />
         <DirDetailWrap>
           <ShareCntnr>

@@ -22,6 +22,7 @@ export interface HeaderProps {
   imgUrl?: string;
   /** mypage icon 여부 */
   isMypageIconExist?: boolean;
+  isSearchIconExist?: boolean;
   /** mypage 여부 */
   isMypage?: boolean;
 }
@@ -32,6 +33,7 @@ const Header = ({
   setIsOnboardOpen,
   imgUrl,
   isMypageIconExist = true,
+  isSearchIconExist = true,
   isMypage = false,
 }: HeaderProps) => {
   const router = useRouter();
@@ -103,7 +105,7 @@ const Header = ({
           <LogoImg className="logo_img" />
         </Icon>
         <div style={{ flexGrow: 1 }} />
-        {isSearchVisible !== undefined && (
+        {isSearchIconExist && (
           <Icon
             className="content__search"
             role="button"
