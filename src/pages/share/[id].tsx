@@ -1,57 +1,71 @@
-import { DirDetail } from "@components/templates";
-import nextCookie from "next-cookies";
+// apis
 import getApi from "@api/getApi";
-import { SharedDirectoryCookieDataProps } from "@interfaces/cookie";
+//components
+import { DirDetail } from "@components/templates";
+// interfaces
+import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
+//modules
 import CookieModule from "@modules/CookieModule";
-import { useToastMsg } from "src/hooks";
+
+interface SharedDirDetailInfoProps {
+  directoryInfo: directoryInfoType;
+  userInfo: {
+    name: string;
+    profileImage: string;
+  };
+}
 
 interface SharePageProps {
-  initSharedDirDetailData: SharedDirectoryCookieDataProps;
+  initAllCookieData: CookieDataProps[];
+  initSharedDirInfoData: SharedDirDetailInfoProps;
   queryID: number;
 }
-const SharePage = ({ initSharedDirDetailData, queryID }: SharePageProps) => {
-  // toast msg visible state
-  const { isVisible, setIsVisible } = useToastMsg();
-
-  // 쿠키 모듈
+const SharePage = ({
+  initAllCookieData,
+  initSharedDirInfoData,
+  queryID,
+}: SharePageProps) => {
   const cookieModule = CookieModule({
-    key: `/share/${queryID}`,
-    initAllCookieData: initSharedDirDetailData.cookies,
-    isVisible,
-    setIsVisible,
+    type: "dirShared",
+    initAllPinnedCookieData: [],
+    initAllUnpinnedCookieData: initAllCookieData,
+    dirId: queryID,
   });
 
   return (
     <DirDetail
       isShared
-      imgUrl={initSharedDirDetailData?.userInfo.profileImage}
-      nickname={initSharedDirDetailData?.userInfo.name || ""}
-      dirInfo={initSharedDirDetailData?.directoryInfo || { name: "", id: 0 }}
-      cookies={cookieModule.filteredCookieData || []}
-      filterType={cookieModule.cookieFilter}
-      onClickType={cookieModule.handleCookieFilter}
-      isToastMsgVisible={isVisible}
-      setIsToastMsgVisible={setIsVisible}
-      delCookieHandler={cookieModule.handleDelCookie}
-      handleEditCookie={cookieModule.handleEditCookie}
-      handleDirAddCookie={cookieModule.handleAddCookieToDir}
-      handleAddCookieCount={cookieModule.handleAddCookieCount}
+      imgUrl={initSharedDirInfoData?.userInfo.profileImage}
+      nickname={initSharedDirInfoData?.userInfo.name || ""}
+      dirInfo={initSharedDirInfoData.directoryInfo}
+      cookieModule={cookieModule}
+      unpinnedCookieList={
+        cookieModule.unpinnedCookieData?.reduce(
+          (acc, curr) => curr && acc?.concat(curr),
+          [],
+        ) || []
+      }
     />
   );
 };
 export default SharePage;
 
 SharePage.getInitialProps = async (ctx: any) => {
-  const allCookies = nextCookie(ctx);
   const queryID = ctx.query.id;
 
   // 쿠키 데이터
-  const initSharedDirDetailData = await getApi.getSharedDirectoryData(
-    `/share/${queryID}`,
+  const initAllCookieData = await getApi.getSharedDirectoryData(
+    `/share/${queryID}/cookies`,
+  );
+
+  // 디렉토리 상세 정보
+  const initSharedDirInfoData = await getApi.getSharedDirectoryData(
+    `/share/${queryID}/info`,
   );
 
   return {
-    initSharedDirDetailData,
+    initAllCookieData,
+    initSharedDirInfoData,
     queryID,
   };
 };

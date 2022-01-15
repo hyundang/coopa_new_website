@@ -10,6 +10,7 @@ import { HomeboardState, ToastMsgState } from "@modules/states";
 import HomebrdModule from "@modules/HomebrdModule";
 import CookieModule from "@modules/CookieModule";
 import DirModule from "@modules/DirModule";
+import { CookieDataProps } from "@interfaces/cookie";
 
 export interface NewtablProps {
   /** 프로필 이미지 url */
@@ -22,6 +23,7 @@ export interface NewtablProps {
   homeboardModule: ReturnType<typeof HomebrdModule>;
   /** 쿠키 모듈 */
   cookieModule: ReturnType<typeof CookieModule>;
+  unpinnedCookieList: CookieDataProps[];
   /** 디렉토리 모듈 */
   dirModule: ReturnType<typeof DirModule>;
 }
@@ -31,6 +33,7 @@ const Newtab = ({
   onKeyPress,
   homeboardModule,
   cookieModule,
+  unpinnedCookieList,
   dirModule,
 }: NewtablProps) => {
   // 검색 여부
@@ -151,7 +154,7 @@ const Newtab = ({
             (tabValue === "쿠키" || tabValue === "디렉토리")) ||
             (tabValue === "모든 쿠키" &&
               cookieModule.pinnedCookieData?.length !== 0 &&
-              cookieModule.unpinnedCookieData?.length !== 0) ||
+              unpinnedCookieList.length !== 0) ||
             (tabValue === "디렉토리" &&
               dirModule.allDirData?.common?.length !== 0 &&
               dirModule.allDirData?.pinned?.length !== 0)) && (
@@ -194,7 +197,6 @@ const Newtab = ({
                   allDir={dirModule.allDirData?.common || []}
                   fixedDir={dirModule.allDirData?.pinned || []}
                   postDir={dirModule.handlePostDir}
-                  fixCookieHandler={() => {}}
                 />
               ) : (
                 <Directories
@@ -213,14 +215,8 @@ const Newtab = ({
                 <Cookies
                   isLoading={cookieModule.isLoading}
                   pinnedCookieList={cookieModule.pinnedCookieData || []}
-                  unpinnedCookieList={
-                    cookieModule.unpinnedCookieData?.reduce(
-                      (acc, curr) => curr && acc?.concat(curr),
-                      [],
-                    ) || []
-                  }
+                  unpinnedCookieList={unpinnedCookieList}
                   cookieModule={cookieModule}
-                  fixCookieHandler={() => {}}
                   allDir={dirModule.allDirData?.common || []}
                   fixedDir={dirModule.allDirData?.pinned || []}
                   setIsOnboardOpen={setIsOnboardOpen}

@@ -1,65 +1,56 @@
 // apis
-import { getApi, postApi } from "@api/index";
+import { getApi } from "@api/index";
 // components
 import { DirDetail } from "@components/templates";
 // interfaces
-import { DirectoryCookieDataProps } from "@interfaces/cookie";
+import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
 import { GetDirectoryDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 // libs
 import nextCookie from "next-cookies";
-import { useState } from "react";
 import { NextPageContext } from "next";
-import { useRecoilState } from "recoil";
 import { returnCookieFilter } from "@lib/filter";
 // modules
 import DirDetailModule from "@modules/DirDetailModule";
 import DirModule from "@modules/DirModule";
-import { ToastMsgState } from "@modules/states";
+import CookieModule from "@modules/CookieModule";
 
 interface DirDetailPageProps {
   isLogin: boolean;
   initUserData: UserDataProps;
-  initDirDetailData: DirectoryCookieDataProps;
+  initAllPinnedCookieData: CookieDataProps[];
+  initAllUnpinnedCookieData: CookieDataProps[];
+  initDirInfoData: directoryInfoType;
   initAllDirData: GetDirectoryDataProps;
   queryID: number;
 }
 const DirDetailPage = ({
   isLogin,
   initUserData,
-  initDirDetailData,
+  initAllPinnedCookieData,
+  initAllUnpinnedCookieData,
+  initDirInfoData,
   initAllDirData,
   queryID,
 }: DirDetailPageProps) => {
-  // share link url
-  const [shareLink, setShareLink] = useState("");
-
-  // toast msg
-  const [isToastMsgVisible, setIsToastMsgVisible] =
-    useRecoilState(ToastMsgState);
+  // 쿠키 모듈
+  const cookieModule = CookieModule({
+    type: "dirDetail",
+    dirId: queryID,
+    initAllPinnedCookieData,
+    initAllUnpinnedCookieData,
+  });
 
   // 디렉토리 상세 모듈
   const dirDetailModule = DirDetailModule({
-    key: `/directories/${queryID}`,
-    initDirDetailData,
+    dirId: queryID,
+    initDirInfoData,
   });
 
   // 디렉토리 모듈
   const dirModule = DirModule({
     initAllDirData,
   });
-
-  // 디렉토리 delete
-  const handleDelDir = async (dirId: number) => {
-    await dirModule.handleDelDir(dirId);
-    window.open(DOMAIN, "_self");
-  };
-
-  const handleShareClick = async () => {
-    const shareToken = await postApi.postShareToken(queryID);
-    setIsToastMsgVisible({ ...isToastMsgVisible, copyShareLink: true });
-    setShareLink(`${DOMAIN}/share/${shareToken}`);
-  };
 
   return (
     <>
@@ -69,16 +60,19 @@ const DirDetailPage = ({
           imgUrl={initUserData?.profileImage}
           nickname={initUserData?.name || ""}
           // 디렉토리 관련
-          dirInfo={dirDetailModule.dirInfo || { name: "", id: 0 }}
+          dirDetailModule={dirDetailModule}
+          dirInfo={dirDetailModule.dirInfo || { name: "", id: -1 }}
           allDir={dirModule.allDirData?.common}
           fixedDir={dirModule.allDirData?.pinned}
           handlePostDir={dirModule.handlePostDir}
-          handleDelDirectory={handleDelDir}
-          shareLink={shareLink}
-          shareClick={handleShareClick}
           // 쿠키 관련
-          dirDetailModule={dirDetailModule}
-          fixCookieHandler={() => {}}
+          cookieModule={cookieModule}
+          unpinnedCookieList={
+            cookieModule.unpinnedCookieData?.reduce(
+              (acc, curr) => curr && acc?.concat(curr),
+              [],
+            ) || []
+          }
         />
       ) : (
         <div>error: login</div>
@@ -96,19 +90,26 @@ DirDetailPage.getInitialProps = async (ctx: NextPageContext) => {
 
   // 로그인 되어 있을 때
   if (userToken) {
-    // 쿠키 데이터
-    const initDirDetailData = await getApi.getDirCookieData(
-      `/directories/${queryID}?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
+    // 일반 쿠키 데이터
+    const initAllUnpinnedCookieData = await getApi.getAllCookieData(
+      `/directories/${queryID}/unpinned/cookies?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
         cookieFilter,
       )}`,
     );
-
+    // 고정 쿠키 데이터
+    const initAllPinnedCookieData = await getApi.getAllCookieData(
+      `/directories/${queryID}/pinned/cookies`,
+    );
+    // 디렉토리 상세 데이터
+    const initDirInfo = await getApi.getDirInfo(`/directories/${queryID}/info`);
     // 디렉토리 데이터
     const initAllDirData = await getApi.getAllDirData("/directories");
 
     return {
       isLogin: true,
-      initDirDetailData,
+      initAllPinnedCookieData,
+      initAllUnpinnedCookieData,
+      initDirInfo,
       initAllDirData,
       queryID,
     };

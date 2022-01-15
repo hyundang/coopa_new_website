@@ -1,5 +1,6 @@
-import styled, { css } from "styled-components";
+// assets
 import { EditIcon, EmptyCookieIcon, LinkIcon } from "@assets/icons/common";
+// components
 import { Btn, Icon, ToastMsg } from "@components/atoms";
 import {
   DirectoryModal,
@@ -9,22 +10,18 @@ import {
   DelModal,
 } from "@components/organisms";
 import Cookies from "@components/templates/Cookies";
-import {
-  PostDirectoryProps,
-  DirectoryDataProps,
-  PostCookieToDirProps,
-} from "@interfaces/directory";
-import {
-  CookieDataProps,
-  DirectoryCookieDataProps,
-  directoryInfoType,
-} from "@interfaces/cookie";
-import { ToastMsgVisibleStateProps } from "@interfaces/toastMsg";
-import { Dispatch, SetStateAction, useState } from "react";
+// interfaces
+import { PostDirectoryProps, DirectoryDataProps } from "@interfaces/directory";
+// libs
+import { useEffect, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useRecoilState } from "recoil";
+import styled, { css } from "styled-components";
+// modules
 import { ToastMsgState } from "@modules/states";
 import DirDetailModule from "@modules/DirDetailModule";
+import CookieModule from "@modules/CookieModule";
+import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
 
 export interface DirDetailProps {
   /** 공유 디렉토리 여부 */
@@ -33,37 +30,30 @@ export interface DirDetailProps {
   imgUrl?: string;
   /** profile nickname */
   nickname: string;
-  /** directory info */
+  /** 디렉토리 상세 모듈 */
   dirInfo: directoryInfoType;
+  dirDetailModule?: ReturnType<typeof DirDetailModule>;
   /** directory data */
   allDir?: DirectoryDataProps[];
   /** 고정 디렉토리 */
   fixedDir?: DirectoryDataProps[];
   /** 디렉토리 생성 */
   handlePostDir?: (e: PostDirectoryProps) => Promise<void>;
-  /** 디렉토리 상세 모듈 */
-  dirDetailModule: ReturnType<typeof DirDetailModule>;
-  /** 공유 버튼 눌렀을 때 함수 */
-  shareClick?: React.MouseEventHandler<HTMLButtonElement>;
-  /** 공유 링크 */
-  shareLink?: string;
-  /** delete dir */
-  handleDelDirectory?: (id: number) => Promise<void>;
-  fixCookieHandler: () => void;
+  /** 쿠키 상세 모듈 */
+  cookieModule: ReturnType<typeof CookieModule>;
+  unpinnedCookieList: CookieDataProps[];
 }
 const DirDetail = ({
   isShared = false,
   imgUrl,
   nickname,
   dirInfo,
+  dirDetailModule,
   allDir,
   fixedDir,
   handlePostDir,
-  handleDelDirectory,
-  shareClick,
-  shareLink,
-  dirDetailModule,
-  fixCookieHandler,
+  cookieModule,
+  unpinnedCookieList,
 }: DirDetailProps) => {
   // toast msg
   const [isToastMsgVisible, setIsToastMsgVisible] =
@@ -73,7 +63,7 @@ const DirDetail = ({
   const [isDirEditOpen, setIsDirEditOpen] = useState(false);
   // 디렉토리 수정 데이터
   const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
-    emoji: dirInfo?.emoji || "",
+    emoji: dirInfo.emoji || "",
     name: dirInfo.name,
   });
   // 삭제 모달 오픈
@@ -98,6 +88,19 @@ const DirDetail = ({
       ...isToastMsgVisible,
       [key]: value,
     });
+
+  const [shareLink, setShareLink] = useState("");
+
+  useEffect(() => {
+    setNewDirData({
+      emoji: dirInfo.emoji || "",
+      name: dirInfo.name,
+    });
+    (async () => {
+      const link = await dirDetailModule?.getShareLink();
+      setShareLink(link || "");
+    })();
+  }, []);
 
   return (
     <>
@@ -125,14 +128,21 @@ const DirDetail = ({
               </p>
               <p className="info">
                 <EmptyCookieIcon className="cookie-icon" />
-                {dirDetailModule.cookieData?.length || 0}개
+                {unpinnedCookieList.length +
+                  (cookieModule.pinnedCookieData?.length || 0)}
+                개
               </p>
               {!isShared && (
                 <CopyToClipboard text={shareLink || ""}>
                   <Btn
                     className="share-btn"
                     isDirShare
-                    onClick={shareClick}
+                    onClick={() =>
+                      setIsToastMsgVisible({
+                        ...isToastMsgVisible,
+                        copyLink: true,
+                      })
+                    }
                     isAtvBtn
                   >
                     <LinkIcon className="icon" />
@@ -146,28 +156,26 @@ const DirDetail = ({
             type={isShared ? "dirShare" : "dirDetail"}
             imgUrl={imgUrl}
             nickname={nickname}
-            cookieNum={dirDetailModule.cookieData?.length || 0}
-            filterType={dirDetailModule.cookieFilter}
-            onClickType={dirDetailModule.handleCookieFilter}
+            cookieNum={
+              unpinnedCookieList.length +
+              (cookieModule.pinnedCookieData?.length || 0)
+            }
+            filterType={cookieModule.cookieFilter}
+            onClickType={cookieModule.changeAndSaveCookieFilter}
             isAddOpen={isCookieAddOpen}
             setIsAddOpen={setIsCookieAddOpen}
           />
           <Cookies
             type={isShared ? "dirShare" : "dirDetail"}
-            data={
-              dirDetailModule.cookieData?.reduce(
-                (acc, curr) => curr && acc?.concat(curr),
-                [],
-              ) || []
-            }
+            pinnedCookieList={cookieModule.pinnedCookieData || []}
+            unpinnedCookieList={unpinnedCookieList}
             dirInfo={dirInfo}
-            isLoading={dirDetailModule.isLoading}
+            isLoading={cookieModule.isLoading}
             allDir={allDir || []}
             fixedDir={fixedDir || []}
             postDir={handlePostDir}
             setIsOnboardOpen={setIsOnboardOpen}
-            cookieModule={dirDetailModule}
-            fixCookieHandler={fixCookieHandler}
+            cookieModule={cookieModule}
           />
         </DirDetailWrap>
         <Footer />
@@ -178,7 +186,7 @@ const DirDetail = ({
         type="edit"
         initValue={newDirData}
         dirId={dirInfo.id}
-        putDir={dirDetailModule.handleEditDir}
+        putDir={dirDetailModule?.editDir}
         delDir={() => {
           setIsDelOpen(true);
           setIsDirEditOpen(false);
@@ -188,9 +196,7 @@ const DirDetail = ({
         type="directory"
         isOpen={isDelOpen}
         setIsOpen={setIsDelOpen}
-        onClickDel={async () =>
-          handleDelDirectory && handleDelDirectory(dirInfo.id)
-        }
+        onClickDel={async () => dirDetailModule?.deleteDir()}
       />
       <ToastMsg
         isVisible={isToastMsgVisible.copyShareLink}
