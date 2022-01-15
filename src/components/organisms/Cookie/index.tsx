@@ -86,16 +86,14 @@ const Cookie = (
             type === "searched",
           ));
 
-        console.log(result);
-
-        cookieModule.isPostCookieToDirProps(result) &&
+        if (result) {
           setUpdatedDir({
             name: result?.directoryName || "",
             emoji: result?.directoryEmoji || "",
           });
-
-        setCardState("parking");
-        setTimeout(() => setCardState("normal"), 1500);
+          setCardState("parking");
+          setTimeout(() => setCardState("normal"), 1500);
+        }
       }
     })();
   }, [currDir, allDir]);
