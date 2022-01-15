@@ -24,12 +24,15 @@ import DirDetailModule from "@modules/DirDetailModule";
 export interface CookiesProps {
   /** cookie type */
   type?: "normal" | "searched" | "dirDetail" | "dirShare";
-  /** cookie data */
-  data: CookieDataProps[];
+  /** pinned cookie data */
+  pinnedCookieList: CookieDataProps[];
+  /** unpinned cookie data */
+  unpinnedCookieList: CookieDataProps[];
   /** cookie data loading */
   isLoading: boolean;
   /** 쿠키 모듈 */
-  cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
+  // cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
+  cookieModule: ReturnType<typeof CookieModule>;
   // 나중에 모듈 안에 구현하기
   fixCookieHandler: () => void;
   /** 전체 디렉토리 data */
@@ -44,7 +47,8 @@ export interface CookiesProps {
 
 const Cookies = ({
   type = "normal",
-  data,
+  pinnedCookieList,
+  unpinnedCookieList,
   isLoading,
   cookieModule,
   allDir,
@@ -66,10 +70,11 @@ const Cookies = ({
       entries.forEach((entry: any) => {
         if (entry.isIntersecting) {
           // 쿠키 데이터 get하기
-          cookieModule.setPageIndex &&
-            cookieModule.pageIndex &&
-            cookieModule.pageIndex !== null &&
-            cookieModule.setPageIndex(cookieModule.pageIndex + 1);
+          cookieModule.unpinnedPageIndex &&
+            cookieModule.unpinnedPageIndex !== null &&
+            cookieModule.setUnpinnedPageIndex(
+              cookieModule.unpinnedPageIndex + 1,
+            );
         }
       });
     };
@@ -81,16 +86,26 @@ const Cookies = ({
 
   return (
     <CookiesCntnr>
-      {data.length !== 0 ? (
+      {!isLoading &&
+      (pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0) ? (
         <>
           {size.width && size.width < 600 ? (
             <CookieMobileWrap>
-              {data.map((cookie, idx) =>
-                idx === data.length - 1 ? (
+              {pinnedCookieList.map((cookie) => (
+                <CookieMobile
+                  key={cookie.id}
+                  cookie={cookie}
+                  isLoading={false}
+                  cookieModule={cookieModule}
+                  isShared={type === "dirShare"}
+                />
+              ))}
+              {unpinnedCookieList.map((cookie, idx) =>
+                idx === unpinnedCookieList.length - 1 ? (
                   <CookieMobile
                     key={cookie.id}
                     cookie={cookie}
-                    isLoading
+                    isLoading={false}
                     isShared={type === "dirShare"}
                     cookieModule={cookieModule}
                     ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
@@ -99,7 +114,7 @@ const Cookies = ({
                   <CookieMobile
                     key={cookie.id}
                     cookie={cookie}
-                    isLoading
+                    isLoading={false}
                     cookieModule={cookieModule}
                     isShared={type === "dirShare"}
                   />
@@ -108,12 +123,21 @@ const Cookies = ({
             </CookieMobileWrap>
           ) : size.width && size.width < 1024 ? (
             <CookieWrap>
-              {data.map((cookie, idx) =>
-                idx === data.length - 1 ? (
+              {pinnedCookieList.map((cookie) => (
+                <CookieTablet
+                  key={cookie.id}
+                  cookie={cookie}
+                  isLoading={false}
+                  isShared={type === "dirShare"}
+                  cookieModule={cookieModule}
+                />
+              ))}
+              {unpinnedCookieList.map((cookie, idx) =>
+                idx === unpinnedCookieList.length - 1 ? (
                   <CookieTablet
                     key={cookie.id}
                     cookie={cookie}
-                    isLoading
+                    isLoading={false}
                     isShared={type === "dirShare"}
                     cookieModule={cookieModule}
                     ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
@@ -122,7 +146,7 @@ const Cookies = ({
                   <CookieTablet
                     key={cookie.id}
                     cookie={cookie}
-                    isLoading
+                    isLoading={false}
                     cookieModule={cookieModule}
                     isShared={type === "dirShare"}
                   />
@@ -131,15 +155,26 @@ const Cookies = ({
             </CookieWrap>
           ) : (
             <CookieWrap>
-              {data.map((cookie, idx) =>
-                idx === data.length - 1 ? (
+              {pinnedCookieList.map((cookie) => (
+                <Cookie
+                  key={cookie.id}
+                  type={type}
+                  cookie={cookie}
+                  cookieModule={cookieModule}
+                  isLoading={isLoading}
+                  allDir={allDir}
+                  fixedDir={fixedDir}
+                  postDir={postDir}
+                />
+              ))}
+              {unpinnedCookieList.map((cookie, idx) =>
+                idx === unpinnedCookieList.length - 1 ? (
                   <Cookie
                     key={cookie.id}
-                    isShared={type === "dirShare"}
+                    type={type}
                     cookie={cookie}
                     isLoading={isLoading}
                     cookieModule={cookieModule}
-                    fixCookieHandler={fixCookieHandler}
                     allDir={allDir}
                     fixedDir={fixedDir}
                     postDir={postDir}
@@ -148,10 +183,9 @@ const Cookies = ({
                 ) : (
                   <Cookie
                     key={cookie.id}
-                    isShared={type === "dirShare"}
+                    type={type}
                     cookie={cookie}
                     cookieModule={cookieModule}
-                    fixCookieHandler={fixCookieHandler}
                     isLoading={isLoading}
                     allDir={allDir}
                     fixedDir={fixedDir}

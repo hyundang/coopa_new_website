@@ -6,7 +6,7 @@ import { DeleteIcon, PinAtvIcon, PinIcon } from "@assets/icons/card";
 import { cookieimgAnimation } from "@components/animations";
 import { CookieDataProps, PatchCookieProps } from "@interfaces/cookie";
 import { CookieEditModal, DelModal } from "@components/organisms";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { PinImg } from "@assets/imgs/card";
 
 export interface CookieImgProps {
@@ -29,9 +29,9 @@ export interface CookieImgProps {
   /** edit cookie handler */
   handleEditCookie: (data: FormData) => Promise<void>;
   /** 쿠키 수정 로딩 */
-  isUpdateLoading: boolean;
+  isEditLoading: boolean;
   /** fix cookie handler */
-  fixCookieHandler: () => void;
+  handlePinCookie: (cookieId: number, isPinned: boolean) => Promise<void>;
 }
 
 const CookieImg = ({
@@ -43,8 +43,8 @@ const CookieImg = ({
   copyCookieLink,
   deleteCookieHanlder,
   handleEditCookie,
-  isUpdateLoading,
-  fixCookieHandler,
+  isEditLoading,
+  handlePinCookie,
 }: CookieImgProps) => {
   const [patchData, setPatchData] = useState<PatchCookieProps>({
     title: cookie?.title || "",
@@ -52,23 +52,30 @@ const CookieImg = ({
     thumbnail: cookie?.thumbnail || "",
     cookieId: cookie?.id || -1,
   });
-  const [isError, setIsError] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   // cookie 고정 여부
-  const [isCookieFixed, setIsCookieFixed] = useState(false);
+  const [isCookiePinned, setIsCookiePinned] = useState(
+    cookie?.isPinned || false,
+  );
 
-  const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> = () =>
-    setIsEditOpen(true);
+  const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> =
+    () => {
+      setIsEditOpen(true);
+      setPatchData({
+        ...patchData,
+        cookieId: cookie?.id || -1,
+      });
+    };
 
   const pinIconClickHandler = () => {
-    // fixCookieHandler();
-    setIsCookieFixed(!isCookieFixed);
+    handlePinCookie(cookie?.id || -1, cookie?.isPinned || false);
+    setIsCookiePinned(!isCookiePinned);
   };
 
   return (
     <>
-      {cardState === "hover" && isCookieFixed && (
+      {cardState === "hover" && isCookiePinned && (
         <StyledPinImg className="pin_img" />
       )}
       <StyledImgBox
@@ -82,7 +89,7 @@ const CookieImg = ({
           <HoverDiv>
             <div className="hover_icon_wrap">
               <Icon className="hover_icon" onClick={pinIconClickHandler}>
-                {isCookieFixed ? (
+                {isCookiePinned ? (
                   <PinAtvIcon className="hover_icon__pin" />
                 ) : (
                   <PinIcon className="hover_icon__pin" />
@@ -133,10 +140,9 @@ const CookieImg = ({
           setIsDeleteOpen(true);
         }}
         setCardState={setCardState}
-        setIsError={setIsError}
         isOpen={isEditOpen}
         setIsOpen={setIsEditOpen}
-        isLoading={isUpdateLoading}
+        isLoading={isEditLoading}
       />
       <DelModal
         isOpen={isDeleteOpen}

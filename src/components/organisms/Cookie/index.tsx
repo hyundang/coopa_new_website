@@ -16,20 +16,19 @@ export interface CookieProps {
   id?: string;
   /** className */
   className?: string;
+  /** cookie type */
+  type: "normal" | "searched" | "dirDetail" | "dirShare";
   /** cookie */
   cookie?: CookieDataProps;
   /** cookie data loading */
   isLoading: boolean;
   /** 쿠키 모듈 */
-  cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
-  /** fix cookie handler */
-  fixCookieHandler: () => void;
+  // cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
+  cookieModule: ReturnType<typeof CookieModule>;
   /** all directory */
   allDir?: DirectoryDataProps[];
   /** 고정 디렉토리 */
   fixedDir?: DirectoryDataProps[];
-  /** share cookie */
-  isShared?: boolean;
   /** post dir */
   postDir?: (data: PostDirectoryProps) => void;
 }
@@ -37,14 +36,13 @@ const Cookie = (
   {
     id,
     className,
+    type,
     cookie,
     isLoading,
     cookieModule,
     allDir,
     fixedDir,
-    isShared,
     postDir,
-    fixCookieHandler,
   }: CookieProps,
   ref?:
     | ((instance: HTMLButtonElement | null) => void)
@@ -75,7 +73,12 @@ const Cookie = (
             directoryId:
               allDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,
           };
-          body.directoryId && cookieModule.handleAddCookieToDir(body);
+          body.directoryId &&
+            cookieModule.changeDirOfCookie(
+              body,
+              cookie?.isPinned || false,
+              type === "searched",
+            );
           setCardState("parking");
           setTimeout(() => setCardState("normal"), 1500);
         }
@@ -88,7 +91,11 @@ const Cookie = (
       className={className}
       onClick={() => {
         window.open(cookie?.link);
-        cookieModule.handleAddCookieCount(cookie?.id || -1);
+        cookieModule.editCookieReadCount(
+          cookie?.id || -1,
+          cookie?.isPinned || false,
+          type === "searched",
+        );
       }}
       onMouseEnter={() => {
         if (cardState === "normal" && !isLoading) setCardState("hover");
@@ -100,16 +107,34 @@ const Cookie = (
       ref={ref}
     >
       <CookieImg
-        cardState={isShared ? "normal" : cardState}
+        cardState={type === "dirShare" ? "normal" : cardState}
         setCardState={setCardState}
         cookie={cookie}
         copyCookieLink={cookieModule.copyCookieLink}
-        deleteCookieHanlder={cookieModule.handleDelCookie}
-        handleEditCookie={cookieModule.handleEditCookie}
-        isUpdateLoading={cookieModule.isEditLoading}
-        fixCookieHandler={fixCookieHandler}
+        deleteCookieHanlder={
+          cookie?.isPinned
+            ? (cookieId) =>
+                cookieModule.deleteCookie(cookieId, true, type === "searched")
+            : (cookieId) =>
+                cookieModule.deleteCookie(cookieId, false, type === "searched")
+        }
+        handleEditCookie={
+          cookie?.isPinned
+            ? (cookieId) =>
+                cookieModule.editCookie(cookieId, true, type === "searched")
+            : (cookieId) =>
+                cookieModule.editCookie(cookieId, false, type === "searched")
+        }
+        isEditLoading={cookieModule.isEditCookieLoading}
+        handlePinCookie={(cookieId, isPinned) =>
+          cookieModule.editCookieIsPinned(
+            cookieId,
+            isPinned,
+            type === "searched",
+          )
+        }
       />
-      {!isShared && (cardState === "hover" || cardState === "input") && (
+      {type !== "dirShare" && (cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
           <CookieHover
             allDir={allDir || []}
