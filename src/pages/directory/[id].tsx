@@ -10,6 +10,7 @@ import { UserDataProps } from "@interfaces/user";
 import nextCookie from "next-cookies";
 import { NextPageContext } from "next";
 import { returnCookieFilter } from "@lib/filter";
+import Head from "next/head";
 // modules
 import DirDetailModule from "@modules/DirDetailModule";
 import DirModule from "@modules/DirModule";
@@ -54,6 +55,32 @@ const DirDetailPage = ({
 
   return (
     <>
+      <Head>
+        <title>{initDirInfoData.name}</title>
+        <meta name="description" content={initDirInfoData.name} />
+        <meta name="Author" content={initUserData.name} />
+        <meta property="og:title" content={initDirInfoData.name} />
+        <meta property="og:description" content={initDirInfoData.name} />
+        <meta property="og:site_name" content="cookieparking" />
+        <meta
+          property="og:image"
+          content="https://coopa-default.s3.ap-northeast-2.amazonaws.com/og_thumbnail.png"
+        />
+        <meta
+          property="og:url"
+          content={`https://www.cookieparking.com/directory/${queryID}`}
+        />
+        <meta name="twitter:title" content={initDirInfoData.name} />
+        <meta name="twitter:description" content={initDirInfoData.name} />
+        <meta
+          name="twitter:image"
+          content="https://coopa-default.s3.ap-northeast-2.amazonaws.com/og_thumbnail.png"
+        />
+        <meta
+          name="twitter:url"
+          content={`https://www.cookieparking.com/directory/${queryID}`}
+        />
+      </Head>
       {isLogin ? (
         <DirDetail
           // 유저 관련
@@ -101,7 +128,9 @@ DirDetailPage.getInitialProps = async (ctx: NextPageContext) => {
       `/directories/${queryID}/pinned/cookies`,
     );
     // 디렉토리 상세 데이터
-    const initDirInfo = await getApi.getDirInfo(`/directories/${queryID}/info`);
+    const initDirInfoData = await getApi.getDirInfo(
+      `/directories/${queryID}/info`,
+    );
     // 디렉토리 데이터
     const initAllDirData = await getApi.getAllDirData("/directories");
 
@@ -109,7 +138,7 @@ DirDetailPage.getInitialProps = async (ctx: NextPageContext) => {
       isLogin: true,
       initAllPinnedCookieData,
       initAllUnpinnedCookieData,
-      initDirInfo,
+      initDirInfoData,
       initAllDirData,
       queryID,
     };
