@@ -124,7 +124,7 @@ const CookieImg = ({
         {cardState === "parking" && (
           <ParkingDiv>
             <div className="parking--title">
-              {cookie?.directoryInfo?.emoji && (
+              {updatedDirectory.emoji && (
                 <div className="parking--title__emoji">
                   {updatedDirectory.emoji}
                 </div>

@@ -272,7 +272,7 @@ const CookieModule = ({
   };
 
   // 쿠키의 디렉토리 변경
-  function isTypeOfObjectEqualsToPostCookieToDirResponseProps(
+  function isPostCookieToDirProps(
     resData: any,
   ): resData is PostCookieToDirResponseProps {
     return true;
@@ -284,9 +284,7 @@ const CookieModule = ({
   ) => {
     return cookieList.map((cookie) => {
       if (cookie.id === editedCookieData.cookieId) {
-        if (
-          isTypeOfObjectEqualsToPostCookieToDirResponseProps(editedCookieData)
-        )
+        if (isPostCookieToDirProps(editedCookieData))
           return {
             ...cookie,
             directoryInfo: {
@@ -443,6 +441,7 @@ const CookieModule = ({
     isEditCookieLoading,
     setIsEditCookieLoading,
     editCookieIsPinned,
+    isPostCookieToDirProps,
   };
 };
 

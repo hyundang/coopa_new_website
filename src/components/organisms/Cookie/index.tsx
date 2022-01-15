@@ -61,6 +61,11 @@ const Cookie = (
       : cookie?.directoryInfo.name,
   );
 
+  const [updatedDir, setUpdatedDir] = useState({
+    name: cookie?.directoryInfo?.name || "",
+    emoji: cookie?.directoryInfo?.emoji || "",
+  });
+
   useEffect(() => {
     (async () => {
       if (currDir !== cookie?.directoryInfo?.name && currDir !== "모든 쿠키") {
@@ -77,6 +82,7 @@ const Cookie = (
             directoryId:
               allDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,
           };
+
           const result =
             body.directoryId &&
             (await cookieModule.changeDirOfCookie(
@@ -84,6 +90,13 @@ const Cookie = (
               cookie?.isPinned || false,
               type === "searched",
             ));
+
+          cookieModule.isPostCookieToDirProps(result) &&
+            setUpdatedDir({
+              name: result.directoryName || "",
+              emoji: result?.directoryEmoji || "",
+            });
+
           setCardState("parking");
           setTimeout(() => setCardState("normal"), 1500);
         }
@@ -131,8 +144,7 @@ const Cookie = (
         cardState={type === "dirShare" ? "normal" : cardState}
         setCardState={setCardState}
         cookie={cookie}
-        //FIXME: add updated directory emoji
-        updatedDirectory={{ name: currDir, emoji: "🙂" }}
+        updatedDirectory={updatedDir}
         copyCookieLink={cookieModule.copyCookieLink}
         deleteCookieHanlder={deleteCookieHandler}
         handleEditCookie={handleEditCookie}
