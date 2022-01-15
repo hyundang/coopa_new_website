@@ -13,6 +13,7 @@ export interface CookieDataProps {
   readCnt: number;
   thumbnail: string;
   title: string;
+  isPinned: boolean;
 }
 export interface CookieDeleteDataProps {
   content: string;

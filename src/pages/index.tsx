@@ -22,7 +22,8 @@ import { HomeboardState } from "@modules/states";
 interface NewtabPageProps {
   isLogin: boolean;
   initUserData: UserDataProps;
-  initAllCookieData: CookieDataProps[];
+  initAllPinnedCookieData: CookieDataProps[];
+  initAllUnpinnedCookieData: CookieDataProps[];
   initAllDirData: GetDirectoryDataProps;
   initBookmarkData: BookmarkDataProps[];
   initHomeboardImgUrl?: string;
@@ -30,7 +31,8 @@ interface NewtabPageProps {
 export default function NewtabPage({
   isLogin,
   initUserData,
-  initAllCookieData,
+  initAllPinnedCookieData,
+  initAllUnpinnedCookieData,
   initAllDirData,
   initBookmarkData,
   initHomeboardImgUrl,
@@ -48,7 +50,8 @@ export default function NewtabPage({
 
   // 쿠키 모듈
   const cookieModule = CookieModule({
-    initAllCookieData,
+    initAllPinnedCookieData,
+    initAllUnpinnedCookieData,
   });
 
   // 디렉토리 모듈
@@ -141,7 +144,12 @@ NewtabPage.getInitialProps = async (ctx: any) => {
   // 로그인 되어 있을 때
   if (userToken) {
     // 쿠키 데이터
-    const initAllCookieData = await getApi.getAllCookieData(
+    const initAllPinnedCookieData = await getApi.getAllCookieData(
+      `/cookies/pinned?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
+        cookieFilter,
+      )}`,
+    );
+    const initAllUnpinnedCookieData = await getApi.getAllCookieData(
       `/cookies?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
         cookieFilter,
       )}`,
@@ -160,7 +168,8 @@ NewtabPage.getInitialProps = async (ctx: any) => {
 
     return {
       isLogin: true,
-      initAllCookieData,
+      initAllPinnedCookieData,
+      initAllUnpinnedCookieData,
       initAllDirData,
       initBookmarkData,
       initHomeboardImgUrl,

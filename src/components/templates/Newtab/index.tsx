@@ -150,7 +150,8 @@ const Newtab = ({
             isSearchVisible &&
             (tabValue === "쿠키" || tabValue === "디렉토리")) ||
             (tabValue === "모든 쿠키" &&
-              cookieModule.cookieData?.length !== 0) ||
+              cookieModule.pinnedCookieData?.length !== 0 &&
+              cookieModule.unpinnedCookieData?.length !== 0) ||
             (tabValue === "디렉토리" &&
               dirModule.allDirData?.common?.length !== 0 &&
               dirModule.allDirData?.pinned?.length !== 0)) && (
@@ -172,7 +173,7 @@ const Newtab = ({
               }
               onClickType={
                 tabValue === "모든 쿠키"
-                  ? cookieModule.handleCookieFilter
+                  ? cookieModule.changeAndSaveCookieFilter
                   : dirModule.handleDirFilter
               }
               isAddOpen={isAddOpen}
@@ -186,7 +187,8 @@ const Newtab = ({
               {tabValue === "쿠키" ? (
                 <Cookies
                   type="searched"
-                  data={cookieModule.searchedCookieData || []}
+                  pinnedCookieList={[]}
+                  unpinnedCookieList={cookieModule.searchedCookieData || []}
                   isLoading={false}
                   cookieModule={cookieModule}
                   allDir={dirModule.allDirData?.common || []}
@@ -210,8 +212,9 @@ const Newtab = ({
               {tabValue === "모든 쿠키" ? (
                 <Cookies
                   isLoading={cookieModule.isLoading}
-                  data={
-                    cookieModule.cookieData?.reduce(
+                  pinnedCookieList={cookieModule.pinnedCookieData || []}
+                  unpinnedCookieList={
+                    cookieModule.unpinnedCookieData?.reduce(
                       (acc, curr) => curr && acc?.concat(curr),
                       [],
                     ) || []
