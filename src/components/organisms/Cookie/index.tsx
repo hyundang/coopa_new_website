@@ -9,7 +9,6 @@ import {
   PostDirectoryProps,
 } from "src/lib/interfaces/directory";
 import CookieModule from "@modules/CookieModule";
-import DirDetailModule from "@modules/DirDetailModule";
 
 export interface CookieProps {
   /** id */
@@ -42,7 +41,7 @@ const Cookie = (
     cookieModule,
     allDir,
     fixedDir,
-    postDir,
+    postDir = () => {},
   }: CookieProps,
   ref?:
     | ((instance: HTMLButtonElement | null) => void)
@@ -61,30 +60,52 @@ const Cookie = (
       ? "모든 쿠키"
       : cookie?.directoryInfo.name,
   );
+
   useEffect(() => {
     (async () => {
       if (currDir !== cookie?.directoryInfo?.name && currDir !== "모든 쿠키") {
-        if (allDir?.filter((dir) => dir.name === currDir).length === 0) {
-          postDir && (await postDir({ name: currDir }));
+        const isNewDir =
+          allDir?.filter((dir) => dir.name === currDir).length === 0;
+
+        if (isNewDir) {
+          await postDir({ name: currDir });
         }
+
         if (currDir !== cookie?.directoryInfo?.name) {
           const body: PostCookieToDirProps = {
             cookieId: cookie?.id || -1,
             directoryId:
               allDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,
           };
-          body.directoryId &&
-            cookieModule.changeDirOfCookie(
+          const result =
+            body.directoryId &&
+            (await cookieModule.changeDirOfCookie(
               body,
               cookie?.isPinned || false,
               type === "searched",
-            );
+            ));
           setCardState("parking");
           setTimeout(() => setCardState("normal"), 1500);
         }
       }
     })();
   }, [currDir, allDir]);
+
+  const deleteCookieHandler = cookie?.isPinned
+    ? (cookieId: number) =>
+        cookieModule.deleteCookie(cookieId, true, type === "searched")
+    : (cookieId: number) =>
+        cookieModule.deleteCookie(cookieId, false, type === "searched");
+
+  const handleEditCookie = cookie?.isPinned
+    ? (payload: FormData) =>
+        cookieModule.editCookie(payload, true, type === "searched")
+    : (payload: FormData) =>
+        cookieModule.editCookie(payload, false, type === "searched");
+
+  const handlePinCookie = (cookieId: number, isPinned: boolean) =>
+    cookieModule.editCookieIsPinned(cookieId, isPinned, type === "searched");
+
   return (
     <CookieWrap
       id={id}
@@ -110,29 +131,13 @@ const Cookie = (
         cardState={type === "dirShare" ? "normal" : cardState}
         setCardState={setCardState}
         cookie={cookie}
+        //FIXME: add updated directory emoji
+        updatedDirectory={{ name: currDir, emoji: "🙂" }}
         copyCookieLink={cookieModule.copyCookieLink}
-        deleteCookieHanlder={
-          cookie?.isPinned
-            ? (cookieId) =>
-                cookieModule.deleteCookie(cookieId, true, type === "searched")
-            : (cookieId) =>
-                cookieModule.deleteCookie(cookieId, false, type === "searched")
-        }
-        handleEditCookie={
-          cookie?.isPinned
-            ? (cookieId) =>
-                cookieModule.editCookie(cookieId, true, type === "searched")
-            : (cookieId) =>
-                cookieModule.editCookie(cookieId, false, type === "searched")
-        }
+        deleteCookieHanlder={deleteCookieHandler}
+        handleEditCookie={handleEditCookie}
         isEditLoading={cookieModule.isEditCookieLoading}
-        handlePinCookie={(cookieId, isPinned) =>
-          cookieModule.editCookieIsPinned(
-            cookieId,
-            isPinned,
-            type === "searched",
-          )
-        }
+        handlePinCookie={handlePinCookie}
       />
       {type !== "dirShare" && (cardState === "hover" || cardState === "input") && (
         <div className="hover-div">

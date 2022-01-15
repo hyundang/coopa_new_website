@@ -20,7 +20,7 @@ export interface ListContentProps {
     SetStateAction<"hover" | "normal" | "parking" | "input">
   >;
   // set currDir
-  setCurrDir: Dispatch<SetStateAction<string>>;
+  setCurrDir: (dir: string) => void;
 }
 const ListContent = ({
   className,

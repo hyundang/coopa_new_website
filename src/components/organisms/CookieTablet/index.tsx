@@ -50,9 +50,6 @@ const CookieMobile = (
     thumbnail: cookie.thumbnail,
   });
 
-  /** 쿠키 수정or삭제 에러 여부 */
-  const [isSizeError, setIsSizeError] = useState(false);
-
   return (
     <>
       <CookieWrap
@@ -111,7 +108,7 @@ const CookieMobile = (
           setIsEditModalOpen(false);
           setIsDelModalOpen(true);
         }}
-        setIsError={setIsSizeError}
+        setIsError={() => {}}
         isLoading={isLoading}
       />
       <DelModal

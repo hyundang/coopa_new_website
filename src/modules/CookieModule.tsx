@@ -350,7 +350,8 @@ const CookieModule = ({
           (outerCookieList) => filterOuterEditedCookie(outerCookieList, res),
           true,
         );
-      return;
+
+      return res;
     }
     alert("디렉토리 변경 실패");
   };

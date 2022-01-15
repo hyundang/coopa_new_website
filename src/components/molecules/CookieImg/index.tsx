@@ -22,6 +22,11 @@ export interface CookieImgProps {
   >;
   /** cookie */
   cookie?: CookieDataProps;
+  /** updated directory */
+  updatedDirectory: {
+    name: string;
+    emoji: string;
+  };
   /** copy cookie handler */
   copyCookieLink: () => void;
   /** delete cookie handler */
@@ -40,6 +45,7 @@ const CookieImg = ({
   cardState,
   setCardState,
   cookie,
+  updatedDirectory,
   copyCookieLink,
   deleteCookieHanlder,
   handleEditCookie,
@@ -120,11 +126,11 @@ const CookieImg = ({
             <div className="parking--title">
               {cookie?.directoryInfo?.emoji && (
                 <div className="parking--title__emoji">
-                  {cookie.directoryInfo.emoji}
+                  {updatedDirectory.emoji}
                 </div>
               )}
               <div className="parking--title__name">
-                {cookie?.directoryInfo?.name}
+                {updatedDirectory.name}
               </div>
             </div>
             <div className="parking--desc">에 파킹했어요!</div>
