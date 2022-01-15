@@ -8,7 +8,7 @@ import {
   PostReadCntResponseProps,
 } from "@interfaces/directory";
 // libs
-import { returnCookieFilter, returnDirFilter } from "@lib/filter";
+import { returnCookieFilter } from "@lib/filter";
 import SaveDataInWebCookie from "@lib/SaveDataInWebCookie";
 import reactCookie from "react-cookies";
 import { useState } from "react";
@@ -18,10 +18,14 @@ import { useRecoilState } from "recoil";
 import { ToastMsgState } from "./states";
 
 interface CookieModuleProps {
+  type: "newtab" | "dirDetail" | "dirShared";
+  dirId?: number;
   initAllUnpinnedCookieData: CookieDataProps[];
   initAllPinnedCookieData: CookieDataProps[];
 }
 const CookieModule = ({
+  type,
+  dirId = -1,
   initAllUnpinnedCookieData,
   initAllPinnedCookieData,
 }: CookieModuleProps) => {
@@ -42,10 +46,23 @@ const CookieModule = ({
     previousPageData: any,
   ) => {
     if (previousPageData && !previousPageData.length) return null; // 끝에 도달
-    return `/cookies?size=${COOKIE_PAGE_SIZE}&page=${pageIndex}&filter=${returnCookieFilter(
+    // 뉴탭 쿠키
+    if (type === "newtab") {
+      return `/cookies?size=${COOKIE_PAGE_SIZE}&page=${pageIndex}&filter=${returnCookieFilter(
+        cookieFilter,
+      )}`;
+    }
+    // 디렉토리 상세 쿠키
+    if (type === "dirDetail") {
+      return `/directories/${dirId}/unpinned/cookies?size=${COOKIE_PAGE_SIZE}&page=${pageIndex}&filter=${returnCookieFilter(
+        cookieFilter,
+      )}`;
+    }
+    return `/share/${dirId}/cookies?size=${COOKIE_PAGE_SIZE}&page=${pageIndex}&filter=${returnCookieFilter(
       cookieFilter,
     )}`;
   };
+
   // 일반 쿠키 데이터 get
   const {
     data: unpinnedCookieData,
@@ -59,12 +76,18 @@ const CookieModule = ({
     errorRetryCount: 3, // 재시도 3번까지만
   });
 
+  const getPinnedCookieSwRKey = () => {
+    // 뉴탭 쿠키
+    if (type === "newtab") return `/cookies/pinned`;
+    // 디렉토리 상세 쿠키
+    return `/directories/${dirId}/pinned/cookies`;
+  };
   // 고정 쿠키 데이터 get
   const {
     data: pinnedCookieData,
     error: pinnedError,
     mutate: pinnedMutate,
-  } = useSWR(`/cookies/pinned`, getApi.getAllCookieData, {
+  } = useSWR(getPinnedCookieSwRKey, getApi.getAllCookieData, {
     initialData: initAllPinnedCookieData,
     errorRetryCount: 3, // 재시도 3번까지만
   });
@@ -143,18 +166,6 @@ const CookieModule = ({
           false,
         );
       }
-      setIsToastMsgVisible({
-        ...isToastMsgVisible,
-        cookieDel: true,
-      });
-      return;
-    }
-    alert("쿠키 삭제 실패");
-  };
-
-  const deleteSearchedCookie = async (cookieId: number) => {
-    const res = await delApi.delCookieData(cookieId);
-    if (res) {
       setIsToastMsgVisible({
         ...isToastMsgVisible,
         cookieDel: true,
@@ -419,7 +430,6 @@ const CookieModule = ({
     searchedCookieData, // 검색된 쿠키 데이터(배열)
     copyCookieLink,
     deleteCookie,
-    deleteSearchedCookie,
     editCookie,
     changeDirOfCookie,
     editCookieReadCount,
