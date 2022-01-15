@@ -44,6 +44,18 @@ const updateCookie = async (
   }
 };
 
+const updateCookiePin = async (id: number, isPinned: boolean) => {
+  try {
+    const { data } = await client.put(`/cookies/pin/${id}`, {
+      isPinned,
+    });
+    console.log("[SUCCESS] UPDATE COOKIE PIN", data.data);
+    return data.data;
+  } catch (e) {
+    console.log("[FAIL] UPDATE COOKIE PIN", e);
+  }
+};
+
 const updateDirectoryData = async (id: number, body: PostDirectoryProps) => {
   try {
     const result = await client.put(`/directories/${id}`, body);
@@ -70,6 +82,7 @@ const putApi = {
   putUserData,
   putHomeboardData,
   updateCookie,
+  updateCookiePin,
   updateDirectoryData,
   updateDirectoryPin,
 };
