@@ -22,7 +22,7 @@ const CookieAddModal = ({
   type,
 }: CookieAddModalProps) => {
   const link_input = useRef<HTMLInputElement>(null);
-  const [value, setValue] = useState<string>("https://");
+  const [value, setValue] = useState<string>("");
 
   // enter 키 클릭 시
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -48,7 +48,6 @@ const CookieAddModal = ({
   // 제일 처음에 link input focus 상태로 설정
   useEffect(() => {
     isOpen && link_input.current?.focus();
-    isOpen && setValue("https://");
   }, [isOpen]);
 
   return (
@@ -63,7 +62,7 @@ const CookieAddModal = ({
       <h1 className="modal-title">쿠키 추가</h1>
       <Input
         className="input-link"
-        placeholder="디렉토리 이름을 입력해주세요"
+        placeholder="URL을 입력해주세요"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
@@ -103,7 +102,7 @@ const CookieAddModalWrap = styled(MoveModal)<CookieAddModalWrapProps>`
   position: absolute;
   top: ${({ type }) => (type === "cookie" ? 412 : 287)}px;
   left: ${({ locationX }) => locationX}px;
-  z-index: 2;
+  z-index: 3;
 
   width: 484px;
   height: 197px;
