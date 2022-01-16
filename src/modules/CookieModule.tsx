@@ -58,6 +58,7 @@ const CookieModule = ({
         cookieFilter,
       )}`;
     }
+    // 공유된 디렉토리 상세 쿠키
     return `/share/${dirId}/cookies?size=${COOKIE_PAGE_SIZE}&page=${pageIndex}&filter=${returnCookieFilter(
       cookieFilter,
     )}`;
@@ -116,27 +117,27 @@ const CookieModule = ({
   };
 
   // 쿠키 삭제
-  const filterSpecificCookie = (
+  const filterSpecificCookieInCookieList = (
     cookieList: CookieDataProps[],
     cookieId: number,
   ): CookieDataProps[] => {
     return cookieList.filter((cookie) => cookie.id !== cookieId);
   };
 
-  const filterDeletedCookie = (
+  const filterSpecificCookieIn2DCookieList = (
     outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
     cookieId: number,
   ): CookieDataProps[][] => {
     if (outerCookieList) {
       const newCookieList = outerCookieList.map((innerCookieList) => {
         if (innerCookieList)
-          return filterSpecificCookie(innerCookieList, cookieId);
+          return filterSpecificCookieInCookieList(innerCookieList, cookieId);
         return [];
       });
       return newCookieList;
     }
     // initial data 일 때
-    const newCookieList = filterSpecificCookie(
+    const newCookieList = filterSpecificCookieInCookieList(
       initAllUnpinnedCookieData,
       cookieId,
     );
@@ -152,17 +153,18 @@ const CookieModule = ({
     if (res) {
       if (isPinned)
         pinnedMutate(
-          (cookieList) => filterSpecificCookie(cookieList || [], cookieId),
+          (cookieList) =>
+            filterSpecificCookieInCookieList(cookieList || [], cookieId),
           false,
         );
       else if (isSearched)
         searchedMutate(async (cookieList) => {
-          return filterSpecificCookie(cookieList || [], cookieId);
+          return filterSpecificCookieInCookieList(cookieList || [], cookieId);
         }, false);
       else {
         unpinnedMutate(
           (outerCookieList) =>
-            filterDeletedCookie(outerCookieList, res.cookieId),
+            filterSpecificCookieIn2DCookieList(outerCookieList, res.cookieId),
           false,
         );
       }
@@ -185,30 +187,30 @@ const CookieModule = ({
   3. shouldrevalidate=true, revalidateAll=false
   -> 수정한 쿠키의 데이터, 위치 안바뀜. initial 쿠키의 경우 데이터, 위치 바뀜.
   */
-  const changeSequenceOfEditedCookieByFiltering = (
+  const changeSequenceOfSpecificCookieInCookieList = (
     cookieList: CookieDataProps[],
-    editedCookieData: CookieDataProps,
+    cookieData: CookieDataProps,
   ): CookieDataProps[] => {
     switch (cookieFilter) {
       case "latest":
         return [
-          editedCookieData,
-          ...filterSpecificCookie(cookieList, editedCookieData.id),
+          cookieData,
+          ...filterSpecificCookieInCookieList(cookieList, cookieData.id),
         ];
       case "oldest":
         return [
-          ...filterSpecificCookie(cookieList, editedCookieData.id),
-          editedCookieData,
+          ...filterSpecificCookieInCookieList(cookieList, cookieData.id),
+          cookieData,
         ];
       default:
         return cookieList.map((cookie) => {
-          if (cookie.id === editedCookieData.id) return editedCookieData;
+          if (cookie.id === cookieData.id) return cookieData;
           return cookie;
         });
     }
   };
 
-  const filterEditedCookie = (
+  const changeSequenceOfSpecificCookieIn2DCookieList = (
     outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
     editedCookieData: CookieDataProps,
   ): CookieDataProps[][] => {
@@ -216,7 +218,7 @@ const CookieModule = ({
     if (outerCookieList) {
       const newOuterCookieList = outerCookieList.map((innerCookieList) => {
         if (innerCookieList) {
-          const newInnerCookieList = changeSequenceOfEditedCookieByFiltering(
+          const newInnerCookieList = changeSequenceOfSpecificCookieInCookieList(
             innerCookieList,
             editedCookieData,
           );
@@ -227,7 +229,7 @@ const CookieModule = ({
       return newOuterCookieList;
     }
     // initial data 일 때
-    const newInnerCookieList = changeSequenceOfEditedCookieByFiltering(
+    const newInnerCookieList = changeSequenceOfSpecificCookieInCookieList(
       initAllUnpinnedCookieData,
       editedCookieData,
     );
@@ -245,7 +247,7 @@ const CookieModule = ({
       if (isPinned)
         pinnedMutate(
           (cookieList) =>
-            changeSequenceOfEditedCookieByFiltering(cookieList || [], res),
+            changeSequenceOfSpecificCookieInCookieList(cookieList || [], res),
           false,
         );
       else if (isSearched)
@@ -257,7 +259,8 @@ const CookieModule = ({
         }, false);
       else
         unpinnedMutate(
-          (outerCookieList) => filterEditedCookie(outerCookieList, res),
+          (outerCookieList) =>
+            changeSequenceOfSpecificCookieIn2DCookieList(outerCookieList, res),
           false,
         );
       setIsEditCookieLoading(false);
@@ -272,56 +275,54 @@ const CookieModule = ({
   };
 
   // 쿠키의 디렉토리 변경
-  function isTypeOfObjectEqualsToPostCookieToDirResponseProps(
+  function isTypeOfObjectEqualPostCookieToDirResponseProps(
     resData: any,
   ): resData is PostCookieToDirResponseProps {
     return true;
   }
 
-  const filterAndChangeDataOfEditedCookie = (
+  const ChangeDataOfSpecificCookieInCookieList = (
     cookieList: CookieDataProps[],
-    editedCookieData: PostCookieToDirResponseProps | PostReadCntResponseProps,
+    cookieData: PostCookieToDirResponseProps | PostReadCntResponseProps,
   ) => {
     return cookieList.map((cookie) => {
-      if (cookie.id === editedCookieData.cookieId) {
-        if (
-          isTypeOfObjectEqualsToPostCookieToDirResponseProps(editedCookieData)
-        )
+      if (cookie.id === cookieData.cookieId) {
+        if (isTypeOfObjectEqualPostCookieToDirResponseProps(cookieData))
           return {
             ...cookie,
             directoryInfo: {
-              emoji: editedCookieData.directoryEmoji || null,
-              id: editedCookieData.directoryId,
-              name: editedCookieData.directoryName,
+              emoji: cookieData.directoryEmoji || null,
+              id: cookieData.directoryId,
+              name: cookieData.directoryName,
             },
           };
         return {
           ...cookie,
-          readCnt: editedCookieData.readCnt,
+          readCnt: cookieData.readCnt,
         };
       }
       return cookie;
     });
   };
 
-  const filterOuterEditedCookie = (
+  const ChangeDataOfSpecificCookieIn2DCookieList = (
     outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
-    editedCookieData: PostCookieToDirResponseProps | PostReadCntResponseProps,
+    cookieData: PostCookieToDirResponseProps | PostReadCntResponseProps,
   ) => {
     if (outerCookieList) {
       const newOuterCookieList = outerCookieList.map((innerCookieList) => {
-        const newInnerCookieList = filterAndChangeDataOfEditedCookie(
+        const newInnerCookieList = ChangeDataOfSpecificCookieInCookieList(
           innerCookieList || [],
-          editedCookieData,
+          cookieData,
         );
         return newInnerCookieList;
       });
       return newOuterCookieList;
     }
     // initial data 일 때
-    const newInnerCookieList = filterAndChangeDataOfEditedCookie(
+    const newInnerCookieList = ChangeDataOfSpecificCookieInCookieList(
       initAllUnpinnedCookieData,
-      editedCookieData,
+      cookieData,
     );
     return [newInnerCookieList];
   };
@@ -336,18 +337,19 @@ const CookieModule = ({
       if (isPinned)
         pinnedMutate(
           (cookieList) =>
-            filterAndChangeDataOfEditedCookie(cookieList || [], res),
+            ChangeDataOfSpecificCookieInCookieList(cookieList || [], res),
           true,
         );
       else if (isSearched)
         searchedMutate(
           (cookieList) =>
-            filterAndChangeDataOfEditedCookie(cookieList || [], res),
+            ChangeDataOfSpecificCookieInCookieList(cookieList || [], res),
           false,
         );
       else
         unpinnedMutate(
-          (outerCookieList) => filterOuterEditedCookie(outerCookieList, res),
+          (outerCookieList) =>
+            ChangeDataOfSpecificCookieIn2DCookieList(outerCookieList, res),
           true,
         );
       return;
@@ -366,18 +368,19 @@ const CookieModule = ({
       if (isPinned)
         pinnedMutate(
           (cookieList) =>
-            filterAndChangeDataOfEditedCookie(cookieList || [], res),
+            ChangeDataOfSpecificCookieInCookieList(cookieList || [], res),
           true,
         );
       else if (isSearched)
         searchedMutate(
           (cookieList) =>
-            filterAndChangeDataOfEditedCookie(cookieList || [], res),
+            ChangeDataOfSpecificCookieInCookieList(cookieList || [], res),
           false,
         );
       else
         unpinnedMutate(
-          (outerCookieList) => filterOuterEditedCookie(outerCookieList, res),
+          (outerCookieList) =>
+            ChangeDataOfSpecificCookieIn2DCookieList(outerCookieList, res),
           true,
         );
       return;
@@ -395,10 +398,13 @@ const CookieModule = ({
     if (res) {
       if (!isPinned) {
         pinnedMutate(async (cookieList) => {
-          return changeSequenceOfEditedCookieByFiltering(cookieList || [], res);
+          return changeSequenceOfSpecificCookieInCookieList(
+            cookieList || [],
+            res,
+          );
         }, false);
         unpinnedMutate(async (outerCookieList) => {
-          return filterDeletedCookie(outerCookieList, cookieId);
+          return filterSpecificCookieIn2DCookieList(outerCookieList, cookieId);
         }, false);
       } else if (isSearched) {
         searchedMutate(async (cookieList) => {
@@ -409,10 +415,13 @@ const CookieModule = ({
         });
       } else {
         pinnedMutate(async (cookieList) => {
-          return filterSpecificCookie(cookieList || [], cookieId);
+          return filterSpecificCookieInCookieList(cookieList || [], cookieId);
         }, false);
         unpinnedMutate(async (outerCookieList) => {
-          return filterEditedCookie(outerCookieList, res);
+          return changeSequenceOfSpecificCookieIn2DCookieList(
+            outerCookieList,
+            res,
+          );
         }, false);
       }
       return;
