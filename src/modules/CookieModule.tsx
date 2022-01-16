@@ -109,15 +109,6 @@ const CookieModule = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   );
 
-  // 쿠키 링크 복사
-  const copyCookieLink = () => {
-    setIsToastMsgVisible({
-      ...isToastMsgVisible,
-      copyLink: true,
-    });
-  };
-
-  // 쿠키 삭제
   const filterSpecificCookieInCookieList = (
     cookieList: CookieDataProps[],
     cookieId: number,
@@ -148,49 +139,6 @@ const CookieModule = ({
     ];
   };
 
-  const deleteCookie = async (
-    cookieId: number,
-    isPinned: boolean,
-    isSearched: boolean,
-  ) => {
-    const res = await delApi.delCookieData(cookieId);
-    if (res) {
-      if (isPinned)
-        pinnedMutate(
-          (cookieList) =>
-            filterSpecificCookieInCookieList(cookieList || [], cookieId),
-          false,
-        );
-      else if (isSearched)
-        searchedMutate(async (cookieList) => {
-          return filterSpecificCookieInCookieList(cookieList || [], cookieId);
-        }, false);
-      else {
-        unpinnedMutate(
-          (outerCookieList) =>
-            filterSpecificUnpinnedCookie(outerCookieList, res.cookieId),
-          false,
-        );
-      }
-      setIsToastMsgVisible({
-        ...isToastMsgVisible,
-        cookieDel: true,
-      });
-      return;
-    }
-    alert("쿠키 삭제 실패");
-  };
-
-  // 쿠키 edit
-  /* 
-  1. shouldRevalidate=true, revalidateAll=true 
-  -> 수정한 쿠키의 데이터,위치 바뀜. initial 쿠키도 데이터, 위치 바로 바뀜.
-  -> 그렇지만 전체 api call을 하기 때문에 인피니티 스크롤 장점이 떨어짐 
-  2. shouldrevalidate=false, revalidateAll=false 
-  -> 수정한 쿠키의 데이터는 바뀌는데 위치는 안바뀜. initial 쿠키의 경우 데이터, 위치 안바뀜
-  3. shouldrevalidate=true, revalidateAll=false
-  -> 수정한 쿠키의 데이터, 위치 안바뀜. initial 쿠키의 경우 데이터, 위치 바뀜.
-  */
   const changeSequenceOfSpecificCookieInCookieList = (
     cookieList: CookieDataProps[],
     cookieData: CookieDataProps,
@@ -246,45 +194,6 @@ const CookieModule = ({
     ];
   };
 
-  const updateCookie = async (
-    formData: FormData,
-    isPinned: boolean,
-    isSearched: boolean,
-  ) => {
-    setIsUpdateLoading(true);
-    const res = await putApi.updateCookie(formData);
-    if (res) {
-      if (isPinned)
-        pinnedMutate(
-          (cookieList) =>
-            changeSequenceOfSpecificCookieInCookieList(cookieList || [], res),
-          false,
-        );
-      else if (isSearched)
-        searchedMutate((cookieList) => {
-          return cookieList?.map((cookie) => {
-            if (cookie.id === res.id) return res;
-            return cookie;
-          });
-        }, false);
-      else
-        unpinnedMutate(
-          (outerCookieList) =>
-            changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
-          false,
-        );
-      setIsUpdateLoading(false);
-      setIsToastMsgVisible({
-        ...isToastMsgVisible,
-        cookieEdit: true,
-      });
-      return;
-    }
-    setIsUpdateLoading(false);
-    alert("쿠키 수정 실패");
-  };
-
-  // 쿠키의 디렉토리 변경
   function isTypeOfObjectEqualCreateCookieToDirResProps(
     resData: any,
   ): resData is CreateCookieToDirResProps {
@@ -328,7 +237,7 @@ const CookieModule = ({
     return newOuterCookieList;
   };
 
-  const changeDataofSpecificUnpinnedCookie = (
+  const changeDatafSpecificUnpinnedCookie = (
     outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
     cookieData: CreateCookieToDirResProps | CreateReadCntResProps,
   ): CookieDataProps[][] => {
@@ -347,6 +256,133 @@ const CookieModule = ({
     ];
   };
 
+  // 쿠키 링크 복사
+  const copyCookieLink = () => {
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      copyLink: true,
+    });
+  };
+
+  // 쿠키 생성
+  const createCookie = async (
+    url: string,
+    isDirDetail: boolean,
+    directoryId: number | undefined,
+  ): Promise<boolean> => {
+    const res = await GetSiteData(url);
+    if (res) {
+      if (isDirDetail && directoryId) {
+        await updateDirOfCookie(
+          {
+            directoryId,
+            cookieId: res.id,
+          },
+          false,
+          false,
+        );
+      } else {
+        unpinnedMutate(
+          (outerCookieList) =>
+            changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
+          false,
+        );
+      }
+      return true;
+    }
+    alert("쿠키 추가 실패!");
+    return false;
+  };
+
+  // 쿠키 삭제
+  const deleteCookie = async (
+    cookieId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => {
+    const res = await delApi.delCookieData(cookieId);
+    if (res) {
+      if (isPinned)
+        pinnedMutate(
+          (cookieList) =>
+            filterSpecificCookieInCookieList(
+              cookieList || initAllPinnedCookieData,
+              cookieId,
+            ),
+          false,
+        );
+      else if (isSearched)
+        searchedMutate(async (cookieList) => {
+          return filterSpecificCookieInCookieList(cookieList || [], cookieId);
+        }, false);
+      else {
+        unpinnedMutate(
+          (outerCookieList) =>
+            filterSpecificUnpinnedCookie(outerCookieList, res.cookieId),
+          false,
+        );
+      }
+      setIsToastMsgVisible({
+        ...isToastMsgVisible,
+        cookieDel: true,
+      });
+      return;
+    }
+    alert("쿠키 삭제 실패");
+  };
+
+  // 쿠키 edit
+  /* 
+  1. shouldRevalidate=true, revalidateAll=true 
+  -> 수정한 쿠키의 데이터,위치 바뀜. initial 쿠키도 데이터, 위치 바로 바뀜.
+  -> 그렇지만 전체 api call을 하기 때문에 인피니티 스크롤 장점이 떨어짐 
+  2. shouldrevalidate=false, revalidateAll=false 
+  -> 수정한 쿠키의 데이터는 바뀌는데 위치는 안바뀜. initial 쿠키의 경우 데이터, 위치 안바뀜
+  3. shouldrevalidate=true, revalidateAll=false
+  -> 수정한 쿠키의 데이터, 위치 안바뀜. initial 쿠키의 경우 데이터, 위치 바뀜.
+  */
+  const updateCookie = async (
+    formData: FormData,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => {
+    setIsUpdateLoading(true);
+    const res = await putApi.updateCookie(formData);
+    if (res) {
+      if (isPinned)
+        pinnedMutate(
+          (cookieList) =>
+            changeSequenceOfSpecificCookieInCookieList(
+              cookieList || initAllPinnedCookieData,
+              res,
+            ),
+          false,
+        );
+      else if (isSearched)
+        searchedMutate((cookieList) => {
+          return cookieList?.map((cookie) => {
+            if (cookie.id === res.id) return res;
+            return cookie;
+          });
+        }, false);
+      else
+        unpinnedMutate(
+          (outerCookieList) =>
+            changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
+          false,
+        );
+      setIsUpdateLoading(false);
+      setIsToastMsgVisible({
+        ...isToastMsgVisible,
+        cookieEdit: true,
+      });
+      return;
+    }
+    setIsUpdateLoading(false);
+    alert("쿠키 수정 실패");
+  };
+
+  // 쿠키의 디렉토리 변경
   const updateDirOfCookie = async (
     body: CreateCookieToDirProps,
     isPinned: boolean,
@@ -369,7 +405,7 @@ const CookieModule = ({
       else
         unpinnedMutate(
           (outerCookieList) =>
-            changeDataofSpecificUnpinnedCookie(outerCookieList, res),
+            changeDatafSpecificUnpinnedCookie(outerCookieList, res),
           true,
         );
       return;
@@ -400,7 +436,7 @@ const CookieModule = ({
       else
         unpinnedMutate(
           (outerCookieList) =>
-            changeDataofSpecificUnpinnedCookie(outerCookieList, res),
+            changeDatafSpecificUnpinnedCookie(outerCookieList, res),
           true,
         );
       return;
@@ -447,36 +483,6 @@ const CookieModule = ({
       ...isToastMsgVisible,
       pinnedSizeOver: true,
     });
-  };
-
-  // 쿠키 추가
-  const createCookie = async (
-    url: string,
-    isDirDetail: boolean,
-    directoryId: number | undefined,
-  ): Promise<boolean> => {
-    const res = await GetSiteData(url);
-    if (res) {
-      if (isDirDetail && directoryId) {
-        await updateDirOfCookie(
-          {
-            directoryId,
-            cookieId: res.id,
-          },
-          false,
-          false,
-        );
-      } else {
-        unpinnedMutate(
-          (outerCookieList) =>
-            changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
-          false,
-        );
-      }
-      return true;
-    }
-    alert("쿠키 추가 실패!");
-    return false;
   };
 
   return {
