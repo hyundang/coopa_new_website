@@ -452,7 +452,8 @@ const CookieModule = ({
         );
       } else {
         unpinnedMutate(
-          (outerCookieList) => filterEditedCookie(outerCookieList, res),
+          (outerCookieList) =>
+            changeSequenceOfSpecificCookieIn2DCookieList(outerCookieList, res),
           false,
         );
       }
