@@ -10,6 +10,7 @@ import {
 // libs
 import { returnCookieFilter } from "@lib/filter";
 import SaveDataInWebCookie from "@lib/SaveDataInWebCookie";
+import GetSiteData from "@lib/GetSiteData";
 import reactCookie from "react-cookies";
 import { useState } from "react";
 import useSWR, { useSWRInfinite } from "swr";
@@ -423,6 +424,35 @@ const CookieModule = ({
     });
   };
 
+  // 쿠키 추가
+  const createCookie = async (
+    url: string,
+    isDirDetail: boolean,
+    directoryId: number | undefined,
+  ): Promise<boolean> => {
+    const res = await GetSiteData(url);
+    if (res) {
+      if (isDirDetail && directoryId) {
+        await changeDirOfCookie(
+          {
+            directoryId,
+            cookieId: res.id,
+          },
+          false,
+          false,
+        );
+      } else {
+        unpinnedMutate(
+          (outerCookieList) => filterEditedCookie(outerCookieList, res),
+          false,
+        );
+      }
+      return true;
+    }
+    alert("쿠키 추가 실패!");
+    return false;
+  };
+
   return {
     cookieFilter,
     changeAndSaveCookieFilter,
@@ -445,6 +475,7 @@ const CookieModule = ({
     isEditCookieLoading,
     setIsEditCookieLoading,
     editCookieIsPinned,
+    createCookie,
   };
 };
 
