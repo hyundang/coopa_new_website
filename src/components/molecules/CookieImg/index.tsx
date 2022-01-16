@@ -27,11 +27,11 @@ export interface CookieImgProps {
   /** delete cookie handler */
   deleteCookieHanlder: (id: number) => Promise<void>;
   /** edit cookie handler */
-  handleEditCookie: (data: FormData) => Promise<void>;
+  updateCookie: (data: FormData) => Promise<void>;
   /** 쿠키 수정 로딩 */
   isEditLoading: boolean;
   /** fix cookie handler */
-  handlePinCookie: (cookieId: number, isPinned: boolean) => Promise<void>;
+  updateCookiePin: (cookieId: number, isPinned: boolean) => Promise<void>;
 }
 
 const CookieImg = ({
@@ -42,9 +42,9 @@ const CookieImg = ({
   cookie,
   copyCookieLink,
   deleteCookieHanlder,
-  handleEditCookie,
+  updateCookie,
   isEditLoading,
-  handlePinCookie,
+  updateCookiePin,
 }: CookieImgProps) => {
   const [patchData, setPatchData] = useState<PatchCookieProps>({
     title: cookie?.title || "",
@@ -69,7 +69,7 @@ const CookieImg = ({
     };
 
   const pinIconClickHandler = () => {
-    handlePinCookie(cookie?.id || -1, cookie?.isPinned || false);
+    updateCookiePin(cookie?.id || -1, cookie?.isPinned || false);
     setIsCookiePinned(!isCookiePinned);
   };
 
@@ -134,7 +134,7 @@ const CookieImg = ({
       <CookieEditModal
         value={patchData}
         setValue={setPatchData}
-        handleEditCookie={handleEditCookie}
+        updateCookie={updateCookie}
         onClickDel={() => {
           setIsEditOpen(false);
           setIsDeleteOpen(true);

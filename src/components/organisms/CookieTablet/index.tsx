@@ -50,7 +50,7 @@ const CookieMobile = (
         id={id}
         className={className}
         onClick={() => {
-          cookieModule.editCookieReadCount(
+          cookieModule.updateCookieReadCnt(
             cookie.id,
             cookie.isPinned,
             type === "searched",
@@ -81,7 +81,7 @@ const CookieMobile = (
                 <Icon
                   className="icon"
                   onClick={() =>
-                    cookieModule.editCookieIsPinned(
+                    cookieModule.updateCookiePin(
                       cookie.id,
                       cookie.isPinned,
                       type === "searched",
@@ -118,8 +118,8 @@ const CookieMobile = (
         setIsOpen={setIsEditModalOpen}
         value={cookieValue}
         setValue={setCookieValue}
-        handleEditCookie={(formData) =>
-          cookieModule.editCookie(
+        updateCookie={(formData) =>
+          cookieModule.updateCookie(
             formData,
             cookie.isPinned,
             type === "searched",
@@ -129,7 +129,7 @@ const CookieMobile = (
           setIsEditModalOpen(false);
           setIsDelModalOpen(true);
         }}
-        isLoading={cookieModule.isEditCookieLoading}
+        isLoading={cookieModule.isUpdateLoading}
       />
       <DelModal
         isOpen={isDelModalOpen}

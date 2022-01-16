@@ -28,10 +28,10 @@ export interface CookieProps {
   isLoading: boolean;
   /** 쿠키 모듈 */
   cookieModule: ReturnType<typeof CookieModule>;
-  /** all directory */
-  allDir?: DirectoryDataProps[];
+  /** 일반 directory */
+  unpinnedDir?: DirectoryDataProps[];
   /** 고정 디렉토리 */
-  fixedDir?: DirectoryDataProps[];
+  pinnedDir?: DirectoryDataProps[];
   /** post dir */
   postDir?: (data: PostDirectoryProps) => void;
 }
@@ -43,8 +43,8 @@ const Cookie = (
     cookie,
     isLoading,
     cookieModule,
-    allDir,
-    fixedDir,
+    unpinnedDir,
+    pinnedDir,
     postDir,
   }: CookieProps,
   ref?:
@@ -67,17 +67,17 @@ const Cookie = (
   useEffect(() => {
     (async () => {
       if (currDir !== cookie?.directoryInfo?.name && currDir !== "모든 쿠키") {
-        if (allDir?.filter((dir) => dir.name === currDir).length === 0) {
+        if (unpinnedDir?.filter((dir) => dir.name === currDir).length === 0) {
           postDir && (await postDir({ name: currDir }));
         }
         if (currDir !== cookie?.directoryInfo?.name) {
           const body: PostCookieToDirProps = {
             cookieId: cookie?.id || -1,
             directoryId:
-              allDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,
+              unpinnedDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,
           };
           body.directoryId &&
-            cookieModule.changeDirOfCookie(
+            cookieModule.updateDirOfCookie(
               body,
               cookie?.isPinned || false,
               type === "searched",
@@ -87,14 +87,14 @@ const Cookie = (
         }
       }
     })();
-  }, [currDir, allDir]);
+  }, [currDir, unpinnedDir]);
   return (
     <CookieWrap
       id={id}
       className={className}
       onClick={() => {
         window.open(cookie?.link);
-        cookieModule.editCookieReadCount(
+        cookieModule.updateCookieReadCnt(
           cookie?.id || -1,
           cookie?.isPinned || false,
           type === "searched",
@@ -121,27 +121,23 @@ const Cookie = (
             : (cookieId) =>
                 cookieModule.deleteCookie(cookieId, false, type === "searched")
         }
-        handleEditCookie={
+        updateCookie={
           cookie?.isPinned
             ? (cookieId) =>
-                cookieModule.editCookie(cookieId, true, type === "searched")
+                cookieModule.updateCookie(cookieId, true, type === "searched")
             : (cookieId) =>
-                cookieModule.editCookie(cookieId, false, type === "searched")
+                cookieModule.updateCookie(cookieId, false, type === "searched")
         }
-        isEditLoading={cookieModule.isEditCookieLoading}
-        handlePinCookie={(cookieId, isPinned) =>
-          cookieModule.editCookieIsPinned(
-            cookieId,
-            isPinned,
-            type === "searched",
-          )
+        isEditLoading={cookieModule.isUpdateLoading}
+        updateCookiePin={(cookieId, isPinned) =>
+          cookieModule.updateCookiePin(cookieId, isPinned, type === "searched")
         }
       />
       {type !== "dirShare" && (cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
           <CookieHover
-            allDir={allDir || []}
-            fixedDir={fixedDir || []}
+            unpinnedDir={unpinnedDir || []}
+            pinnedDir={pinnedDir || []}
             setCardState={setCardState}
             currDir={
               cookie?.directoryInfo?.emoji !== null

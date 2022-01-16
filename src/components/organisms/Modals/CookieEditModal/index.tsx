@@ -32,7 +32,7 @@ export interface CookieEditModalProps {
   /** data post 시 loading 여부 */
   isLoading: boolean;
   /** cookie edit handler */
-  handleEditCookie: (data: FormData) => Promise<void>;
+  updateCookie: (data: FormData) => Promise<void>;
 }
 
 const CookieEditModal = ({
@@ -45,7 +45,7 @@ const CookieEditModal = ({
   isOpen,
   setIsOpen,
   isLoading,
-  handleEditCookie,
+  updateCookie,
 }: CookieEditModalProps) => {
   // img box hover 여부
   const [isHover, setIsHover] = useState(false);
@@ -156,7 +156,7 @@ const CookieEditModal = ({
               value?.image && formData.append("image", value.image);
               formData.append("title", value.title);
               formData.append("content", value.content);
-              await handleEditCookie(formData);
+              await updateCookie(formData);
               setIsOpen(false);
               setCardState ? setCardState("normal") : () => {};
             }}
