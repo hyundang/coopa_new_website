@@ -393,7 +393,10 @@ const CookieModule = ({
       if (isPinned)
         pinnedMutate(
           (cookieList) =>
-            changeDataOfSpecificCookieInCookieList(cookieList || [], res),
+            changeDataOfSpecificCookieInCookieList(
+              cookieList || initAllPinnedCookieData,
+              res,
+            ),
           true,
         );
       else if (isSearched)
@@ -424,7 +427,10 @@ const CookieModule = ({
       if (isPinned)
         pinnedMutate(
           (cookieList) =>
-            changeDataOfSpecificCookieInCookieList(cookieList || [], res),
+            changeDataOfSpecificCookieInCookieList(
+              cookieList || initAllPinnedCookieData,
+              res,
+            ),
           true,
         );
       else if (isSearched)
@@ -455,7 +461,7 @@ const CookieModule = ({
       if (!isPinned) {
         pinnedMutate(async (cookieList) => {
           return changeSequenceOfSpecificCookieInCookieList(
-            cookieList || [],
+            cookieList || initAllPinnedCookieData,
             res,
           );
         }, false);
@@ -471,7 +477,10 @@ const CookieModule = ({
         });
       } else {
         pinnedMutate(async (cookieList) => {
-          return filterSpecificCookieInCookieList(cookieList || [], cookieId);
+          return filterSpecificCookieInCookieList(
+            cookieList || initAllPinnedCookieData,
+            cookieId,
+          );
         }, false);
         unpinnedMutate(async (outerCookieList) => {
           return changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res);
