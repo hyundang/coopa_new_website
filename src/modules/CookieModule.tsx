@@ -417,7 +417,10 @@ const CookieModule = ({
       }
       return;
     }
-    alert("쿠키 읽기 실패");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      pinnedSizeOver: true,
+    });
   };
 
   return {

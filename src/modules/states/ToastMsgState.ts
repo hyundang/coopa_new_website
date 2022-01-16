@@ -15,6 +15,7 @@ const ToastMsgState = atom<ToastMsgVisibleStateProps>({
     imgSizeOver: false,
     copyLink: false,
     copyShareLink: false,
+    pinnedSizeOver: false,
   },
 });
 

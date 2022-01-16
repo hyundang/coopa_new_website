@@ -10,4 +10,5 @@ export interface ToastMsgVisibleStateProps {
   imgSizeOver: boolean;
   copyLink: boolean;
   copyShareLink: boolean;
+  pinnedSizeOver: boolean;
 }
