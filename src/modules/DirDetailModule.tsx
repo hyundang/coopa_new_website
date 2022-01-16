@@ -44,7 +44,7 @@ const DirDetailModule = ({ dirId, initDirInfoData }: DirDetailModuleProps) => {
     if (res) {
       dirMutate((info) => {
         return {
-          id: info?.id || -1,
+          id: res.id || -1,
           emoji: res.emoji,
           name: res.name,
         };

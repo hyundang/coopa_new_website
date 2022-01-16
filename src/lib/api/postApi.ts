@@ -105,7 +105,7 @@ const postCookie = async (
   try {
     const { data } = await client.post(`/cookies`, body);
     console.log("[SUCCESS] POST ADD COOKIE", data);
-    return data;
+    return data.data;
   } catch (e) {
     console.log("[FAIL] POST ADD COOKIE", e);
   }
