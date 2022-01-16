@@ -80,9 +80,12 @@ const CookieModule = ({
 
   const getPinnedCookieSwRKey = () => {
     // 뉴탭 쿠키
-    if (type === "newtab") return `/cookies/pinned`;
+    if (type === "newtab")
+      return `/cookies/pinned?filter=${returnCookieFilter(cookieFilter)}`;
     // 디렉토리 상세 쿠키
-    return `/directories/${dirId}/pinned/cookies`;
+    return `/directories/${dirId}/pinned/cookies?filter=${returnCookieFilter(
+      cookieFilter,
+    )}`;
   };
   // 고정 쿠키 데이터 get
   const {
@@ -281,13 +284,12 @@ const CookieModule = ({
           false,
           false,
         );
-      } else {
-        unpinnedMutate(
-          (outerCookieList) =>
-            changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
-          false,
-        );
       }
+      unpinnedMutate(
+        (outerCookieList) =>
+          changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
+        false,
+      );
       return true;
     }
     alert("쿠키 추가 실패!");
