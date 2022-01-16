@@ -1,15 +1,19 @@
-import { CookieHover, CookieImg } from "@components/molecules";
-import styled, { css } from "styled-components";
-import { useState, useEffect, forwardRef, RefObject } from "react";
+// assets
 import { fvcOnErrorImg } from "@assets/icons/card";
-import { CookieDataProps } from "src/lib/interfaces/cookie";
+// components
+import { CookieHover, CookieImg } from "@components/molecules";
+// interfaces
+import { CookieDataProps } from "@interfaces/cookie";
 import {
   DirectoryDataProps,
   PostCookieToDirProps,
   PostDirectoryProps,
-} from "src/lib/interfaces/directory";
+} from "@interfaces/directory";
+// libs
+import styled, { css } from "styled-components";
+import React, { useState, useEffect, forwardRef, RefObject } from "react";
+// modules
 import CookieModule from "@modules/CookieModule";
-import DirDetailModule from "@modules/DirDetailModule";
 
 export interface CookieProps {
   /** id */
@@ -23,7 +27,6 @@ export interface CookieProps {
   /** cookie data loading */
   isLoading: boolean;
   /** 쿠키 모듈 */
-  // cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
   cookieModule: ReturnType<typeof CookieModule>;
   /** all directory */
   allDir?: DirectoryDataProps[];
