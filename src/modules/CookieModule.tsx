@@ -126,23 +126,26 @@ const CookieModule = ({
   };
 
   const filterSpecificCookieIn2DCookieList = (
+    outerCookieList: (CookieDataProps[] | undefined)[],
+    cookieId: number,
+  ): CookieDataProps[][] => {
+    const newCookieList = outerCookieList.map((innerCookieList) => {
+      return filterSpecificCookieInCookieList(innerCookieList || [], cookieId);
+    });
+    return newCookieList;
+  };
+
+  const filterSpecificUnpinnedCookie = (
     outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
     cookieId: number,
   ): CookieDataProps[][] => {
     if (outerCookieList) {
-      const newCookieList = outerCookieList.map((innerCookieList) => {
-        if (innerCookieList)
-          return filterSpecificCookieInCookieList(innerCookieList, cookieId);
-        return [];
-      });
-      return newCookieList;
+      return filterSpecificCookieIn2DCookieList(outerCookieList, cookieId);
     }
     // initial data 일 때
-    const newCookieList = filterSpecificCookieInCookieList(
-      initAllUnpinnedCookieData,
-      cookieId,
-    );
-    return [newCookieList];
+    return [
+      filterSpecificCookieInCookieList(initAllUnpinnedCookieData, cookieId),
+    ];
   };
 
   const deleteCookie = async (
@@ -165,7 +168,7 @@ const CookieModule = ({
       else {
         unpinnedMutate(
           (outerCookieList) =>
-            filterSpecificCookieIn2DCookieList(outerCookieList, res.cookieId),
+            filterSpecificUnpinnedCookie(outerCookieList, res.cookieId),
           false,
         );
       }
@@ -212,29 +215,35 @@ const CookieModule = ({
   };
 
   const changeSequenceOfSpecificCookieIn2DCookieList = (
-    outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
-    editedCookieData: CookieDataProps,
+    outerCookieList: (CookieDataProps[] | undefined)[],
+    cookieData: CookieDataProps,
   ): CookieDataProps[][] => {
-    // 갱신된 데이터일 때
+    const newOuterCookieList = outerCookieList.map((innerCookieList) => {
+      return changeSequenceOfSpecificCookieInCookieList(
+        innerCookieList || [],
+        cookieData,
+      );
+    });
+    return newOuterCookieList;
+  };
+
+  const changeSequenceOfSpecificUnpinnedCookie = (
+    outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
+    cookieData: CookieDataProps,
+  ): CookieDataProps[][] => {
     if (outerCookieList) {
-      const newOuterCookieList = outerCookieList.map((innerCookieList) => {
-        if (innerCookieList) {
-          const newInnerCookieList = changeSequenceOfSpecificCookieInCookieList(
-            innerCookieList,
-            editedCookieData,
-          );
-          return newInnerCookieList;
-        }
-        return [];
-      });
-      return newOuterCookieList;
+      return changeSequenceOfSpecificCookieIn2DCookieList(
+        outerCookieList,
+        cookieData,
+      );
     }
     // initial data 일 때
-    const newInnerCookieList = changeSequenceOfSpecificCookieInCookieList(
-      initAllUnpinnedCookieData,
-      editedCookieData,
-    );
-    return [newInnerCookieList];
+    return [
+      changeSequenceOfSpecificCookieInCookieList(
+        initAllUnpinnedCookieData,
+        cookieData,
+      ),
+    ];
   };
 
   const editCookie = async (
@@ -261,7 +270,7 @@ const CookieModule = ({
       else
         unpinnedMutate(
           (outerCookieList) =>
-            changeSequenceOfSpecificCookieIn2DCookieList(outerCookieList, res),
+            changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
           false,
         );
       setIsEditCookieLoading(false);
@@ -282,10 +291,10 @@ const CookieModule = ({
     return true;
   }
 
-  const ChangeDataOfSpecificCookieInCookieList = (
+  const changeDataOfSpecificCookieInCookieList = (
     cookieList: CookieDataProps[],
     cookieData: PostCookieToDirResponseProps | PostReadCntResponseProps,
-  ) => {
+  ): CookieDataProps[] => {
     return cookieList.map((cookie) => {
       if (cookie.id === cookieData.cookieId) {
         if (isTypeOfObjectEqualPostCookieToDirResponseProps(cookieData))
@@ -306,26 +315,36 @@ const CookieModule = ({
     });
   };
 
-  const ChangeDataOfSpecificCookieIn2DCookieList = (
+  const changeDataOfSpecificCookieIn2DCookieList = (
+    outerCookieList: (CookieDataProps[] | undefined)[],
+    cookieData: PostCookieToDirResponseProps | PostReadCntResponseProps,
+  ): CookieDataProps[][] => {
+    const newOuterCookieList = outerCookieList.map((innerCookieList) => {
+      return changeDataOfSpecificCookieInCookieList(
+        innerCookieList || [],
+        cookieData,
+      );
+    });
+    return newOuterCookieList;
+  };
+
+  const changeDataofSpecificUnpinnedCookie = (
     outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
     cookieData: PostCookieToDirResponseProps | PostReadCntResponseProps,
-  ) => {
+  ): CookieDataProps[][] => {
     if (outerCookieList) {
-      const newOuterCookieList = outerCookieList.map((innerCookieList) => {
-        const newInnerCookieList = ChangeDataOfSpecificCookieInCookieList(
-          innerCookieList || [],
-          cookieData,
-        );
-        return newInnerCookieList;
-      });
-      return newOuterCookieList;
+      return changeDataOfSpecificCookieIn2DCookieList(
+        outerCookieList,
+        cookieData,
+      );
     }
     // initial data 일 때
-    const newInnerCookieList = ChangeDataOfSpecificCookieInCookieList(
-      initAllUnpinnedCookieData,
-      cookieData,
-    );
-    return [newInnerCookieList];
+    return [
+      changeDataOfSpecificCookieInCookieList(
+        initAllUnpinnedCookieData,
+        cookieData,
+      ),
+    ];
   };
 
   const changeDirOfCookie = async (
@@ -338,19 +357,19 @@ const CookieModule = ({
       if (isPinned)
         pinnedMutate(
           (cookieList) =>
-            ChangeDataOfSpecificCookieInCookieList(cookieList || [], res),
+            changeDataOfSpecificCookieInCookieList(cookieList || [], res),
           true,
         );
       else if (isSearched)
         searchedMutate(
           (cookieList) =>
-            ChangeDataOfSpecificCookieInCookieList(cookieList || [], res),
+            changeDataOfSpecificCookieInCookieList(cookieList || [], res),
           false,
         );
       else
         unpinnedMutate(
           (outerCookieList) =>
-            ChangeDataOfSpecificCookieIn2DCookieList(outerCookieList, res),
+            changeDataofSpecificUnpinnedCookie(outerCookieList, res),
           true,
         );
       return;
@@ -369,19 +388,19 @@ const CookieModule = ({
       if (isPinned)
         pinnedMutate(
           (cookieList) =>
-            ChangeDataOfSpecificCookieInCookieList(cookieList || [], res),
+            changeDataOfSpecificCookieInCookieList(cookieList || [], res),
           true,
         );
       else if (isSearched)
         searchedMutate(
           (cookieList) =>
-            ChangeDataOfSpecificCookieInCookieList(cookieList || [], res),
+            changeDataOfSpecificCookieInCookieList(cookieList || [], res),
           false,
         );
       else
         unpinnedMutate(
           (outerCookieList) =>
-            ChangeDataOfSpecificCookieIn2DCookieList(outerCookieList, res),
+            changeDataofSpecificUnpinnedCookie(outerCookieList, res),
           true,
         );
       return;
@@ -405,7 +424,7 @@ const CookieModule = ({
           );
         }, false);
         unpinnedMutate(async (outerCookieList) => {
-          return filterSpecificCookieIn2DCookieList(outerCookieList, cookieId);
+          return filterSpecificUnpinnedCookie(outerCookieList, cookieId);
         }, false);
       } else if (isSearched) {
         searchedMutate(async (cookieList) => {
@@ -419,10 +438,7 @@ const CookieModule = ({
           return filterSpecificCookieInCookieList(cookieList || [], cookieId);
         }, false);
         unpinnedMutate(async (outerCookieList) => {
-          return changeSequenceOfSpecificCookieIn2DCookieList(
-            outerCookieList,
-            res,
-          );
+          return changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res);
         }, false);
       }
       return;
@@ -453,7 +469,7 @@ const CookieModule = ({
       } else {
         unpinnedMutate(
           (outerCookieList) =>
-            changeSequenceOfSpecificCookieIn2DCookieList(outerCookieList, res),
+            changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
           false,
         );
       }
