@@ -34,6 +34,7 @@ export interface ListHeaderProps {
   setIsAddOpen: Dispatch<SetStateAction<boolean>>;
   /** post dir */
   postDir?: (e: PostDirectoryProps) => void;
+  createCookie: (url: string) => Promise<boolean>;
 }
 const ListHeader = ({
   type,
@@ -47,6 +48,7 @@ const ListHeader = ({
   isAddOpen,
   setIsAddOpen,
   postDir,
+  createCookie,
 }: ListHeaderProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
@@ -143,6 +145,7 @@ const ListHeader = ({
           setIsOpen={setIsAddOpen}
           locationX={locationX - 430}
           type={type}
+          createCookie={createCookie}
         />
       )}
       {type === "dir" && (

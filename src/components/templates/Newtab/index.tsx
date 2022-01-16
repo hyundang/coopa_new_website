@@ -183,6 +183,9 @@ const Newtab = ({
               isAddOpen={isAddOpen}
               setIsAddOpen={setIsAddOpen}
               postDir={dirModule.handlePostDir}
+              createCookie={(url) =>
+                cookieModule.createCookie(url, false, undefined)
+              }
             />
           )}
           {isSearched && isSearchVisible ? (
