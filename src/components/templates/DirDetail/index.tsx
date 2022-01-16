@@ -166,6 +166,9 @@ const DirDetail = ({
             onClickType={cookieModule.changeAndSaveCookieFilter}
             isAddOpen={isCookieAddOpen}
             setIsAddOpen={setIsCookieAddOpen}
+            createCookie={(url) =>
+              cookieModule.createCookie(url, true, dirInfo.id)
+            }
           />
           <Cookies
             type={isShared ? "dirShare" : "dirDetail"}
