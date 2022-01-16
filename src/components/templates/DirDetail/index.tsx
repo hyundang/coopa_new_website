@@ -81,7 +81,8 @@ const DirDetail = ({
       | "cookieEdit"
       | "imgSizeOver"
       | "copyLink"
-      | "copyShareLink",
+      | "copyShareLink"
+      | "pinnedSizeOver",
     value: boolean,
   ) =>
     setIsToastMsgVisible({
@@ -235,6 +236,14 @@ const DirDetail = ({
         imgSizeOver
       >
         😥 더 작은 이미지를 올려주세요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.pinnedSizeOver}
+        setIsVisible={(e: boolean) =>
+          handleToastMsgVisible("pinnedSizeOver", e)
+        }
+      >
+        😥 최대 15개까지 고정 가능해요!
       </ToastMsg>
     </>
   );

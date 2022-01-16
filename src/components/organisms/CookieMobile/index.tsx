@@ -1,39 +1,33 @@
-import styled from "styled-components";
-import { useState, SyntheticEvent, RefObject, forwardRef } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { DeleteIcon } from "@assets/icons/card";
-import { CookieDataProps } from "src/lib/interfaces/cookie";
-import { Icon } from "@components/atoms";
+// assets
+import { DeleteIcon, PinAtvIconGray, PinIconGray } from "@assets/icons/card";
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
+import { NoThumbImg, PinImg } from "@assets/imgs/card";
+// components
+import { Icon } from "@components/atoms";
 import { CookieEditModal, DelModal } from "@components/organisms";
-import { PatchCookieProps } from "@interfaces/cookie";
-import { NoThumbImg } from "@assets/imgs/card";
+// interfaces
+import { CookieDataProps, PatchCookieProps } from "@interfaces/cookie";
+// libs
+import styled from "styled-components";
+import React, { useState, SyntheticEvent, RefObject, forwardRef } from "react";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+// modules
 import CookieModule from "@modules/CookieModule";
-import DirDetailModule from "@modules/DirDetailModule";
 
 export interface CookieMobileProps {
   /** id */
   id?: string;
   /** className */
   className?: string;
+  /** cookie type */
+  type: "normal" | "searched" | "dirDetail" | "dirShare";
   /** cookie */
   cookie: CookieDataProps;
-  /** share cookie */
-  isShared?: boolean;
-  /** 쿠키 수정 로딩 여부 */
-  isLoading: boolean;
   /** 쿠키 모듈 */
-  cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
+  cookieModule: ReturnType<typeof CookieModule>;
 }
 const CookieMobile = (
-  {
-    id,
-    className,
-    cookie,
-    isShared = false,
-    isLoading,
-    cookieModule,
-  }: CookieMobileProps,
+  { id, className, type, cookie, cookieModule }: CookieMobileProps,
   ref?:
     | ((instance: HTMLButtonElement | null) => void)
     | RefObject<HTMLButtonElement>
@@ -50,21 +44,23 @@ const CookieMobile = (
     thumbnail: cookie.thumbnail,
   });
 
-  /** 쿠키 수정or삭제 에러 여부 */
-  const [isSizeError, setIsSizeError] = useState(false);
-
   return (
     <>
       <CookieWrap
         id={id}
         className={className}
         onClick={() => {
-          cookieModule.editCookieReadCount(cookie.id);
+          cookieModule.editCookieReadCount(
+            cookie.id,
+            cookie.isPinned,
+            type === "searched",
+          );
           window.open(cookie.link);
         }}
         ref={ref}
       >
         <div className="thumbnail-wrap">
+          {cookie.isPinned && <StyledPinImg className="pin_img" />}
           <img
             alt="cookie-thumbnail"
             className="thumbnail"
@@ -80,8 +76,24 @@ const CookieMobile = (
           <div className="profile">
             <cite className="profile__site">{cookie.provider}</cite>
             <div style={{ flexGrow: 1 }} />
-            {!isShared && (
+            {type !== "dirShare" && (
               <div className="profile__icon-wrap">
+                <Icon
+                  className="icon"
+                  onClick={() =>
+                    cookieModule.editCookieIsPinned(
+                      cookie.id,
+                      cookie.isPinned,
+                      type === "searched",
+                    )
+                  }
+                >
+                  {cookie.isPinned ? (
+                    <PinAtvIconGray className="icon__pin" />
+                  ) : (
+                    <PinIconGray className="icon__pin" />
+                  )}
+                </Icon>
                 <Icon className="icon" onClick={() => setIsEditModalOpen(true)}>
                   <EditIcon className="icon__asset" />
                 </Icon>
@@ -106,18 +118,29 @@ const CookieMobile = (
         setIsOpen={setIsEditModalOpen}
         value={cookieValue}
         setValue={setCookieValue}
-        handleEditCookie={cookieModule.editCookie}
+        handleEditCookie={(formData) =>
+          cookieModule.editCookie(
+            formData,
+            cookie.isPinned,
+            type === "searched",
+          )
+        }
         onClickDel={() => {
           setIsEditModalOpen(false);
           setIsDelModalOpen(true);
         }}
-        setIsError={setIsSizeError}
-        isLoading={isLoading}
+        isLoading={cookieModule.isEditCookieLoading}
       />
       <DelModal
         isOpen={isDelModalOpen}
         setIsOpen={setIsDelModalOpen}
-        onClickDel={() => cookieModule.deleteCookie(cookie.id)}
+        onClickDel={() =>
+          cookieModule.deleteCookie(
+            cookie.id,
+            cookie.isPinned,
+            type === "searched",
+          )
+        }
       />
     </>
   );
@@ -201,6 +224,12 @@ const CookieWrap = styled.article`
         .icon {
           width: 36px;
           height: 32px;
+          &__pin {
+            path {
+              fill: var(--gray_5);
+              /* stroke: var(--gray_5); */
+            }
+          }
           &__asset {
             path {
               fill: var(--gray_5);
@@ -215,6 +244,16 @@ const CookieWrap = styled.article`
       }
     }
   }
+`;
+
+const StyledPinImg = styled(PinImg)`
+  position: absolute;
+  z-index: 2;
+  transform: translate(9px, -4px);
+  width: 18px;
+  height: 21px;
+  background-color: transparent;
+  -webkit-filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.1));
 `;
 
 export default forwardRef(CookieMobile);
