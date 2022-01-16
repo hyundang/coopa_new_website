@@ -67,7 +67,6 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
     { revalidateOnFocus: false, revalidateOnMount: false },
   );
 
-  // 디렉토리 생성
   const filterSpecificDirInDirList = (
     dirList: DirDataProps[],
     dirId: number,
@@ -101,7 +100,8 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
     });
   };
 
-  const createDir = async (newDirData: CreateDirProps, isPinned: boolean) => {
+  // 디렉토리 생성
+  const createDir = async (newDirData: CreateDirProps) => {
     const res = await postApi.postDirectoryData(newDirData);
     if (res) {
       const newDir: DirDataProps = {
@@ -111,18 +111,14 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
         cookieCnt: 0,
         isPinned: false,
       };
-      if (isPinned)
-        setPinnedDirData(
-          changeSequenceOfSpecificDirInDirList(pinnedDirData, newDir),
-        );
-      else
-        setUnpinnedDirData(
-          changeSequenceOfSpecificDirInDirList(unpinnedDirData, newDir),
-        );
+      setUnpinnedDirData(
+        changeSequenceOfSpecificDirInDirList(unpinnedDirData, newDir),
+      );
       setIsToastMsgVisible({
         ...isToastMsgVisible,
         dirCreate: true,
       });
+      return;
     }
     alert("디렉토리 생성 실패!");
   };
@@ -147,6 +143,7 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
         ...isToastMsgVisible,
         dirDel: true,
       });
+      return;
     }
     alert("디렉토리 삭제 실패!");
   };
@@ -176,6 +173,7 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
         ...isToastMsgVisible,
         dirEdit: true,
       });
+      return;
     }
     alert("디렉토리 수정 실패!");
   };
@@ -186,7 +184,7 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
     isPinned: boolean,
     isSearched: boolean,
   ) => {
-    const res = await putApi.updateDirectoryPin(dirId, isPinned);
+    const res = await putApi.updateDirectoryPin(dirId, !isPinned);
     if (res) {
       if (!isPinned) {
         setPinnedDirData(
@@ -198,9 +196,9 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
           changeDataOfSpecificDirInDirList(dirList || [], res),
         );
       } else {
-        setPinnedDirData(filterSpecificDirInDirList(unpinnedDirData, dirId));
+        setPinnedDirData(filterSpecificDirInDirList(pinnedDirData, dirId));
         setUnpinnedDirData(
-          changeSequenceOfSpecificDirInDirList(pinnedDirData, res),
+          changeSequenceOfSpecificDirInDirList(unpinnedDirData, res),
         );
       }
       return;
