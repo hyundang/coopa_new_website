@@ -157,8 +157,8 @@ const Newtab = ({
               cookieModule.pinnedCookieData?.length !== 0 &&
               unpinnedCookieList.length !== 0) ||
             (tabValue === "디렉토리" &&
-              dirModule.allDirData?.common?.length !== 0 &&
-              dirModule.allDirData?.pinned?.length !== 0)) && (
+              dirModule.unpinnedDirData.length !== 0 &&
+              dirModule.pinnedDirData.length !== 0)) && (
             <ListHeader
               isSearched={isSearched && isSearchVisible}
               cookieNum={cookieModule.searchedCookieData?.length || 0}
@@ -198,13 +198,13 @@ const Newtab = ({
                   unpinnedCookieList={cookieModule.searchedCookieData || []}
                   isLoading={false}
                   cookieModule={cookieModule}
-                  unpinnedDir={dirModule.allDirData?.common || []}
-                  pinnedDir={dirModule.allDirData?.pinned || []}
+                  unpinnedDir={dirModule.unpinnedDirData}
+                  pinnedDir={dirModule.pinnedDirData}
                   createDir={dirModule.createDir}
                 />
               ) : (
                 <Directories
-                  data={dirModule.searchedDirData || []}
+                  unpinnedData={dirModule.searchedDirData || []}
                   isSearched
                   deleteDir={dirModule.deleteDir}
                   updateDir={dirModule.updateDir}
@@ -221,15 +221,15 @@ const Newtab = ({
                   pinnedCookieList={cookieModule.pinnedCookieData || []}
                   unpinnedCookieList={unpinnedCookieList}
                   cookieModule={cookieModule}
-                  unpinnedDir={dirModule.allDirData?.common || []}
-                  pinnedDir={dirModule.allDirData?.pinned || []}
+                  unpinnedDir={dirModule.unpinnedDirData}
+                  pinnedDir={dirModule.pinnedDirData}
                   setIsOnboardOpen={setIsOnboardOpen}
                   createDir={dirModule.createDir}
                 />
               ) : (
                 <Directories
-                  pinnedData={dirModule.allDirData?.pinned}
-                  data={dirModule.allDirData?.common || []}
+                  pinnedData={dirModule.pinnedDirData}
+                  unpinnedData={dirModule.unpinnedDirData}
                   setIsDirAddOpen={setIsAddOpen}
                   deleteDir={dirModule.deleteDir}
                   updateDir={dirModule.updateDir}

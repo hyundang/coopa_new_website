@@ -8,7 +8,7 @@ import { Btn } from "@components/atoms";
 import { Dispatch, SetStateAction } from "react";
 
 export interface DirectoriesProps {
-  data: DirDataProps[];
+  unpinnedData: DirDataProps[];
   /** 고정된 데이터 */
   pinnedData?: DirDataProps[];
   /** 검색 디렉토리 여부 */
@@ -23,7 +23,7 @@ export interface DirectoriesProps {
 }
 
 const Directories = ({
-  data,
+  unpinnedData,
   pinnedData,
   isSearched = false,
   setIsDirAddOpen,
@@ -33,7 +33,7 @@ const Directories = ({
 }: DirectoriesProps) => {
   return (
     <>
-      {data?.length !== 0 || pinnedData?.length !== 0 ? (
+      {unpinnedData.length !== 0 || pinnedData?.length !== 0 ? (
         <DirectoiresWrap>
           {pinnedData?.map((dir) => (
             <Directory
@@ -44,7 +44,7 @@ const Directories = ({
               updateDirPin={updateDirPin}
             />
           ))}
-          {data?.map((dir) => (
+          {unpinnedData.map((dir) => (
             <Directory
               key={dir.id}
               dir={dir}
