@@ -89,8 +89,8 @@ const DirDetailPage = ({
           // 디렉토리 관련
           dirDetailModule={dirDetailModule}
           dirInfo={dirDetailModule.dirInfo || { name: "", id: -1 }}
-          unpinnedDir={dirModule.allDirData?.common}
-          pinnedDir={dirModule.allDirData?.pinned}
+          unpinnedDir={dirModule.unpinnedDirData}
+          pinnedDir={dirModule.pinnedDirData}
           createDir={dirModule.createDir}
           // 쿠키 관련
           cookieModule={cookieModule}

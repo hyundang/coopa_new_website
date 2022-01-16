@@ -9,12 +9,29 @@ import { DelModal, DirectoryModal } from "..";
 
 export interface DirectoryProps {
   dir: DirDataProps;
-  deleteDir: (id: number) => Promise<void>;
-  updateDir: (id: number, data: CreateDirProps) => Promise<void>;
-  updateDirPin: (id: number, isPinned: boolean) => Promise<void>;
+  isSearched?: boolean;
+  /** delete dir */
+  deleteDir: (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  /** update dir */
+  updateDir: (
+    id: number,
+    body: CreateDirProps,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  updateDirPin: (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
 }
 const Directory = ({
   dir,
+  isSearched = false,
   deleteDir,
   updateDir,
   updateDirPin,
@@ -22,16 +39,13 @@ const Directory = ({
   const [isUpdateOpen, setisUpdateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  // dir 고정 여부
-  const [isDirFixed, setIsDirFixed] = useState(dir.isPinned);
-
   return (
     <>
       <DirectoryWrap
         thumbnail={dir.thumbnail}
         onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_blank")}
       >
-        {isDirFixed && <StyledPinImg className="pin_img" />}
+        {dir.isPinned && <StyledPinImg className="pin_img" />}
         <section className="content">
           <h1 className="content__title">
             {dir.emoji ? `${dir.emoji} ${dir.name}` : dir.name}
@@ -45,11 +59,10 @@ const Directory = ({
           <Icon
             className="hover_icon"
             onClick={() => {
-              updateDirPin(dir.id, !isDirFixed);
-              setIsDirFixed(!isDirFixed);
+              updateDirPin(dir.id, dir.isPinned, isSearched);
             }}
           >
-            {isDirFixed ? <PinAtvIcon /> : <PinIcon />}
+            {dir.isPinned ? <PinAtvIcon /> : <PinIcon />}
           </Icon>
           <Icon className="hover_icon" onClick={() => setisUpdateOpen(true)}>
             <EditIcon />
@@ -61,7 +74,7 @@ const Directory = ({
         isOpen={isUpdateOpen}
         setIsOpen={setisUpdateOpen}
         createDir={() => {}}
-        putDir={updateDir}
+        putDir={(id, body) => updateDir(id, body, dir.isPinned, isSearched)}
         delDir={() => {
           setIsDeleteOpen(true);
           setisUpdateOpen(false);
@@ -76,7 +89,7 @@ const Directory = ({
         type="directory"
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
-        onClickDel={() => deleteDir(dir.id)}
+        onClickDel={() => deleteDir(dir.id, dir.isPinned, isSearched)}
       />
     </>
   );

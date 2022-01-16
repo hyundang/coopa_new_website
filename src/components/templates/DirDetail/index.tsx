@@ -63,8 +63,8 @@ const DirDetail = ({
   const [isDirEditOpen, setIsDirEditOpen] = useState(false);
   // 디렉토리 수정 데이터
   const [newDirData, setNewDirData] = useState<CreateDirProps>({
-    emoji: dirInfo.emoji || "",
-    name: dirInfo.name,
+    emoji: "",
+    name: "",
   });
   // 삭제 모달 오픈
   const [isDelOpen, setIsDelOpen] = useState(false);
@@ -93,15 +93,18 @@ const DirDetail = ({
   const [shareLink, setShareLink] = useState("");
 
   useEffect(() => {
-    setNewDirData({
-      emoji: dirInfo.emoji || "",
-      name: dirInfo.name,
-    });
     (async () => {
       const link = await dirDetailModule?.getShareLink();
       setShareLink(link || "");
     })();
   }, []);
+
+  useEffect(() => {
+    setNewDirData({
+      emoji: dirInfo.emoji || "",
+      name: dirInfo.name,
+    });
+  }, [dirInfo]);
 
   return (
     <>
@@ -245,6 +248,7 @@ const DirDetail = ({
         setIsVisible={(e: boolean) =>
           handleToastMsgVisible("pinnedSizeOver", e)
         }
+        imgSizeOver
       >
         😥 최대 15개까지 고정 가능해요!
       </ToastMsg>

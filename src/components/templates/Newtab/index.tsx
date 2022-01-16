@@ -309,6 +309,7 @@ const Newtab = ({
         setIsVisible={(e: boolean) =>
           handleToastMsgVisible("pinnedSizeOver", e)
         }
+        imgSizeOver
       >
         😥 최대 15개까지 고정 가능해요!
       </ToastMsg>

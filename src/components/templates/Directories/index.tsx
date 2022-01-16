@@ -16,10 +16,23 @@ export interface DirectoriesProps {
   /** 디렉토리 생성 모달 오픈 여부 */
   setIsDirAddOpen?: Dispatch<SetStateAction<boolean>>;
   /** delete dir */
-  deleteDir: (id: number) => Promise<void>;
+  deleteDir: (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
   /** update dir */
-  updateDir: (id: number, data: CreateDirProps) => Promise<void>;
-  updateDirPin: (id: number, isPinned: boolean) => Promise<void>;
+  updateDir: (
+    id: number,
+    body: CreateDirProps,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  updateDirPin: (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
 }
 
 const Directories = ({
@@ -48,6 +61,7 @@ const Directories = ({
             <Directory
               key={dir.id}
               dir={dir}
+              isSearched={isSearched}
               deleteDir={deleteDir}
               updateDir={updateDir}
               updateDirPin={updateDirPin}
