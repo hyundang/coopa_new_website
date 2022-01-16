@@ -1,5 +1,5 @@
 import { CookieDataProps } from "@interfaces/cookie";
-import { CreateDirProps } from "@interfaces/directory";
+import { CreateDirProps, DirDataProps } from "@interfaces/directory";
 import { UpdateUserProps } from "../interfaces/user";
 import client from "./client";
 
@@ -44,7 +44,10 @@ const updateCookie = async (
   }
 };
 
-const updateCookiePin = async (id: number, isPinned: boolean) => {
+const updateCookiePin = async (
+  id: number,
+  isPinned: boolean,
+): Promise<CookieDataProps | undefined> => {
   try {
     const { data } = await client.put(`/cookies/pin/${id}`, {
       isPinned,
@@ -56,25 +59,29 @@ const updateCookiePin = async (id: number, isPinned: boolean) => {
   }
 };
 
-const updateDirectoryData = async (id: number, body: CreateDirProps) => {
+const updateDirectoryData = async (
+  id: number,
+  body: CreateDirProps,
+): Promise<DirDataProps | undefined> => {
   try {
     const result = await client.put(`/directories/${id}`, body);
     console.log("[SUCCESS] PUT DIRECTORY DATA", result.data.data);
     return result.data.data;
   } catch (e) {
     console.log("[FAIL] PUT DIRECTORY DATA", e);
-    return e;
   }
 };
 
-const updateDirectoryPin = async (id: number, isPinned: boolean) => {
+const updateDirectoryPin = async (
+  id: number,
+  isPinned: boolean,
+): Promise<DirDataProps | undefined> => {
   try {
     const { data } = await client.put(`/directories/pin/${id}`, { isPinned });
     console.log("[SUCCESS] UPDATE DIRECTORY PIN", data.data);
     return data.data;
   } catch (e) {
     console.log("[FAIL] UPDATE DIRECTORY PIN", e);
-    return e;
   }
 };
 

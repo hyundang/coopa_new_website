@@ -1,4 +1,4 @@
-import { CreateCookieProps } from "@interfaces/cookie";
+import { CookieDataProps, CreateCookieProps } from "@interfaces/cookie";
 import {
   CreateCookieToDirProps,
   CreateCookieToDirResProps,
@@ -99,14 +99,15 @@ const postCookieReadCount = async (
   }
 };
 
-const postCookie = async (body: CreateCookieProps) => {
+const postCookie = async (
+  body: CreateCookieProps,
+): Promise<CookieDataProps | undefined> => {
   try {
     const { data } = await client.post(`/cookies`, body);
     console.log("[SUCCESS] POST ADD COOKIE", data);
     return data;
   } catch (e) {
     console.log("[FAIL] POST ADD COOKIE", e);
-    return e;
   }
 };
 
