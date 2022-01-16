@@ -3,14 +3,14 @@ import getApi from "@api/getApi";
 //components
 import { DirDetail } from "@components/templates";
 // interfaces
-import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
+import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
 //libs
 import Head from "next/head";
 //modules
 import CookieModule from "@modules/CookieModule";
 
 interface SharedDirDetailInfoProps {
-  directoryInfo: directoryInfoType;
+  directoryInfo: SimpleDirDataProps;
   userInfo: {
     name: string;
     profileImage: string;

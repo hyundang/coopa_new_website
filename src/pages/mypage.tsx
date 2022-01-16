@@ -1,7 +1,7 @@
 import { getApi, putApi } from "@lib/api";
 import { My } from "@components/templates";
 import useSWR, { mutate } from "swr";
-import { EditUserDataProps, UserDataProps } from "@interfaces/user";
+import { UpdateUserProps, UserDataProps } from "@interfaces/user";
 import { useRouter } from "next/dist/client/router";
 import { useEffect, useState } from "react";
 import cookie from "react-cookies";
@@ -25,7 +25,7 @@ export default function mypage({
     },
   });
   // 프로필 수정 데이터
-  const [profileData, setProfileData] = useState<EditUserDataProps>({
+  const [profileData, setProfileData] = useState<UpdateUserProps>({
     name: "",
     introduction: "",
   });

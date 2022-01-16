@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { DefaultEmojiIcon } from "@assets/icons/card";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { DirectoryDataProps } from "@interfaces/directory";
+import { DirDataProps } from "@interfaces/directory";
 
 export type Dirtype = {
   emoji?: string;

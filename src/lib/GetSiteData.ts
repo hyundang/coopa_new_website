@@ -1,12 +1,12 @@
 import postApi from "@api/postApi";
-import { PostCookieProps, CookieDataProps } from "@interfaces/cookie";
+import { CreateCookieProps, CookieDataProps } from "@interfaces/cookie";
 import axios from "axios";
 import cheerio from "cheerio";
 
 const GetSiteData = async (
   url: string,
 ): Promise<CookieDataProps | undefined> => {
-  const data: PostCookieProps = {
+  const data: CreateCookieProps = {
     title: "",
     content: "",
     link: "",

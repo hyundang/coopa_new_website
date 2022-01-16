@@ -11,7 +11,7 @@ import {
 } from "@components/organisms";
 import Cookies from "@components/templates/Cookies";
 // interfaces
-import { PostDirectoryProps, DirectoryDataProps } from "@interfaces/directory";
+import { CreateDirProps, DirDataProps } from "@interfaces/directory";
 // libs
 import { useEffect, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -21,7 +21,7 @@ import styled, { css } from "styled-components";
 import { ToastMsgState } from "@modules/states";
 import DirDetailModule from "@modules/DirDetailModule";
 import CookieModule from "@modules/CookieModule";
-import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
+import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
 
 export interface DirDetailProps {
   /** 공유 디렉토리 여부 */
@@ -31,14 +31,14 @@ export interface DirDetailProps {
   /** profile nickname */
   nickname: string;
   /** 디렉토리 상세 모듈 */
-  dirInfo: directoryInfoType;
+  dirInfo: SimpleDirDataProps;
   dirDetailModule?: ReturnType<typeof DirDetailModule>;
   /** directory data */
-  unpinnedDir?: DirectoryDataProps[];
+  unpinnedDir?: DirDataProps[];
   /** 고정 디렉토리 */
-  pinnedDir?: DirectoryDataProps[];
+  pinnedDir?: DirDataProps[];
   /** 디렉토리 생성 */
-  handlePostDir?: (e: PostDirectoryProps) => Promise<void>;
+  createDir?: (e: CreateDirProps) => Promise<void>;
   /** 쿠키 상세 모듈 */
   cookieModule: ReturnType<typeof CookieModule>;
   unpinnedCookieList: CookieDataProps[];
@@ -51,7 +51,7 @@ const DirDetail = ({
   dirDetailModule,
   unpinnedDir,
   pinnedDir,
-  handlePostDir,
+  createDir,
   cookieModule,
   unpinnedCookieList,
 }: DirDetailProps) => {
@@ -62,7 +62,7 @@ const DirDetail = ({
   // 디렉토리 수정 모달 오픈
   const [isDirEditOpen, setIsDirEditOpen] = useState(false);
   // 디렉토리 수정 데이터
-  const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
+  const [newDirData, setNewDirData] = useState<CreateDirProps>({
     emoji: dirInfo.emoji || "",
     name: dirInfo.name,
   });
@@ -178,7 +178,7 @@ const DirDetail = ({
             isLoading={cookieModule.isLoading}
             unpinnedDir={unpinnedDir || []}
             pinnedDir={pinnedDir || []}
-            postDir={handlePostDir}
+            createDir={createDir}
             setIsOnboardOpen={setIsOnboardOpen}
             cookieModule={cookieModule}
           />

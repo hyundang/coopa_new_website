@@ -1,7 +1,7 @@
 import { PlusIcon } from "@assets/icons/common";
 import { Btn, Icon, Modal } from "@components/atoms";
 import { InputForm } from "@components/molecules";
-import { PostDirectoryProps } from "@interfaces/directory";
+import { CreateDirProps } from "@interfaces/directory";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import dynamic from "next/dynamic";
@@ -20,13 +20,13 @@ export interface DirectoryModalProps {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   /** post directory data */
-  postDir?: (e: PostDirectoryProps) => void;
+  createDir?: (e: CreateDirProps) => void;
   /** put directory data */
-  putDir?: (dirId: number, e: PostDirectoryProps) => Promise<void>;
+  putDir?: (dirId: number, e: CreateDirProps) => Promise<void>;
   /** delete directory data */
   delDir?: () => void;
   /** directory Data */
-  initValue?: PostDirectoryProps;
+  initValue?: CreateDirProps;
   dirId?: number;
 }
 const DirectoryModal = ({
@@ -35,7 +35,7 @@ const DirectoryModal = ({
   type = "new",
   isOpen,
   setIsOpen,
-  postDir,
+  createDir,
   putDir,
   delDir,
   initValue,
@@ -57,7 +57,7 @@ const DirectoryModal = ({
   };
 
   // 새 디렉토리 데이터
-  const [value, setValue] = useState<PostDirectoryProps>({
+  const [value, setValue] = useState<CreateDirProps>({
     emoji: "",
     name: "",
   });
@@ -79,7 +79,7 @@ const DirectoryModal = ({
     value.name !== ""
       ? (() => {
           type === "new"
-            ? postDir && postDir(value)
+            ? createDir && createDir(value)
             : putDir && dirId && putDir(dirId, value);
           setIsOpen(false);
         })()

@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import { Btn, Input, MoveModal } from "@components/atoms";
 import { modalAnimation } from "@components/animations";
-import { PostBookmarkDataProps } from "@interfaces/homeboard";
+import { CreateBookmarkProps } from "@interfaces/homeboard";
 
 export interface BookmarkAddModalProps {
   /** id */
@@ -10,9 +10,9 @@ export interface BookmarkAddModalProps {
   /** className */
   className?: string;
   /** 즐겨찾기 제목, 즐겨찾기 링크 */
-  value: PostBookmarkDataProps;
+  value: CreateBookmarkProps;
   /** 즐겨찾기 제목, 즐겨찾기 링크 setState */
-  setValue: Dispatch<SetStateAction<PostBookmarkDataProps>>;
+  setValue: Dispatch<SetStateAction<CreateBookmarkProps>>;
   /** '저장' 버튼 클릭 시 event handling 함수 */
   onClickSave: () => void;
   /** 모달 open 여부 */

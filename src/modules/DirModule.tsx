@@ -2,22 +2,23 @@
 import { getApi, delApi, postApi, putApi } from "@api/index";
 // interfaces
 import {
-  DirectoryDataProps,
-  GetDirectoryDataProps,
-  PostDirectoryProps,
+  DirDataProps,
+  GetAllDirProps,
+  CreateDirProps,
 } from "@interfaces/directory";
 // libs
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import reactCookie from "react-cookies";
 import { useState } from "react";
 import { returnDirFilter } from "@lib/filter";
 import { useRecoilState } from "recoil";
+import SaveDataInWebCookie from "@lib/SaveDataInWebCookie";
 // modules
 import { ToastMsgState } from "./states";
 
 interface DirModuleProps {
   /** initial directory datas */
-  initAllDirData: GetDirectoryDataProps;
+  initAllDirData: GetAllDirProps;
 }
 const DirModule = ({ initAllDirData }: DirModuleProps) => {
   // toast msg
@@ -28,36 +29,35 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   const [dirFilter, setDirFilter] = useState<"latest" | "oldest" | "abc">(
     initFilter || "latest",
   );
+  // 고정 디렉토리
+  const [pinnedDirData, setPinnedDirData] = useState<DirDataProps[]>(
+    initAllDirData.pinned || [],
+  );
+  // 고정 안 된 디렉토리
+  const [unpinnedDirData, setUnpinnedDirData] = useState<DirDataProps[]>(
+    initAllDirData.common,
+  );
 
   // 모든 디렉토리 데이터 get
-  const { data: allDirData } = useSWR(
+  const { data: allDirData, mutate: allDirMutate } = useSWR(
     () => `/directories?filter=${returnDirFilter(dirFilter)}`,
     getApi.getAllDirData,
     {
       initialData: initAllDirData,
       errorRetryCount: 3,
+      onSuccess: (data) => {
+        setPinnedDirData(data?.pinned || []);
+        setUnpinnedDirData(data?.common || []);
+      },
     },
   );
 
   // 디렉토리 필터 변경
-  const handleDirFilter = (
+  const updateAndSaveDirFilter = (
     filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => {
     filter !== "readMost" && filter !== "readLeast" && setDirFilter(filter);
-    // 만료일 설정, 쿠키 저장
-    const expires = new Date();
-    expires.setFullYear(
-      expires.getFullYear() + Number(process.env.EXPIRE_YEAR),
-    );
-    reactCookie.save("dirFilter", filter, {
-      path: "/",
-      expires,
-      httpOnly: JSON.parse(HTTP_ONLY),
-    });
-    // 필터에 따라 디렉토리 데이터 정렬
-    filter !== "readLeast" &&
-      filter !== "readMost" &&
-      mutate(`/directories?filter=${returnDirFilter(dirFilter)}`);
+    SaveDataInWebCookie("dirFilter", filter);
   };
 
   // 검색된 디렉토리 데이터 get
@@ -68,12 +68,12 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   );
 
   // 디렉토리 post
-  const handlePostDir = async (newValue: PostDirectoryProps) => {
+  const createDir = async (newValue: CreateDirProps) => {
     mutate(
       `/directories?filter=${returnDirFilter(dirFilter)}`,
-      async (prev: GetDirectoryDataProps) => {
+      async (prev: GetAllDirProps) => {
         const res = await postApi.postDirectoryData(newValue);
-        const newDir: DirectoryDataProps = {
+        const newDir: DirDataProps = {
           emoji: res?.emoji,
           id: res?.directoryId || -1,
           name: res?.name || "",
@@ -91,10 +91,10 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   };
 
   // 디렉토리 delete
-  const handleDelDir = async (dirId: number) => {
+  const deleteDir = async (dirId: number) => {
     mutate(
       `/directories?filter=${returnDirFilter(dirFilter)}`,
-      async (prev: GetDirectoryDataProps) => {
+      async (prev: GetAllDirProps) => {
         const res = await delApi.delDirData(dirId);
         let newCommon;
         if (prev)
@@ -117,10 +117,10 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   };
 
   // 디렉토리 edit
-  const handleEditDir = async (id: number, body: PostDirectoryProps) => {
+  const updateDir = async (id: number, body: CreateDirProps) => {
     mutate(
       `/directories?filter=${returnDirFilter(dirFilter)}`,
-      async (prev: GetDirectoryDataProps) => {
+      async (prev: GetAllDirProps) => {
         const res = await putApi.updateDirectoryData(id, body);
 
         // 갱신된 데이터일 때
@@ -231,20 +231,21 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   };
 
   // 디렉토리 pin
-  const handleFixDir = async (id: number, isPinned: boolean) => {
+  const updateDirPin = async (id: number, isPinned: boolean) => {
     const res = await putApi.updateDirectoryPin(id, isPinned);
     mutate(`/directories?filter=${returnDirFilter(dirFilter)}`, true);
   };
 
   return {
     dirFilter,
-    handleDirFilter,
-    allDirData,
+    updateAndSaveDirFilter,
+    pinnedDirData,
+    unpinnedDirData,
     searchedDirData,
-    handlePostDir,
-    handleDelDir,
-    handleEditDir,
-    handleFixDir,
+    createDir,
+    deleteDir,
+    updateDir,
+    updateDirPin,
   };
 };
 

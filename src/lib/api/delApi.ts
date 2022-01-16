@@ -1,5 +1,5 @@
-import { CookieDeleteDataProps } from "@interfaces/cookie";
-import { DirDeleteDataProps } from "@interfaces/directory";
+import { DeleteCookieProps } from "@interfaces/cookie";
+import { DeleteDirProps } from "@interfaces/directory";
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import client from "./client";
 
@@ -22,7 +22,7 @@ const delBookmarkData = async (
 
 const delCookieData = async (
   cookieId: number,
-): Promise<CookieDeleteDataProps | undefined> => {
+): Promise<DeleteCookieProps | undefined> => {
   try {
     const {
       data: { data },
@@ -37,7 +37,7 @@ const delCookieData = async (
 
 const delDirData = async (
   dirId: number,
-): Promise<DirDeleteDataProps | undefined> => {
+): Promise<DeleteDirProps | undefined> => {
   try {
     const {
       data: { data },

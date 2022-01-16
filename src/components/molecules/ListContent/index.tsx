@@ -7,14 +7,14 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { Btn, Input, List } from "@components/atoms";
-import { DirectoryDataProps } from "@interfaces/directory";
+import { DirDataProps } from "@interfaces/directory";
 
 export interface ListContentProps {
   className?: string;
   /** 모든 디렉토리 data */
-  unpinnedDir: DirectoryDataProps[];
+  unpinnedDir: DirDataProps[];
   /** 고정 디렉토리 */
-  pinnedDir: DirectoryDataProps[];
+  pinnedDir: DirDataProps[];
   /** cardState를 parking으로 변경 */
   setCardState: Dispatch<
     SetStateAction<"hover" | "normal" | "parking" | "input">
@@ -31,7 +31,7 @@ const ListContent = ({
 }: ListContentProps) => {
   // 디렉토리명 입력 input
   const [text, setText] = useState("");
-  const [searchedDir, setSearchedDir] = useState<DirectoryDataProps[]>([]);
+  const [searchedDir, setSearchedDir] = useState<DirDataProps[]>([]);
   // 리스트 하단 블러 표시 여부
   const [isBlur, setIsBlur] = useState(true);
   const [isError, setIsError] = useState(false);

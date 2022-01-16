@@ -6,7 +6,7 @@ import { NoThumbImg, PinImg } from "@assets/imgs/card";
 import { Icon } from "@components/atoms";
 import { CookieEditModal, DelModal } from "@components/organisms";
 // interfaces
-import { CookieDataProps, PatchCookieProps } from "@interfaces/cookie";
+import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
 // libs
 import styled from "styled-components";
 import React, { useState, SyntheticEvent, RefObject, forwardRef } from "react";
@@ -37,7 +37,7 @@ const CookieMobile = (
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
 
-  const [cookieValue, setCookieValue] = useState<PatchCookieProps>({
+  const [cookieValue, setCookieValue] = useState<UpdateCookieProps>({
     title: cookie.title,
     content: cookie.content,
     cookieId: cookie.id,

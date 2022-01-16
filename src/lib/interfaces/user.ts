@@ -8,14 +8,14 @@ export interface UserDataProps {
   readCookieCnt: number;
 }
 
-export interface PostUserDataProps {
+export interface CreateUserProps {
   name: string;
   email: string;
   googleId: string;
   profileImage: string;
 }
 
-export interface EditUserDataProps {
+export interface UpdateUserProps {
   name: string;
   introduction?: string;
 }

@@ -1,11 +1,11 @@
-export interface directoryInfoType {
+export interface SimpleDirDataProps {
   emoji?: string | null;
   id: number;
   name: string;
 }
 export interface CookieDataProps {
   content: string;
-  directoryInfo: directoryInfoType | null;
+  directoryInfo: SimpleDirDataProps | null;
   favicon: string;
   id: number;
   link: string;
@@ -15,7 +15,7 @@ export interface CookieDataProps {
   title: string;
   isPinned: boolean;
 }
-export interface CookieDeleteDataProps {
+export interface DeleteCookieProps {
   content: string;
   cookieId: number;
   deleted: boolean;
@@ -27,7 +27,7 @@ export interface CookieDeleteDataProps {
 }
 
 /** 쿠키 추가 */
-export interface PostCookieProps {
+export interface CreateCookieProps {
   content: string;
   favicon: string;
   link: string;
@@ -37,7 +37,7 @@ export interface PostCookieProps {
 }
 
 /** 쿠키 수정 */
-export interface PatchCookieProps {
+export interface UpdateCookieProps {
   title: string;
   content: string;
   thumbnail: string;

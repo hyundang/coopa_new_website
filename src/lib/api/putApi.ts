@@ -1,9 +1,9 @@
 import { CookieDataProps } from "@interfaces/cookie";
-import { PostDirectoryProps } from "@interfaces/directory";
-import { EditUserDataProps } from "../interfaces/user";
+import { CreateDirProps } from "@interfaces/directory";
+import { UpdateUserProps } from "../interfaces/user";
 import client from "./client";
 
-const putUserData = async (body: EditUserDataProps): Promise<undefined> => {
+const putUserData = async (body: UpdateUserProps): Promise<undefined> => {
   try {
     const { data } = await client.put("/users", body);
     console.log("[SUCCESS] PUT USER DATA", data);
@@ -56,7 +56,7 @@ const updateCookiePin = async (id: number, isPinned: boolean) => {
   }
 };
 
-const updateDirectoryData = async (id: number, body: PostDirectoryProps) => {
+const updateDirectoryData = async (id: number, body: CreateDirProps) => {
   try {
     const result = await client.put(`/directories/${id}`, body);
     console.log("[SUCCESS] PUT DIRECTORY DATA", result.data.data);

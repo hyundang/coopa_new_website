@@ -1,10 +1,7 @@
 // apis
 import { getApi, delApi, postApi, putApi } from "@api/index";
 // interfaces
-import {
-  BookmarkDataProps,
-  PostBookmarkDataProps,
-} from "@interfaces/homeboard";
+import { BookmarkDataProps, CreateBookmarkProps } from "@interfaces/homeboard";
 // libs
 import useSWR, { mutate } from "swr";
 import { useEffect, useState } from "react";
@@ -65,7 +62,7 @@ const HomebrdModule = ({
     },
   );
   // 북마크 post
-  const handleAddBookmark = async (newValue: PostBookmarkDataProps) => {
+  const handleAddBookmark = async (newValue: CreateBookmarkProps) => {
     const res = await postApi.postBookmarkData(newValue);
     res &&
       (() => {

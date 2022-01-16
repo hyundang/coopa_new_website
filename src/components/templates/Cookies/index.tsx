@@ -12,8 +12,8 @@ import {
 // hooks
 import { useWindowSize } from "src/hooks";
 // interfaces
-import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
-import { DirectoryDataProps, PostDirectoryProps } from "@interfaces/directory";
+import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
+import { DirDataProps, CreateDirProps } from "@interfaces/directory";
 // libs
 import styled from "styled-components";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -28,20 +28,20 @@ export interface CookiesProps {
   pinnedCookieList: CookieDataProps[];
   /** unpinned cookie data */
   unpinnedCookieList: CookieDataProps[];
-  dirInfo?: directoryInfoType;
+  dirInfo?: SimpleDirDataProps;
   /** cookie data loading */
   isLoading: boolean;
   /** 쿠키 모듈 */
   // cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
   cookieModule: ReturnType<typeof CookieModule>;
   /** 일반 디렉토리 */
-  unpinnedDir: DirectoryDataProps[];
+  unpinnedDir: DirDataProps[];
   /** 고정 디렉토리 */
-  pinnedDir: DirectoryDataProps[];
+  pinnedDir: DirDataProps[];
   /** 온보딩 모달 오픈 */
   setIsOnboardOpen?: Dispatch<SetStateAction<boolean>>;
   /** add dir */
-  postDir?: (body: PostDirectoryProps) => void;
+  createDir?: (body: CreateDirProps) => void;
 }
 
 const Cookies = ({
@@ -54,7 +54,7 @@ const Cookies = ({
   unpinnedDir,
   pinnedDir,
   setIsOnboardOpen,
-  postDir,
+  createDir,
 }: CookiesProps) => {
   const size = useWindowSize();
 
@@ -185,7 +185,7 @@ const Cookies = ({
                   isLoading={isLoading}
                   unpinnedDir={unpinnedDir}
                   pinnedDir={pinnedDir}
-                  postDir={postDir}
+                  createDir={createDir}
                 />
               ))}
               {unpinnedCookieList.map((cookie, idx) =>
@@ -205,7 +205,7 @@ const Cookies = ({
                     cookieModule={cookieModule}
                     unpinnedDir={unpinnedDir}
                     pinnedDir={pinnedDir}
-                    postDir={postDir}
+                    createDir={createDir}
                     ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
                   />
                 ) : (
@@ -224,7 +224,7 @@ const Cookies = ({
                     isLoading={isLoading}
                     unpinnedDir={unpinnedDir}
                     pinnedDir={pinnedDir}
-                    postDir={postDir}
+                    createDir={createDir}
                   />
                 ),
               )}

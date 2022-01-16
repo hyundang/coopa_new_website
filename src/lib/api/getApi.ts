@@ -1,8 +1,5 @@
-import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
-import {
-  DirectoryDataProps,
-  GetDirectoryDataProps,
-} from "@interfaces/directory";
+import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
+import { DirDataProps, GetAllDirProps } from "@interfaces/directory";
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import axios from "axios";
 import { UserDataProps } from "../interfaces/user";
@@ -45,9 +42,7 @@ const getAllCookieData = (
     return res.data.data;
   });
 
-const getAllDirData = (
-  url: string,
-): Promise<GetDirectoryDataProps | undefined> =>
+const getAllDirData = (url: string): Promise<GetAllDirProps | undefined> =>
   client.get(url).then((res) => {
     console.log("[SUCCESS] GET ALL DIRECTORY DATA", res.data.data);
     return res.data.data;
@@ -70,7 +65,7 @@ const getSearchedCookieData = async (
 
 const getSearchedDirData = async (
   word: string,
-): Promise<DirectoryDataProps[] | undefined> => {
+): Promise<DirDataProps[] | undefined> => {
   try {
     const {
       data: { data },
@@ -83,7 +78,7 @@ const getSearchedDirData = async (
   }
 };
 
-const getDirInfo = (url: string): Promise<directoryInfoType | undefined> =>
+const getDirInfo = (url: string): Promise<SimpleDirDataProps | undefined> =>
   client.get(url).then((res) => {
     console.log("[SUCCESS] GET DIRECTORY INFO", res.data.data);
     return res.data.data;

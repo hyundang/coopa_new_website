@@ -1,15 +1,9 @@
-export interface GetDirectoryDataProps {
-  common: DirectoryDataProps[];
-  pinned?: DirectoryDataProps[];
+export interface GetAllDirProps {
+  common: DirDataProps[];
+  pinned?: DirDataProps[];
 }
 
-export interface DirectoryInfoProps {
-  directoryId: number;
-  emoji: string;
-  name: string;
-}
-
-export interface DirectoryDataProps {
+export interface DirDataProps {
   emoji?: string;
   id: number;
   name: string;
@@ -18,28 +12,28 @@ export interface DirectoryDataProps {
   isPinned: boolean;
 }
 
-export interface PostDirectoryProps {
+export interface CreateDirProps {
   name: string;
   emoji?: string;
 }
 
-export interface PostDirectoryResponseProps {
+export interface CreateDirectoryResProps {
   directoryId: number;
   name: string;
   emoji: string;
 }
 
-export interface DirDeleteDataProps {
+export interface DeleteDirProps {
   directoryId: number;
   name: string;
 }
 
-export interface PostCookieToDirProps {
+export interface CreateCookieToDirProps {
   directoryId: number;
   cookieId: number;
 }
 
-export interface PostCookieToDirResponseProps {
+export interface CreateCookieToDirResProps {
   content: string;
   cookieId: number;
   directoryId: number;
@@ -52,7 +46,7 @@ export interface PostCookieToDirResponseProps {
   provider: string;
 }
 
-export interface PostReadCntResponseProps {
+export interface CreateReadCntResProps {
   content: string;
   cookieId: number;
   readCnt: number;

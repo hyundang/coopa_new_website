@@ -4,7 +4,7 @@ import { ImgBox, Icon } from "@components/atoms";
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { DeleteIcon, PinAtvIcon, PinIcon } from "@assets/icons/card";
 import { cookieimgAnimation } from "@components/animations";
-import { CookieDataProps, PatchCookieProps } from "@interfaces/cookie";
+import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
 import { CookieEditModal, DelModal } from "@components/organisms";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { PinImg } from "@assets/imgs/card";
@@ -29,7 +29,7 @@ export interface CookieImgProps {
   /** edit cookie handler */
   updateCookie: (data: FormData) => Promise<void>;
   /** 쿠키 수정 로딩 */
-  isEditLoading: boolean;
+  isUpdateLoading: boolean;
   /** fix cookie handler */
   updateCookiePin: (cookieId: number, isPinned: boolean) => Promise<void>;
 }
@@ -43,16 +43,16 @@ const CookieImg = ({
   copyCookieLink,
   deleteCookieHanlder,
   updateCookie,
-  isEditLoading,
+  isUpdateLoading,
   updateCookiePin,
 }: CookieImgProps) => {
-  const [patchData, setPatchData] = useState<PatchCookieProps>({
+  const [patchData, setPatchData] = useState<UpdateCookieProps>({
     title: cookie?.title || "",
     content: cookie?.content || "",
     thumbnail: cookie?.thumbnail || "",
     cookieId: cookie?.id || -1,
   });
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isUpdateOpen, setisUpdateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   // cookie 고정 여부
   const [isCookiePinned, setIsCookiePinned] = useState(
@@ -61,7 +61,7 @@ const CookieImg = ({
 
   const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> =
     () => {
-      setIsEditOpen(true);
+      setisUpdateOpen(true);
       setPatchData({
         ...patchData,
         cookieId: cookie?.id || -1,
@@ -136,13 +136,13 @@ const CookieImg = ({
         setValue={setPatchData}
         updateCookie={updateCookie}
         onClickDel={() => {
-          setIsEditOpen(false);
+          setisUpdateOpen(false);
           setIsDeleteOpen(true);
         }}
         setCardState={setCardState}
-        isOpen={isEditOpen}
-        setIsOpen={setIsEditOpen}
-        isLoading={isEditLoading}
+        isOpen={isUpdateOpen}
+        setIsOpen={setisUpdateOpen}
+        isLoading={isUpdateLoading}
       />
       <DelModal
         isOpen={isDeleteOpen}

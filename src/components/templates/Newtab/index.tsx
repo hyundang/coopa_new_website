@@ -178,11 +178,11 @@ const Newtab = ({
               onClickType={
                 tabValue === "모든 쿠키"
                   ? cookieModule.updateAndSaveCookieFilter
-                  : dirModule.handleDirFilter
+                  : dirModule.updateAndSaveDirFilter
               }
               isAddOpen={isAddOpen}
               setIsAddOpen={setIsAddOpen}
-              postDir={dirModule.handlePostDir}
+              createDir={dirModule.createDir}
               createCookie={(url) =>
                 cookieModule.createCookie(url, false, undefined)
               }
@@ -200,15 +200,15 @@ const Newtab = ({
                   cookieModule={cookieModule}
                   unpinnedDir={dirModule.allDirData?.common || []}
                   pinnedDir={dirModule.allDirData?.pinned || []}
-                  postDir={dirModule.handlePostDir}
+                  createDir={dirModule.createDir}
                 />
               ) : (
                 <Directories
                   data={dirModule.searchedDirData || []}
                   isSearched
-                  handleDelDirectory={dirModule.handleDelDir}
-                  handleUpdateDirectory={dirModule.handleEditDir}
-                  fixDirHandler={dirModule.handleFixDir}
+                  deleteDir={dirModule.deleteDir}
+                  updateDir={dirModule.updateDir}
+                  updateDirPin={dirModule.updateDirPin}
                 />
               )}
             </>
@@ -224,16 +224,16 @@ const Newtab = ({
                   unpinnedDir={dirModule.allDirData?.common || []}
                   pinnedDir={dirModule.allDirData?.pinned || []}
                   setIsOnboardOpen={setIsOnboardOpen}
-                  postDir={dirModule.handlePostDir}
+                  createDir={dirModule.createDir}
                 />
               ) : (
                 <Directories
                   pinnedData={dirModule.allDirData?.pinned}
                   data={dirModule.allDirData?.common || []}
                   setIsDirAddOpen={setIsAddOpen}
-                  handleDelDirectory={dirModule.handleDelDir}
-                  handleUpdateDirectory={dirModule.handleEditDir}
-                  fixDirHandler={dirModule.handleFixDir}
+                  deleteDir={dirModule.deleteDir}
+                  updateDir={dirModule.updateDir}
+                  updateDirPin={dirModule.updateDirPin}
                 />
               )}
             </>

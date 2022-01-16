@@ -3,8 +3,8 @@ import { getApi } from "@api/index";
 // components
 import { DirDetail } from "@components/templates";
 // interfaces
-import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
-import { GetDirectoryDataProps } from "@interfaces/directory";
+import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
+import { GetAllDirProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 // libs
 import nextCookie from "next-cookies";
@@ -21,8 +21,8 @@ interface DirDetailPageProps {
   initUserData: UserDataProps;
   initAllPinnedCookieData: CookieDataProps[];
   initAllUnpinnedCookieData: CookieDataProps[];
-  initDirInfoData: directoryInfoType;
-  initAllDirData: GetDirectoryDataProps;
+  initDirInfoData: SimpleDirDataProps;
+  initAllDirData: GetAllDirProps;
   queryID: number;
 }
 const DirDetailPage = ({
@@ -91,7 +91,7 @@ const DirDetailPage = ({
           dirInfo={dirDetailModule.dirInfo || { name: "", id: -1 }}
           unpinnedDir={dirModule.allDirData?.common}
           pinnedDir={dirModule.allDirData?.pinned}
-          handlePostDir={dirModule.handlePostDir}
+          createDir={dirModule.createDir}
           // 쿠키 관련
           cookieModule={cookieModule}
           unpinnedCookieList={

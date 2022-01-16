@@ -2,30 +2,24 @@ import styled, { css } from "styled-components";
 import { EmptyCookieIcon, EditIcon } from "@assets/icons/common";
 import { PinAtvIcon, PinIcon } from "@assets/icons/card";
 import { PinImg } from "@assets/imgs/card";
-import {
-  DirectoryDataProps,
-  PostDirectoryProps,
-} from "src/lib/interfaces/directory";
+import { DirDataProps, CreateDirProps } from "src/lib/interfaces/directory";
 import { Icon } from "@components/atoms";
 import { useState } from "react";
 import { DelModal, DirectoryModal } from "..";
 
 export interface DirectoryProps {
-  dir: DirectoryDataProps;
-  handleDelDirectory: (id: number) => Promise<void>;
-  handleUpdateDirectory: (
-    id: number,
-    data: PostDirectoryProps,
-  ) => Promise<void>;
-  fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
+  dir: DirDataProps;
+  deleteDir: (id: number) => Promise<void>;
+  updateDir: (id: number, data: CreateDirProps) => Promise<void>;
+  updateDirPin: (id: number, isPinned: boolean) => Promise<void>;
 }
 const Directory = ({
   dir,
-  handleDelDirectory,
-  handleUpdateDirectory,
-  fixDirHandler,
+  deleteDir,
+  updateDir,
+  updateDirPin,
 }: DirectoryProps) => {
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isUpdateOpen, setisUpdateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   // dir 고정 여부
@@ -51,26 +45,26 @@ const Directory = ({
           <Icon
             className="hover_icon"
             onClick={() => {
-              fixDirHandler(dir.id, !isDirFixed);
+              updateDirPin(dir.id, !isDirFixed);
               setIsDirFixed(!isDirFixed);
             }}
           >
             {isDirFixed ? <PinAtvIcon /> : <PinIcon />}
           </Icon>
-          <Icon className="hover_icon" onClick={() => setIsEditOpen(true)}>
+          <Icon className="hover_icon" onClick={() => setisUpdateOpen(true)}>
             <EditIcon />
           </Icon>
         </div>
       </DirectoryWrap>
       <DirectoryModal
         type="edit"
-        isOpen={isEditOpen}
-        setIsOpen={setIsEditOpen}
-        postDir={() => {}}
-        putDir={handleUpdateDirectory}
+        isOpen={isUpdateOpen}
+        setIsOpen={setisUpdateOpen}
+        createDir={() => {}}
+        putDir={updateDir}
         delDir={() => {
           setIsDeleteOpen(true);
-          setIsEditOpen(false);
+          setisUpdateOpen(false);
         }}
         initValue={{
           emoji: dir.emoji,
@@ -82,7 +76,7 @@ const Directory = ({
         type="directory"
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
-        onClickDel={() => handleDelDirectory(dir.id)}
+        onClickDel={() => deleteDir(dir.id)}
       />
     </>
   );

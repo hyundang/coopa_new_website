@@ -9,7 +9,7 @@ import {
 import { mypageAnimation } from "@components/animations";
 import { Btn, Bubble, Icon, ToastMsg } from "@components/atoms";
 import { Footer, Header, ProfileEditModal } from "@components/organisms";
-import { EditUserDataProps, UserDataProps } from "@interfaces/user";
+import { UpdateUserProps, UserDataProps } from "@interfaces/user";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
@@ -21,8 +21,8 @@ export interface MyProps {
   /** 프로필 수정 버튼 클릭 이벤트 핸들러 */
   editProfile: () => void;
   /** 프로필 수정 데이터 */
-  profileData: EditUserDataProps;
-  setProfileData: Dispatch<SetStateAction<EditUserDataProps>>;
+  profileData: UpdateUserProps;
+  setProfileData: Dispatch<SetStateAction<UpdateUserProps>>;
   /** 프로필 수정 모달 오픈 */
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;

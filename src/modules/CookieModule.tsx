@@ -3,9 +3,9 @@ import { getApi, delApi, putApi, postApi } from "@api/index";
 // interfaces
 import { CookieDataProps } from "@interfaces/cookie";
 import {
-  PostCookieToDirProps,
-  PostCookieToDirResponseProps,
-  PostReadCntResponseProps,
+  CreateCookieToDirProps,
+  CreateCookieToDirResProps,
+  CreateReadCntResProps,
 } from "@interfaces/directory";
 // libs
 import { returnCookieFilter } from "@lib/filter";
@@ -285,19 +285,19 @@ const CookieModule = ({
   };
 
   // 쿠키의 디렉토리 변경
-  function isTypeOfObjectEqualPostCookieToDirResponseProps(
+  function isTypeOfObjectEqualCreateCookieToDirResProps(
     resData: any,
-  ): resData is PostCookieToDirResponseProps {
+  ): resData is CreateCookieToDirResProps {
     return true;
   }
 
   const changeDataOfSpecificCookieInCookieList = (
     cookieList: CookieDataProps[],
-    cookieData: PostCookieToDirResponseProps | PostReadCntResponseProps,
+    cookieData: CreateCookieToDirResProps | CreateReadCntResProps,
   ): CookieDataProps[] => {
     return cookieList.map((cookie) => {
       if (cookie.id === cookieData.cookieId) {
-        if (isTypeOfObjectEqualPostCookieToDirResponseProps(cookieData))
+        if (isTypeOfObjectEqualCreateCookieToDirResProps(cookieData))
           return {
             ...cookie,
             directoryInfo: {
@@ -317,7 +317,7 @@ const CookieModule = ({
 
   const changeDataOfSpecificCookieIn2DCookieList = (
     outerCookieList: (CookieDataProps[] | undefined)[],
-    cookieData: PostCookieToDirResponseProps | PostReadCntResponseProps,
+    cookieData: CreateCookieToDirResProps | CreateReadCntResProps,
   ): CookieDataProps[][] => {
     const newOuterCookieList = outerCookieList.map((innerCookieList) => {
       return changeDataOfSpecificCookieInCookieList(
@@ -330,7 +330,7 @@ const CookieModule = ({
 
   const changeDataofSpecificUnpinnedCookie = (
     outerCookieList: (CookieDataProps[] | undefined)[] | undefined,
-    cookieData: PostCookieToDirResponseProps | PostReadCntResponseProps,
+    cookieData: CreateCookieToDirResProps | CreateReadCntResProps,
   ): CookieDataProps[][] => {
     if (outerCookieList) {
       return changeDataOfSpecificCookieIn2DCookieList(
@@ -348,7 +348,7 @@ const CookieModule = ({
   };
 
   const updateDirOfCookie = async (
-    body: PostCookieToDirProps,
+    body: CreateCookieToDirProps,
     isPinned: boolean,
     isSearched: boolean,
   ) => {

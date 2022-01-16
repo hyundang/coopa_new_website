@@ -9,7 +9,7 @@ import {
 } from "react-google-login";
 // api
 import { postApi } from "@lib/api";
-import { PostUserDataProps } from "@interfaces/user";
+import { CreateUserProps } from "@interfaces/user";
 import { useRouter } from "next/dist/client/router";
 import { setToken } from "@api/TokenManager";
 
@@ -28,7 +28,7 @@ export default function LoginPage() {
     response: GoogleLoginResponse | GoogleLoginResponseOffline,
   ) => {
     if (instanceOfGLR(response)) {
-      const data: PostUserDataProps = {
+      const data: CreateUserProps = {
         name: response.profileObj.name,
         email: response.profileObj.email,
         googleId: response.profileObj.googleId,

@@ -1,21 +1,18 @@
-import { PostCookieProps } from "@interfaces/cookie";
+import { CreateCookieProps } from "@interfaces/cookie";
 import {
-  PostCookieToDirProps,
-  PostCookieToDirResponseProps,
-  PostDirectoryProps,
-  PostDirectoryResponseProps,
-  PostReadCntResponseProps,
+  CreateCookieToDirProps,
+  CreateCookieToDirResProps,
+  CreateDirProps,
+  CreateDirectoryResProps,
+  CreateReadCntResProps,
 } from "@interfaces/directory";
-import {
-  BookmarkDataProps,
-  PostBookmarkDataProps,
-} from "@interfaces/homeboard";
-import { PostUserDataProps } from "@interfaces/user";
+import { BookmarkDataProps, CreateBookmarkProps } from "@interfaces/homeboard";
+import { CreateUserProps } from "@interfaces/user";
 import axios from "axios";
 import client from "./client";
 
 const postUserData = async (
-  body: PostUserDataProps,
+  body: CreateUserProps,
 ): Promise<string | undefined> => {
   try {
     const {
@@ -32,7 +29,7 @@ const postUserData = async (
 };
 
 const postBookmarkData = async (
-  body: PostBookmarkDataProps,
+  body: CreateBookmarkProps,
 ): Promise<BookmarkDataProps | undefined> => {
   try {
     const {
@@ -62,8 +59,8 @@ const postShareToken = async (
 };
 
 const postDirectoryData = async (
-  body: PostDirectoryProps,
-): Promise<PostDirectoryResponseProps | undefined> => {
+  body: CreateDirProps,
+): Promise<CreateDirectoryResProps | undefined> => {
   try {
     const {
       data: { data },
@@ -77,8 +74,8 @@ const postDirectoryData = async (
 };
 
 const postCookieToDir = async (
-  body: PostCookieToDirProps,
-): Promise<PostCookieToDirResponseProps | undefined> => {
+  body: CreateCookieToDirProps,
+): Promise<CreateCookieToDirResProps | undefined> => {
   try {
     const {
       data: { data },
@@ -92,7 +89,7 @@ const postCookieToDir = async (
 
 const postCookieReadCount = async (
   id: number,
-): Promise<PostReadCntResponseProps | undefined> => {
+): Promise<CreateReadCntResProps | undefined> => {
   try {
     const { data } = await client.post(`/cookies/${id}/read`);
     console.log("[SUCCESS] POST ADD COOKIE COUNT", data);
@@ -102,7 +99,7 @@ const postCookieReadCount = async (
   }
 };
 
-const postCookie = async (body: PostCookieProps) => {
+const postCookie = async (body: CreateCookieProps) => {
   try {
     const { data } = await client.post(`/cookies`, body);
     console.log("[SUCCESS] POST ADD COOKIE", data);

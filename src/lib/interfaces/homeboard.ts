@@ -5,7 +5,7 @@ export interface BookmarkDataProps {
   image?: string;
 }
 
-export interface PostBookmarkDataProps {
+export interface CreateBookmarkProps {
   name: string;
   link: string;
 }

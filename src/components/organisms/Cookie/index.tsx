@@ -5,9 +5,9 @@ import { CookieHover, CookieImg } from "@components/molecules";
 // interfaces
 import { CookieDataProps } from "@interfaces/cookie";
 import {
-  DirectoryDataProps,
-  PostCookieToDirProps,
-  PostDirectoryProps,
+  DirDataProps,
+  CreateCookieToDirProps,
+  CreateDirProps,
 } from "@interfaces/directory";
 // libs
 import styled, { css } from "styled-components";
@@ -29,11 +29,11 @@ export interface CookieProps {
   /** 쿠키 모듈 */
   cookieModule: ReturnType<typeof CookieModule>;
   /** 일반 directory */
-  unpinnedDir?: DirectoryDataProps[];
+  unpinnedDir?: DirDataProps[];
   /** 고정 디렉토리 */
-  pinnedDir?: DirectoryDataProps[];
+  pinnedDir?: DirDataProps[];
   /** post dir */
-  postDir?: (data: PostDirectoryProps) => void;
+  createDir?: (data: CreateDirProps) => void;
 }
 const Cookie = (
   {
@@ -45,7 +45,7 @@ const Cookie = (
     cookieModule,
     unpinnedDir,
     pinnedDir,
-    postDir,
+    createDir,
   }: CookieProps,
   ref?:
     | ((instance: HTMLButtonElement | null) => void)
@@ -68,10 +68,10 @@ const Cookie = (
     (async () => {
       if (currDir !== cookie?.directoryInfo?.name && currDir !== "모든 쿠키") {
         if (unpinnedDir?.filter((dir) => dir.name === currDir).length === 0) {
-          postDir && (await postDir({ name: currDir }));
+          createDir && (await createDir({ name: currDir }));
         }
         if (currDir !== cookie?.directoryInfo?.name) {
-          const body: PostCookieToDirProps = {
+          const body: CreateCookieToDirProps = {
             cookieId: cookie?.id || -1,
             directoryId:
               unpinnedDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,
@@ -128,7 +128,7 @@ const Cookie = (
             : (cookieId) =>
                 cookieModule.updateCookie(cookieId, false, type === "searched")
         }
-        isEditLoading={cookieModule.isUpdateLoading}
+        isUpdateLoading={cookieModule.isUpdateLoading}
         updateCookiePin={(cookieId, isPinned) =>
           cookieModule.updateCookiePin(cookieId, isPinned, type === "searched")
         }
