@@ -34,9 +34,9 @@ export interface DirDetailProps {
   dirInfo: directoryInfoType;
   dirDetailModule?: ReturnType<typeof DirDetailModule>;
   /** directory data */
-  allDir?: DirectoryDataProps[];
+  unpinnedDir?: DirectoryDataProps[];
   /** 고정 디렉토리 */
-  fixedDir?: DirectoryDataProps[];
+  pinnedDir?: DirectoryDataProps[];
   /** 디렉토리 생성 */
   handlePostDir?: (e: PostDirectoryProps) => Promise<void>;
   /** 쿠키 상세 모듈 */
@@ -49,8 +49,8 @@ const DirDetail = ({
   nickname,
   dirInfo,
   dirDetailModule,
-  allDir,
-  fixedDir,
+  unpinnedDir,
+  pinnedDir,
   handlePostDir,
   cookieModule,
   unpinnedCookieList,
@@ -163,7 +163,7 @@ const DirDetail = ({
               (cookieModule.pinnedCookieData?.length || 0)
             }
             filterType={cookieModule.cookieFilter}
-            onClickType={cookieModule.changeAndSaveCookieFilter}
+            onClickType={cookieModule.updateAndSaveCookieFilter}
             isAddOpen={isCookieAddOpen}
             setIsAddOpen={setIsCookieAddOpen}
             createCookie={(url) =>
@@ -176,8 +176,8 @@ const DirDetail = ({
             unpinnedCookieList={unpinnedCookieList}
             dirInfo={dirInfo}
             isLoading={cookieModule.isLoading}
-            allDir={allDir || []}
-            fixedDir={fixedDir || []}
+            unpinnedDir={unpinnedDir || []}
+            pinnedDir={pinnedDir || []}
             postDir={handlePostDir}
             setIsOnboardOpen={setIsOnboardOpen}
             cookieModule={cookieModule}

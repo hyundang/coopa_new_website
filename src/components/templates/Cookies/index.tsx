@@ -34,10 +34,10 @@ export interface CookiesProps {
   /** 쿠키 모듈 */
   // cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
   cookieModule: ReturnType<typeof CookieModule>;
-  /** 전체 디렉토리 data */
-  allDir: DirectoryDataProps[];
+  /** 일반 디렉토리 */
+  unpinnedDir: DirectoryDataProps[];
   /** 고정 디렉토리 */
-  fixedDir: DirectoryDataProps[];
+  pinnedDir: DirectoryDataProps[];
   /** 온보딩 모달 오픈 */
   setIsOnboardOpen?: Dispatch<SetStateAction<boolean>>;
   /** add dir */
@@ -51,8 +51,8 @@ const Cookies = ({
   dirInfo,
   isLoading,
   cookieModule,
-  allDir,
-  fixedDir,
+  unpinnedDir,
+  pinnedDir,
   setIsOnboardOpen,
   postDir,
 }: CookiesProps) => {
@@ -93,16 +93,16 @@ const Cookies = ({
               {pinnedCookieList.map((cookie) => (
                 <CookieMobile
                   key={cookie.id}
+                  type={type}
                   cookie={cookie}
-                  isLoading={false}
                   cookieModule={cookieModule}
-                  isShared={type === "dirShare"}
                 />
               ))}
               {unpinnedCookieList.map((cookie, idx) =>
                 idx === unpinnedCookieList.length - 1 ? (
                   <CookieMobile
                     key={cookie.id}
+                    type={type}
                     cookie={
                       dirInfo
                         ? {
@@ -111,14 +111,13 @@ const Cookies = ({
                           }
                         : cookie
                     }
-                    isLoading={false}
-                    isShared={type === "dirShare"}
                     cookieModule={cookieModule}
                     ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
                   />
                 ) : (
                   <CookieMobile
                     key={cookie.id}
+                    type={type}
                     cookie={
                       dirInfo
                         ? {
@@ -127,9 +126,7 @@ const Cookies = ({
                           }
                         : cookie
                     }
-                    isLoading={false}
                     cookieModule={cookieModule}
-                    isShared={type === "dirShare"}
                   />
                 ),
               )}
@@ -139,9 +136,8 @@ const Cookies = ({
               {pinnedCookieList.map((cookie) => (
                 <CookieTablet
                   key={cookie.id}
+                  type={type}
                   cookie={cookie}
-                  isLoading={false}
-                  isShared={type === "dirShare"}
                   cookieModule={cookieModule}
                 />
               ))}
@@ -149,6 +145,7 @@ const Cookies = ({
                 idx === unpinnedCookieList.length - 1 ? (
                   <CookieTablet
                     key={cookie.id}
+                    type={type}
                     cookie={
                       dirInfo
                         ? {
@@ -157,14 +154,13 @@ const Cookies = ({
                           }
                         : cookie
                     }
-                    isLoading={false}
-                    isShared={type === "dirShare"}
                     cookieModule={cookieModule}
                     ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
                   />
                 ) : (
                   <CookieTablet
                     key={cookie.id}
+                    type={type}
                     cookie={
                       dirInfo
                         ? {
@@ -173,9 +169,7 @@ const Cookies = ({
                           }
                         : cookie
                     }
-                    isLoading={false}
                     cookieModule={cookieModule}
-                    isShared={type === "dirShare"}
                   />
                 ),
               )}
@@ -189,8 +183,8 @@ const Cookies = ({
                   cookie={cookie}
                   cookieModule={cookieModule}
                   isLoading={isLoading}
-                  allDir={allDir}
-                  fixedDir={fixedDir}
+                  unpinnedDir={unpinnedDir}
+                  pinnedDir={pinnedDir}
                   postDir={postDir}
                 />
               ))}
@@ -209,8 +203,8 @@ const Cookies = ({
                     }
                     isLoading={isLoading}
                     cookieModule={cookieModule}
-                    allDir={allDir}
-                    fixedDir={fixedDir}
+                    unpinnedDir={unpinnedDir}
+                    pinnedDir={pinnedDir}
                     postDir={postDir}
                     ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
                   />
@@ -228,8 +222,8 @@ const Cookies = ({
                     }
                     cookieModule={cookieModule}
                     isLoading={isLoading}
-                    allDir={allDir}
-                    fixedDir={fixedDir}
+                    unpinnedDir={unpinnedDir}
+                    pinnedDir={pinnedDir}
                     postDir={postDir}
                   />
                 ),

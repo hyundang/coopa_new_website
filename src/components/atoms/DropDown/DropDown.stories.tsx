@@ -3,7 +3,7 @@ import { Btn, Input, List } from "@components/atoms";
 import DropDown from ".";
 
 //mock data
-const allDir = [
+const unpinnedDir = [
   {
     name: "블라블라",
     emoji: "😀",
@@ -50,7 +50,7 @@ export const CookieDropDown = () => {
       setIsActive={setIsActive}
     >
       <div>
-        <List allDir={allDir} setCurrDir={setText} />
+        <List unpinnedDir={unpinnedDir} setCurrDir={setText} />
         <div
           style={{
             display: "grid",
@@ -105,7 +105,7 @@ export const NoScrollList = () => {
     >
       <div>
         <List
-          allDir={[
+          unpinnedDir={[
             {
               name: "블라블라",
               emoji: "😀",

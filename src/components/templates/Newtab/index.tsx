@@ -177,7 +177,7 @@ const Newtab = ({
               }
               onClickType={
                 tabValue === "모든 쿠키"
-                  ? cookieModule.changeAndSaveCookieFilter
+                  ? cookieModule.updateAndSaveCookieFilter
                   : dirModule.handleDirFilter
               }
               isAddOpen={isAddOpen}
@@ -198,8 +198,8 @@ const Newtab = ({
                   unpinnedCookieList={cookieModule.searchedCookieData || []}
                   isLoading={false}
                   cookieModule={cookieModule}
-                  allDir={dirModule.allDirData?.common || []}
-                  fixedDir={dirModule.allDirData?.pinned || []}
+                  unpinnedDir={dirModule.allDirData?.common || []}
+                  pinnedDir={dirModule.allDirData?.pinned || []}
                   postDir={dirModule.handlePostDir}
                 />
               ) : (
@@ -221,8 +221,8 @@ const Newtab = ({
                   pinnedCookieList={cookieModule.pinnedCookieData || []}
                   unpinnedCookieList={unpinnedCookieList}
                   cookieModule={cookieModule}
-                  allDir={dirModule.allDirData?.common || []}
-                  fixedDir={dirModule.allDirData?.pinned || []}
+                  unpinnedDir={dirModule.allDirData?.common || []}
+                  pinnedDir={dirModule.allDirData?.pinned || []}
                   setIsOnboardOpen={setIsOnboardOpen}
                   postDir={dirModule.handlePostDir}
                 />

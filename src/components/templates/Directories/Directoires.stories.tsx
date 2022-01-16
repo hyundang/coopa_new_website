@@ -10,7 +10,7 @@ const Template: Story<DirectoriesProps> = (args) => {
   return <Directories {...args} />;
 };
 
-const allDir = [
+const unpinnedDir = [
   {
     emoji: "😀",
     id: 2543,
@@ -43,7 +43,7 @@ const allDir = [
 
 export const Default = Template.bind({});
 Default.args = {
-  data: allDir,
+  data: unpinnedDir,
 };
 
 export const empty = Template.bind({});

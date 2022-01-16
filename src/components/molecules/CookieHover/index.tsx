@@ -10,9 +10,9 @@ export interface CookieHoverProps {
   /** className */
   className?: string;
   /** 모든 디렉토리 data */
-  allDir: DirectoryDataProps[];
+  unpinnedDir: DirectoryDataProps[];
   /** 고정 디렉토리 */
-  fixedDir: DirectoryDataProps[];
+  pinnedDir: DirectoryDataProps[];
   /** cardState를 parking으로 변경 */
   setCardState: Dispatch<
     SetStateAction<"hover" | "normal" | "parking" | "input">
@@ -27,8 +27,8 @@ export interface CookieHoverProps {
 const CookieHover = ({
   id,
   className,
-  allDir,
-  fixedDir,
+  unpinnedDir,
+  pinnedDir,
   setCardState,
   currDir,
   setCurrDir,
@@ -46,8 +46,8 @@ const CookieHover = ({
     >
       <ListContent
         className="list-content"
-        allDir={allDir}
-        fixedDir={fixedDir}
+        unpinnedDir={unpinnedDir}
+        pinnedDir={pinnedDir}
         setCardState={setCardState}
         setCurrDir={setCurrDir}
       />

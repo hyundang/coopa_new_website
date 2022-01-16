@@ -12,9 +12,9 @@ import { DirectoryDataProps } from "@interfaces/directory";
 export interface ListContentProps {
   className?: string;
   /** 모든 디렉토리 data */
-  allDir: DirectoryDataProps[];
+  unpinnedDir: DirectoryDataProps[];
   /** 고정 디렉토리 */
-  fixedDir: DirectoryDataProps[];
+  pinnedDir: DirectoryDataProps[];
   /** cardState를 parking으로 변경 */
   setCardState: Dispatch<
     SetStateAction<"hover" | "normal" | "parking" | "input">
@@ -24,8 +24,8 @@ export interface ListContentProps {
 }
 const ListContent = ({
   className,
-  allDir,
-  fixedDir,
+  unpinnedDir,
+  pinnedDir,
   setCardState,
   setCurrDir,
 }: ListContentProps) => {
@@ -42,18 +42,18 @@ const ListContent = ({
 
   //디렉토리 검색
   useEffect(() => {
-    allDir.find((dir) => dir.name === text)
+    unpinnedDir.find((dir) => dir.name === text)
       ? setIsError(true)
       : setIsError(false);
     setSearchedDir(
       text === ""
         ? []
-        : fixedDir
+        : pinnedDir
             .filter((dir) =>
               dir.name.toLowerCase().includes(text.toLowerCase()),
             )
             .concat(
-              allDir.filter((dir) =>
+              unpinnedDir.filter((dir) =>
                 dir.name.toLowerCase().includes(text.toLowerCase()),
               ),
             ),
@@ -65,9 +65,9 @@ const ListContent = ({
       <List
         className="directory-list"
         isSearched={!!text}
-        allDir={allDir}
+        unpinnedDir={unpinnedDir}
         searchedDir={searchedDir}
-        fixedDir={fixedDir}
+        pinnedDir={pinnedDir}
         setIsBlur={setIsBlur}
         setCurrDir={setCurrDir}
       />
