@@ -209,6 +209,7 @@ const Newtab = ({
                   deleteDir={dirModule.deleteDir}
                   updateDir={dirModule.updateDir}
                   updateDirPin={dirModule.updateDirPin}
+                  refreshCookie={cookieModule.refreshCookie}
                 />
               )}
             </>
@@ -234,6 +235,7 @@ const Newtab = ({
                   deleteDir={dirModule.deleteDir}
                   updateDir={dirModule.updateDir}
                   updateDirPin={dirModule.updateDirPin}
+                  refreshCookie={cookieModule.refreshCookie}
                 />
               )}
             </>

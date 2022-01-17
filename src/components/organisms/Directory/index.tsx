@@ -28,6 +28,7 @@ export interface DirectoryProps {
     isPinned: boolean,
     isSearched: boolean,
   ) => Promise<void>;
+  refreshCookie: () => void;
 }
 const Directory = ({
   dir,
@@ -35,6 +36,7 @@ const Directory = ({
   deleteDir,
   updateDir,
   updateDirPin,
+  refreshCookie,
 }: DirectoryProps) => {
   const [isUpdateOpen, setisUpdateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -89,7 +91,10 @@ const Directory = ({
         type="directory"
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
-        onClickDel={() => deleteDir(dir.id, dir.isPinned, isSearched)}
+        onClickDel={async () => {
+          await deleteDir(dir.id, dir.isPinned, isSearched);
+          refreshCookie();
+        }}
       />
     </>
   );

@@ -33,6 +33,7 @@ export interface DirectoriesProps {
     isPinned: boolean,
     isSearched: boolean,
   ) => Promise<void>;
+  refreshCookie: () => void;
 }
 
 const Directories = ({
@@ -43,6 +44,7 @@ const Directories = ({
   deleteDir,
   updateDir,
   updateDirPin,
+  refreshCookie,
 }: DirectoriesProps) => {
   return (
     <>
@@ -55,6 +57,7 @@ const Directories = ({
               deleteDir={deleteDir}
               updateDir={updateDir}
               updateDirPin={updateDirPin}
+              refreshCookie={refreshCookie}
             />
           ))}
           {unpinnedData.map((dir) => (
@@ -65,6 +68,7 @@ const Directories = ({
               deleteDir={deleteDir}
               updateDir={updateDir}
               updateDirPin={updateDirPin}
+              refreshCookie={refreshCookie}
             />
           ))}
         </DirectoiresWrap>

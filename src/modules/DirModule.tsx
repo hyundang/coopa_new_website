@@ -101,7 +101,7 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   };
 
   // 디렉토리 생성
-  const createDir = async (newDirData: CreateDirProps) => {
+  const createDir = async (newDirData: CreateDirProps): Promise<number> => {
     const res = await postApi.postDirectoryData(newDirData);
     if (res) {
       const newDir: DirDataProps = {
@@ -118,9 +118,10 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
         ...isToastMsgVisible,
         dirCreate: true,
       });
-      return;
+      return res.directoryId;
     }
     alert("디렉토리 생성 실패!");
+    return -1;
   };
 
   // 디렉토리 삭제

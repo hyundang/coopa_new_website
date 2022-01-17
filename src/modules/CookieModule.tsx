@@ -497,6 +497,11 @@ const CookieModule = ({
     });
   };
 
+  const refreshCookie = () => {
+    pinnedMutate(undefined, true);
+    unpinnedMutate(undefined, true);
+  };
+
   return {
     isError: pinnedError && unpinnedError,
     isLoading:
@@ -520,6 +525,7 @@ const CookieModule = ({
     updateDirOfCookie,
     updateCookieReadCnt,
     updateCookiePin,
+    refreshCookie,
   };
 };
 
