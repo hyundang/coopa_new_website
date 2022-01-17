@@ -1,17 +1,17 @@
 import { modalAnimation } from "@components/animations";
 import { Btn, Input, MoveModal } from "@components/atoms";
-import GetSiteData from "@lib/GetSiteData";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 
 export interface CookieAddModalProps {
   id?: string;
   className?: string;
+  type: "cookie" | "dirDetail";
   /** modal open */
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   locationX: number;
-  type: "cookie" | "dirDetail";
+  createCookie: (url: string) => Promise<boolean>;
 }
 const CookieAddModal = ({
   id,
@@ -20,13 +20,14 @@ const CookieAddModal = ({
   setIsOpen,
   locationX,
   type,
+  createCookie,
 }: CookieAddModalProps) => {
   const link_input = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState<string>("");
 
   // enter 키 클릭 시
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    e.key === "Enter" && handleClickButton();
+    e.key === "Enter" && handleClickAddBtn();
   };
   // esc 키 클릭 시
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -35,11 +36,11 @@ const CookieAddModal = ({
     }
   };
 
-  const handleClickButton = () => {
+  const handleClickAddBtn = () => {
     value !== ""
       ? (async () => {
           // 링크로 부터 데이터 얻기, post cookie
-          const res = await GetSiteData(value);
+          const res = await createCookie(value);
           res ? setIsOpen(false) : link_input.current?.focus();
         })()
       : link_input.current?.focus();
@@ -83,7 +84,7 @@ const CookieAddModal = ({
           className="modal-button"
           isAtvBtn
           isOrange
-          onClick={handleClickButton}
+          onClick={handleClickAddBtn}
         >
           추가
         </Btn>

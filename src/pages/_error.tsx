@@ -1,56 +1,31 @@
-import { getApi } from "@lib/api";
-import { useEffect, useState } from "react";
-import useSWR, { mutate } from "swr";
-import { NewtabError } from "@components/templates";
+// assets
 import { NotFoundErrorImg } from "@assets/imgs/error";
+// components
+import { NewtabError } from "@components/templates";
+// interfaces
 import { UserDataProps } from "@interfaces/user";
+// libs
+import React, { useEffect } from "react";
+// modules
+import ErrorModule from "@modules/ErrorModule";
 
 export default function Error({
   initUserData,
 }: {
   initUserData: UserDataProps;
 }) {
-  // 홈보드 배경 이미지
-  const [homeboardImg, setHomeboardImg] = useState("");
-
-  // 북마크 데이터 get
-  const { data: bookmarkData } = useSWR(
-    "/users/favorites",
-    getApi.getBookmarkData,
-    {
-      onSuccess: async (data) => {
-        localStorage.setItem("bookmark", JSON.stringify(data));
-      },
-    },
-  );
-
-  // 홈보드 이미지 get
-  const handleGetHomeboardImg = async () => {
-    const homeboardImgUrl = await getApi.getHomeboardData();
-    localStorage.setItem("homeboardImgUrl", homeboardImgUrl);
-    setHomeboardImg(homeboardImgUrl);
-  };
+  const errorModule = ErrorModule();
 
   useEffect(() => {
-    // 홈보드 이미지 세팅
-    const homeboardImgUrl = localStorage.getItem("homeboardImgUrl");
-    homeboardImgUrl?.length === 1
-      ? setHomeboardImg(`/theme_img/img_${homeboardImgUrl}.jpg`)
-      : homeboardImgUrl !== null
-      ? setHomeboardImg(homeboardImgUrl)
-      : handleGetHomeboardImg();
-
-    // 북마크 세팅
-    const bookmark = localStorage.getItem("bookmark");
-    bookmark !== null &&
-      mutate("/users/favorites", JSON.parse(bookmark), false);
+    errorModule.setHomeboardImgUrl();
+    errorModule.setBookmark();
   }, []);
 
   return (
     <NewtabError
       imgUrl={initUserData?.profileImage}
-      homeboardImg={homeboardImg}
-      bookmarkDatas={bookmarkData || []}
+      homeboardImg={errorModule.homeboardImg}
+      bookmarkDatas={errorModule.bookmarkData || []}
       errorImg={NotFoundErrorImg}
       errorImgWidth={141}
       text="앗, 오류가 발생했어요 😮"

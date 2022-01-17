@@ -2,7 +2,7 @@
 import { Btn, Modal } from "@components/atoms";
 import { ImgBoxForm, InputForm, TextAreaForm } from "@components/molecules";
 // interfaces
-import { PatchCookieProps } from "@interfaces/cookie";
+import { UpdateCookieProps } from "@interfaces/cookie";
 // libs
 import { useRecoilState } from "recoil";
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
@@ -16,9 +16,9 @@ export interface CookieEditModalProps {
   /** className */
   className?: string;
   /** 쿠키 제목, 쿠키 텍스트, 쿠키 썸네일, 쿠키 아이디, 쿠키 썸네일 파일 */
-  value: PatchCookieProps;
+  value: UpdateCookieProps;
   /** 쿠키 제목, 쿠키 텍스트, 쿠키 썸네일 setState */
-  setValue: Dispatch<SetStateAction<PatchCookieProps>>;
+  setValue: Dispatch<SetStateAction<UpdateCookieProps>>;
   /** '삭제' 버튼 클릭 시 event handling 함수 */
   onClickDel: React.MouseEventHandler<HTMLButtonElement>;
   /** cookie card set state */
@@ -32,7 +32,7 @@ export interface CookieEditModalProps {
   /** data post 시 loading 여부 */
   isLoading: boolean;
   /** cookie edit handler */
-  handleEditCookie: (data: FormData) => Promise<void>;
+  updateCookie: (data: FormData) => Promise<void>;
 }
 
 const CookieEditModal = ({
@@ -45,7 +45,7 @@ const CookieEditModal = ({
   isOpen,
   setIsOpen,
   isLoading,
-  handleEditCookie,
+  updateCookie,
 }: CookieEditModalProps) => {
   // img box hover 여부
   const [isHover, setIsHover] = useState(false);
@@ -156,7 +156,7 @@ const CookieEditModal = ({
               value?.image && formData.append("image", value.image);
               formData.append("title", value.title);
               formData.append("content", value.content);
-              await handleEditCookie(formData);
+              await updateCookie(formData);
               setIsOpen(false);
               setCardState ? setCardState("normal") : () => {};
             }}

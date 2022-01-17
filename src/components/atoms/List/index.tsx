@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { DefaultEmojiIcon } from "@assets/icons/card";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { DirectoryDataProps } from "@interfaces/directory";
+import { DirDataProps } from "@interfaces/directory";
 
 export type Dirtype = {
   emoji?: string;
@@ -15,11 +15,11 @@ export interface ListProps {
   /** 검색 중인가 */
   isSearched: boolean;
   /** 현재 디렉토리 변경 setState */
-  setCurrDir: Dispatch<SetStateAction<string>>;
+  setCurrDir: (dir: string) => void;
   /** directory list data */
-  allDir: Dirtype[];
+  unpinnedDir: Dirtype[];
   /** fixed directory */
-  fixedDir: Dirtype[];
+  pinnedDir: Dirtype[];
   /** searched directory */
   searchedDir: Dirtype[];
   /** 하단 블러 처리 표시 여부 setState */
@@ -29,8 +29,8 @@ const List = ({
   id,
   className,
   isSearched,
-  allDir,
-  fixedDir,
+  unpinnedDir,
+  pinnedDir,
   searchedDir,
   setCurrDir,
   setIsBlur,
@@ -84,10 +84,10 @@ const List = ({
         </>
       ) : (
         <>
-          {fixedDir.length !== 0 && <span> 고정됨</span>}
-          {returnLists(fixedDir)}
+          {pinnedDir.length !== 0 && <span> 고정됨</span>}
+          {returnLists(pinnedDir)}
           <span>기본</span>
-          {returnLists(allDir)}
+          {returnLists(unpinnedDir)}
         </>
       )}
       <div

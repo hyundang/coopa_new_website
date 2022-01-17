@@ -12,14 +12,13 @@ import {
 // hooks
 import { useWindowSize } from "src/hooks";
 // interfaces
-import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
-import { DirectoryDataProps, PostDirectoryProps } from "@interfaces/directory";
+import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
+import { DirDataProps, CreateDirProps } from "@interfaces/directory";
 // libs
 import styled from "styled-components";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 // modules
 import CookieModule from "@modules/CookieModule";
-import DirDetailModule from "@modules/DirDetailModule";
 
 export interface CookiesProps {
   /** cookie type */
@@ -28,20 +27,19 @@ export interface CookiesProps {
   pinnedCookieList: CookieDataProps[];
   /** unpinned cookie data */
   unpinnedCookieList: CookieDataProps[];
-  dirInfo?: directoryInfoType;
+  dirInfo?: SimpleDirDataProps;
   /** cookie data loading */
   isLoading: boolean;
   /** 쿠키 모듈 */
-  // cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
   cookieModule: ReturnType<typeof CookieModule>;
-  /** 전체 디렉토리 data */
-  allDir: DirectoryDataProps[];
+  /** 일반 디렉토리 */
+  unpinnedDir: DirDataProps[];
   /** 고정 디렉토리 */
-  fixedDir: DirectoryDataProps[];
+  pinnedDir: DirDataProps[];
   /** 온보딩 모달 오픈 */
   setIsOnboardOpen?: Dispatch<SetStateAction<boolean>>;
   /** add dir */
-  postDir?: (body: PostDirectoryProps) => void;
+  createDir?: (body: CreateDirProps) => Promise<number>;
 }
 
 const Cookies = ({
@@ -51,10 +49,10 @@ const Cookies = ({
   dirInfo,
   isLoading,
   cookieModule,
-  allDir,
-  fixedDir,
+  unpinnedDir,
+  pinnedDir,
   setIsOnboardOpen,
-  postDir,
+  createDir,
 }: CookiesProps) => {
   const size = useWindowSize();
 
@@ -84,7 +82,7 @@ const Cookies = ({
   }, [target]);
 
   return (
-    <CookiesCntnr>
+    <Container>
       {!isLoading &&
       (pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0) ? (
         <>
@@ -93,16 +91,16 @@ const Cookies = ({
               {pinnedCookieList.map((cookie) => (
                 <CookieMobile
                   key={cookie.id}
+                  type={type}
                   cookie={cookie}
-                  isLoading={false}
                   cookieModule={cookieModule}
-                  isShared={type === "dirShare"}
                 />
               ))}
               {unpinnedCookieList.map((cookie, idx) =>
                 idx === unpinnedCookieList.length - 1 ? (
                   <CookieMobile
                     key={cookie.id}
+                    type={type}
                     cookie={
                       dirInfo
                         ? {
@@ -111,14 +109,13 @@ const Cookies = ({
                           }
                         : cookie
                     }
-                    isLoading={false}
-                    isShared={type === "dirShare"}
                     cookieModule={cookieModule}
                     ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
                   />
                 ) : (
                   <CookieMobile
                     key={cookie.id}
+                    type={type}
                     cookie={
                       dirInfo
                         ? {
@@ -127,9 +124,7 @@ const Cookies = ({
                           }
                         : cookie
                     }
-                    isLoading={false}
                     cookieModule={cookieModule}
-                    isShared={type === "dirShare"}
                   />
                 ),
               )}
@@ -139,9 +134,8 @@ const Cookies = ({
               {pinnedCookieList.map((cookie) => (
                 <CookieTablet
                   key={cookie.id}
+                  type={type}
                   cookie={cookie}
-                  isLoading={false}
-                  isShared={type === "dirShare"}
                   cookieModule={cookieModule}
                 />
               ))}
@@ -149,6 +143,7 @@ const Cookies = ({
                 idx === unpinnedCookieList.length - 1 ? (
                   <CookieTablet
                     key={cookie.id}
+                    type={type}
                     cookie={
                       dirInfo
                         ? {
@@ -157,14 +152,13 @@ const Cookies = ({
                           }
                         : cookie
                     }
-                    isLoading={false}
-                    isShared={type === "dirShare"}
                     cookieModule={cookieModule}
                     ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
                   />
                 ) : (
                   <CookieTablet
                     key={cookie.id}
+                    type={type}
                     cookie={
                       dirInfo
                         ? {
@@ -173,9 +167,7 @@ const Cookies = ({
                           }
                         : cookie
                     }
-                    isLoading={false}
                     cookieModule={cookieModule}
-                    isShared={type === "dirShare"}
                   />
                 ),
               )}
@@ -189,9 +181,9 @@ const Cookies = ({
                   cookie={cookie}
                   cookieModule={cookieModule}
                   isLoading={isLoading}
-                  allDir={allDir}
-                  fixedDir={fixedDir}
-                  postDir={postDir}
+                  unpinnedDir={unpinnedDir}
+                  pinnedDir={pinnedDir}
+                  createDir={createDir}
                 />
               ))}
               {unpinnedCookieList.map((cookie, idx) =>
@@ -209,9 +201,9 @@ const Cookies = ({
                     }
                     isLoading={isLoading}
                     cookieModule={cookieModule}
-                    allDir={allDir}
-                    fixedDir={fixedDir}
-                    postDir={postDir}
+                    unpinnedDir={unpinnedDir}
+                    pinnedDir={pinnedDir}
+                    createDir={createDir}
                     ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
                   />
                 ) : (
@@ -228,9 +220,9 @@ const Cookies = ({
                     }
                     cookieModule={cookieModule}
                     isLoading={isLoading}
-                    allDir={allDir}
-                    fixedDir={fixedDir}
-                    postDir={postDir}
+                    unpinnedDir={unpinnedDir}
+                    pinnedDir={pinnedDir}
+                    createDir={createDir}
                   />
                 ),
               )}
@@ -272,17 +264,16 @@ const Cookies = ({
           )}
         </>
       )}
-    </CookiesCntnr>
+    </Container>
   );
 };
 
 export default Cookies;
 
-const CookiesCntnr = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   .empty {
     &__button--cookie {
       width: 312px;

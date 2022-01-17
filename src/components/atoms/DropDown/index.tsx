@@ -41,7 +41,7 @@ const DropDown = ({
     >
       <details className="dropdown-details">
         <summary className="current">
-          <p>{selectedItem}</p>
+          <p>{selectedItem || "모든 쿠키"}</p>
           <DropDownIcon style={{ position: "absolute", right: "13px" }} />
         </summary>
         <div className="content">{children}</div>

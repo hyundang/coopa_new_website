@@ -1,9 +1,9 @@
 import { CookieDataProps } from "@interfaces/cookie";
-import { PostDirectoryProps } from "@interfaces/directory";
-import { EditUserDataProps } from "../interfaces/user";
+import { CreateDirProps, DirDataProps } from "@interfaces/directory";
+import { UpdateUserProps } from "../interfaces/user";
 import client from "./client";
 
-const putUserData = async (body: EditUserDataProps): Promise<undefined> => {
+const putUserData = async (body: UpdateUserProps): Promise<undefined> => {
   try {
     const { data } = await client.put("/users", body);
     console.log("[SUCCESS] PUT USER DATA", data);
@@ -13,7 +13,7 @@ const putUserData = async (body: EditUserDataProps): Promise<undefined> => {
   return undefined;
 };
 
-const putHomeboardData = async (imgFile: File): Promise<string | unknown> => {
+const putHomeboardData = async (imgFile: File): Promise<string | undefined> => {
   try {
     const body = new FormData();
     body.append("image", imgFile);
@@ -28,7 +28,6 @@ const putHomeboardData = async (imgFile: File): Promise<string | unknown> => {
     return homeboard;
   } catch (e) {
     console.log("[FAIL] PUT HOMEBOARD IMAGE DATA", e);
-    return e;
   }
 };
 
@@ -44,7 +43,10 @@ const updateCookie = async (
   }
 };
 
-const updateCookiePin = async (id: number, isPinned: boolean) => {
+const updateCookiePin = async (
+  id: number,
+  isPinned: boolean,
+): Promise<CookieDataProps | undefined> => {
   try {
     const { data } = await client.put(`/cookies/pin/${id}`, {
       isPinned,
@@ -56,25 +58,29 @@ const updateCookiePin = async (id: number, isPinned: boolean) => {
   }
 };
 
-const updateDirectoryData = async (id: number, body: PostDirectoryProps) => {
+const updateDirectoryData = async (
+  id: number,
+  body: CreateDirProps,
+): Promise<DirDataProps | undefined> => {
   try {
     const result = await client.put(`/directories/${id}`, body);
     console.log("[SUCCESS] PUT DIRECTORY DATA", result.data.data);
     return result.data.data;
   } catch (e) {
     console.log("[FAIL] PUT DIRECTORY DATA", e);
-    return e;
   }
 };
 
-const updateDirectoryPin = async (id: number, isPinned: boolean) => {
+const updateDirectoryPin = async (
+  id: number,
+  isPinned: boolean,
+): Promise<DirDataProps | undefined> => {
   try {
     const { data } = await client.put(`/directories/pin/${id}`, { isPinned });
     console.log("[SUCCESS] UPDATE DIRECTORY PIN", data.data);
     return data.data;
   } catch (e) {
     console.log("[FAIL] UPDATE DIRECTORY PIN", e);
-    return e;
   }
 };
 

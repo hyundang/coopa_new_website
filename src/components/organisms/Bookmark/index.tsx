@@ -1,8 +1,5 @@
 import { BookmarkTile, Bubble } from "@components/atoms";
-import {
-  BookmarkDataProps,
-  PostBookmarkDataProps,
-} from "@interfaces/homeboard";
+import { BookmarkDataProps, CreateBookmarkProps } from "@interfaces/homeboard";
 import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import { BookmarkAddModal } from "..";
@@ -15,7 +12,7 @@ export interface BookmarkProps {
   /** bookmark data list */
   datas: BookmarkDataProps[];
   /** bookmark 추가 함수 */
-  onClickSave?: (newBookmark: PostBookmarkDataProps) => Promise<void>;
+  onClickSave?: (newBookmark: CreateBookmarkProps) => Promise<void>;
   /** bookmark 삭제 함수 */
   onClickDel?: (bookmarkID: number) => Promise<void>;
 }
@@ -31,7 +28,7 @@ const Bookmark = ({
   // bookmark add modal open 여부
   const [isOpen, setIsOpen] = useState(false);
   // 추가할 bookmark data
-  const [newBookmark, setNewBookmark] = useState<PostBookmarkDataProps>({
+  const [newBookmark, setNewBookmark] = useState<CreateBookmarkProps>({
     name: "",
     link: "",
   });

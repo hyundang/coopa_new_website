@@ -40,7 +40,7 @@ export interface HomeboardEditModalProps {
   /** img input 시 img size 에러 */
   setIsError: (e: boolean) => void;
   /** input img post */
-  postHomeboardImg: (e: File) => Promise<string>;
+  updateHomeboardImg: (e: File) => Promise<string>;
 }
 
 const HomeboardEditModal = ({
@@ -51,7 +51,7 @@ const HomeboardEditModal = ({
   setIsOpen,
   setIsSuccess,
   setIsError,
-  postHomeboardImg,
+  updateHomeboardImg,
 }: HomeboardEditModalProps) => {
   // 탭 선택값
   const [tabValue, setTabValue] = useState("기본 테마");
@@ -95,7 +95,7 @@ const HomeboardEditModal = ({
       if (e.target.files[0].size < 5000001) {
         setIsLoading(true);
         setHomeboardModalImg(URL.createObjectURL(e.target.files[0]));
-        const imgUrl = await postHomeboardImg(e.target.files[0]);
+        const imgUrl = await updateHomeboardImg(e.target.files[0]);
         setHomeboardImg(imgUrl);
         setIsLoading(false);
         setIsSuccess(true);

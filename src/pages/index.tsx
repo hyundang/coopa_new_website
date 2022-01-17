@@ -7,7 +7,7 @@ import { NewtabError, Newtab } from "@components/templates";
 // interfaces
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import { CookieDataProps } from "@interfaces/cookie";
-import { GetDirectoryDataProps } from "@interfaces/directory";
+import { GetAllDirProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 // libs
 import React, { useEffect } from "react";
@@ -24,7 +24,7 @@ interface NewtabPageProps {
   initUserData: UserDataProps;
   initAllPinnedCookieData: CookieDataProps[];
   initAllUnpinnedCookieData: CookieDataProps[];
-  initAllDirData: GetDirectoryDataProps;
+  initAllDirData: GetAllDirProps;
   initBookmarkData: BookmarkDataProps[];
   initHomeboardImgUrl?: string;
 }
@@ -96,7 +96,7 @@ export default function NewtabPage({
               homebrdModule.setHomeboardImg(homeboardImgUrl);
               homebrdModule.setHomeboardModalImg(homeboardImgUrl);
             })()
-          : homebrdModule.handleGetHomeboardImg());
+          : homebrdModule.getHomeboardImg());
 
     // 북마크 세팅
     const bookmark = localStorage.getItem("bookmark");

@@ -11,7 +11,7 @@ import {
 } from "@components/organisms";
 import Cookies from "@components/templates/Cookies";
 // interfaces
-import { PostDirectoryProps, DirectoryDataProps } from "@interfaces/directory";
+import { CreateDirProps, DirDataProps } from "@interfaces/directory";
 // libs
 import { useEffect, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -21,7 +21,7 @@ import styled, { css } from "styled-components";
 import { ToastMsgState } from "@modules/states";
 import DirDetailModule from "@modules/DirDetailModule";
 import CookieModule from "@modules/CookieModule";
-import { CookieDataProps, directoryInfoType } from "@interfaces/cookie";
+import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
 
 export interface DirDetailProps {
   /** 공유 디렉토리 여부 */
@@ -31,14 +31,14 @@ export interface DirDetailProps {
   /** profile nickname */
   nickname: string;
   /** 디렉토리 상세 모듈 */
-  dirInfo: directoryInfoType;
+  dirInfo: SimpleDirDataProps;
   dirDetailModule?: ReturnType<typeof DirDetailModule>;
   /** directory data */
-  allDir?: DirectoryDataProps[];
+  unpinnedDir?: DirDataProps[];
   /** 고정 디렉토리 */
-  fixedDir?: DirectoryDataProps[];
+  pinnedDir?: DirDataProps[];
   /** 디렉토리 생성 */
-  handlePostDir?: (e: PostDirectoryProps) => Promise<void>;
+  createDir?: (e: CreateDirProps) => Promise<void>;
   /** 쿠키 상세 모듈 */
   cookieModule: ReturnType<typeof CookieModule>;
   unpinnedCookieList: CookieDataProps[];
@@ -49,9 +49,9 @@ const DirDetail = ({
   nickname,
   dirInfo,
   dirDetailModule,
-  allDir,
-  fixedDir,
-  handlePostDir,
+  unpinnedDir,
+  pinnedDir,
+  createDir,
   cookieModule,
   unpinnedCookieList,
 }: DirDetailProps) => {
@@ -62,9 +62,9 @@ const DirDetail = ({
   // 디렉토리 수정 모달 오픈
   const [isDirEditOpen, setIsDirEditOpen] = useState(false);
   // 디렉토리 수정 데이터
-  const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
-    emoji: dirInfo.emoji || "",
-    name: dirInfo.name,
+  const [newDirData, setNewDirData] = useState<CreateDirProps>({
+    emoji: "",
+    name: "",
   });
   // 삭제 모달 오픈
   const [isDelOpen, setIsDelOpen] = useState(false);
@@ -93,15 +93,18 @@ const DirDetail = ({
   const [shareLink, setShareLink] = useState("");
 
   useEffect(() => {
-    setNewDirData({
-      emoji: dirInfo.emoji || "",
-      name: dirInfo.name,
-    });
     (async () => {
       const link = await dirDetailModule?.getShareLink();
       setShareLink(link || "");
     })();
   }, []);
+
+  useEffect(() => {
+    setNewDirData({
+      emoji: dirInfo.emoji || "",
+      name: dirInfo.name,
+    });
+  }, [dirInfo]);
 
   return (
     <>
@@ -163,9 +166,12 @@ const DirDetail = ({
               (cookieModule.pinnedCookieData?.length || 0)
             }
             filterType={cookieModule.cookieFilter}
-            onClickType={cookieModule.changeAndSaveCookieFilter}
+            onClickType={cookieModule.updateAndSaveCookieFilter}
             isAddOpen={isCookieAddOpen}
             setIsAddOpen={setIsCookieAddOpen}
+            createCookie={(url) =>
+              cookieModule.createCookie(url, true, dirInfo.id)
+            }
           />
           <Cookies
             type={isShared ? "dirShare" : "dirDetail"}
@@ -173,9 +179,9 @@ const DirDetail = ({
             unpinnedCookieList={unpinnedCookieList}
             dirInfo={dirInfo}
             isLoading={cookieModule.isLoading}
-            allDir={allDir || []}
-            fixedDir={fixedDir || []}
-            postDir={handlePostDir}
+            unpinnedDir={unpinnedDir || []}
+            pinnedDir={pinnedDir || []}
+            createDir={createDir}
             setIsOnboardOpen={setIsOnboardOpen}
             cookieModule={cookieModule}
           />
@@ -242,6 +248,7 @@ const DirDetail = ({
         setIsVisible={(e: boolean) =>
           handleToastMsgVisible("pinnedSizeOver", e)
         }
+        imgSizeOver
       >
         😥 최대 15개까지 고정 가능해요!
       </ToastMsg>

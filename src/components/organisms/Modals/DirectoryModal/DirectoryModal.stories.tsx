@@ -1,4 +1,4 @@
-import { PostDirectoryProps } from "@interfaces/directory";
+import { CreateDirProps } from "@interfaces/directory";
 import { Story, Meta } from "@storybook/react";
 import { useState } from "react";
 import DirectoryModal, { DirectoryModalProps } from ".";
@@ -9,7 +9,7 @@ export default {
 } as Meta;
 
 const Template: Story<DirectoryModalProps> = (args) => {
-  const [value, setValue] = useState<PostDirectoryProps>({
+  const [value, setValue] = useState<CreateDirProps>({
     name: "",
     emoji: "",
   });

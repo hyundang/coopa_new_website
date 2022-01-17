@@ -1,8 +1,6 @@
-import { PlusIcon } from "@assets/icons/common";
-import { Btn, Icon, Modal } from "@components/atoms";
-import { InputForm } from "@components/molecules";
-import { Dispatch, SetStateAction, useState } from "react";
-import styled, { css } from "styled-components";
+import { Btn, Modal } from "@components/atoms";
+import { Dispatch, SetStateAction } from "react";
+import styled from "styled-components";
 
 export interface DelModalProps {
   id?: string;

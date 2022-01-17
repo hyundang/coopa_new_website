@@ -1,8 +1,8 @@
 // apis
 import { getApi, delApi, putApi, postApi } from "@api/index";
 // interfaces
-import { directoryInfoType } from "@interfaces/cookie";
-import { PostDirectoryProps } from "@interfaces/directory";
+import { SimpleDirDataProps } from "@interfaces/cookie";
+import { CreateDirProps } from "@interfaces/directory";
 // libs
 import useSWR from "swr";
 import { useRecoilState } from "recoil";
@@ -11,7 +11,7 @@ import { ToastMsgState } from "./states";
 
 interface DirDetailModuleProps {
   dirId: number;
-  initDirInfoData: directoryInfoType;
+  initDirInfoData: SimpleDirDataProps;
 }
 const DirDetailModule = ({ dirId, initDirInfoData }: DirDetailModuleProps) => {
   // toast msg
@@ -39,12 +39,12 @@ const DirDetailModule = ({ dirId, initDirInfoData }: DirDetailModuleProps) => {
   };
 
   // 디렉토리 edit
-  const editDir = async (id: number, body: PostDirectoryProps) => {
+  const editDir = async (id: number, body: CreateDirProps) => {
     const res = await putApi.updateDirectoryData(id, body);
     if (res) {
       dirMutate((info) => {
         return {
-          id: info?.id || -1,
+          id: res.id || -1,
           emoji: res.emoji,
           name: res.name,
         };

@@ -157,8 +157,8 @@ const Newtab = ({
               cookieModule.pinnedCookieData?.length !== 0 &&
               unpinnedCookieList.length !== 0) ||
             (tabValue === "디렉토리" &&
-              dirModule.allDirData?.common?.length !== 0 &&
-              dirModule.allDirData?.pinned?.length !== 0)) && (
+              dirModule.unpinnedDirData.length !== 0 &&
+              dirModule.pinnedDirData.length !== 0)) && (
             <ListHeader
               isSearched={isSearched && isSearchVisible}
               cookieNum={cookieModule.searchedCookieData?.length || 0}
@@ -177,12 +177,15 @@ const Newtab = ({
               }
               onClickType={
                 tabValue === "모든 쿠키"
-                  ? cookieModule.changeAndSaveCookieFilter
-                  : dirModule.handleDirFilter
+                  ? cookieModule.updateAndSaveCookieFilter
+                  : dirModule.updateAndSaveDirFilter
               }
               isAddOpen={isAddOpen}
               setIsAddOpen={setIsAddOpen}
-              postDir={dirModule.handlePostDir}
+              createDir={dirModule.createDir}
+              createCookie={(url) =>
+                cookieModule.createCookie(url, false, undefined)
+              }
             />
           )}
           {isSearched && isSearchVisible ? (
@@ -195,17 +198,18 @@ const Newtab = ({
                   unpinnedCookieList={cookieModule.searchedCookieData || []}
                   isLoading={false}
                   cookieModule={cookieModule}
-                  allDir={dirModule.allDirData?.common || []}
-                  fixedDir={dirModule.allDirData?.pinned || []}
-                  postDir={dirModule.handlePostDir}
+                  unpinnedDir={dirModule.unpinnedDirData}
+                  pinnedDir={dirModule.pinnedDirData}
+                  createDir={dirModule.createDir}
                 />
               ) : (
                 <Directories
-                  data={dirModule.searchedDirData || []}
+                  unpinnedData={dirModule.searchedDirData || []}
                   isSearched
-                  handleDelDirectory={dirModule.handleDelDir}
-                  handleUpdateDirectory={dirModule.handleEditDir}
-                  fixDirHandler={dirModule.handleFixDir}
+                  deleteDir={dirModule.deleteDir}
+                  updateDir={dirModule.updateDir}
+                  updateDirPin={dirModule.updateDirPin}
+                  refreshCookie={cookieModule.refreshCookie}
                 />
               )}
             </>
@@ -218,19 +222,20 @@ const Newtab = ({
                   pinnedCookieList={cookieModule.pinnedCookieData || []}
                   unpinnedCookieList={unpinnedCookieList}
                   cookieModule={cookieModule}
-                  allDir={dirModule.allDirData?.common || []}
-                  fixedDir={dirModule.allDirData?.pinned || []}
+                  unpinnedDir={dirModule.unpinnedDirData}
+                  pinnedDir={dirModule.pinnedDirData}
                   setIsOnboardOpen={setIsOnboardOpen}
-                  postDir={dirModule.handlePostDir}
+                  createDir={dirModule.createDir}
                 />
               ) : (
                 <Directories
-                  pinnedData={dirModule.allDirData?.pinned}
-                  data={dirModule.allDirData?.common || []}
+                  pinnedData={dirModule.pinnedDirData}
+                  unpinnedData={dirModule.unpinnedDirData}
                   setIsDirAddOpen={setIsAddOpen}
-                  handleDelDirectory={dirModule.handleDelDir}
-                  handleUpdateDirectory={dirModule.handleEditDir}
-                  fixDirHandler={dirModule.handleFixDir}
+                  deleteDir={dirModule.deleteDir}
+                  updateDir={dirModule.updateDir}
+                  updateDirPin={dirModule.updateDirPin}
+                  refreshCookie={cookieModule.refreshCookie}
                 />
               )}
             </>
@@ -306,6 +311,7 @@ const Newtab = ({
         setIsVisible={(e: boolean) =>
           handleToastMsgVisible("pinnedSizeOver", e)
         }
+        imgSizeOver
       >
         😥 최대 15개까지 고정 가능해요!
       </ToastMsg>

@@ -1,8 +1,5 @@
 import styled from "styled-components";
-import {
-  DirectoryDataProps,
-  PostDirectoryProps,
-} from "src/lib/interfaces/directory";
+import { DirDataProps, CreateDirProps } from "src/lib/interfaces/directory";
 import Directory from "@components/organisms/Directory";
 import { Empty } from "@components/organisms";
 import { EmptyImg } from "@assets/imgs/error";
@@ -11,52 +8,67 @@ import { Btn } from "@components/atoms";
 import { Dispatch, SetStateAction } from "react";
 
 export interface DirectoriesProps {
-  data: DirectoryDataProps[];
+  unpinnedData: DirDataProps[];
   /** 고정된 데이터 */
-  pinnedData?: DirectoryDataProps[];
+  pinnedData?: DirDataProps[];
   /** 검색 디렉토리 여부 */
   isSearched?: boolean;
   /** 디렉토리 생성 모달 오픈 여부 */
   setIsDirAddOpen?: Dispatch<SetStateAction<boolean>>;
   /** delete dir */
-  handleDelDirectory: (id: number) => Promise<void>;
-  /** update dir */
-  handleUpdateDirectory: (
-    id: number,
-    data: PostDirectoryProps,
+  deleteDir: (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
   ) => Promise<void>;
-  fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
+  /** update dir */
+  updateDir: (
+    id: number,
+    body: CreateDirProps,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  updateDirPin: (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  refreshCookie: () => void;
 }
 
 const Directories = ({
-  data,
+  unpinnedData,
   pinnedData,
   isSearched = false,
   setIsDirAddOpen,
-  handleDelDirectory,
-  handleUpdateDirectory,
-  fixDirHandler,
+  deleteDir,
+  updateDir,
+  updateDirPin,
+  refreshCookie,
 }: DirectoriesProps) => {
   return (
     <>
-      {data?.length !== 0 || pinnedData?.length !== 0 ? (
+      {unpinnedData.length !== 0 || pinnedData?.length !== 0 ? (
         <DirectoiresWrap>
           {pinnedData?.map((dir) => (
             <Directory
               key={dir.id}
               dir={dir}
-              handleDelDirectory={handleDelDirectory}
-              handleUpdateDirectory={handleUpdateDirectory}
-              fixDirHandler={fixDirHandler}
+              deleteDir={deleteDir}
+              updateDir={updateDir}
+              updateDirPin={updateDirPin}
+              refreshCookie={refreshCookie}
             />
           ))}
-          {data?.map((dir) => (
+          {unpinnedData.map((dir) => (
             <Directory
               key={dir.id}
               dir={dir}
-              handleDelDirectory={handleDelDirectory}
-              handleUpdateDirectory={handleUpdateDirectory}
-              fixDirHandler={fixDirHandler}
+              isSearched={isSearched}
+              deleteDir={deleteDir}
+              updateDir={updateDir}
+              updateDirPin={updateDirPin}
+              refreshCookie={refreshCookie}
             />
           ))}
         </DirectoiresWrap>

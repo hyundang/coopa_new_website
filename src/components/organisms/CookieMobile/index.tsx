@@ -6,7 +6,7 @@ import { NoThumbImg, PinImg } from "@assets/imgs/card";
 import { Icon } from "@components/atoms";
 import { CookieEditModal, DelModal } from "@components/organisms";
 // interfaces
-import { CookieDataProps, PatchCookieProps } from "@interfaces/cookie";
+import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
 // libs
 import styled from "styled-components";
 import React, { useState, SyntheticEvent, RefObject, forwardRef } from "react";
@@ -37,7 +37,7 @@ const CookieMobile = (
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
 
-  const [cookieValue, setCookieValue] = useState<PatchCookieProps>({
+  const [cookieValue, setCookieValue] = useState<UpdateCookieProps>({
     title: cookie.title,
     content: cookie.content,
     cookieId: cookie.id,
@@ -50,7 +50,7 @@ const CookieMobile = (
         id={id}
         className={className}
         onClick={() => {
-          cookieModule.editCookieReadCount(
+          cookieModule.updateCookieReadCnt(
             cookie.id,
             cookie.isPinned,
             type === "searched",
@@ -81,7 +81,7 @@ const CookieMobile = (
                 <Icon
                   className="icon"
                   onClick={() =>
-                    cookieModule.editCookieIsPinned(
+                    cookieModule.updateCookiePin(
                       cookie.id,
                       cookie.isPinned,
                       type === "searched",
@@ -118,8 +118,8 @@ const CookieMobile = (
         setIsOpen={setIsEditModalOpen}
         value={cookieValue}
         setValue={setCookieValue}
-        handleEditCookie={(formData) =>
-          cookieModule.editCookie(
+        updateCookie={(formData) =>
+          cookieModule.updateCookie(
             formData,
             cookie.isPinned,
             type === "searched",
@@ -129,7 +129,7 @@ const CookieMobile = (
           setIsEditModalOpen(false);
           setIsDelModalOpen(true);
         }}
-        isLoading={cookieModule.isEditCookieLoading}
+        isLoading={cookieModule.isUpdateLoading}
       />
       <DelModal
         isOpen={isDelModalOpen}

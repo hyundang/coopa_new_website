@@ -1,10 +1,12 @@
 import postApi from "@api/postApi";
-import { PostCookieProps } from "@interfaces/cookie";
+import { CreateCookieProps, CookieDataProps } from "@interfaces/cookie";
 import axios from "axios";
 import cheerio from "cheerio";
 
-const GetSiteData = async (url: string): Promise<boolean> => {
-  const data: PostCookieProps = {
+const GetSiteData = async (
+  url: string,
+): Promise<CookieDataProps | undefined> => {
+  const data: CreateCookieProps = {
     title: "",
     content: "",
     link: "",
@@ -17,9 +19,9 @@ const GetSiteData = async (url: string): Promise<boolean> => {
     data.link = url;
 
     const html = await returnHTML(url);
-    if (!html) return false;
+    if (!html) return;
     const $ = cheerio.load(html || "");
-    if (!$) return false;
+    if (!$) return;
 
     data.title = $("meta[property='og:title']").attr("content") || "";
     data.content = $("meta[property='og:description']").attr("content") || "";
@@ -46,10 +48,9 @@ const GetSiteData = async (url: string): Promise<boolean> => {
       data.provider = "-";
     }
 
-    const Response = await postApi.postCookie(data);
-    return true;
+    const res = await postApi.postCookie(data);
+    return res;
   }
-  return false;
 };
 
 const returnHTML = async (url: string): Promise<string | undefined> => {

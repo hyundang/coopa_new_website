@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useRef } from "react";
 import styled from "styled-components";
 import { Btn, Modal } from "@components/atoms";
 import { InputForm, TextAreaForm } from "@components/molecules";
-import { EditUserDataProps } from "@interfaces/user";
+import { UpdateUserProps } from "@interfaces/user";
 
 export interface ProfileEditModalProps {
   /** id */
@@ -10,9 +10,9 @@ export interface ProfileEditModalProps {
   /** className */
   className?: string;
   /** 닉네임, 자기소개 */
-  value: EditUserDataProps;
+  value: UpdateUserProps;
   /** 닉네임, 자기소개 setState */
-  setValue: Dispatch<SetStateAction<EditUserDataProps>>;
+  setValue: Dispatch<SetStateAction<UpdateUserProps>>;
   /** '수정' 버튼 클릭 시 event handling 함수 */
   editProfile: () => void;
   /** 모달 open 여부 */

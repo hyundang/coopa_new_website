@@ -7,14 +7,14 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { Btn, Input, List } from "@components/atoms";
-import { DirectoryDataProps } from "@interfaces/directory";
+import { DirDataProps } from "@interfaces/directory";
 
 export interface ListContentProps {
   className?: string;
   /** 모든 디렉토리 data */
-  allDir: DirectoryDataProps[];
+  unpinnedDir: DirDataProps[];
   /** 고정 디렉토리 */
-  fixedDir: DirectoryDataProps[];
+  pinnedDir: DirDataProps[];
   /** cardState를 parking으로 변경 */
   setCardState: Dispatch<
     SetStateAction<"hover" | "normal" | "parking" | "input">
@@ -24,36 +24,33 @@ export interface ListContentProps {
 }
 const ListContent = ({
   className,
-  allDir,
-  fixedDir,
+  unpinnedDir,
+  pinnedDir,
   setCardState,
   setCurrDir,
 }: ListContentProps) => {
   // 디렉토리명 입력 input
   const [text, setText] = useState("");
-  const [searchedDir, setSearchedDir] = useState<DirectoryDataProps[]>([]);
+  const [searchedDir, setSearchedDir] = useState<DirDataProps[]>([]);
   // 리스트 하단 블러 표시 여부
   const [isBlur, setIsBlur] = useState(true);
   const [isError, setIsError] = useState(false);
 
-  const postHandler = () => {
-    setCurrDir(text);
-  };
-
   //디렉토리 검색
   useEffect(() => {
-    allDir.find((dir) => dir.name === text)
+    unpinnedDir.find((dir) => dir.name === text) ||
+    pinnedDir.find((dir) => dir.name === text)
       ? setIsError(true)
       : setIsError(false);
     setSearchedDir(
       text === ""
         ? []
-        : fixedDir
+        : pinnedDir
             .filter((dir) =>
               dir.name.toLowerCase().includes(text.toLowerCase()),
             )
             .concat(
-              allDir.filter((dir) =>
+              unpinnedDir.filter((dir) =>
                 dir.name.toLowerCase().includes(text.toLowerCase()),
               ),
             ),
@@ -65,9 +62,9 @@ const ListContent = ({
       <List
         className="directory-list"
         isSearched={!!text}
-        allDir={allDir}
+        unpinnedDir={unpinnedDir}
         searchedDir={searchedDir}
-        fixedDir={fixedDir}
+        pinnedDir={pinnedDir}
         setIsBlur={setIsBlur}
         setCurrDir={setCurrDir}
       />
@@ -83,7 +80,7 @@ const ListContent = ({
               setText(e.target.value);
               setCardState("input");
             }}
-            onKeyPress={(e) => (e.key === "Enter" ? postHandler() : {})}
+            onKeyPress={(e) => (e.key === "Enter" ? setCurrDir(text) : {})}
             onBlur={(e) =>
               e.target.className !== "form" && setCardState("normal")
             }
@@ -94,7 +91,7 @@ const ListContent = ({
         </InputWrapper>
         <Btn
           className="directory-form__button"
-          onClick={() => postHandler()}
+          onClick={() => setCurrDir(text)}
           isOrange
           isCookieDirBtn
           isAtvBtn={!!text.length}

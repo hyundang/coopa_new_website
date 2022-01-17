@@ -22,7 +22,7 @@ export const homeboardEditModal = () => {
           value={value}
           setValue={setValue}
           setHomeboardImg={setHomeboardImg}
-          postHomeboardImg={(e: File) => "hi"}
+          updateHomeboardImg={(e: File) => "hi"}
         />
       )}
     </>

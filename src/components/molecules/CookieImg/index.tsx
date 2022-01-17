@@ -4,7 +4,7 @@ import { ImgBox, Icon } from "@components/atoms";
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { DeleteIcon, PinAtvIcon, PinIcon } from "@assets/icons/card";
 import { cookieimgAnimation } from "@components/animations";
-import { CookieDataProps, PatchCookieProps } from "@interfaces/cookie";
+import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
 import { CookieEditModal, DelModal } from "@components/organisms";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { PinImg } from "@assets/imgs/card";
@@ -22,16 +22,21 @@ export interface CookieImgProps {
   >;
   /** cookie */
   cookie?: CookieDataProps;
+  /** updated directory */
+  updatedDirectory: {
+    name: string;
+    emoji: string;
+  };
   /** copy cookie handler */
   copyCookieLink: () => void;
   /** delete cookie handler */
   deleteCookieHanlder: (id: number) => Promise<void>;
   /** edit cookie handler */
-  handleEditCookie: (data: FormData) => Promise<void>;
+  updateCookie: (data: FormData) => Promise<void>;
   /** 쿠키 수정 로딩 */
-  isEditLoading: boolean;
+  isUpdateLoading: boolean;
   /** fix cookie handler */
-  handlePinCookie: (cookieId: number, isPinned: boolean) => Promise<void>;
+  updateCookiePin: (cookieId: number, isPinned: boolean) => Promise<void>;
 }
 
 const CookieImg = ({
@@ -40,19 +45,20 @@ const CookieImg = ({
   cardState,
   setCardState,
   cookie,
+  updatedDirectory,
   copyCookieLink,
   deleteCookieHanlder,
-  handleEditCookie,
-  isEditLoading,
-  handlePinCookie,
+  updateCookie,
+  isUpdateLoading,
+  updateCookiePin,
 }: CookieImgProps) => {
-  const [patchData, setPatchData] = useState<PatchCookieProps>({
+  const [patchData, setPatchData] = useState<UpdateCookieProps>({
     title: cookie?.title || "",
     content: cookie?.content || "",
     thumbnail: cookie?.thumbnail || "",
     cookieId: cookie?.id || -1,
   });
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isUpdateOpen, setisUpdateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   // cookie 고정 여부
   const [isCookiePinned, setIsCookiePinned] = useState(
@@ -61,7 +67,7 @@ const CookieImg = ({
 
   const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> =
     () => {
-      setIsEditOpen(true);
+      setisUpdateOpen(true);
       setPatchData({
         ...patchData,
         cookieId: cookie?.id || -1,
@@ -69,7 +75,7 @@ const CookieImg = ({
     };
 
   const pinIconClickHandler = () => {
-    handlePinCookie(cookie?.id || -1, cookie?.isPinned || false);
+    updateCookiePin(cookie?.id || -1, cookie?.isPinned || false);
     setIsCookiePinned(!isCookiePinned);
   };
 
@@ -118,13 +124,13 @@ const CookieImg = ({
         {cardState === "parking" && (
           <ParkingDiv>
             <div className="parking--title">
-              {cookie?.directoryInfo?.emoji && (
+              {updatedDirectory.emoji && (
                 <div className="parking--title__emoji">
-                  {cookie.directoryInfo.emoji}
+                  {updatedDirectory.emoji}
                 </div>
               )}
               <div className="parking--title__name">
-                {cookie?.directoryInfo?.name}
+                {updatedDirectory.name}
               </div>
             </div>
             <div className="parking--desc">에 파킹했어요!</div>
@@ -134,15 +140,15 @@ const CookieImg = ({
       <CookieEditModal
         value={patchData}
         setValue={setPatchData}
-        handleEditCookie={handleEditCookie}
+        updateCookie={updateCookie}
         onClickDel={() => {
-          setIsEditOpen(false);
+          setisUpdateOpen(false);
           setIsDeleteOpen(true);
         }}
         setCardState={setCardState}
-        isOpen={isEditOpen}
-        setIsOpen={setIsEditOpen}
-        isLoading={isEditLoading}
+        isOpen={isUpdateOpen}
+        setIsOpen={setisUpdateOpen}
+        isLoading={isUpdateLoading}
       />
       <DelModal
         isOpen={isDeleteOpen}

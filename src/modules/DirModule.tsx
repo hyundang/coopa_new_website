@@ -2,22 +2,23 @@
 import { getApi, delApi, postApi, putApi } from "@api/index";
 // interfaces
 import {
-  DirectoryDataProps,
-  GetDirectoryDataProps,
-  PostDirectoryProps,
+  DirDataProps,
+  GetAllDirProps,
+  CreateDirProps,
 } from "@interfaces/directory";
 // libs
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import reactCookie from "react-cookies";
 import { useState } from "react";
 import { returnDirFilter } from "@lib/filter";
 import { useRecoilState } from "recoil";
+import SaveDataInWebCookie from "@lib/SaveDataInWebCookie";
 // modules
 import { ToastMsgState } from "./states";
 
 interface DirModuleProps {
   /** initial directory datas */
-  initAllDirData: GetDirectoryDataProps;
+  initAllDirData: GetAllDirProps;
 }
 const DirModule = ({ initAllDirData }: DirModuleProps) => {
   // toast msg
@@ -28,6 +29,14 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   const [dirFilter, setDirFilter] = useState<"latest" | "oldest" | "abc">(
     initFilter || "latest",
   );
+  // 고정 디렉토리
+  const [pinnedDirData, setPinnedDirData] = useState<DirDataProps[]>(
+    initAllDirData.pinned || [],
+  );
+  // 고정 안 된 디렉토리
+  const [unpinnedDirData, setUnpinnedDirData] = useState<DirDataProps[]>(
+    initAllDirData.common,
+  );
 
   // 모든 디렉토리 데이터 get
   const { data: allDirData } = useSWR(
@@ -36,215 +45,181 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
     {
       initialData: initAllDirData,
       errorRetryCount: 3,
+      onSuccess: (data) => {
+        setPinnedDirData(data?.pinned || []);
+        setUnpinnedDirData(data?.common || []);
+      },
     },
   );
 
   // 디렉토리 필터 변경
-  const handleDirFilter = (
+  const updateAndSaveDirFilter = (
     filter: "latest" | "readMost" | "readLeast" | "oldest" | "abc",
   ) => {
     filter !== "readMost" && filter !== "readLeast" && setDirFilter(filter);
-    // 만료일 설정, 쿠키 저장
-    const expires = new Date();
-    expires.setFullYear(
-      expires.getFullYear() + Number(process.env.EXPIRE_YEAR),
-    );
-    reactCookie.save("dirFilter", filter, {
-      path: "/",
-      expires,
-      httpOnly: JSON.parse(HTTP_ONLY),
-    });
-    // 필터에 따라 디렉토리 데이터 정렬
-    filter !== "readLeast" &&
-      filter !== "readMost" &&
-      mutate(`/directories?filter=${returnDirFilter(dirFilter)}`);
+    SaveDataInWebCookie("dirFilter", filter);
   };
 
   // 검색된 디렉토리 데이터 get
-  const { data: searchedDirData } = useSWR(
+  const { data: searchedDirData, mutate: searchedMutate } = useSWR(
     "/directories/search",
     getApi.getSearchedDirData,
     { revalidateOnFocus: false, revalidateOnMount: false },
   );
 
-  // 디렉토리 post
-  const handlePostDir = async (newValue: PostDirectoryProps) => {
-    mutate(
-      `/directories?filter=${returnDirFilter(dirFilter)}`,
-      async (prev: GetDirectoryDataProps) => {
-        const res = await postApi.postDirectoryData(newValue);
-        const newDir: DirectoryDataProps = {
-          emoji: res?.emoji,
-          id: res?.directoryId || -1,
-          name: res?.name || "",
-          cookieCnt: 0,
-          isPinned: false,
-        };
-        return { common: [...(prev?.common || []), newDir] };
-      },
-      true,
-    );
-    setIsToastMsgVisible({
-      ...isToastMsgVisible,
-      dirCreate: true,
+  const filterSpecificDirInDirList = (
+    dirList: DirDataProps[],
+    dirId: number,
+  ): DirDataProps[] => {
+    return dirList.filter((dir) => dir.id !== dirId);
+  };
+
+  const changeSequenceOfSpecificDirInDirList = (
+    dirList: DirDataProps[],
+    dirData: DirDataProps,
+  ): DirDataProps[] => {
+    switch (dirFilter) {
+      case "latest":
+        return [dirData, ...filterSpecificDirInDirList(dirList, dirData.id)];
+      case "oldest":
+        return [...filterSpecificDirInDirList(dirList, dirData.id), dirData];
+      default:
+        return changeDataOfSpecificDirInDirList(dirList, dirData);
+    }
+  };
+
+  const changeDataOfSpecificDirInDirList = (
+    dirList: DirDataProps[],
+    dirData: DirDataProps,
+  ): DirDataProps[] => {
+    return dirList.map((dir) => {
+      if (dir.id === dirData.id) {
+        return dirData;
+      }
+      return dir;
     });
   };
 
-  // 디렉토리 delete
-  const handleDelDir = async (dirId: number) => {
-    mutate(
-      `/directories?filter=${returnDirFilter(dirFilter)}`,
-      async (prev: GetDirectoryDataProps) => {
-        const res = await delApi.delDirData(dirId);
-        let newCommon;
-        if (prev)
-          newCommon = prev.common.filter((dir) => dir.id !== res?.directoryId);
-        else
-          newCommon = initAllDirData.common.filter(
-            (dir) => dir.id !== res?.directoryId,
-          );
-        return {
-          common: newCommon,
-        };
-      },
-      false,
-    );
-    // toast msg
-    setIsToastMsgVisible({
-      ...isToastMsgVisible,
-      dirDel: true,
-    });
+  // 디렉토리 생성
+  const createDir = async (newDirData: CreateDirProps): Promise<number> => {
+    const res = await postApi.postDirectoryData(newDirData);
+    if (res) {
+      const newDir: DirDataProps = {
+        emoji: res.emoji,
+        id: res.directoryId,
+        name: res.name,
+        cookieCnt: 0,
+        isPinned: false,
+      };
+      setUnpinnedDirData(
+        changeSequenceOfSpecificDirInDirList(unpinnedDirData, newDir),
+      );
+      setIsToastMsgVisible({
+        ...isToastMsgVisible,
+        dirCreate: true,
+      });
+      return res.directoryId;
+    }
+    alert("디렉토리 생성 실패!");
+    return -1;
+  };
+
+  // 디렉토리 삭제
+  const deleteDir = async (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => {
+    const res = await delApi.delDirData(dirId);
+    if (res) {
+      if (isPinned)
+        setPinnedDirData(filterSpecificDirInDirList(pinnedDirData, dirId));
+      else if (isSearched)
+        searchedMutate(async (dirList) =>
+          filterSpecificDirInDirList(dirList || [], dirId),
+        );
+      else
+        setUnpinnedDirData(filterSpecificDirInDirList(unpinnedDirData, dirId));
+      setIsToastMsgVisible({
+        ...isToastMsgVisible,
+        dirDel: true,
+      });
+      return;
+    }
+    alert("디렉토리 삭제 실패!");
   };
 
   // 디렉토리 edit
-  const handleEditDir = async (id: number, body: PostDirectoryProps) => {
-    mutate(
-      `/directories?filter=${returnDirFilter(dirFilter)}`,
-      async (prev: GetDirectoryDataProps) => {
-        const res = await putApi.updateDirectoryData(id, body);
-
-        // 갱신된 데이터일 때
-        if (prev) {
-          let newCommon;
-          let newPinned;
-          // 최신순
-          if (dirFilter === "latest") {
-            if (res.isPinned) {
-              newCommon = [
-                res,
-                ...(prev.pinned?.filter((dir) => dir.id !== id) || []),
-                ...prev.common,
-              ];
-            } else {
-              newCommon = [
-                ...(prev.pinned || []),
-                res,
-                ...prev.common.filter((dir) => dir.id !== id),
-              ];
-            }
-          }
-          // 오래된순
-          if (dirFilter === "oldest") {
-            if (res.isPinned) {
-              newCommon = [
-                ...(prev.pinned?.filter((dir) => dir.id !== id) || []),
-                res,
-                ...prev.common,
-              ];
-            } else {
-              newCommon = [
-                ...(prev.pinned || []),
-                ...prev.common.filter((dir) => dir.id !== id),
-                res,
-              ];
-            }
-            newCommon = [...prev.common.filter((dir) => dir.id !== id), res];
-          }
-          // 가나다순
-          if (dirFilter === "abc") {
-            if (res.isPinned) {
-              newCommon = prev.pinned?.map((dir) => {
-                if (dir.id === id)
-                  return {
-                    ...dir,
-                    name: res.name,
-                    emoji: res.emoji,
-                  };
-                return dir;
-              });
-            } else {
-              newCommon = prev.common.map((dir) => {
-                if (dir.id === id)
-                  return {
-                    ...dir,
-                    name: res.name,
-                    emoji: res.emoji,
-                  };
-                return dir;
-              });
-            }
-          }
-
-          if (res.isPinned) return { pinned: newPinned, common: prev.common };
-          return { pinned: prev.pinned, common: newCommon };
-        }
-
-        // 초기 데이터일 때
-        let newCommon;
-        if (dirFilter === "latest") {
-          newCommon = [
-            res,
-            ...initAllDirData.common.filter((dir) => dir.id !== id),
-          ];
-        }
-        // 오래된순
-        if (dirFilter === "oldest") {
-          newCommon = [
-            ...initAllDirData.common.filter((dir) => dir.id !== id),
-            res,
-          ];
-        }
-        // 가나다순
-        if (dirFilter === "abc") {
-          newCommon = initAllDirData.common.map((dir) => {
-            if (dir.id === id)
-              return {
-                ...dir,
-                name: res.name,
-                emoji: res.emoji,
-              };
-            return dir;
-          });
-        }
-
-        return {
-          common: newCommon,
-        };
-      },
-      false,
-    );
-    // toast msg
-    setIsToastMsgVisible({
-      ...isToastMsgVisible,
-      dirEdit: true,
-    });
+  const updateDir = async (
+    id: number,
+    body: CreateDirProps,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => {
+    const res = await putApi.updateDirectoryData(id, body);
+    if (res) {
+      if (isPinned)
+        setPinnedDirData(
+          changeSequenceOfSpecificDirInDirList(pinnedDirData, res),
+        );
+      else if (isSearched)
+        searchedMutate(async (dirList) =>
+          changeDataOfSpecificDirInDirList(dirList || [], res),
+        );
+      else
+        setUnpinnedDirData(
+          changeSequenceOfSpecificDirInDirList(unpinnedDirData, res),
+        );
+      setIsToastMsgVisible({
+        ...isToastMsgVisible,
+        dirEdit: true,
+      });
+      return;
+    }
+    alert("디렉토리 수정 실패!");
   };
 
   // 디렉토리 pin
-  const handleFixDir = async (id: number, isPinned: boolean) => {
-    const res = await putApi.updateDirectoryPin(id, isPinned);
-    mutate(`/directories?filter=${returnDirFilter(dirFilter)}`, true);
+  const updateDirPin = async (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => {
+    const res = await putApi.updateDirectoryPin(dirId, !isPinned);
+    if (res) {
+      if (!isPinned) {
+        setPinnedDirData(
+          changeSequenceOfSpecificDirInDirList(pinnedDirData, res),
+        );
+        setUnpinnedDirData(filterSpecificDirInDirList(unpinnedDirData, dirId));
+      } else if (isSearched) {
+        searchedMutate(async (dirList) =>
+          changeDataOfSpecificDirInDirList(dirList || [], res),
+        );
+      } else {
+        setPinnedDirData(filterSpecificDirInDirList(pinnedDirData, dirId));
+        setUnpinnedDirData(
+          changeSequenceOfSpecificDirInDirList(unpinnedDirData, res),
+        );
+      }
+      return;
+    }
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      pinnedSizeOver: true,
+    });
   };
 
   return {
     dirFilter,
-    handleDirFilter,
-    allDirData,
+    updateAndSaveDirFilter,
+    pinnedDirData,
+    unpinnedDirData,
     searchedDirData,
-    handlePostDir,
-    handleDelDir,
-    handleEditDir,
-    handleFixDir,
+    createDir,
+    deleteDir,
+    updateDir,
+    updateDirPin,
   };
 };
 

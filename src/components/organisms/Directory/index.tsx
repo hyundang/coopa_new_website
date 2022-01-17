@@ -2,34 +2,44 @@ import styled, { css } from "styled-components";
 import { EmptyCookieIcon, EditIcon } from "@assets/icons/common";
 import { PinAtvIcon, PinIcon } from "@assets/icons/card";
 import { PinImg } from "@assets/imgs/card";
-import {
-  DirectoryDataProps,
-  PostDirectoryProps,
-} from "src/lib/interfaces/directory";
+import { DirDataProps, CreateDirProps } from "src/lib/interfaces/directory";
 import { Icon } from "@components/atoms";
 import { useState } from "react";
 import { DelModal, DirectoryModal } from "..";
 
 export interface DirectoryProps {
-  dir: DirectoryDataProps;
-  handleDelDirectory: (id: number) => Promise<void>;
-  handleUpdateDirectory: (
-    id: number,
-    data: PostDirectoryProps,
+  dir: DirDataProps;
+  isSearched?: boolean;
+  /** delete dir */
+  deleteDir: (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
   ) => Promise<void>;
-  fixDirHandler: (id: number, isPinned: boolean) => Promise<void>;
+  /** update dir */
+  updateDir: (
+    id: number,
+    body: CreateDirProps,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  updateDirPin: (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  refreshCookie: () => void;
 }
 const Directory = ({
   dir,
-  handleDelDirectory,
-  handleUpdateDirectory,
-  fixDirHandler,
+  isSearched = false,
+  deleteDir,
+  updateDir,
+  updateDirPin,
+  refreshCookie,
 }: DirectoryProps) => {
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isUpdateOpen, setisUpdateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-  // dir 고정 여부
-  const [isDirFixed, setIsDirFixed] = useState(dir.isPinned);
 
   return (
     <>
@@ -37,7 +47,7 @@ const Directory = ({
         thumbnail={dir.thumbnail}
         onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_blank")}
       >
-        {isDirFixed && <StyledPinImg className="pin_img" />}
+        {dir.isPinned && <StyledPinImg className="pin_img" />}
         <section className="content">
           <h1 className="content__title">
             {dir.emoji ? `${dir.emoji} ${dir.name}` : dir.name}
@@ -51,26 +61,25 @@ const Directory = ({
           <Icon
             className="hover_icon"
             onClick={() => {
-              fixDirHandler(dir.id, !isDirFixed);
-              setIsDirFixed(!isDirFixed);
+              updateDirPin(dir.id, dir.isPinned, isSearched);
             }}
           >
-            {isDirFixed ? <PinAtvIcon /> : <PinIcon />}
+            {dir.isPinned ? <PinAtvIcon /> : <PinIcon />}
           </Icon>
-          <Icon className="hover_icon" onClick={() => setIsEditOpen(true)}>
+          <Icon className="hover_icon" onClick={() => setisUpdateOpen(true)}>
             <EditIcon />
           </Icon>
         </div>
       </DirectoryWrap>
       <DirectoryModal
         type="edit"
-        isOpen={isEditOpen}
-        setIsOpen={setIsEditOpen}
-        postDir={() => {}}
-        putDir={handleUpdateDirectory}
+        isOpen={isUpdateOpen}
+        setIsOpen={setisUpdateOpen}
+        createDir={() => {}}
+        putDir={(id, body) => updateDir(id, body, dir.isPinned, isSearched)}
         delDir={() => {
           setIsDeleteOpen(true);
-          setIsEditOpen(false);
+          setisUpdateOpen(false);
         }}
         initValue={{
           emoji: dir.emoji,
@@ -82,7 +91,10 @@ const Directory = ({
         type="directory"
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
-        onClickDel={() => handleDelDirectory(dir.id)}
+        onClickDel={async () => {
+          await deleteDir(dir.id, dir.isPinned, isSearched);
+          refreshCookie();
+        }}
       />
     </>
   );

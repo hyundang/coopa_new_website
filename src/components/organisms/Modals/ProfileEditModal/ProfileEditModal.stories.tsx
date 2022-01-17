@@ -1,4 +1,4 @@
-import { EditUserDataProps } from "@interfaces/user";
+import { UpdateUserProps } from "@interfaces/user";
 import { Story, Meta } from "@storybook/react";
 import { useState } from "react";
 import ProfileEditModal, { ProfileEditModalProps } from ".";
@@ -9,7 +9,7 @@ export default {
 } as Meta;
 
 const Template: Story<ProfileEditModalProps> = (args) => {
-  const [value, setValue] = useState<EditUserDataProps>({
+  const [value, setValue] = useState<UpdateUserProps>({
     name: "",
     introduction: "",
   });

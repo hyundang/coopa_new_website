@@ -7,7 +7,7 @@ import {
   FilterModal,
 } from "@components/organisms";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { PostDirectoryProps } from "@interfaces/directory";
+import { CreateDirProps } from "@interfaces/directory";
 import { useWindowSize } from "src/hooks";
 
 export interface ListHeaderProps {
@@ -33,7 +33,8 @@ export interface ListHeaderProps {
   isAddOpen: boolean;
   setIsAddOpen: Dispatch<SetStateAction<boolean>>;
   /** post dir */
-  postDir?: (e: PostDirectoryProps) => void;
+  createDir?: (e: CreateDirProps) => void;
+  createCookie: (url: string) => Promise<boolean>;
 }
 const ListHeader = ({
   type,
@@ -46,7 +47,8 @@ const ListHeader = ({
   onClickType,
   isAddOpen,
   setIsAddOpen,
-  postDir,
+  createDir,
+  createCookie,
 }: ListHeaderProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
@@ -143,6 +145,7 @@ const ListHeader = ({
           setIsOpen={setIsAddOpen}
           locationX={locationX - 430}
           type={type}
+          createCookie={createCookie}
         />
       )}
       {type === "dir" && (
@@ -150,7 +153,7 @@ const ListHeader = ({
           isOpen={type === "dir" && isAddOpen}
           setIsOpen={setIsAddOpen}
           type="new"
-          postDir={postDir}
+          createDir={createDir}
         />
       )}
     </>

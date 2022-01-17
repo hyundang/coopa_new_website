@@ -1,13 +1,10 @@
 // apis
 import { getApi, delApi, postApi, putApi } from "@api/index";
 // interfaces
-import {
-  BookmarkDataProps,
-  PostBookmarkDataProps,
-} from "@interfaces/homeboard";
+import { BookmarkDataProps, CreateBookmarkProps } from "@interfaces/homeboard";
 // libs
 import useSWR, { mutate } from "swr";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 // modules
 import { HomeboardState, ToastMsgState } from "./states";
@@ -39,18 +36,26 @@ const HomebrdModule = ({
   }, []);
 
   // 홈보드 이미지 get
-  const handleGetHomeboardImg = async () => {
+  const getHomeboardImg = async () => {
     const homeboardImgUrl = await getApi.getHomeboardData();
-    localStorage.setItem("homeboardImgUrl", homeboardImgUrl);
-    setHomeboardImg(homeboardImgUrl);
-    setHomeboardModalImg(homeboardImgUrl);
+    if (homeboardImgUrl) {
+      localStorage.setItem("homeboardImgUrl", homeboardImgUrl);
+      setHomeboardImg(homeboardImgUrl);
+      setHomeboardModalImg(homeboardImgUrl);
+      return;
+    }
+    alert("홈보드 이미지 가져오기 실패!");
   };
 
   // 홈보드 이미지 edit
-  const handlePostHomeboardImg = async (e: File): Promise<string> => {
+  const updateHomeboardImg = async (e: File): Promise<string> => {
     const homeboardImgUrl = await putApi.putHomeboardData(e);
-    localStorage.setItem("homeboardImgUrl", String(homeboardImgUrl));
-    return String(homeboardImgUrl);
+    if (homeboardImgUrl) {
+      localStorage.setItem("homeboardImgUrl", String(homeboardImgUrl));
+      return String(homeboardImgUrl);
+    }
+    alert("홈보드 이미지 수정 실패!");
+    return homeboardImg;
   };
 
   // 북마크 get
@@ -65,33 +70,35 @@ const HomebrdModule = ({
     },
   );
   // 북마크 post
-  const handleAddBookmark = async (newValue: PostBookmarkDataProps) => {
+  const createBookmark = async (newValue: CreateBookmarkProps) => {
     const res = await postApi.postBookmarkData(newValue);
-    res &&
-      (() => {
-        mutate("/users/favorites", bookmarkData?.concat([res]), false);
-        setIsToastMsgVisible({
-          ...isToastMsgVisible,
-          bookmarkCreate: true,
-        });
-      })();
+    if (res) {
+      mutate("/users/favorites", bookmarkData?.concat([res]), false);
+      setIsToastMsgVisible({
+        ...isToastMsgVisible,
+        bookmarkCreate: true,
+      });
+      return;
+    }
+    alert("북마크 생성 실패!");
   };
 
   // 북마크 delete
-  const handleDelBookmark = async (bookmarkID: number) => {
+  const deleteBookmark = async (bookmarkID: number) => {
     const res = await delApi.delBookmarkData(bookmarkID);
-    res &&
-      (() => {
-        mutate(
-          "/users/favorites",
-          bookmarkData?.filter((bd) => res.id !== bd.id),
-          false,
-        );
-        setIsToastMsgVisible({
-          ...isToastMsgVisible,
-          bookmarkDel: true,
-        });
-      })();
+    if (res) {
+      mutate(
+        "/users/favorites",
+        bookmarkData?.filter((bd) => res.id !== bd.id),
+        false,
+      );
+      setIsToastMsgVisible({
+        ...isToastMsgVisible,
+        bookmarkDel: true,
+      });
+      return;
+    }
+    alert("북마크 삭제 실패!");
   };
 
   return {
@@ -99,11 +106,11 @@ const HomebrdModule = ({
     setHomeboardImg,
     homeboardModalImg,
     setHomeboardModalImg,
-    handleGetHomeboardImg,
-    handlePostHomeboardImg,
+    getHomeboardImg,
+    updateHomeboardImg,
     bookmarkData,
-    handleAddBookmark,
-    handleDelBookmark,
+    createBookmark,
+    deleteBookmark,
   };
 };
 

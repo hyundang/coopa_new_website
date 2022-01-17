@@ -9,7 +9,7 @@ export default {
 const Template270: Story<CookieProps> = (args) => {
   return (
     <div style={{ width: "270px" }}>
-      <Cookie {...args} allDir={allDir} />
+      <Cookie {...args} unpinnedDir={unpinnedDir} />
     </div>
   );
 };
@@ -58,7 +58,7 @@ cookie270NoContent.args = {
 const Template300: Story<CookieProps> = (args) => {
   return (
     <div style={{ width: "300px" }}>
-      <Cookie {...args} allDir={allDir} />
+      <Cookie {...args} unpinnedDir={unpinnedDir} />
     </div>
   );
 };
@@ -87,7 +87,7 @@ cookie300.args = {
 
 //mockData
 
-const allDir = [
+const unpinnedDir = [
   {
     emoji: "😀",
     id: 2543,

@@ -1,7 +1,7 @@
 import { useState, SetStateAction, Dispatch } from "react";
 import styled from "styled-components";
 import { DropDown } from "@components/atoms";
-import { DirectoryDataProps } from "@interfaces/directory";
+import { DirDataProps } from "@interfaces/directory";
 import { ListContent } from "..";
 
 export interface CookieHoverProps {
@@ -10,9 +10,9 @@ export interface CookieHoverProps {
   /** className */
   className?: string;
   /** 모든 디렉토리 data */
-  allDir: DirectoryDataProps[];
+  unpinnedDir: DirDataProps[];
   /** 고정 디렉토리 */
-  fixedDir: DirectoryDataProps[];
+  pinnedDir: DirDataProps[];
   /** cardState를 parking으로 변경 */
   setCardState: Dispatch<
     SetStateAction<"hover" | "normal" | "parking" | "input">
@@ -27,8 +27,8 @@ export interface CookieHoverProps {
 const CookieHover = ({
   id,
   className,
-  allDir,
-  fixedDir,
+  unpinnedDir,
+  pinnedDir,
   setCardState,
   currDir,
   setCurrDir,
@@ -46,8 +46,8 @@ const CookieHover = ({
     >
       <ListContent
         className="list-content"
-        allDir={allDir}
-        fixedDir={fixedDir}
+        unpinnedDir={unpinnedDir}
+        pinnedDir={pinnedDir}
         setCardState={setCardState}
         setCurrDir={setCurrDir}
       />
