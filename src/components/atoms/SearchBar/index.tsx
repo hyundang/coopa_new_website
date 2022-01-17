@@ -40,31 +40,31 @@ export default function SearchBar({
     HomeboardState.PreventFadeoutState,
   );
   // 검색창 활성화 여부
-  const [isSearchVisible, setIsSearchVisible] = useRecoilState(
-    HomeboardState.IsSearchVisibleState,
+  const [isSearchBarVisible, setIsSearchBarVisible] = useRecoilState(
+    HomeboardState.IsSearchBarVisibleState,
   );
 
   // close button click
-  const handleClickClose = () => {
+  const handleClickCloseBtn = () => {
     setPreventFadeout(false);
     setIsSearched(false);
-    setIsSearchVisible(false);
+    setIsSearchBarVisible(false);
   };
 
   // 키 클릭 시
   // esc = 검색창 닫기
   const handleKeyDown = async (e: any) => {
-    if (e.key === "Escape" && isSearchVisible) {
+    if (e.key === "Escape" && isSearchBarVisible) {
       setPreventFadeout(false);
-      setIsSearchVisible(false);
+      setIsSearchBarVisible(false);
     }
   };
 
   // 키 떼어냈을 때
   // shift + s = 검색창 열기
   const handleKeyUp = (e: any) => {
-    if (e.key === "S" && e.shiftKey && !isSearchVisible) {
-      setIsSearchVisible(true);
+    if (e.key === "S" && e.shiftKey && !isSearchBarVisible) {
+      setIsSearchBarVisible(true);
       setSearchValue("");
       setIsSearched(false);
     }
@@ -72,14 +72,14 @@ export default function SearchBar({
 
   // 제일 처음에 search bar focus 상태로 설정
   useEffect(() => {
-    isSearchVisible && search_input.current?.focus();
+    isSearchBarVisible && search_input.current?.focus();
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [isSearchVisible]);
+  }, [isSearchBarVisible]);
 
   // 불필요한 검색창 렌더링 방지
   useEffect(() => {
@@ -90,15 +90,19 @@ export default function SearchBar({
     <SearchBarWrap
       id={id}
       className={className}
-      visible={isSearchVisible}
+      visible={isSearchBarVisible}
       preventFadeout={preventFadeout}
       isSearched={isSearched}
       isFocus={isFocus}
     >
-      <span className="search-bar">
-        <SearchIcon className="search-bar__icon" />
+      <SearchInputWrap
+        visible={isSearchBarVisible}
+        isSearched={isSearched}
+        isFocus={isFocus}
+      >
+        <SearchIcon className="icon" />
         <input
-          className="search-bar__input"
+          className="input"
           placeholder="무엇을 찾아드릴까요?"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
@@ -108,13 +112,15 @@ export default function SearchBar({
           onKeyDown={handleKeyDown}
           ref={search_input}
         />
-      </span>
-      <Icon
-        className="search-close"
-        onClick={isSearchVisible ? handleClickClose : undefined}
+      </SearchInputWrap>
+      <CloseIconWrap
+        onClick={isSearchBarVisible ? handleClickCloseBtn : undefined}
+        visible={isSearchBarVisible}
+        isSearched={isSearched}
+        isFocus={isFocus}
       >
-        <CloseIcon className="search-close__icon" />
-      </Icon>
+        <CloseIcon className="icon_close" />
+      </CloseIconWrap>
     </SearchBarWrap>
   );
 }
@@ -156,76 +162,77 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
           animation: ${searchbarAnimation.fadeOutRule};
           opacity: 0;
         `}
+`;
 
-  .search-bar {
-    width: 840px;
-    height: 76px;
-    padding: 24px 48px;
-    margin-right: 14px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.88);
-    border-radius: 54px;
-    transition: box-shadow 0.3s;
-    &:hover {
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    }
-    ${({ isSearched, isFocus }) =>
-      isSearched
-        ? css`
-            height: 50px;
-            background-color: unset;
-            border-radius: 0;
-            border-bottom: 1.5px solid var(--orange);
-            padding: 7px 11px;
+const SearchInputWrap = styled.div<SearchBarWrapProps>`
+  width: 840px;
+  height: 76px;
+  padding: 24px 48px;
+  margin-right: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.88);
+  border-radius: 54px;
+  transition: box-shadow 0.3s;
+  &:hover {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  }
+  ${({ isSearched, isFocus }) =>
+    isSearched
+      ? css`
+          height: 50px;
+          background-color: unset;
+          border-radius: 0;
+          border-bottom: 1.5px solid var(--orange);
+          padding: 7px 11px;
+          box-shadow: none;
+          &:hover {
             box-shadow: none;
-            &:hover {
-              box-shadow: none;
-            }
-          `
-        : isFocus &&
-          css`
-            background-color: var(--white);
-            box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.15);
-          `}
-
-    &__icon {
-      width: 23.7px;
-      height: 23.7px;
-      margin-right: 18px;
-      ${({ isFocus, isSearched }) =>
-        (isFocus || isSearched) &&
-        css`
-          transition: 0.2s;
-          path {
-            fill: var(--orange);
           }
-        `};
-    }
-
-    &__input {
-      all: unset;
-      ${({ visible }) =>
-        !visible &&
+        `
+      : isFocus &&
         css`
-          cursor: default;
+          background-color: var(--white);
+          box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.15);
         `}
-      font-family: Spoqa Han Sans Neo;
-      letter-spacing: -0.2px;
-      font-style: normal;
-      font-weight: 500;
-      font-size: 2.4rem;
-      line-height: 2.9rem;
-      color: var(--black_2);
-      background-color: none;
-      width: 100%;
-      &::placeholder {
-        color: var(--gray_4);
-      }
-    }
 
-    ${({ theme, isSearched, isFocus }) => theme.media.tablet`
+  .icon {
+    width: 23.7px;
+    height: 23.7px;
+    margin-right: 18px;
+    ${({ isFocus, isSearched }) =>
+      (isFocus || isSearched) &&
+      css`
+        transition: 0.2s;
+        path {
+          fill: var(--orange);
+        }
+      `};
+  }
+
+  .input {
+    all: unset;
+    ${({ visible }) =>
+      !visible &&
+      css`
+        cursor: default;
+      `}
+    font-family: Spoqa Han Sans Neo;
+    letter-spacing: -0.2px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 2.4rem;
+    line-height: 2.9rem;
+    color: var(--black_2);
+    background-color: none;
+    width: 100%;
+    &::placeholder {
+      color: var(--gray_4);
+    }
+  }
+
+  ${({ theme, isSearched, isFocus }) => theme.media.tablet`
       width: 522px;
       height: 48px;
       padding: 15px 21px;
@@ -237,10 +244,10 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
           box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
       }
-      &__input {
+      .input {
         font-size: 16px;
       }
-      &__icon {
+      .icon {
         width: 18px;
         height: 18px;
         margin-right: 13px;
@@ -259,10 +266,10 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
               &:hover {
                 box-shadow: none;
               }
-              &__input {
+              .input {
                 font-size: 20px;
               }
-              &__icon {
+              .icon {
                 width: 20.8px;
                 height: 20.8px;
               }
@@ -275,7 +282,7 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
       }
     `}
 
-    ${({ theme, isSearched }) => theme.media.mobile`
+  ${({ theme, isSearched }) => theme.media.mobile`
       width: 100%;
       ${
         isSearched &&
@@ -283,59 +290,59 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
           height: 38px;
           padding: 9px 7.5px;
           border-bottom: 1px solid var(--orange);
-          &__input {
+          .input {
             height: 22px;
             font-size: 18px;
           }
-          &__icon {
+          .icon {
             margin-right: 9px;
           }
         `
       }
     `}
-  }
+`;
 
-  .search-close {
-    ${({ visible }) =>
-      !visible &&
-      css`
-        cursor: auto;
-      `}
-    ${({ isSearched }) =>
-      isSearched &&
-      css`
-        display: none;
-      `}
+const CloseIconWrap = styled(Icon)<SearchBarWrapProps>`
+  ${({ visible }) =>
+    !visible &&
+    css`
+      cursor: auto;
+    `}
+  ${({ isSearched }) =>
+    isSearched &&
+    css`
+      display: none;
+    `}
     width: 56px;
-    height: 56px;
-    border-radius: 28px;
-    box-shadow: 0 5px 13px rgba(0, 0, 0, 0.15);
-    background-color: rgba(255, 255, 255, 0.2);
-    &__icon {
-      width: 24px;
-      height: 24px;
-    }
-    transition: 0.2s;
-    @media (hover: hover) {
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.8);
-        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
-        .search-close__icon {
-          width: 24px;
-          height: 24px;
-          path {
-            fill: var(--gray_4);
-          }
+  height: 56px;
+  border-radius: 28px;
+  box-shadow: 0 5px 13px rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.2);
+  .icon_close {
+    width: 24px;
+    height: 24px;
+  }
+  transition: 0.2s;
+  @media (hover: hover) {
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+      .icon_close {
+        width: 24px;
+        height: 24px;
+        path {
+          fill: var(--gray_4);
         }
       }
     }
-    ${({ theme }) => theme.media.tablet`
+  }
+  ${({ theme }) => theme.media.tablet`
       width: 32px;
       height: 32px;
       border-radius: 16px;
       background-color: var(--gray_2);
       box-shadow: none;
-      &__icon {
+      .icon_close {
         width: 12px;
         height: 12px;
         path {
@@ -345,7 +352,7 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
       &:hover {
         background-color: var(--gray_2);
         box-shadow: none;
-        .search-close__icon {
+        .icon_close {
           width: 12px;
           height: 12px;
           path {
@@ -354,5 +361,4 @@ const SearchBarWrap = styled.div<SearchBarWrapProps>`
         }
       }
     `}
-  }
 `;

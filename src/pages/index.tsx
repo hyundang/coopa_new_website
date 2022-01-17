@@ -51,13 +51,13 @@ export default function NewtabPage({
   // 쿠키 모듈
   const cookieModule = CookieModule({
     type: "newtab",
-    initAllPinnedCookieData,
-    initAllUnpinnedCookieData,
+    initAllPinnedCookieData: initAllPinnedCookieData || [],
+    initAllUnpinnedCookieData: initAllUnpinnedCookieData || [],
   });
 
   // 디렉토리 모듈
   const dirModule = DirModule({
-    initAllDirData,
+    initAllDirData: initAllDirData || { common: [], pinned: [] },
   });
 
   // 검색창 enter 키 클릭 시

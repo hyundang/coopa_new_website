@@ -53,9 +53,13 @@ const NewtabError = ({
         isOnboardOpen={isOnboardingOpen}
         setIsOnboardOpen={setIsOnboardingOpen}
         isMypageIconExist={false}
+        isSearchIconExist={false}
       />
       <Container className="container">
-        <Homeboard homeboardImg={homeboardImg} bookmarkDatas={bookmarkDatas} />
+        <Homeboard
+          homeboardImgInLocalStorage={homeboardImg}
+          bookmarkData={bookmarkDatas}
+        />
         <main className="error-view">
           <Empty
             className="error"

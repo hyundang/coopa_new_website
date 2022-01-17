@@ -1,50 +1,51 @@
+// assets
 import { SettingIcon } from "@assets/icons/homeboard";
 import { DuribunLImg, DuribunRImg, SearchImg } from "@assets/imgs/homeboard";
-import { useEffect, useRef, useState } from "react";
-import styled, { css } from "styled-components";
+// components
 import { Icon, SearchBar } from "@components/atoms";
 import { HomeboardEditModal, Bookmark } from "@components/organisms";
 import { homeboardAnimation } from "@components/animations";
+// interfaces
+import { BookmarkDataProps } from "@interfaces/homeboard";
+// libs
+import React, { useEffect, useRef, useState } from "react";
+import styled, { css } from "styled-components";
 import { useWindowSize } from "src/hooks";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
+// modules
 import { HomeboardState } from "@modules/states";
 import HomebrdModule from "@modules/HomebrdModule";
 
 export interface HomeboardProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  // 검색창 관련
   /** onKeyPress event handler */
   onSearchBarKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
-  // 홈보드 관련
-  /** homeboard module */
-  homeboardModule: ReturnType<typeof HomebrdModule>;
-  /** homeboard img 변경 성공 */
-  setIsSuccess?: (e: boolean) => void;
-  /** img input 시 img size 에러 */
-  setIsError?: (e: boolean) => void;
+  homeboardModule?: ReturnType<typeof HomebrdModule>;
+  setIsUpdatingHomboardImgSuccess?: (e: boolean) => void;
+  setIsUpdatingHomboardImgError?: (e: boolean) => void;
+  homeboardImgInLocalStorage: string;
+  bookmarkData: BookmarkDataProps[];
 }
 const Homeboard = ({
   id,
   className,
   onSearchBarKeyPress,
   homeboardModule,
-  setIsSuccess,
-  setIsError,
+  setIsUpdatingHomboardImgSuccess,
+  setIsUpdatingHomboardImgError,
+  bookmarkData = [],
+  homeboardImgInLocalStorage = "",
 }: HomeboardProps) => {
   // 검색 여부
   const isSearched = useRecoilValue(HomeboardState.IsSearchedState);
   // 검색창 활성화 여부
-  const isSearchVisible = useRecoilValue(HomeboardState.IsSearchVisibleState);
-
-  // 홈보드 배경 이미지
-  const [homeboardImg, setHomeboardImg] = useRecoilState(
-    HomeboardState.HomeboardImgState,
+  const isSearchBarVisible = useRecoilValue(
+    HomeboardState.IsSearchBarVisibleState,
   );
-  // 홈보드 수정 모달 이미지
-  const [homeboardModalImg, setHomeboardModalImg] = useRecoilState(
+
+  const homeboardImg = useRecoilValue(HomeboardState.HomeboardImgState);
+  const homeboardModalImg = useRecoilValue(
     HomeboardState.HomeboardModalImgState,
   );
 
@@ -80,20 +81,22 @@ const Homeboard = ({
     <HomeboardWrap
       id={id}
       className={className}
-      homeboardImg={homeboardImg}
+      homeboardImg={homeboardImg || homeboardImgInLocalStorage}
       isSettingIconAtv={isOpen}
-      visible={isSearchVisible}
-      isSearched={isSearched && isSearchVisible}
+      visible={isSearchBarVisible}
+      isSearched={isSearched && isSearchBarVisible}
     >
       <div className="inner-wrap">
-        {!isSearchVisible && (
+        {!isSearchBarVisible && (
           <DuribunLImg role="img" className="duribun-left" />
         )}
-        {!isSearchVisible && (
+        {!isSearchBarVisible && (
           <DuribunRImg role="img" className="duribun-right" />
         )}
-        {isSearchVisible && <SearchImg role="img" className="duribun-search" />}
-        {!isSearchVisible && setHomeboardImg && (
+        {isSearchBarVisible && (
+          <SearchImg role="img" className="duribun-search" />
+        )}
+        {!isSearchBarVisible && homeboardModule && (
           <Icon
             className="setting"
             ref={settingIconLocation}
@@ -104,29 +107,28 @@ const Homeboard = ({
             <SettingIcon className="setting__icon" />
           </Icon>
         )}
-        {isSearchVisible !== undefined && (
+        {homeboardModule && (
           <SearchBar className="search" onKeyPress={onSearchBarKeyPress} />
         )}
-        {!isSearchVisible && (
+        {!isSearchBarVisible && (
           <Bookmark
             className="bookmark"
-            datas={homeboardModule.bookmarkData || []}
-            onClickSave={homeboardModule.createBookmark}
-            onClickDel={homeboardModule.deleteBookmark}
+            bookmarkData={homeboardModule?.bookmarkData || bookmarkData}
+            onClickCreateBtn={homeboardModule?.createBookmark}
+            onClickDelBtn={homeboardModule?.deleteBookmark}
           />
         )}
       </div>
       {homeboardModalImg !== undefined &&
-        setHomeboardModalImg &&
-        setHomeboardImg &&
-        setIsError &&
-        setIsSuccess && (
+        homeboardModule &&
+        setIsUpdatingHomboardImgError &&
+        setIsUpdatingHomboardImgSuccess && (
           <HomeboardEditModal
             locationX={locationX - 518 + 36}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
-            setIsError={setIsError}
-            setIsSuccess={setIsSuccess}
+            setIsSuccess={setIsUpdatingHomboardImgError}
+            setIsError={setIsUpdatingHomboardImgSuccess}
             updateHomeboardImg={homeboardModule.updateHomeboardImg}
           />
         )}
