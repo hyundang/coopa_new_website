@@ -4,7 +4,7 @@ import { getApi, delApi, postApi, putApi } from "@api/index";
 import { BookmarkDataProps, CreateBookmarkProps } from "@interfaces/homeboard";
 // libs
 import useSWR, { mutate } from "swr";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 // modules
 import { HomeboardState, ToastMsgState } from "./states";
@@ -36,7 +36,7 @@ const HomebrdModule = ({
   }, []);
 
   // 홈보드 이미지 get
-  const handleGetHomeboardImg = async () => {
+  const getHomeboardImg = async () => {
     const homeboardImgUrl = await getApi.getHomeboardData();
     localStorage.setItem("homeboardImgUrl", homeboardImgUrl);
     setHomeboardImg(homeboardImgUrl);
@@ -44,7 +44,7 @@ const HomebrdModule = ({
   };
 
   // 홈보드 이미지 edit
-  const handlePostHomeboardImg = async (e: File): Promise<string> => {
+  const updateHomeboardImg = async (e: File): Promise<string> => {
     const homeboardImgUrl = await putApi.putHomeboardData(e);
     localStorage.setItem("homeboardImgUrl", String(homeboardImgUrl));
     return String(homeboardImgUrl);
@@ -62,7 +62,7 @@ const HomebrdModule = ({
     },
   );
   // 북마크 post
-  const handleAddBookmark = async (newValue: CreateBookmarkProps) => {
+  const createBookmark = async (newValue: CreateBookmarkProps) => {
     const res = await postApi.postBookmarkData(newValue);
     res &&
       (() => {
@@ -75,7 +75,7 @@ const HomebrdModule = ({
   };
 
   // 북마크 delete
-  const handleDelBookmark = async (bookmarkID: number) => {
+  const deleteBookmark = async (bookmarkID: number) => {
     const res = await delApi.delBookmarkData(bookmarkID);
     res &&
       (() => {
@@ -96,11 +96,11 @@ const HomebrdModule = ({
     setHomeboardImg,
     homeboardModalImg,
     setHomeboardModalImg,
-    handleGetHomeboardImg,
-    handlePostHomeboardImg,
+    getHomeboardImg,
+    updateHomeboardImg,
     bookmarkData,
-    handleAddBookmark,
-    handleDelBookmark,
+    createBookmark,
+    deleteBookmark,
   };
 };
 

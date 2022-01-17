@@ -22,7 +22,7 @@ const Template: Story<HomeboardProps> = (args) => {
       homeboardModalImg={img}
       setHomeboardImg={setImg}
       setHomeboardModalImg={setImg}
-      postHomeboardImg={async () => "hi"}
+      updateHomeboardImg={async () => "hi"}
       bookmarkDatas={[
         {
           id: 1,

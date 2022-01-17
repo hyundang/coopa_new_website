@@ -29,7 +29,7 @@ const Template: Story<NewtablProps> = (args) => {
       homeboardModalImg={img}
       setHomeboardImg={setImg}
       setHomeboardModalImg={setImg}
-      postHomeboardImg={async () => "hi"}
+      updateHomeboardImg={async () => "hi"}
       isToastMsgVisible={isVisible}
       setIsToastMsgVisible={setIsVisible}
       imgUrl="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"

@@ -96,7 +96,7 @@ export default function NewtabPage({
               homebrdModule.setHomeboardImg(homeboardImgUrl);
               homebrdModule.setHomeboardModalImg(homeboardImgUrl);
             })()
-          : homebrdModule.handleGetHomeboardImg());
+          : homebrdModule.getHomeboardImg());
 
     // 북마크 세팅
     const bookmark = localStorage.getItem("bookmark");

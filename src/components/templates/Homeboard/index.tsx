@@ -111,8 +111,8 @@ const Homeboard = ({
           <Bookmark
             className="bookmark"
             datas={homeboardModule.bookmarkData || []}
-            onClickSave={homeboardModule.handleAddBookmark}
-            onClickDel={homeboardModule.handleDelBookmark}
+            onClickSave={homeboardModule.createBookmark}
+            onClickDel={homeboardModule.deleteBookmark}
           />
         )}
       </div>
@@ -127,7 +127,7 @@ const Homeboard = ({
             setIsOpen={setIsOpen}
             setIsError={setIsError}
             setIsSuccess={setIsSuccess}
-            postHomeboardImg={homeboardModule.handlePostHomeboardImg}
+            updateHomeboardImg={homeboardModule.updateHomeboardImg}
           />
         )}
     </HomeboardWrap>
