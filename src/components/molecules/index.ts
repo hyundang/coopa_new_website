@@ -1,3 +1,4 @@
+export { default as CookieContent } from "./CookieContent";
 export { default as CookieHover } from "./CookieHover";
 export { default as CookieImg } from "./CookieImg";
 export { default as ImgBoxForm } from "./ImgBoxForm";

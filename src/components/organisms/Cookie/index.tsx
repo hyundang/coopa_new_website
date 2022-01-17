@@ -16,23 +16,15 @@ import React, { useState, useEffect, forwardRef, RefObject } from "react";
 import CookieModule from "@modules/CookieModule";
 
 export interface CookieProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** cookie type */
   type: "normal" | "searched" | "dirDetail" | "dirShare";
-  /** cookie */
-  cookie: CookieDataProps;
+  cookieData: CookieDataProps;
   /** cookie data loading */
   isLoading: boolean;
-  /** 쿠키 모듈 */
   cookieModule: ReturnType<typeof CookieModule>;
-  /** 일반 directory */
   unpinnedDir?: DirDataProps[];
-  /** 고정 디렉토리 */
   pinnedDir?: DirDataProps[];
-  /** post dir */
   createDir?: (data: CreateDirProps) => Promise<number>;
 }
 const Cookie = (
@@ -40,7 +32,7 @@ const Cookie = (
     id,
     className,
     type,
-    cookie,
+    cookieData,
     isLoading,
     cookieModule,
     unpinnedDir = [],
@@ -60,12 +52,12 @@ const Cookie = (
 
   //현재 디렉토리
   const [currDir, setCurrDir] = useState(
-    cookie.directoryInfo?.name || "모든 쿠키",
+    cookieData.directoryInfo?.name || "모든 쿠키",
   );
 
   const [updatedDir, setUpdatedDir] = useState({
-    name: cookie.directoryInfo?.name || "",
-    emoji: cookie.directoryInfo?.emoji || "",
+    name: cookieData.directoryInfo?.name || "",
+    emoji: cookieData.directoryInfo?.emoji || "",
   });
 
   const findDirId = (): number => {
@@ -78,13 +70,13 @@ const Cookie = (
 
   const updateDirOfCookie = async (dirId: number) => {
     const body: CreateCookieToDirProps = {
-      cookieId: cookie.id || -1,
+      cookieId: cookieData.id || -1,
       directoryId: dirId,
     };
     if (body.directoryId) {
       const result = await cookieModule.updateDirOfCookie(
         body,
-        cookie.isPinned || false,
+        cookieData.isPinned || false,
         type === "searched",
       );
       if (result) {
@@ -99,10 +91,10 @@ const Cookie = (
   };
 
   const createAndUpdateDirOfCookie = async () => {
-    if (!cookie.directoryInfo?.name && currDir === "모든 쿠키") {
+    if (!cookieData.directoryInfo?.name && currDir === "모든 쿠키") {
       return;
     }
-    if (currDir !== cookie.directoryInfo?.name) {
+    if (currDir !== cookieData.directoryInfo?.name) {
       const isNewDir =
         unpinnedDir.filter((dir) => dir.name === currDir).length === 0 &&
         pinnedDir.filter((dir) => dir.name === currDir).length === 0;
@@ -126,10 +118,10 @@ const Cookie = (
       id={id}
       className={className}
       onClick={() => {
-        window.open(cookie.link);
+        window.open(cookieData.link);
         cookieModule.updateCookieReadCnt(
-          cookie.id || -1,
-          cookie.isPinned || false,
+          cookieData.id || -1,
+          cookieData.isPinned || false,
           type === "searched",
         );
       }}
@@ -139,28 +131,27 @@ const Cookie = (
       onMouseLeave={() => {
         if (cardState === "hover" && !isLoading) setCardState("normal");
       }}
-      isLoading={isLoading}
       ref={ref}
     >
       <CookieImg
         cardState={type === "dirShare" ? "normal" : cardState}
         setCardState={setCardState}
-        cookie={cookie}
+        cookieData={cookieData}
         updatedDirectory={updatedDir}
         copyCookieLink={cookieModule.copyCookieLink}
-        deleteCookieHanlder={
-          cookie?.isPinned
-            ? (cookieId) =>
-                cookieModule.deleteCookie(cookieId, true, type === "searched")
-            : (cookieId) =>
-                cookieModule.deleteCookie(cookieId, false, type === "searched")
+        deleteCookie={(cookieId) =>
+          cookieModule.deleteCookie(
+            cookieId,
+            cookieData?.isPinned,
+            type === "searched",
+          )
         }
-        updateCookie={
-          cookie?.isPinned
-            ? (cookieId) =>
-                cookieModule.updateCookie(cookieId, true, type === "searched")
-            : (cookieId) =>
-                cookieModule.updateCookie(cookieId, false, type === "searched")
+        updateCookie={(cookieId) =>
+          cookieModule.updateCookie(
+            cookieId,
+            cookieData?.isPinned,
+            type === "searched",
+          )
         }
         isUpdateLoading={cookieModule.isUpdateLoading}
         updateCookiePin={(cookieId, isPinned) =>
@@ -174,39 +165,36 @@ const Cookie = (
             pinnedDir={pinnedDir}
             setCardState={setCardState}
             currDir={
-              cookie.directoryInfo?.emoji !== null
-                ? `${cookie.directoryInfo?.emoji || ""} ${currDir}`
+              cookieData.directoryInfo?.emoji !== null
+                ? `${cookieData.directoryInfo?.emoji || ""} ${currDir}`
                 : currDir
             }
             setCurrDir={setCurrDir}
           />
         </div>
       )}
-      <section className="cookie--desc">
-        <h1 className="cookie--title">{cookie.title}</h1>
-        <div className="cookie--content">{cookie.content}</div>
+      <CookieContent isLoading={isLoading}>
+        <h1 className="title">{cookieData.title}</h1>
+        <div className="desc">{cookieData.content}</div>
         <div style={{ flexGrow: 1 }} />
-        <div className="cookie--profile">
+        <div className="profile">
           <img
-            className="cookie--profile__favicon"
-            src={cookie.favicon}
+            className="profile__favicon"
+            src={cookieData.favicon}
             alt={fvcOnErrorImg}
             onError={(e) => {
               e.currentTarget.src = fvcOnErrorImg;
             }}
           />
-          <div className="cookie--profile__favicon--loading" />
-          <cite className="cookie--profile__author">{cookie.provider}</cite>
+          <div className="profile__favicon--loading" />
+          <cite className="profile__author">{cookieData.provider}</cite>
         </div>
-      </section>
+      </CookieContent>
     </CookieWrap>
   );
 };
 
-interface CookieWrapProps {
-  isLoading: boolean;
-}
-const CookieWrap = styled.article<CookieWrapProps>`
+const CookieWrap = styled.article`
   cursor: pointer;
   position: relative;
   width: 100%;
@@ -225,114 +213,118 @@ const CookieWrap = styled.article<CookieWrapProps>`
     display: flex;
     justify-content: center;
   }
-  .cookie--desc {
-    padding: 12px 10px 46px 10px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+`;
 
-    .cookie--title {
+interface CookieContentProps {
+  isLoading: boolean;
+}
+const CookieContent = styled.section<CookieContentProps>`
+  padding: 12px 10px 46px 10px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  .title {
+    ${({ isLoading }) =>
+      isLoading
+        ? css`
+            width: 100%;
+            height: 20px;
+            background-color: var(--gray_3);
+            border-radius: 4px;
+          `
+        : css`
+            all: unset;
+          `}
+
+    color: var(--black_1);
+    line-height: 26px;
+    font-size: 17px;
+    font-weight: 500;
+    margin-bottom: 7px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    word-wrap: normal;
+    word-break: break-all;
+  }
+
+  .desc {
+    ${({ isLoading }) =>
+      isLoading
+        ? css`
+            width: 100%;
+            height: 20px;
+            background-color: var(--gray_2);
+            border-radius: 4px;
+          `
+        : css`
+            all: unset;
+          `}
+    font-weight: 400;
+    line-height: 22px;
+    font-size: 14px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    word-wrap: normal;
+    word-break: break-all;
+    color: var(--gray_5);
+  }
+
+  .profile {
+    line-height: normal;
+    display: flex;
+    align-items: center;
+    &__author {
       ${({ isLoading }) =>
         isLoading
           ? css`
-              width: 100%;
-              height: 20px;
+              width: 57px;
+              height: 12px;
               background-color: var(--gray_3);
               border-radius: 4px;
             `
           : css`
               all: unset;
             `}
-
-      color: var(--black_1);
-      line-height: 26px;
-      font-size: 17px;
-      font-weight: 500;
-      margin-bottom: 7px;
+      font-size: 13px;
+      color: var(--gray_5);
       display: -webkit-box;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
       overflow: hidden;
       word-wrap: normal;
       word-break: break-all;
     }
-
-    .cookie--content {
+    &__favicon {
+      ${({ isLoading }) =>
+        isLoading &&
+        css`
+          display: none;
+        `}
+      margin-right: 8px;
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+    &__favicon--loading {
       ${({ isLoading }) =>
         isLoading
           ? css`
-              width: 100%;
-              height: 20px;
-              background-color: var(--gray_2);
+              display: block;
+              margin-right: 8px;
+              width: 22px;
+              height: 22px;
               border-radius: 4px;
+              background-color: var(--gray_3);
             `
           : css`
-              all: unset;
+              display: none;
             `}
-      font-weight: 400;
-      line-height: 22px;
-      font-size: 14px;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
-      word-wrap: normal;
-      word-break: break-all;
-      color: var(--gray_5);
-    }
-
-    .cookie--profile {
-      line-height: normal;
-      display: flex;
-      align-items: center;
-      &__author {
-        ${({ isLoading }) =>
-          isLoading
-            ? css`
-                width: 57px;
-                height: 12px;
-                background-color: var(--gray_3);
-                border-radius: 4px;
-              `
-            : css`
-                all: unset;
-              `}
-        font-size: 13px;
-        color: var(--gray_5);
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
-        overflow: hidden;
-        word-wrap: normal;
-        word-break: break-all;
-      }
-      &__favicon {
-        ${({ isLoading }) =>
-          isLoading &&
-          css`
-            display: none;
-          `}
-        margin-right: 8px;
-        width: 22px;
-        height: 22px;
-        border-radius: 4px;
-        object-fit: cover;
-      }
-      &__favicon--loading {
-        ${({ isLoading }) =>
-          isLoading
-            ? css`
-                display: block;
-                margin-right: 8px;
-                width: 22px;
-                height: 22px;
-                border-radius: 4px;
-                background-color: var(--gray_3);
-              `
-            : css`
-                display: none;
-              `}
-      }
     }
   }
 `;

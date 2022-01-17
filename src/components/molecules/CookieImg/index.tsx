@@ -1,41 +1,34 @@
-import styled from "styled-components";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { ImgBox, Icon } from "@components/atoms";
+// assets
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { DeleteIcon, PinAtvIcon, PinIcon } from "@assets/icons/card";
-import { cookieimgAnimation } from "@components/animations";
-import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
-import { CookieEditModal, DelModal } from "@components/organisms";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { PinImg } from "@assets/imgs/card";
+// components
+import { ImgBox, Icon } from "@components/atoms";
+import { cookieimgAnimation } from "@components/animations";
+import { CookieEditModal, DelModal } from "@components/organisms";
+// interfaces
+import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
+// libs
+import styled from "styled-components";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import React, { Dispatch, SetStateAction, useState } from "react";
 
 export interface CookieImgProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** cookie card state */
   cardState: "hover" | "parking" | "normal" | "input";
-  /** set cookie card state */
   setCardState: Dispatch<
     SetStateAction<"hover" | "parking" | "normal" | "input">
   >;
-  /** cookie */
-  cookie?: CookieDataProps;
-  /** updated directory */
+  cookieData?: CookieDataProps;
   updatedDirectory: {
     name: string;
     emoji: string;
   };
-  /** copy cookie handler */
   copyCookieLink: () => void;
-  /** delete cookie handler */
-  deleteCookieHanlder: (id: number) => Promise<void>;
-  /** edit cookie handler */
+  deleteCookie: (id: number) => Promise<void>;
   updateCookie: (data: FormData) => Promise<void>;
-  /** 쿠키 수정 로딩 */
   isUpdateLoading: boolean;
-  /** fix cookie handler */
   updateCookiePin: (cookieId: number, isPinned: boolean) => Promise<void>;
 }
 
@@ -44,38 +37,40 @@ const CookieImg = ({
   className,
   cardState,
   setCardState,
-  cookie,
+  cookieData,
   updatedDirectory,
   copyCookieLink,
-  deleteCookieHanlder,
+  deleteCookie,
   updateCookie,
   isUpdateLoading,
   updateCookiePin,
 }: CookieImgProps) => {
-  const [patchData, setPatchData] = useState<UpdateCookieProps>({
-    title: cookie?.title || "",
-    content: cookie?.content || "",
-    thumbnail: cookie?.thumbnail || "",
-    cookieId: cookie?.id || -1,
-  });
-  const [isUpdateOpen, setisUpdateOpen] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [updatedCookieData, setUpdatedCookieData] = useState<UpdateCookieProps>(
+    {
+      title: cookieData?.title || "",
+      content: cookieData?.content || "",
+      thumbnail: cookieData?.thumbnail || "",
+      cookieId: cookieData?.id || -1,
+    },
+  );
+  const [isUpdateModalOpen, setisUpdateModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   // cookie 고정 여부
   const [isCookiePinned, setIsCookiePinned] = useState(
-    cookie?.isPinned || false,
+    cookieData?.isPinned || false,
   );
 
-  const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> =
+  const handleClickEditIcon: React.MouseEventHandler<HTMLButtonElement> =
     () => {
-      setisUpdateOpen(true);
-      setPatchData({
-        ...patchData,
-        cookieId: cookie?.id || -1,
+      setisUpdateModalOpen(true);
+      setUpdatedCookieData({
+        ...updatedCookieData,
+        cookieId: cookieData?.id || -1,
       });
     };
 
-  const pinIconClickHandler = () => {
-    updateCookiePin(cookie?.id || -1, cookie?.isPinned || false);
+  const handleClickPinIcon = () => {
+    updateCookiePin(cookieData?.id || -1, cookieData?.isPinned || false);
     setIsCookiePinned(!isCookiePinned);
   };
 
@@ -87,25 +82,25 @@ const CookieImg = ({
       <StyledImgBox
         id={id}
         className={className}
-        cookieContent={cookie?.content}
-        url={cookie?.thumbnail}
+        cookieContent={cookieData?.content}
+        url={cookieData?.thumbnail}
         isHover={cardState === "hover"}
       >
         {cardState === "hover" && (
           <HoverDiv>
             <div className="hover_icon_wrap">
-              <Icon className="hover_icon" onClick={pinIconClickHandler}>
+              <Icon className="hover_icon" onClick={handleClickPinIcon}>
                 {isCookiePinned ? (
                   <PinAtvIcon className="hover_icon__pin" />
                 ) : (
                   <PinIcon className="hover_icon__pin" />
                 )}
               </Icon>
-              <Icon className="hover_icon" onClick={editIconClickHandler}>
+              <Icon className="hover_icon" onClick={handleClickEditIcon}>
                 <EditIcon className="hover_icon__edit" />
               </Icon>
               <CopyToClipboard
-                text={cookie?.link || ""}
+                text={cookieData?.link || ""}
                 onCopy={copyCookieLink}
               >
                 <Icon className="hover_icon">
@@ -115,7 +110,7 @@ const CookieImg = ({
               <Icon className="hover_icon">
                 <DeleteIcon
                   className="hover_icon__delete"
-                  onClick={() => setIsDeleteOpen(true)}
+                  onClick={() => setIsDeleteModalOpen(true)}
                 />
               </Icon>
             </div>
@@ -138,22 +133,22 @@ const CookieImg = ({
         )}
       </StyledImgBox>
       <CookieEditModal
-        value={patchData}
-        setValue={setPatchData}
+        value={updatedCookieData}
+        setValue={setUpdatedCookieData}
         updateCookie={updateCookie}
         onClickDel={() => {
-          setisUpdateOpen(false);
-          setIsDeleteOpen(true);
+          setisUpdateModalOpen(false);
+          setIsDeleteModalOpen(true);
         }}
         setCardState={setCardState}
-        isOpen={isUpdateOpen}
-        setIsOpen={setisUpdateOpen}
+        isOpen={isUpdateModalOpen}
+        setIsOpen={setisUpdateModalOpen}
         isLoading={isUpdateLoading}
       />
       <DelModal
-        isOpen={isDeleteOpen}
-        setIsOpen={setIsDeleteOpen}
-        onClickDel={() => deleteCookieHanlder(cookie?.id || -1)}
+        isOpen={isDeleteModalOpen}
+        setIsOpen={setIsDeleteModalOpen}
+        onClickDel={() => deleteCookie(cookieData?.id || -1)}
       />
     </>
   );
