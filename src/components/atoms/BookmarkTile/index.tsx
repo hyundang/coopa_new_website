@@ -1,4 +1,7 @@
-import {
+// assets
+import { PlusIcon } from "@assets/icons/common";
+import bookmarkAnimation from "@components/animations/bookmark";
+import React, {
   Dispatch,
   SetStateAction,
   RefObject,
@@ -6,30 +9,20 @@ import {
   SyntheticEvent,
 } from "react";
 import styled from "styled-components";
-// assets
-import { PlusIcon } from "@assets/icons/common";
-import { HomeboardIcon } from "@assets/icons/homeboard";
-import bookmarkAnimation from "@components/animations/bookmark";
 
 export interface BookmarkTileProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
   /** 사이트 url */
   url?: string;
   /** 파비콘 url */
   imgUrl?: string;
-  /** 사이트 이름 */
   siteName?: string;
-  /** 즐겨찾기 타일 클릭 시 */
-  onClickAddBtn?: React.MouseEventHandler<HTMLSpanElement>;
-  /** 삭제 버튼(x) 클릭 시 */
+  onClickPlusTile?: React.MouseEventHandler<HTMLSpanElement>;
   onClickDelBtn?: React.MouseEventHandler<HTMLSpanElement>;
-  /** 즐겨찾기 타일 hover 판단 */
   setIsHover?: Dispatch<SetStateAction<boolean>>;
   /** 즐겨찾기 추가 타일의 경우 -> true */
-  isAddBtn?: boolean;
+  isPlusTile?: boolean;
 }
 const BookmarkTile = (
   {
@@ -38,10 +31,10 @@ const BookmarkTile = (
     url,
     imgUrl,
     siteName,
-    onClickAddBtn,
+    onClickPlusTile,
     onClickDelBtn,
     setIsHover,
-    isAddBtn,
+    isPlusTile,
   }: BookmarkTileProps,
   ref?:
     | ((instance: HTMLDivElement | null) => void)
@@ -50,36 +43,38 @@ const BookmarkTile = (
     | undefined,
 ) => {
   return (
-    <HoverWrap className={className} isAddBtn={isAddBtn}>
+    <HoverWrap className={className} isPlusTile={isPlusTile}>
       <Wrap
         id={id}
         className="tile-wrap"
         role="button"
         onMouseOver={setIsHover ? () => setIsHover(true) : undefined}
         onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
-        onClick={isAddBtn ? onClickAddBtn : () => window.open(url, "__blank")}
-        isAddBtn={isAddBtn}
+        onClick={
+          isPlusTile ? onClickPlusTile : () => window.open(url, "__blank")
+        }
+        isPlusTile={isPlusTile}
         ref={ref}
       >
-        {isAddBtn ? (
+        {isPlusTile ? (
           <PlusIcon className="plus-icon" />
         ) : (
-          <div className="content">
+          <TileContent>
             {onClickDelBtn && (
               <DelIcon id={id} onClick={onClickDelBtn}>
                 ×
               </DelIcon>
             )}
             <img
-              className="content__favicon"
+              className="favicon"
               src={imgUrl}
               alt="favicon"
               onError={(e: SyntheticEvent<HTMLImageElement, Event>) =>
                 (e.currentTarget.src = "/favicon.ico")
               }
             />
-            <cite className="content__text">{siteName}</cite>
-          </div>
+            <cite className="text">{siteName}</cite>
+          </TileContent>
         )}
       </Wrap>
     </HoverWrap>
@@ -112,7 +107,7 @@ const DelIcon = styled.button`
 `;
 
 interface HoverWrapProps {
-  isAddBtn?: boolean;
+  isPlusTile?: boolean;
 }
 const HoverWrap = styled.div<HoverWrapProps>`
   position: relative;
@@ -124,7 +119,7 @@ const HoverWrap = styled.div<HoverWrapProps>`
       margin-bottom: 10px;
       box-shadow: 0 5px 13px rgba(0, 0, 0, 0.15);
       background-color: ${(props) =>
-        props.isAddBtn ? "rgba(243,243,243,0.7)" : "rgba(255,255,255,0.95)"};
+        props.isPlusTile ? "rgba(243,243,243,0.7)" : "rgba(255,255,255,0.95)"};
     }
     ${DelIcon} {
       display: block;
@@ -134,7 +129,7 @@ const HoverWrap = styled.div<HoverWrapProps>`
 `;
 
 interface WrapProps {
-  isAddBtn?: boolean;
+  isPlusTile?: boolean;
 }
 const Wrap = styled.div<WrapProps>`
   cursor: pointer;
@@ -146,12 +141,13 @@ const Wrap = styled.div<WrapProps>`
   padding-bottom: 11px;
   border-radius: 8px;
   background-color: ${(props) =>
-    props.isAddBtn ? "rgba(243,243,243,0.5)" : "rgba(255,255,255,0.85)"};
+    props.isPlusTile ? "rgba(243,243,243,0.5)" : "rgba(255,255,255,0.85)"};
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: ${(props) => (props.isAddBtn ? "center" : "space-between")};
+  justify-content: ${(props) =>
+    props.isPlusTile ? "center" : "space-between"};
 
   color: var(--gray_7);
   font-weight: 500;
@@ -164,34 +160,34 @@ const Wrap = styled.div<WrapProps>`
     width: 20px;
     height: 20px;
   }
+`;
 
-  .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+const TileContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-    &__favicon {
-      width: 22px;
-      height: 22px;
-      border-radius: 4px;
-      margin-bottom: 6px;
-      object-fit: cover;
-    }
+  .favicon {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    object-fit: cover;
+  }
 
-    &__text {
-      width: 62px;
-      height: 12px;
+  .text {
+    width: 62px;
+    height: 12px;
 
-      font-style: normal;
-      font-weight: 500;
-      font-size: 10px;
-      line-height: 12px;
-      color: var(--gray_7);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 12px;
+    color: var(--gray_7);
 
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      word-wrap: normal;
-      overflow: hidden;
-    }
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    overflow: hidden;
   }
 `;

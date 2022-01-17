@@ -39,7 +39,9 @@ const Newtab = ({
   // 검색 여부
   const isSearched = useRecoilValue(HomeboardState.IsSearchedState);
   // 검색창 활성화 여부
-  const isSearchVisible = useRecoilValue(HomeboardState.IsSearchVisibleState);
+  const isSearchVisible = useRecoilValue(
+    HomeboardState.IsSearchBarVisibleState,
+  );
 
   // tab
   const [tabOptions, setTabOptions] = useState(["모든 쿠키", "디렉토리"]);
@@ -128,8 +130,12 @@ const Newtab = ({
           className="homeboard"
           onSearchBarKeyPress={onKeyPress}
           homeboardModule={homeboardModule}
-          setIsSuccess={(e) => handleToastMsgVisible("homeboardEdit", e)}
-          setIsError={(e) => handleToastMsgVisible("imgSizeOver", e)}
+          setIsUpdatingHomboardImgSuccess={(e) =>
+            handleToastMsgVisible("homeboardEdit", e)
+          }
+          setIsUpdatingHomboardImgError={(e) =>
+            handleToastMsgVisible("imgSizeOver", e)
+          }
         />
         {isSearchVisible && (
           <div className="search-wrap">

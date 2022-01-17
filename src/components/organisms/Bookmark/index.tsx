@@ -1,33 +1,26 @@
 import { BookmarkTile, Bubble } from "@components/atoms";
+import { BookmarkAddModal } from "@components/organisms";
 import { BookmarkDataProps, CreateBookmarkProps } from "@interfaces/homeboard";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-import { BookmarkAddModal } from "..";
 
 export interface BookmarkProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** bookmark data list */
-  datas: BookmarkDataProps[];
-  /** bookmark 추가 함수 */
-  onClickSave?: (newBookmark: CreateBookmarkProps) => Promise<void>;
-  /** bookmark 삭제 함수 */
-  onClickDel?: (bookmarkID: number) => Promise<void>;
+  bookmarkData: BookmarkDataProps[];
+  onClickCreateBtn?: (newBookmark: CreateBookmarkProps) => Promise<void>;
+  onClickDelBtn?: (bookmarkID: number) => Promise<void>;
 }
 const Bookmark = ({
   id,
   className,
-  datas,
-  onClickSave,
-  onClickDel,
+  bookmarkData,
+  onClickCreateBtn,
+  onClickDelBtn,
 }: BookmarkProps) => {
-  // add tile hover 여부
   const [isHover, setIsHover] = useState(false);
-  // bookmark add modal open 여부
-  const [isOpen, setIsOpen] = useState(false);
-  // 추가할 bookmark data
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
   const [newBookmark, setNewBookmark] = useState<CreateBookmarkProps>({
     name: "",
     link: "",
@@ -37,7 +30,7 @@ const Bookmark = ({
   const handleKeyUp = (e: any) => {
     // shift + b = 북마크 추가 모달
     if (e.key === "B" && e.shiftKey) {
-      setIsOpen(true);
+      setIsCreateModalOpen(true);
     }
   };
 
@@ -50,13 +43,13 @@ const Bookmark = ({
 
   return (
     <>
-      {datas?.length === 0 && (
+      {bookmarkData?.length === 0 && (
         <StyledBubble isHover={isHover}>
           ⭐️자주 가는 사이트를 추가해보세요
         </StyledBubble>
       )}
       <BookmarkWrap id={id} className={className}>
-        {datas?.map((bookmark: BookmarkDataProps) => (
+        {bookmarkData?.map((bookmark: BookmarkDataProps) => (
           <BookmarkTile
             id={`${bookmark.id}`}
             className="bookmark-tile"
@@ -65,28 +58,28 @@ const Bookmark = ({
             url={bookmark.link}
             imgUrl={bookmark.image}
             onClickDelBtn={
-              onClickDel
+              onClickDelBtn
                 ? (e: any) => {
                     e.stopPropagation();
-                    onClickDel(Number(e.target.id));
+                    onClickDelBtn(Number(e.target.id));
                   }
                 : undefined
             }
           />
         ))}
-        {onClickSave && (
+        {onClickCreateBtn && (
           <>
             <BookmarkTile
-              isAddBtn
-              onClickAddBtn={() => setIsOpen(true)}
+              isPlusTile
+              onClickPlusTile={() => setIsCreateModalOpen(true)}
               setIsHover={setIsHover}
             />
             <BookmarkAddModal
               value={newBookmark}
               setValue={setNewBookmark}
-              onClickSave={() => onClickSave(newBookmark)}
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
+              onClickCreateBtn={() => onClickCreateBtn(newBookmark)}
+              isOpen={isCreateModalOpen}
+              setIsOpen={setIsCreateModalOpen}
               locationX={-150 + 40}
             />
           </>
@@ -132,7 +125,6 @@ const BookmarkWrap = styled.div`
 
   display: flex;
   flex-direction: row;
-  /* align-items: center; */
 
   .bookmark-tile {
     margin-right: 12px;

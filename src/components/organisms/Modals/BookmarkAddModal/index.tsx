@@ -1,23 +1,16 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
-import styled, { css } from "styled-components";
 import { Btn, Input, MoveModal } from "@components/atoms";
 import { modalAnimation } from "@components/animations";
 import { CreateBookmarkProps } from "@interfaces/homeboard";
+import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import styled, { css } from "styled-components";
 
 export interface BookmarkAddModalProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** 즐겨찾기 제목, 즐겨찾기 링크 */
   value: CreateBookmarkProps;
-  /** 즐겨찾기 제목, 즐겨찾기 링크 setState */
   setValue: Dispatch<SetStateAction<CreateBookmarkProps>>;
-  /** '저장' 버튼 클릭 시 event handling 함수 */
-  onClickSave: () => void;
-  /** 모달 open 여부 */
+  onClickCreateBtn: () => void;
   isOpen: boolean;
-  /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   /** x 좌표 */
   locationX: number;
@@ -28,7 +21,7 @@ const BookmarkAddModal = ({
   className,
   value,
   setValue,
-  onClickSave,
+  onClickCreateBtn,
   isOpen,
   setIsOpen,
   locationX,
@@ -38,11 +31,11 @@ const BookmarkAddModal = ({
   const name_input = useRef<HTMLInputElement>(null);
 
   // 생성 클릭시
-  const handleClickAdd = () => {
+  const handleClickCreateBtn = () => {
     value.link !== ""
       ? value.name !== ""
         ? (() => {
-            onClickSave();
+            onClickCreateBtn();
             setIsOpen(false);
           })()
         : name_input.current?.focus()
@@ -51,7 +44,7 @@ const BookmarkAddModal = ({
 
   // enter 키 클릭 시
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    e.key === "Enter" && handleClickAdd();
+    e.key === "Enter" && handleClickCreateBtn();
   };
   // esc 키 클릭 시
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -118,7 +111,7 @@ const BookmarkAddModal = ({
           className="button__edit"
           isOrange
           isAtvBtn
-          onClick={handleClickAdd}
+          onClick={handleClickCreateBtn}
         >
           추가
         </Btn>

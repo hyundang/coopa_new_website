@@ -1,14 +1,10 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 export interface BubbleProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** hover 여부 */
-  isHover?: boolean;
-  /** children */
   children?: React.ReactNode;
+  isHover?: boolean;
 }
 const Bubble = ({ id, className, isHover, children }: BubbleProps) => {
   return (
