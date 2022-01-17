@@ -92,42 +92,30 @@ const Cookies = ({
                 <CookieMobile
                   key={cookie.id}
                   type={type}
-                  cookie={cookie}
+                  cookieData={cookie}
                   cookieModule={cookieModule}
                 />
               ))}
-              {unpinnedCookieList.map((cookie, idx) =>
-                idx === unpinnedCookieList.length - 1 ? (
-                  <CookieMobile
-                    key={cookie.id}
-                    type={type}
-                    cookie={
-                      dirInfo
-                        ? {
-                            ...cookie,
-                            directoryInfo: dirInfo,
-                          }
-                        : cookie
-                    }
-                    cookieModule={cookieModule}
-                    ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
-                  />
-                ) : (
-                  <CookieMobile
-                    key={cookie.id}
-                    type={type}
-                    cookie={
-                      dirInfo
-                        ? {
-                            ...cookie,
-                            directoryInfo: dirInfo,
-                          }
-                        : cookie
-                    }
-                    cookieModule={cookieModule}
-                  />
-                ),
-              )}
+              {unpinnedCookieList.map((cookie, idx) => (
+                <CookieMobile
+                  key={cookie.id}
+                  type={type}
+                  cookieData={
+                    dirInfo
+                      ? {
+                          ...cookie,
+                          directoryInfo: dirInfo,
+                        }
+                      : cookie
+                  }
+                  cookieModule={cookieModule}
+                  ref={
+                    idx === unpinnedCookieList.length - 1
+                      ? (e: HTMLElement | null) => e !== null && setTarget(e)
+                      : undefined
+                  }
+                />
+              ))}
             </CookieMobileWrap>
           ) : size.width && size.width < 1024 ? (
             <CookieWrap>
@@ -135,42 +123,30 @@ const Cookies = ({
                 <CookieTablet
                   key={cookie.id}
                   type={type}
-                  cookie={cookie}
+                  cookieData={cookie}
                   cookieModule={cookieModule}
                 />
               ))}
-              {unpinnedCookieList.map((cookie, idx) =>
-                idx === unpinnedCookieList.length - 1 ? (
-                  <CookieTablet
-                    key={cookie.id}
-                    type={type}
-                    cookie={
-                      dirInfo
-                        ? {
-                            ...cookie,
-                            directoryInfo: dirInfo,
-                          }
-                        : cookie
-                    }
-                    cookieModule={cookieModule}
-                    ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
-                  />
-                ) : (
-                  <CookieTablet
-                    key={cookie.id}
-                    type={type}
-                    cookie={
-                      dirInfo
-                        ? {
-                            ...cookie,
-                            directoryInfo: dirInfo,
-                          }
-                        : cookie
-                    }
-                    cookieModule={cookieModule}
-                  />
-                ),
-              )}
+              {unpinnedCookieList.map((cookie, idx) => (
+                <CookieTablet
+                  key={cookie.id}
+                  type={type}
+                  cookieData={
+                    dirInfo
+                      ? {
+                          ...cookie,
+                          directoryInfo: dirInfo,
+                        }
+                      : cookie
+                  }
+                  cookieModule={cookieModule}
+                  ref={
+                    idx === unpinnedCookieList.length - 1
+                      ? (e: HTMLElement | null) => e !== null && setTarget(e)
+                      : undefined
+                  }
+                />
+              ))}
             </CookieWrap>
           ) : (
             <CookieWrap>
@@ -178,7 +154,7 @@ const Cookies = ({
                 <Cookie
                   key={cookie.id}
                   type={type}
-                  cookie={cookie}
+                  cookieData={cookie}
                   cookieModule={cookieModule}
                   isLoading={isLoading}
                   unpinnedDir={unpinnedDir}
@@ -186,46 +162,30 @@ const Cookies = ({
                   createDir={createDir}
                 />
               ))}
-              {unpinnedCookieList.map((cookie, idx) =>
-                idx === unpinnedCookieList.length - 1 ? (
-                  <Cookie
-                    key={cookie.id}
-                    type={type}
-                    cookie={
-                      dirInfo
-                        ? {
-                            ...cookie,
-                            directoryInfo: dirInfo,
-                          }
-                        : cookie
-                    }
-                    isLoading={isLoading}
-                    cookieModule={cookieModule}
-                    unpinnedDir={unpinnedDir}
-                    pinnedDir={pinnedDir}
-                    createDir={createDir}
-                    ref={(e: HTMLElement | null) => e !== null && setTarget(e)}
-                  />
-                ) : (
-                  <Cookie
-                    key={cookie.id}
-                    type={type}
-                    cookie={
-                      dirInfo
-                        ? {
-                            ...cookie,
-                            directoryInfo: dirInfo,
-                          }
-                        : cookie
-                    }
-                    cookieModule={cookieModule}
-                    isLoading={isLoading}
-                    unpinnedDir={unpinnedDir}
-                    pinnedDir={pinnedDir}
-                    createDir={createDir}
-                  />
-                ),
-              )}
+              {unpinnedCookieList.map((cookie, idx) => (
+                <Cookie
+                  key={cookie.id}
+                  type={type}
+                  cookieData={
+                    dirInfo
+                      ? {
+                          ...cookie,
+                          directoryInfo: dirInfo,
+                        }
+                      : cookie
+                  }
+                  isLoading={isLoading}
+                  cookieModule={cookieModule}
+                  unpinnedDir={unpinnedDir}
+                  pinnedDir={pinnedDir}
+                  createDir={createDir}
+                  ref={
+                    idx === unpinnedCookieList.length - 1
+                      ? (e: HTMLElement | null) => e !== null && setTarget(e)
+                      : undefined
+                  }
+                />
+              ))}
             </CookieWrap>
           )}
         </>
