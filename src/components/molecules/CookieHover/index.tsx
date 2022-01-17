@@ -20,7 +20,7 @@ export interface CookieHoverProps {
   //현재 디렉토리
   currDir: string;
   //set currDir
-  setCurrDir: (dir: string) => void;
+  setCurrDir: Dispatch<SetStateAction<string>>;
   // postHandler:
 }
 

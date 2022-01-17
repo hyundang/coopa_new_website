@@ -19,7 +19,6 @@ import styled from "styled-components";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 // modules
 import CookieModule from "@modules/CookieModule";
-import DirDetailModule from "@modules/DirDetailModule";
 
 export interface CookiesProps {
   /** cookie type */
@@ -32,7 +31,6 @@ export interface CookiesProps {
   /** cookie data loading */
   isLoading: boolean;
   /** 쿠키 모듈 */
-  // cookieModule: ReturnType<typeof CookieModule | typeof DirDetailModule>;
   cookieModule: ReturnType<typeof CookieModule>;
   /** 일반 디렉토리 */
   unpinnedDir: DirDataProps[];
@@ -41,7 +39,7 @@ export interface CookiesProps {
   /** 온보딩 모달 오픈 */
   setIsOnboardOpen?: Dispatch<SetStateAction<boolean>>;
   /** add dir */
-  createDir?: (body: CreateDirProps) => void;
+  createDir?: (body: CreateDirProps) => Promise<number>;
 }
 
 const Cookies = ({
