@@ -38,7 +38,7 @@ export interface DirDetailProps {
   /** 고정 디렉토리 */
   pinnedDir?: DirDataProps[];
   /** 디렉토리 생성 */
-  createDir?: (e: CreateDirProps) => Promise<void>;
+  createDir?: (e: CreateDirProps) => Promise<number>;
   /** 쿠키 상세 모듈 */
   cookieModule: ReturnType<typeof CookieModule>;
   unpinnedCookieList: CookieDataProps[];
