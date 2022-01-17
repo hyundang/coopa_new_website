@@ -13,7 +13,7 @@ const putUserData = async (body: UpdateUserProps): Promise<undefined> => {
   return undefined;
 };
 
-const putHomeboardData = async (imgFile: File): Promise<string | unknown> => {
+const putHomeboardData = async (imgFile: File): Promise<string | undefined> => {
   try {
     const body = new FormData();
     body.append("image", imgFile);
@@ -28,7 +28,6 @@ const putHomeboardData = async (imgFile: File): Promise<string | unknown> => {
     return homeboard;
   } catch (e) {
     console.log("[FAIL] PUT HOMEBOARD IMAGE DATA", e);
-    return e;
   }
 };
 
