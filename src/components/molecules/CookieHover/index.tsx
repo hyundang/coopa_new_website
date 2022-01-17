@@ -1,27 +1,19 @@
-import { useState, SetStateAction, Dispatch } from "react";
-import styled from "styled-components";
 import { DropDown } from "@components/atoms";
+import { ListContent } from "@components/molecules";
 import { DirDataProps } from "@interfaces/directory";
-import { ListContent } from "..";
+import React, { useState, SetStateAction, Dispatch } from "react";
+import styled from "styled-components";
 
 export interface CookieHoverProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** 모든 디렉토리 data */
   unpinnedDir: DirDataProps[];
-  /** 고정 디렉토리 */
   pinnedDir: DirDataProps[];
-  /** cardState를 parking으로 변경 */
   setCardState: Dispatch<
     SetStateAction<"hover" | "normal" | "parking" | "input">
   >;
-  //현재 디렉토리
   currDir: string;
-  //set currDir
   setCurrDir: Dispatch<SetStateAction<string>>;
-  // postHandler:
 }
 
 const CookieHover = ({
