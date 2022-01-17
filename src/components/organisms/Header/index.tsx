@@ -1,29 +1,36 @@
+// assets
 import { SearchIcon } from "@assets/icons/common";
-import { InfoIcon, NotiIcon } from "@assets/icons/Header";
+import { InfoIcon, NotiIcon, NotiIconAtv } from "@assets/icons/Header";
 import { LogoImg } from "@assets/imgs/common";
-import { Bubble, Icon } from "@components/atoms";
-import { useRouter } from "next/dist/client/router";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+// components
+import { Icon } from "@components/atoms";
+import { NotiModal, Onboarding } from "@components/organisms";
+// libs
+import { useRouter } from "next/router";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
-import { NotiModal, Onboarding } from "@components/organisms";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import CheckNotiUpdate from "@lib/CheckNotiUpdate";
+// modules
 import { HomeboardState } from "@modules/states";
+import SaveDataInWebCookie from "@lib/SaveDataInWebCookie";
 
 export interface HeaderProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** onboarding open 여부 */
   isOnboardOpen: boolean;
   setIsOnboardOpen: Dispatch<SetStateAction<boolean>>;
   /** profile img url */
   imgUrl?: string;
-  /** mypage icon 여부 */
   isMypageIconExist?: boolean;
   isSearchIconExist?: boolean;
-  /** mypage 여부 */
   isMypage?: boolean;
 }
 const Header = ({
@@ -38,6 +45,7 @@ const Header = ({
 }: HeaderProps) => {
   const router = useRouter();
   const [isNotiOpen, setIsNotiOpen] = useState(false);
+  const [isNotiUpdated, setIsNotiUpdated] = useState(false);
 
   // 검색창 관련
   const setPreventFadeout = useSetRecoilState(
@@ -62,6 +70,12 @@ const Header = ({
     setIsSearched(false);
   };
 
+  const handleClickNotiIcon = () => {
+    setIsNotiOpen(true);
+    setIsNotiUpdated(false);
+    SaveDataInWebCookie("isNotiUpdated", false);
+  };
+
   // 키 떼어냈을 때
   const handleKeyUp = (e: any) => {
     // shift + i = 온보딩 모달
@@ -80,6 +94,7 @@ const Header = ({
   }, [windowSize.width]);
 
   useEffect(() => {
+    setIsNotiUpdated(CheckNotiUpdate());
     window.addEventListener("keyup", handleKeyUp);
     return () => {
       window.removeEventListener("keyup", handleKeyUp);
@@ -125,9 +140,13 @@ const Header = ({
           className="content__noti"
           role="button"
           ref={notiIconLocation}
-          onClick={() => setIsNotiOpen(true)}
+          onClick={handleClickNotiIcon}
         >
-          <NotiIcon className="noti_icon" />
+          {isNotiUpdated ? (
+            <NotiIconAtv className="noti_icon" />
+          ) : (
+            <NotiIcon className="noti_icon" />
+          )}
         </Icon>
         {isMypageIconExist && (
           <Icon
