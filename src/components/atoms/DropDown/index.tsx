@@ -1,48 +1,46 @@
-import styled from "styled-components";
 import { DropDownIcon } from "@assets/icons/card";
-import { Dispatch, SetStateAction } from "react";
 import { dropdownAnimation } from "@components/animations";
+import React, { Dispatch, MouseEvent, SetStateAction } from "react";
+import styled from "styled-components";
 
 export interface DropDownProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** 내부에 들어가는 컴포넌트 */
-  children?: React.ReactNode;
-  //현재 디렉토리
-  selectedItem?: string | undefined;
-  //style
   style?: React.CSSProperties;
-  //dropdown active state
+  children?: React.ReactNode;
+  /** 현재 디렉토리 */
+  selectedDir: string;
+  /** dropdown active state */
   isActive: boolean;
-  //dropdown active setState
+  /** dropdown active setState */
   setIsActive: Dispatch<SetStateAction<boolean>>;
 }
 const DropDown = ({
   id,
   className,
   children,
-  selectedItem,
+  selectedDir,
   style,
   isActive,
   setIsActive,
 }: DropDownProps) => {
+  const handleClickWrap = (e: MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setIsActive(!isActive);
+  };
+
   return (
     <DropDownWrap
       id={id}
       className={className}
       style={style}
-      onClick={(e) => {
-        e.stopPropagation();
-        setIsActive(!isActive);
-      }}
+      onClick={handleClickWrap}
       isActive={isActive}
     >
       <details className="dropdown-details">
         <summary className="current">
-          <p>{selectedItem || "모든 쿠키"}</p>
-          <DropDownIcon style={{ position: "absolute", right: "13px" }} />
+          <p>{selectedDir}</p>
+          <DropDownIcon className="icon" />
         </summary>
         <div className="content">{children}</div>
       </details>
@@ -77,6 +75,10 @@ const DropDownWrap = styled.div<DropDownWrapProps>`
       overflow: hidden;
     }
     img {
+      position: absolute;
+      right: 13px;
+    }
+    .icon {
       position: absolute;
       right: 13px;
     }

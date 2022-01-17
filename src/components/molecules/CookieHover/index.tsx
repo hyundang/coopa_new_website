@@ -40,7 +40,7 @@ const CookieHover = ({
     <CookieHoverWrap
       id={id}
       className={className}
-      selectedItem={currDir}
+      selectedDir={currDir}
       isActive={isActive}
       setIsActive={setIsActive}
     >

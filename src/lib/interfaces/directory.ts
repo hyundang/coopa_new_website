@@ -20,7 +20,7 @@ export interface CreateDirProps {
 export interface CreateDirectoryResProps {
   directoryId: number;
   name: string;
-  emoji: string;
+  emoji?: string;
 }
 
 export interface DeleteDirProps {

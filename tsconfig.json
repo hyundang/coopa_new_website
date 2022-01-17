@@ -28,9 +28,9 @@
       "@lib/*": ["src/lib/*"],
       "@assets/*": ["src/assets/*"],
       "@styles/*": ["scr/styles/*"],
-      "@modules/*": ["src/modules/*"],
+      "@modules/*": ["src/modules/*"]
     }
   },
   "include": ["src", "next.config.js", "next-env.d.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "*.stories.tsx"]
 }

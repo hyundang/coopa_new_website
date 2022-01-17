@@ -1,34 +1,31 @@
-import styled from "styled-components";
 import { DefaultEmojiIcon } from "@assets/icons/card";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { DirDataProps } from "@interfaces/directory";
+import { CreateDirProps } from "@interfaces/directory";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import styled from "styled-components";
 
-export type Dirtype = {
-  emoji?: string;
-  name: string;
-};
 export interface ListProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
   /** 검색 중인가 */
-  isSearched: boolean;
-  /** 현재 디렉토리 변경 setState */
+  isSearching: boolean;
+  /** 현재 디렉토리 변경 */
   setCurrDir: (dir: string) => void;
-  /** directory list data */
-  unpinnedDir: Dirtype[];
-  /** fixed directory */
-  pinnedDir: Dirtype[];
-  /** searched directory */
-  searchedDir: Dirtype[];
-  /** 하단 블러 처리 표시 여부 setState */
+  unpinnedDir: CreateDirProps[];
+  pinnedDir: CreateDirProps[];
+  searchedDir: CreateDirProps[];
+  /** 하단 블러 설정 */
   setIsBlur?: Dispatch<SetStateAction<boolean>>;
 }
 const List = ({
   id,
   className,
-  isSearched,
+  isSearching,
   unpinnedDir,
   pinnedDir,
   searchedDir,
@@ -38,9 +35,9 @@ const List = ({
   const viewport = useRef<HTMLUListElement>(null);
   const [target, setTarget] = useState<HTMLDivElement>();
 
-  const returnLists = (data: Dirtype[]) => {
-    return data?.map((dir) => (
-      <li
+  const returnLists = (dirList: CreateDirProps[]) => {
+    return dirList?.map((dir) => (
+      <ListItem
         className="list-item"
         key={dir.name}
         role="menuitem"
@@ -50,12 +47,12 @@ const List = ({
         }}
       >
         {dir.emoji ? (
-          <span className="list-item__emoji">{dir.emoji}</span>
+          <span className="emoji">{dir.emoji}</span>
         ) : (
-          <DefaultEmojiIcon className="list-item__emoji" />
+          <DefaultEmojiIcon className="emoji" />
         )}
-        <span className="list-item__name">{dir.name}</span>
-      </li>
+        <span className="name">{dir.name}</span>
+      </ListItem>
     ));
   };
 
@@ -77,7 +74,7 @@ const List = ({
 
   return (
     <ListWrap id={id} className={className} ref={viewport} role="menu">
-      {isSearched ? (
+      {isSearching ? (
         <>
           <span>검색결과</span>
           {returnLists(searchedDir)}
@@ -109,13 +106,13 @@ const ListWrap = styled.ul`
   overflow: auto;
   & > span {
     font-weight: 500;
-    font-size: 1rem;
-    line-height: 1.3rem;
+    font-size: 10px;
+    line-height: 13px;
     color: var(--gray_5);
-    margin: 0.5rem;
+    margin: 5px;
   }
   @media screen and (min-width: 1600px) {
-    height: 20.2rem;
+    height: 202px;
   }
   ::-webkit-scrollbar {
     width: 8px;
@@ -131,54 +128,56 @@ const ListWrap = styled.ul`
   ::-webkit-scrollbar-thumb:hover {
     background: var(--gray_3);
   }
-  .list-item {
-    display: flex;
-    align-items: center;
-    width: 20.3rem;
+`;
+
+const ListItem = styled.li`
+  display: flex;
+  align-items: center;
+  width: 203px;
+  border-radius: 17px;
+  font-size: 14px;
+
+  @media screen and (min-width: 1600px) {
+    font-size: 15px;
+    width: 235px;
     border-radius: 17px;
-    font-size: 14px;
+  }
+  :hover {
+    background: var(--gray_hover_2);
+    /* 오른쪽 동그라미 */
+    ::after {
+      content: "";
+      position: relative;
+      display: block;
+      margin: 10px;
+      margin-left: auto;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+  }
+  .emoji {
+    width: 16px;
+    font-size: 16px;
+    margin: 0 10px;
+    object-fit: fill;
     @media screen and (min-width: 1600px) {
-      font-size: 15px;
-      width: 23.5rem;
-      border-radius: 17px;
+      font-size: 18px;
+      width: 18px;
+      margin: 0 13px;
     }
-    :hover {
-      background: var(--gray_hover_2);
-      /* 오른쪽 동그라미 */
-      ::after {
-        content: "";
-        position: relative;
-        display: block;
-        margin: 10px;
-        margin-left: auto;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--orange);
-      }
-    }
-    &__emoji {
-      width: 16px;
-      font-size: 16px;
-      margin: 0 10px;
-      object-fit: fill;
-      @media screen and (min-width: 1600px) {
-        font-size: 18px;
-        width: 18px;
-        margin: 0 13px;
-      }
-    }
-    &__name {
-      max-width: 145px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      font-style: normal;
-      font-weight: 500;
-      margin: 7px 0;
-      @media screen and (min-width: 1600px) {
-        margin: 9px 0;
-      }
+  }
+  .name {
+    max-width: 145px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    font-style: normal;
+    font-weight: 500;
+    margin: 7px 0;
+    @media screen and (min-width: 1600px) {
+      margin: 9px 0;
     }
   }
 `;
