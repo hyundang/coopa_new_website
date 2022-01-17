@@ -33,7 +33,7 @@ export interface CookieProps {
   /** 고정 디렉토리 */
   pinnedDir?: DirDataProps[];
   /** post dir */
-  createDir?: (data: CreateDirProps) => void;
+  createDir?: (data: CreateDirProps) => Promise<number>;
 }
 const Cookie = (
   {
@@ -45,7 +45,7 @@ const Cookie = (
     cookieModule,
     unpinnedDir = [],
     pinnedDir = [],
-    createDir= () => {},
+    createDir = async () => -1,
   }: CookieProps,
   ref?:
     | ((instance: HTMLButtonElement | null) => void)
@@ -59,52 +59,75 @@ const Cookie = (
   >("normal");
 
   //현재 디렉토리
-  const [currDir, setCurrDir] = useState(cookie.directoryInfo?.name || "");
+  const [currDir, setCurrDir] = useState(
+    cookie.directoryInfo?.name || "모든 쿠키",
+  );
 
   const [updatedDir, setUpdatedDir] = useState({
     name: cookie.directoryInfo?.name || "",
     emoji: cookie.directoryInfo?.emoji || "",
   });
 
+  const findDirId = (): number => {
+    let selectedDir = pinnedDir.filter((dir) => dir.name === currDir);
+    if (selectedDir.length > 0) return selectedDir[0].id;
+    selectedDir = unpinnedDir.filter((dir) => dir.name === currDir);
+    if (selectedDir.length > 0) return selectedDir[0].id;
+    return -1;
+  };
+
+  const updateDirOfCookie = async (dirId: number) => {
+    const body: CreateCookieToDirProps = {
+      cookieId: cookie.id || -1,
+      directoryId: dirId,
+    };
+    if (body.directoryId) {
+      const result = await cookieModule.updateDirOfCookie(
+        body,
+        cookie.isPinned || false,
+        type === "searched",
+      );
+      if (result) {
+        setUpdatedDir({
+          name: result?.directoryName || "",
+          emoji: result?.directoryEmoji || "",
+        });
+        setCardState("parking");
+        setTimeout(() => setCardState("normal"), 1500);
+      }
+    }
+  };
+
+  const createAndUpdateDirOfCookie = async () => {
+    if (!cookie.directoryInfo?.name && currDir === "모든 쿠키") {
+      return;
+    }
+    if (currDir !== cookie.directoryInfo?.name) {
+      const isNewDir =
+        unpinnedDir.filter((dir) => dir.name === currDir).length === 0 &&
+        pinnedDir.filter((dir) => dir.name === currDir).length === 0;
+      if (isNewDir) {
+        const dirId = await createDir({ name: currDir });
+        await updateDirOfCookie(dirId);
+      } else {
+        await updateDirOfCookie(findDirId());
+      }
+    }
+  };
+
   useEffect(() => {
     (async () => {
-      if (currDir !== cookie.directoryInfo?.name) {
-        const isNewDir =
-          unpinnedDir.filter((dir) => dir.name === currDir).length === 0 &&
-          pinnedDir.filter((dir) => dir.name === currDir).length === 0;
-        if (isNewDir) 
-          await createDir({ name: currDir });
-          
-        const body: CreateCookieToDirProps = {
-          cookieId: cookie.id || -1,
-          directoryId: unpinnedDir.filter((dir) => dir.name === currDir)[0]?.id,
-        };
-        const result =
-          body.directoryId &&
-          (await cookieModule.updateDirOfCookie(
-            body,
-            cookie.isPinned || false,
-            type === "searched",
-          ));
-
-        if (result) {
-          setUpdatedDir({
-            name: result?.directoryName || "",
-            emoji: result?.directoryEmoji || "",
-          });
-          setCardState("parking");
-          setTimeout(() => setCardState("normal"), 1500);
-        }
-      }
+      await createAndUpdateDirOfCookie();
     })();
-  }, [currDir, unpinnedDir]);
+  }, [currDir]);
+
   return (
     <CookieWrap
       id={id}
       className={className}
       onClick={() => {
         window.open(cookie.link);
-        cookieModule.editCookieReadCount(
+        cookieModule.updateCookieReadCnt(
           cookie.id || -1,
           cookie.isPinned || false,
           type === "searched",
