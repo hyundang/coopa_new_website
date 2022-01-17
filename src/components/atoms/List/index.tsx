@@ -15,7 +15,7 @@ export interface ListProps {
   /** 검색 중인가 */
   isSearched: boolean;
   /** 현재 디렉토리 변경 setState */
-  setCurrDir: Dispatch<SetStateAction<string>>;
+  setCurrDir: (dir: string) => void;
   /** directory list data */
   unpinnedDir: Dirtype[];
   /** fixed directory */

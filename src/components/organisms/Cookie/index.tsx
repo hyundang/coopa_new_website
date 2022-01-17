@@ -23,7 +23,7 @@ export interface CookieProps {
   /** cookie type */
   type: "normal" | "searched" | "dirDetail" | "dirShare";
   /** cookie */
-  cookie?: CookieDataProps;
+  cookie: CookieDataProps;
   /** cookie data loading */
   isLoading: boolean;
   /** 쿠키 모듈 */
@@ -43,9 +43,9 @@ const Cookie = (
     cookie,
     isLoading,
     cookieModule,
-    unpinnedDir,
-    pinnedDir,
-    createDir,
+    unpinnedDir = [],
+    pinnedDir = [],
+    createDir= () => {},
   }: CookieProps,
   ref?:
     | ((instance: HTMLButtonElement | null) => void)
@@ -59,29 +59,39 @@ const Cookie = (
   >("normal");
 
   //현재 디렉토리
-  const [currDir, setCurrDir] = useState(
-    cookie?.directoryInfo?.name === undefined
-      ? "모든 쿠키"
-      : cookie?.directoryInfo.name,
-  );
+  const [currDir, setCurrDir] = useState(cookie.directoryInfo?.name || "");
+
+  const [updatedDir, setUpdatedDir] = useState({
+    name: cookie.directoryInfo?.name || "",
+    emoji: cookie.directoryInfo?.emoji || "",
+  });
+
   useEffect(() => {
     (async () => {
-      if (currDir !== cookie?.directoryInfo?.name && currDir !== "모든 쿠키") {
-        if (unpinnedDir?.filter((dir) => dir.name === currDir).length === 0) {
-          createDir && (await createDir({ name: currDir }));
-        }
-        if (currDir !== cookie?.directoryInfo?.name) {
-          const body: CreateCookieToDirProps = {
-            cookieId: cookie?.id || -1,
-            directoryId:
-              unpinnedDir?.filter((dir) => dir.name === currDir)[0]?.id || 0,
-          };
+      if (currDir !== cookie.directoryInfo?.name) {
+        const isNewDir =
+          unpinnedDir.filter((dir) => dir.name === currDir).length === 0 &&
+          pinnedDir.filter((dir) => dir.name === currDir).length === 0;
+        if (isNewDir) 
+          await createDir({ name: currDir });
+          
+        const body: CreateCookieToDirProps = {
+          cookieId: cookie.id || -1,
+          directoryId: unpinnedDir.filter((dir) => dir.name === currDir)[0]?.id,
+        };
+        const result =
           body.directoryId &&
-            cookieModule.updateDirOfCookie(
-              body,
-              cookie?.isPinned || false,
-              type === "searched",
-            );
+          (await cookieModule.updateDirOfCookie(
+            body,
+            cookie.isPinned || false,
+            type === "searched",
+          ));
+
+        if (result) {
+          setUpdatedDir({
+            name: result?.directoryName || "",
+            emoji: result?.directoryEmoji || "",
+          });
           setCardState("parking");
           setTimeout(() => setCardState("normal"), 1500);
         }
@@ -93,10 +103,10 @@ const Cookie = (
       id={id}
       className={className}
       onClick={() => {
-        window.open(cookie?.link);
-        cookieModule.updateCookieReadCnt(
-          cookie?.id || -1,
-          cookie?.isPinned || false,
+        window.open(cookie.link);
+        cookieModule.editCookieReadCount(
+          cookie.id || -1,
+          cookie.isPinned || false,
           type === "searched",
         );
       }}
@@ -113,6 +123,7 @@ const Cookie = (
         cardState={type === "dirShare" ? "normal" : cardState}
         setCardState={setCardState}
         cookie={cookie}
+        updatedDirectory={updatedDir}
         copyCookieLink={cookieModule.copyCookieLink}
         deleteCookieHanlder={
           cookie?.isPinned
@@ -136,12 +147,12 @@ const Cookie = (
       {type !== "dirShare" && (cardState === "hover" || cardState === "input") && (
         <div className="hover-div">
           <CookieHover
-            unpinnedDir={unpinnedDir || []}
-            pinnedDir={pinnedDir || []}
+            unpinnedDir={unpinnedDir}
+            pinnedDir={pinnedDir}
             setCardState={setCardState}
             currDir={
-              cookie?.directoryInfo?.emoji !== null
-                ? `${cookie?.directoryInfo?.emoji || ""} ${currDir}`
+              cookie.directoryInfo?.emoji !== null
+                ? `${cookie.directoryInfo?.emoji || ""} ${currDir}`
                 : currDir
             }
             setCurrDir={setCurrDir}
@@ -149,20 +160,20 @@ const Cookie = (
         </div>
       )}
       <section className="cookie--desc">
-        <h1 className="cookie--title">{cookie?.title}</h1>
-        <div className="cookie--content">{cookie?.content}</div>
+        <h1 className="cookie--title">{cookie.title}</h1>
+        <div className="cookie--content">{cookie.content}</div>
         <div style={{ flexGrow: 1 }} />
         <div className="cookie--profile">
           <img
             className="cookie--profile__favicon"
-            src={cookie?.favicon}
+            src={cookie.favicon}
             alt={fvcOnErrorImg}
             onError={(e) => {
               e.currentTarget.src = fvcOnErrorImg;
             }}
           />
           <div className="cookie--profile__favicon--loading" />
-          <cite className="cookie--profile__author">{cookie?.provider}</cite>
+          <cite className="cookie--profile__author">{cookie.provider}</cite>
         </div>
       </section>
     </CookieWrap>

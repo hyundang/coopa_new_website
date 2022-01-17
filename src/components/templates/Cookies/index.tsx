@@ -84,7 +84,7 @@ const Cookies = ({
   }, [target]);
 
   return (
-    <CookiesCntnr>
+    <Container>
       {!isLoading &&
       (pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0) ? (
         <>
@@ -266,17 +266,16 @@ const Cookies = ({
           )}
         </>
       )}
-    </CookiesCntnr>
+    </Container>
   );
 };
 
 export default Cookies;
 
-const CookiesCntnr = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   .empty {
     &__button--cookie {
       width: 312px;
