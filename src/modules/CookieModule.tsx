@@ -285,11 +285,15 @@ const CookieModule = ({
           false,
         );
       }
-      unpinnedMutate(
-        (outerCookieList) =>
-          changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
-        false,
-      );
+      if (cookieFilter === "latest") {
+        unpinnedMutate(
+          (outerCookieList) =>
+            changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
+          false,
+        );
+      } else {
+        unpinnedMutate(undefined, true);
+      }
       return true;
     }
     alert("쿠키 추가 실패!");
@@ -367,12 +371,14 @@ const CookieModule = ({
             return cookie;
           });
         }, false);
-      else
+      else if (cookieFilter !== "oldest")
         unpinnedMutate(
           (outerCookieList) =>
             changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
           false,
         );
+      else unpinnedMutate(undefined, true);
+
       setIsUpdateLoading(false);
       setIsToastMsgVisible({
         ...isToastMsgVisible,
@@ -462,12 +468,16 @@ const CookieModule = ({
     const res = await putApi.updateCookiePin(cookieId, !isPinned);
     if (res) {
       if (!isPinned) {
-        pinnedMutate(async (cookieList) => {
-          return changeSequenceOfSpecificCookieInCookieList(
-            cookieList || initAllPinnedCookieData,
-            res,
-          );
-        }, false);
+        if (cookieFilter === "latest" || cookieFilter === "oldest") {
+          pinnedMutate(async (cookieList) => {
+            return changeSequenceOfSpecificCookieInCookieList(
+              cookieList || initAllPinnedCookieData,
+              res,
+            );
+          }, false);
+        } else {
+          pinnedMutate(undefined, true);
+        }
         unpinnedMutate(async (outerCookieList) => {
           return filterSpecificUnpinnedCookie(outerCookieList, cookieId);
         }, false);
@@ -485,9 +495,15 @@ const CookieModule = ({
             cookieId,
           );
         }, false);
-        unpinnedMutate(async (outerCookieList) => {
-          return changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res);
-        }, false);
+        if (cookieFilter === "latest") {
+          unpinnedMutate(
+            (outerCookieList) =>
+              changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
+            false,
+          );
+        } else {
+          unpinnedMutate(undefined, true);
+        }
       }
       return;
     }
