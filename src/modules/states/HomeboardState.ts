@@ -13,8 +13,8 @@ const SearchValueState = atom<string>({
 });
 
 // 검색창 활성화 여부
-const IsSearchVisibleState = atom<boolean>({
-  key: "SEARCH/isVisible",
+const IsSearchBarVisibleState = atom<boolean>({
+  key: "SEARCH/isBarVisible",
   default: false,
 });
 
@@ -39,7 +39,7 @@ const HomeboardModalImgState = atom<string>({
 const HomeboardState = {
   IsSearchedState,
   SearchValueState,
-  IsSearchVisibleState,
+  IsSearchBarVisibleState,
   PreventFadeoutState,
   HomeboardImgState,
   HomeboardModalImgState,

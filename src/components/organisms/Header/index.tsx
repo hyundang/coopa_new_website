@@ -44,7 +44,7 @@ const Header = ({
     HomeboardState.PreventFadeoutState,
   );
   const [isSearchVisible, setIsSearchVisible] = useRecoilState(
-    HomeboardState.IsSearchVisibleState,
+    HomeboardState.IsSearchBarVisibleState,
   );
   const setIsSearched = useSetRecoilState(HomeboardState.IsSearchedState);
   const setSearchValue = useSetRecoilState(HomeboardState.SearchValueState);
