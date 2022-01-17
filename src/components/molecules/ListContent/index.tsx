@@ -20,7 +20,7 @@ export interface ListContentProps {
     SetStateAction<"hover" | "normal" | "parking" | "input">
   >;
   // set currDir
-  setCurrDir: (dir: string) => void;
+  setCurrDir: Dispatch<SetStateAction<string>>;
 }
 const ListContent = ({
   className,
@@ -36,13 +36,10 @@ const ListContent = ({
   const [isBlur, setIsBlur] = useState(true);
   const [isError, setIsError] = useState(false);
 
-  const postHandler = () => {
-    setCurrDir(text);
-  };
-
   //디렉토리 검색
   useEffect(() => {
-    unpinnedDir.find((dir) => dir.name === text)
+    unpinnedDir.find((dir) => dir.name === text) ||
+    pinnedDir.find((dir) => dir.name === text)
       ? setIsError(true)
       : setIsError(false);
     setSearchedDir(
@@ -83,7 +80,7 @@ const ListContent = ({
               setText(e.target.value);
               setCardState("input");
             }}
-            onKeyPress={(e) => (e.key === "Enter" ? postHandler() : {})}
+            onKeyPress={(e) => (e.key === "Enter" ? setCurrDir(text) : {})}
             onBlur={(e) =>
               e.target.className !== "form" && setCardState("normal")
             }
@@ -94,7 +91,7 @@ const ListContent = ({
         </InputWrapper>
         <Btn
           className="directory-form__button"
-          onClick={() => postHandler()}
+          onClick={() => setCurrDir(text)}
           isOrange
           isCookieDirBtn
           isAtvBtn={!!text.length}
