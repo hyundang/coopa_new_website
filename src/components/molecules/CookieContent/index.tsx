@@ -6,6 +6,7 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import styled from "styled-components";
 
 export interface CookieContentProps {
+  className?: string;
   type: "normal" | "searched" | "dirDetail" | "dirShare";
   cookieData: CookieDataProps;
   onClickPinIcon: () => void;
@@ -14,6 +15,7 @@ export interface CookieContentProps {
   onClickDelIcon: () => void;
 }
 const CookieContent = ({
+  className,
   type,
   cookieData,
   onClickPinIcon,
@@ -22,9 +24,10 @@ const CookieContent = ({
   onClickDelIcon,
 }: CookieContentProps) => {
   return (
-    <ContentWrap>
+    <ContentWrap className={className}>
       <h1 className="title">{cookieData.title}</h1>
       <p className="desc">{cookieData.content}</p>
+      <div style={{ flexGrow: 1 }} />
       <div className="profile">
         <cite className="profile__site">{cookieData.provider}</cite>
         <div style={{ flexGrow: 1 }} />
@@ -58,8 +61,6 @@ const CookieContent = ({
 export default CookieContent;
 
 const ContentWrap = styled.section`
-  position: relative;
-  width: 100%;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -70,6 +71,7 @@ const ContentWrap = styled.section`
     line-height: 25px;
     font-size: 16px;
     font-weight: 500;
+    margin-bottom: 6px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -80,7 +82,6 @@ const ContentWrap = styled.section`
 
   .desc {
     all: unset;
-    margin-top: 6px;
     font-weight: 400;
     line-height: 22px;
     font-size: 14px;
@@ -94,7 +95,7 @@ const ContentWrap = styled.section`
   }
 
   .profile {
-    margin-top: 16px;
+    line-height: normal;
     display: flex;
     flex-direction: row;
     align-items: center;

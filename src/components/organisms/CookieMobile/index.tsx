@@ -48,7 +48,7 @@ const CookieMobile = (
             }
           />
         </div>
-        <CookieContent
+        <StyledCookieContent
           type={type}
           cookieData={cookieData}
           onClickPinIcon={cookieHandlers.handleClickPinIcon}
@@ -109,6 +109,12 @@ const CookieWrap = styled.article`
       border-radius: 8px;
       object-fit: cover;
     }
+  }
+`;
+
+const StyledCookieContent = styled(CookieContent)`
+  .profile {
+    margin-top: 24px;
   }
 `;
 

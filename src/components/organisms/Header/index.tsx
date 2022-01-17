@@ -18,9 +18,9 @@ import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import CheckNotiUpdate from "@lib/CheckNotiUpdate";
+import SaveDataInWebCookie from "@lib/SaveDataInWebCookie";
 // modules
 import { HomeboardState } from "@modules/states";
-import SaveDataInWebCookie from "@lib/SaveDataInWebCookie";
 
 export interface HeaderProps {
   id?: string;

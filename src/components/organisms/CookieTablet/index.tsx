@@ -11,6 +11,7 @@ import React, { SyntheticEvent, RefObject, forwardRef } from "react";
 import CookieHandlers from "@lib/CookieHandlers";
 // modules
 import CookieModule from "@modules/CookieModule";
+import { ImgBox } from "@components/atoms";
 
 export interface CookieMobileProps {
   id?: string;
@@ -44,18 +45,15 @@ const CookieMobile = (
         }}
         ref={ref}
       >
-        <div className="thumbnail-wrap">
-          {cookieData.isPinned && <StyledPinImg className="pin_img" />}
-          <img
-            alt="cookie-thumbnail"
-            className="thumbnail"
-            src={cookieData.thumbnail}
-            onError={(e: SyntheticEvent<HTMLImageElement, Event>) =>
-              (e.currentTarget.src = NoThumbImg)
-            }
-          />
-        </div>
-        <CookieContent
+        {cookieData.isPinned && <StyledPinImg className="pin_img" />}
+        <StyledImgBox
+          id={id}
+          className={className}
+          cookieContent={cookieData?.content}
+          url={cookieData?.thumbnail}
+          isHover={false}
+        />
+        <StyledCookieContent
           type={type}
           cookieData={cookieData}
           onClickPinIcon={cookieHandlers.handleClickPinIcon}
@@ -101,22 +99,23 @@ const CookieWrap = styled.article`
   cursor: pointer;
   position: relative;
   width: 100%;
-  padding: 28px 0;
-  margin-bottom: 5px;
   display: flex;
   flex-direction: column;
+`;
 
-  .thumbnail-wrap {
-    width: 270px;
-    height: 136px;
-    margin-bottom: 16px;
-    .thumbnail {
-      width: 270px;
-      height: 136px;
-      border-radius: 8px;
-      object-fit: cover;
-    }
-  }
+interface StyledImgBoxProps {
+  cookieContent?: string;
+}
+const StyledImgBox = styled(ImgBox)<StyledImgBoxProps>`
+  position: relative;
+  width: 100%;
+  padding-bottom: ${({ cookieContent }) =>
+    cookieContent === "" ? "calc(180/270*100%)" : "calc(136/270*100%)"};
+  border-radius: 10px;
+`;
+
+const StyledCookieContent = styled(CookieContent)`
+  padding: 16px 8px 40px 8px;
 `;
 
 const StyledPinImg = styled(PinImg)`
