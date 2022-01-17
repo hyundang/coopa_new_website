@@ -5,13 +5,9 @@ import { Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
 export interface NotiModalProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** 모달 open 여부 */
   isOpen: boolean;
-  /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   /** x 좌표 */
   locationX: number;

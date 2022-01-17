@@ -113,14 +113,16 @@ const ListHeader = ({
         )}
         {!isSearched && (
           <div className="button-wrap">
-            <StyledIcon
-              className="create"
-              onClick={() => setIsAddOpen(true)}
-              isAtv={isAddOpen}
-              ref={plusIconLocation}
-            >
-              <PlusIcon22 className="plus-icon" />
-            </StyledIcon>
+            {type !== "dirShare" && (
+              <StyledIcon
+                className="create"
+                onClick={() => setIsAddOpen(true)}
+                isAtv={isAddOpen}
+                ref={plusIconLocation}
+              >
+                <PlusIcon22 className="plus-icon" />
+              </StyledIcon>
+            )}
             <StyledIcon
               className="filter"
               onClick={() => setIsFilterOpen(true)}
