@@ -3,14 +3,15 @@ import { CreateDirProps, DirDataProps } from "@interfaces/directory";
 import { UpdateUserProps } from "../interfaces/user";
 import client from "./client";
 
-const putUserData = async (body: UpdateUserProps): Promise<undefined> => {
+const putUserData = async (body: UpdateUserProps): Promise<boolean> => {
   try {
     const { data } = await client.put("/users", body);
     console.log("[SUCCESS] PUT USER DATA", data);
+    return true;
   } catch (e) {
     console.log("[FAIL] PUT USER DATA", e);
+    return false;
   }
-  return undefined;
 };
 
 const putHomeboardData = async (imgFile: File): Promise<string | undefined> => {
