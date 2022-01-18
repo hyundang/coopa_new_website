@@ -1,4 +1,5 @@
 const path = require("path");
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
@@ -8,6 +9,7 @@ module.exports = {
     "storybook-addon-styled-component-theme/dist/preset",
   ],
   webpackFinal: async (config) => {
+    config.resolve.plugins.push(new TsconfigPathsPlugin({}));
     config.module.rules.unshift({
       test: /\.svg$/,
       use: [
@@ -25,15 +27,6 @@ module.exports = {
     // });
 
     config.resolve.modules = [path.resolve(__dirname, ".."), "node_modules"];
-
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      "@components": path.resolve(__dirname, "../src/components"),
-      "@assets": path.resolve(__dirname, "../src/assets"),
-      "@lib": path.resolve(__dirname, "../src/lib"),
-      "@api": path.resolve(__dirname, "../src/lib/api"),
-      "@interfaces": path.resolve(__dirname, "../src/lib/interfaces"),
-    };
 
     return config;
   },

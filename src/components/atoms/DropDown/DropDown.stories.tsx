@@ -44,13 +44,19 @@ export const CookieDropDown = () => {
   const [text, setText] = useState("");
   return (
     <DropDown
-      selectedItem="디렉토리"
       style={{ width: "270px", padding: "14px" }}
       isActive={isActive}
       setIsActive={setIsActive}
+      selectedDir={""}
     >
       <div>
-        <List unpinnedDir={unpinnedDir} setCurrDir={setText} />
+        <List
+          unpinnedDir={unpinnedDir}
+          setCurrDir={setText}
+          isSearching={false}
+          pinnedDir={[]}
+          searchedDir={[]}
+        />
         <div
           style={{
             display: "grid",
@@ -98,7 +104,7 @@ export const NoScrollList = () => {
   const [text, setText] = useState("");
   return (
     <DropDown
-      selectedItem="디렉토리"
+      selectedDir="디렉토리"
       style={{ width: "270px", padding: "14px" }}
       isActive={isActive}
       setIsActive={setIsActive}
@@ -112,6 +118,9 @@ export const NoScrollList = () => {
             },
           ]}
           setCurrDir={setText}
+          isSearching={false}
+          pinnedDir={[]}
+          searchedDir={[]}
         />
         <div
           style={{
