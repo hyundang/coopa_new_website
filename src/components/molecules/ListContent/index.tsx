@@ -73,10 +73,10 @@ const ListContent = ({
             maxLength={13}
             value={inputText}
             isInputError={isInputError}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              setInputText(e.target.value);
-              setCardState("input");
-            }}
+            onFocus={() => setCardState("input")}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setInputText(e.target.value)
+            }
             onKeyPress={(e) => (e.key === "Enter" ? setCurrDir(inputText) : {})}
             onBlur={(e) =>
               e.target.className !== "form" && setCardState("normal")

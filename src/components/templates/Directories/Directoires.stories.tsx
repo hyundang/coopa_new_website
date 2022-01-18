@@ -1,5 +1,6 @@
 import { Meta, Story } from "@storybook/react";
 import Directories, { DirectoriesProps } from ".";
+import { directories } from "@data/dummy/directory";
 
 export default {
   title: "components/templates/Directories",
@@ -7,52 +8,18 @@ export default {
 } as Meta;
 
 const Template: Story<DirectoriesProps> = (args) => {
-  return <Directories {...args} />;
+  return (
+    <Directories
+      {...args}
+      deleteDir={async () => {}}
+      updateDir={async () => {}}
+      updateDirPin={async () => {}}
+      refreshCookie={() => {}}
+    />
+  );
 };
-
-const unpinnedDir = [
-  {
-    emoji: "😀",
-    id: 2543,
-    name: "3ps1",
-    thumbnail: "https://www.notion.so/images/meta/default.png",
-    cookieCnt: 1,
-  },
-  {
-    emoji: "",
-    id: 2543,
-    name: "3ps2",
-    thumbnail: "https://www.notion.so/images/meta/default.png",
-    cookieCnt: 1,
-  },
-  {
-    emoji: "😀",
-    id: 2543,
-    name: "3ps3",
-    thumbnail: "https://www.notion.so/images/meta/default.png",
-    cookieCnt: 1,
-  },
-  {
-    emoji: "😀",
-    id: 2543,
-    name: "3ps4",
-    thumbnail: "https://www.notion.so/images/meta/default.png",
-    cookieCnt: 1,
-  },
-];
 
 export const Default = Template.bind({});
 Default.args = {
-  data: unpinnedDir,
-};
-
-export const empty = Template.bind({});
-empty.args = {
-  data: [],
-};
-
-export const searchEmpty = Template.bind({});
-searchEmpty.args = {
-  data: [],
-  isSearched: true,
+  unpinnedData: directories.common,
 };

@@ -101,7 +101,7 @@ const DirDetail = ({
 
   useEffect(() => {
     setNewDirData({
-      emoji: dirInfo.emoji || "",
+      emoji: dirInfo?.emoji || "",
       name: dirInfo.name,
     });
   }, [dirInfo]);
@@ -121,7 +121,7 @@ const DirDetail = ({
           <ShareCntnr>
             <Title isEditIconAtv={isDirEditOpen}>
               <p className="name">
-                {`${dirInfo.emoji || ""} ${dirInfo.name}`}
+                {`${dirInfo?.emoji || ""} ${dirInfo.name}`}
                 {!isShared && (
                   <Icon
                     className="edit-btn"

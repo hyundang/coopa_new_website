@@ -28,7 +28,8 @@
       "@lib/*": ["src/lib/*"],
       "@assets/*": ["src/assets/*"],
       "@styles/*": ["scr/styles/*"],
-      "@modules/*": ["src/modules/*"]
+      "@modules/*": ["src/modules/*"],
+      "@data/*": ["src/data/*"]
     },
     "types": ["chrome"]
   },
