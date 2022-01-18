@@ -134,7 +134,7 @@ const ListHeader = ({
               className="filter-modal"
               isOpen={isFilterOpen}
               setIsOpen={setIsFilterOpen}
-              type={type === "dir" ? "dir" : "cookie"}
+              type={type === "dirDetail" ? "cookie" : type}
               filterType={filterType}
               onClickType={onClickType}
             />

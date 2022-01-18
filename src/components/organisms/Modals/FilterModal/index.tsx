@@ -17,20 +17,19 @@ const dirItems = [
   { text: "가나다순", type: "abc" },
 ];
 
+const dirShareItems = [
+  { text: "최신순", type: "latest" },
+  { text: "오래된 순", type: "oldest" },
+];
+
 export interface FilterModalProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** 모달 open 여부 */
   isOpen: boolean;
-  /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   /** filter list type */
-  type?: "cookie" | "dir";
-  /** filter type */
+  type?: "cookie" | "dir" | "dirShare";
   filterType: "latest" | "oldest" | "readMost" | "readLeast" | "abc";
-  /** type click event handling */
   onClickType: (
     e: "latest" | "oldest" | "readMost" | "readLeast" | "abc",
   ) => void;
@@ -61,7 +60,17 @@ const NotiModal = ({
               onClickType={onClickType}
             />
           ))
-        : dirItems.map((i) => (
+        : type === "dir"
+        ? dirItems.map((i) => (
+            <Item
+              key={i.type}
+              id={i.type}
+              text={i.text}
+              isClicked={filterType === i.type}
+              onClickType={onClickType}
+            />
+          ))
+        : dirShareItems.map((i) => (
             <Item
               key={i.type}
               id={i.type}
