@@ -133,9 +133,7 @@ const DirDetail = ({
               </p>
               <p className="info">
                 <EmptyCookieIcon className="cookie-icon" />
-                {unpinnedCookieList.length +
-                  (cookieModule.pinnedCookieData?.length || 0)}
-                개
+                {dirInfo.cookieCount || 0}개
               </p>
               {!isShared && (
                 <CopyToClipboard text={shareLink || ""}>
