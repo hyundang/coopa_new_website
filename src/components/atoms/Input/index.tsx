@@ -1,32 +1,6 @@
-import React, { RefObject, forwardRef } from "react";
+import React, { RefObject, forwardRef, InputHTMLAttributes } from "react";
 import styled from "styled-components";
 
-export interface InputProps {
-  /** input id */
-  id?: string;
-  /** className */
-  className?: string;
-  /** input 안의 내용 */
-  children?: React.ReactNode;
-  /** css (width, height, borderRadius, fontSize) */
-  style?: React.CSSProperties;
-  /** placeholder */
-  placeholder?: string;
-  /** input tag 타입 */
-  type?: string;
-  /** 타입이 text일 경우 최대 글자수 제한 */
-  maxLength?: number;
-  /** input tag value */
-  value: string | number | readonly string[] | undefined;
-  /** input tag onChange */
-  onChange: React.ChangeEventHandler<HTMLInputElement> | undefined;
-  /** input key press */
-  onKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
-  /** input key down */
-  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
-  /** input tag outside click*/
-  onBlur?: React.ChangeEventHandler<HTMLInputElement>;
-}
 const Input = (
   {
     id,
@@ -40,8 +14,9 @@ const Input = (
     onChange,
     onKeyPress,
     onKeyDown,
+    onFocus,
     onBlur,
-  }: InputProps,
+  }: InputHTMLAttributes<HTMLInputElement>,
   ref?:
     | ((instance: HTMLInputElement | null) => void)
     | RefObject<HTMLInputElement>
@@ -60,6 +35,7 @@ const Input = (
       onChange={onChange}
       onKeyPress={onKeyPress}
       onKeyDown={onKeyDown}
+      onFocus={onFocus}
       onBlur={onBlur}
       ref={ref}
     >
@@ -79,8 +55,6 @@ const Container = styled.input`
   border-radius: 12px;
   padding: 10px 18px;
   width: 100%;
-
-  font-family: Spoqa Han Sans Neo;
   font-weight: 500;
   color: var(--black_1);
   letter-spacing: -0.2px;

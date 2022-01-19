@@ -54,7 +54,7 @@
     "import/no-extraneous-dependencies": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "consistent-return": "off",
-    "no-return-assign":"off"
+    "no-return-assign": "off"
   },
   "settings": {
     "react": {

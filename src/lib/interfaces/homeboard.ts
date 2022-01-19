@@ -4,3 +4,8 @@ export interface BookmarkDataProps {
   link: string;
   image?: string;
 }
+
+export interface CreateBookmarkProps {
+  name: string;
+  link: string;
+}

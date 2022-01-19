@@ -1,123 +1,342 @@
-import { SearchBar, Tab } from "@components/atoms";
-import { Header, ListHeader } from "@components/organisms";
-import { NewBookmarkProps } from "@components/organisms/BookmarkAddModal";
-import { Homeboard } from "@components/templates";
-import { BookmarkDataProps } from "@interfaces/homeboard";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import styled from "styled-components";
+// components
+import { Floating, SearchBar, Tab, ToastMsg } from "@components/atoms";
+import { Footer, Header, ListHeader } from "@components/organisms";
+import { Homeboard, Cookies, Directories } from "@components/templates";
+// interfaces
+import { CookieDataProps } from "@interfaces/cookie";
+// libs
+import React, { useEffect, useState } from "react";
+import styled, { css } from "styled-components";
+import { useRecoilState, useRecoilValue } from "recoil";
+// modules
+import { HomeboardState, ToastMsgState } from "@modules/states";
+import HomebrdModule from "@modules/HomebrdModule";
+import CookieModule from "@modules/CookieModule";
+import DirModule from "@modules/DirModule";
 
 export interface NewtablProps {
-  /** 검색 여부 */
-  isSearched: boolean;
-  /** 검색 여부 setState */
-  setIsSearched: Dispatch<SetStateAction<boolean>>;
   /** 프로필 이미지 url */
   imgUrl?: string;
-  /** img input 시 img size 에러 여부 setState */
-  setIsError?: Dispatch<SetStateAction<boolean>>;
-  /** 모달 안의 홈보드 배경 이미지 */
-  homeboardModalImg: string;
-  /** 모달 안의 홈보드 배경 이미지 setState */
-  setHomeboardModalImg: Dispatch<SetStateAction<string>>;
-  /** homeboard img setState */
-  setHomeboardImg: Dispatch<SetStateAction<string>>;
-  /** input img post */
-  postHomeboardImg: (e: File) => string;
-  /** bookmark data list */
-  bookmarkDatas: BookmarkDataProps[];
-  /** bookmark 추가 함수 */
-  onClickBookmarkSave: (newBookmark: NewBookmarkProps) => void;
-  /** bookmark 삭제 함수 */
-  onClickBookmarkDel: (bookmarkID: number) => void;
+  /** 프로필 닉네임 */
+  nickname: string;
+  /** 검색창 enter key 클릭 */
+  onKeyPress: React.KeyboardEventHandler<HTMLInputElement>;
+  /** homeboard module */
+  homeboardModule: ReturnType<typeof HomebrdModule>;
+  /** 쿠키 모듈 */
+  cookieModule: ReturnType<typeof CookieModule>;
+  unpinnedCookieList: CookieDataProps[];
+  /** 디렉토리 모듈 */
+  dirModule: ReturnType<typeof DirModule>;
 }
 const Newtab = ({
-  isSearched,
-  setIsSearched,
   imgUrl,
-  homeboardModalImg,
-  setHomeboardModalImg,
-  setHomeboardImg,
-  setIsError,
-  postHomeboardImg,
-  bookmarkDatas,
-  onClickBookmarkSave,
-  onClickBookmarkDel,
+  nickname,
+  onKeyPress,
+  homeboardModule,
+  cookieModule,
+  unpinnedCookieList,
+  dirModule,
 }: NewtablProps) => {
-  // 검색창 불필요한 fadeout 방지
-  const [preventFadeout, setPreventFadeout] = useState(true);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  // 검색 여부
+  const isSearched = useRecoilValue(HomeboardState.IsSearchedState);
+  // 검색창 활성화 여부
+  const isSearchVisible = useRecoilValue(
+    HomeboardState.IsSearchBarVisibleState,
+  );
+
+  // tab
+  const [tabOptions, setTabOptions] = useState(["모든 쿠키", "디렉토리"]);
   const [tabValue, setTabValue] = useState("모든 쿠키");
 
+  // 쿠키or디렉토리 생성 모달 오픈
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // 온보딩 모달 오픈
+  const [isOnboardOpen, setIsOnboardOpen] = useState(false);
+
+  // tost msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
+
+  // toast msg visible handling
+  const handleToastMsgVisible = (
+    key:
+      | "dirCreate"
+      | "dirDel"
+      | "dirEdit"
+      | "cookieDel"
+      | "cookieEdit"
+      | "bookmarkDel"
+      | "bookmarkCreate"
+      | "homeboardEdit"
+      | "imgSizeOver"
+      | "copyLink"
+      | "copyShareLink"
+      | "pinnedSizeOver",
+    value: boolean,
+  ) =>
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      [key]: value,
+    });
+
+  // 키 떼어냈을 때
+  const handleKeyUp = (e: any) => {
+    // shift + c = 모든 쿠키 탭
+    if (e.key === "C" && e.shiftKey) {
+      isSearched && isSearchVisible
+        ? setTabValue("쿠키")
+        : setTabValue("모든 쿠키");
+    }
+    // shift + d = 디렉토리 탭
+    if (e.key === "D" && e.shiftKey) {
+      setTabValue("디렉토리");
+    }
+  };
+
+  // 검색 여부에 따른 tab option 변경
   useEffect(() => {
-    setTimeout(() => !preventFadeout && setPreventFadeout(true), 1000);
-  }, [preventFadeout]);
+    isSearched && isSearchVisible
+      ? (() => {
+          setTabOptions(["쿠키", "디렉토리"]);
+          tabValue === "모든 쿠키" && setTabValue("쿠키");
+        })()
+      : (() => {
+          setTabOptions(["모든 쿠키", "디렉토리"]);
+          tabValue === "쿠키" && setTabValue("모든 쿠키");
+        })();
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [isSearched, isSearchVisible]);
+
+  useEffect(() => {
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   return (
-    <Container className="container">
+    <>
       <Header
         className="header"
-        onClickSearch={() => {
-          isSearchVisible && setPreventFadeout(false);
-          setIsSearchVisible(!isSearchVisible);
-        }}
-        isSearchIconAtv={isSearchVisible}
         imgUrl={imgUrl}
+        isOnboardOpen={isOnboardOpen}
+        setIsOnboardOpen={setIsOnboardOpen}
       />
-      <Homeboard
-        className="homeboard"
-        visible={isSearchVisible}
-        setVisible={setIsSearchVisible}
-        isSearched={isSearched}
-        setIsSearched={setIsSearched}
-        homeboardModalImg={homeboardModalImg}
-        setHomeboardModalImg={setHomeboardModalImg}
-        setHomeboardImg={setHomeboardImg}
-        postHomeboardImg={postHomeboardImg}
-        bookmarkDatas={bookmarkDatas}
-        onClickBookmarkDel={onClickBookmarkDel}
-        onClickBookmarkSave={onClickBookmarkSave}
-        preventFadeout={preventFadeout}
-        setPreventFadeout={setPreventFadeout}
-      />
-      {isSearchVisible && (
-        <div className="search-wrap">
-          <SearchBar
-            className="search--tablet"
-            visible={isSearchVisible}
-            setVisible={setIsSearchVisible}
-            isSearched={isSearched}
-            setIsSearched={setIsSearched}
-            preventFadeout={preventFadeout}
-            setPreventFadeout={setPreventFadeout}
-          />
-        </div>
-      )}
-      <nav className="tab-wrap">
-        <Tab
-          className="tab"
-          tabStyle={{
-            width: "106px",
-            height: "56px",
-            fontSize: "16px",
-          }}
-          options={["모든 쿠키", "디렉토리"]}
-          value={tabValue}
-          setValue={setTabValue}
+      <Container className="container" isSearched={isSearched}>
+        <Homeboard
+          className="homeboard"
+          onSearchBarKeyPress={onKeyPress}
+          homeboardModule={homeboardModule}
+          setIsUpdatingHomboardImgSuccess={(e) =>
+            handleToastMsgVisible("homeboardEdit", e)
+          }
+          setIsUpdatingHomboardImgError={(e) =>
+            handleToastMsgVisible("imgSizeOver", e)
+          }
         />
-      </nav>
-      <main className="cookie-list">
-        <ListHeader type="dir" nickname="계정이름" />
-        cookie card list
-      </main>
-    </Container>
+        {isSearchVisible && (
+          <div className="search-wrap">
+            <SearchBar className="search--tablet" onKeyPress={onKeyPress} />
+          </div>
+        )}
+        <nav className="tab-wrap">
+          <Tab
+            className="tab"
+            tabStyle={{
+              width: "106px",
+              height: "56px",
+              fontSize: "16px",
+            }}
+            options={tabOptions}
+            value={tabValue}
+            setValue={setTabValue}
+          />
+        </nav>
+        <main className="card-list">
+          {((isSearched &&
+            isSearchVisible &&
+            (tabValue === "쿠키" || tabValue === "디렉토리")) ||
+            (tabValue === "모든 쿠키" &&
+              (cookieModule.pinnedCookieData?.length !== 0 ||
+                unpinnedCookieList.length !== 0)) ||
+            (tabValue === "디렉토리" &&
+              (dirModule.unpinnedDirData.length !== 0 ||
+                dirModule.pinnedDirData.length !== 0))) && (
+            <ListHeader
+              isSearched={isSearched && isSearchVisible}
+              cookieNum={cookieModule.searchedCookieData?.length || 0}
+              dirNum={dirModule.searchedDirData?.length || 0}
+              type={
+                tabValue === "모든 쿠키" || tabValue === "쿠키"
+                  ? "cookie"
+                  : "dir"
+              }
+              imgUrl={imgUrl}
+              nickname={nickname}
+              filterType={
+                tabValue === "모든 쿠키"
+                  ? cookieModule.cookieFilter
+                  : dirModule.dirFilter
+              }
+              onClickFilterType={
+                tabValue === "모든 쿠키"
+                  ? cookieModule.updateAndSaveCookieFilter
+                  : dirModule.updateAndSaveDirFilter
+              }
+              isCreateCookieModalOpen={isCreateModalOpen}
+              setIsCreateCookieModalOpen={setIsCreateModalOpen}
+              createDir={dirModule.createDir}
+              createCookie={(url) =>
+                cookieModule.createCookie(url, false, undefined)
+              }
+            />
+          )}
+          {isSearched && isSearchVisible ? (
+            // 검색된 쿠키 & 디렉토리
+            <>
+              {tabValue === "쿠키" ? (
+                <Cookies
+                  type="searched"
+                  pinnedCookieList={[]}
+                  unpinnedCookieList={cookieModule.searchedCookieData || []}
+                  isLoading={false}
+                  cookieModule={cookieModule}
+                  unpinnedDir={dirModule.unpinnedDirData}
+                  pinnedDir={dirModule.pinnedDirData}
+                  createDir={dirModule.createDir}
+                />
+              ) : (
+                <Directories
+                  unpinnedData={dirModule.searchedDirData || []}
+                  isSearched
+                  deleteDir={dirModule.deleteDir}
+                  updateDir={dirModule.updateDir}
+                  updateDirPin={dirModule.updateDirPin}
+                  refreshCookie={cookieModule.refreshCookie}
+                />
+              )}
+            </>
+          ) : (
+            // 뉴탭 쿠키 & 디렉토리
+            <>
+              {tabValue === "모든 쿠키" ? (
+                <Cookies
+                  isLoading={cookieModule.isLoading}
+                  pinnedCookieList={cookieModule.pinnedCookieData || []}
+                  unpinnedCookieList={unpinnedCookieList}
+                  cookieModule={cookieModule}
+                  unpinnedDir={dirModule.unpinnedDirData}
+                  pinnedDir={dirModule.pinnedDirData}
+                  setIsOnboardOpen={setIsOnboardOpen}
+                  createDir={dirModule.createDir}
+                />
+              ) : (
+                <Directories
+                  pinnedData={dirModule.pinnedDirData}
+                  unpinnedData={dirModule.unpinnedDirData}
+                  setIsDirAddOpen={setIsCreateModalOpen}
+                  deleteDir={dirModule.deleteDir}
+                  updateDir={dirModule.updateDir}
+                  updateDirPin={dirModule.updateDirPin}
+                  refreshCookie={cookieModule.refreshCookie}
+                />
+              )}
+            </>
+          )}
+        </main>
+      </Container>
+      <Footer />
+      <ToastMsg
+        isVisible={isToastMsgVisible.dirCreate}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("dirCreate", e)}
+      >
+        🤘 디렉토리를 만들었어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.dirEdit}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("dirEdit", e)}
+      >
+        👀 디렉토리를 수정했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.dirDel}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("dirDel", e)}
+      >
+        ❌ 디렉토리를 삭제했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.copyLink}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("copyLink", e)}
+      >
+        👏🏻 링크를 복사했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.cookieDel}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("cookieDel", e)}
+      >
+        ❌ 쿠키를 삭제했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.cookieEdit}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("cookieEdit", e)}
+      >
+        🍪 쿠키를 수정했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.bookmarkDel}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("bookmarkDel", e)}
+      >
+        ❌ 즐겨찾기를 삭제했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.bookmarkCreate}
+        setIsVisible={(e: boolean) =>
+          handleToastMsgVisible("bookmarkCreate", e)
+        }
+      >
+        🤘 즐겨찾기를 만들었어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.homeboardEdit}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("homeboardEdit", e)}
+      >
+        🤘 홈보드 이미지를 변경했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.imgSizeOver}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("imgSizeOver", e)}
+        imgSizeOver
+      >
+        😥 더 작은 이미지를 올려주세요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.pinnedSizeOver}
+        setIsVisible={(e: boolean) =>
+          handleToastMsgVisible("pinnedSizeOver", e)
+        }
+        imgSizeOver
+      >
+        😥 최대 15개까지 고정 가능해요!
+      </ToastMsg>
+      <Floating />
+    </>
   );
 };
 
 export default Newtab;
 
-const Container = styled.div`
+interface ContainerProps {
+  isSearched: boolean;
+}
+const Container = styled.div<ContainerProps>`
   width: 100%;
   padding-top: 60px;
+  padding-bottom: 130px;
 
   .tab-wrap {
     width: 100%;
@@ -154,8 +373,19 @@ const Container = styled.div`
     width: 100%;
     padding: 8px 16px;
     display: none;
-    ${({ theme }) => theme.media.tablet`
+    ${({ theme, isSearched }) => theme.media.tablet`
       display: block;
+      ${
+        isSearched &&
+        css`
+          ${theme.media.mobile`
+            margin-top: 12px;
+          `}
+          padding: 8px 16px;
+          margin-top: 24px;
+          margin-bottom: 8px;
+        `
+      }
     `}
   }
 `;

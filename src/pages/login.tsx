@@ -9,15 +9,13 @@ import {
 } from "react-google-login";
 // api
 import { postApi } from "@lib/api";
-import { PostUserDataProps } from "@interfaces/user";
-import { useRouter } from "next/dist/client/router";
+import { CreateUserProps } from "@interfaces/user";
+import { setToken } from "@api/TokenManager";
 
 export default function LoginPage() {
   const filter: string =
     "win16|win32|win64|wince|mac|macintel|macppc|mac68k|linux i686|linux armv7l|hp-ux|sunos";
   const [isPC, setIsPC] = useState<boolean>(true);
-
-  const router = useRouter();
 
   function instanceOfGLR(object: any): object is GoogleLoginResponse {
     return true;
@@ -27,30 +25,30 @@ export default function LoginPage() {
     response: GoogleLoginResponse | GoogleLoginResponseOffline,
   ) => {
     if (instanceOfGLR(response)) {
-      const data: PostUserDataProps = {
+      const data: CreateUserProps = {
         name: response.profileObj.name,
         email: response.profileObj.email,
         googleId: response.profileObj.googleId,
         profileImage: response.profileObj.imageUrl,
       };
 
-      const Response = await postApi.postUserData(data);
+      const jwt = await postApi.postUserData(data);
 
-      if (Response) {
-        // 로컬 스토리지에 유저 토큰 저장
-        localStorage.setItem("x-access-token", Response);
+      if (jwt) {
+        // 쿠키에 유저 토큰 저장
+        setToken(jwt);
 
-        // if (isPC) {
-        //   chrome.runtime.sendMessage(
-        //     "gbpliecdabaekbhmncopnbkfpdippdnl",
-        //     { isLogin: true, userToken: Response.data.jwt },
-        //     function (response) {
-        //       if (!response.success) console.log("fail");
-        //     },
-        //   );
-        // }
+        if (isPC) {
+          chrome.runtime.sendMessage(
+            CLIENT_ID,
+            { isLogin: true, userToken: jwt },
+            function (res: any) {
+              if (!res.success) console.log("fail");
+            },
+          );
+        }
 
-        router.push("/");
+        document.location.href = `${DOMAIN}`;
       } else {
         alert("로그인 실패");
       }

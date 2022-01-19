@@ -1,62 +1,54 @@
+// assets
 import { SettingIcon } from "@assets/icons/homeboard";
 import { DuribunLImg, DuribunRImg, SearchImg } from "@assets/imgs/homeboard";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import styled, { css } from "styled-components";
+// components
 import { Icon, SearchBar } from "@components/atoms";
 import { HomeboardEditModal, Bookmark } from "@components/organisms";
 import { homeboardAnimation } from "@components/animations";
-import { useWindowSize } from "src/hooks";
+// interfaces
 import { BookmarkDataProps } from "@interfaces/homeboard";
-import { NewBookmarkProps } from "@components/organisms/BookmarkAddModal";
+// libs
+import React, { useEffect, useRef, useState } from "react";
+import styled, { css } from "styled-components";
+import { useWindowSize } from "src/hooks";
+import { useRecoilValue } from "recoil";
+// modules
+import { HomeboardState } from "@modules/states";
+import HomebrdModule from "@modules/HomebrdModule";
 
 export interface HomeboardProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** 검색창 visible 여부 */
-  visible: boolean;
-  /** 검색창 visible 여부 setState */
-  setVisible: Dispatch<SetStateAction<boolean>>;
-  /** 검색 여부 */
-  isSearched: boolean;
-  /** 검색 여부 setState */
-  setIsSearched: Dispatch<SetStateAction<boolean>>;
-  /** homeboard modal img */
-  homeboardModalImg: string;
-  /** homeboard modal img setState */
-  setHomeboardModalImg: Dispatch<SetStateAction<string>>;
-  /** homeboard img setState */
-  setHomeboardImg: Dispatch<SetStateAction<string>>;
-  /** homeboard img post 함수 */
-  postHomeboardImg: (e: File) => string;
-  /** bookmark data list */
-  bookmarkDatas: BookmarkDataProps[];
-  /** bookmark 추가 함수 */
-  onClickBookmarkSave: (newBookmark: NewBookmarkProps) => void;
-  /** bookmark 삭제 함수 */
-  onClickBookmarkDel: (bookmarkID: number) => void;
-  /** 검색창 불필요한 fadeout 방지 */
-  preventFadeout: boolean;
-  setPreventFadeout: Dispatch<SetStateAction<boolean>>;
+  /** onKeyPress event handler */
+  onSearchBarKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
+  homeboardModule?: ReturnType<typeof HomebrdModule>;
+  setIsUpdatingHomboardImgSuccess?: (e: boolean) => void;
+  setIsUpdatingHomboardImgError?: (e: boolean) => void;
+  homeboardImgInLocalStorage?: string;
+  bookmarkData?: BookmarkDataProps[];
 }
 const Homeboard = ({
   id,
   className,
-  visible,
-  setVisible,
-  isSearched,
-  setIsSearched,
-  homeboardModalImg,
-  setHomeboardModalImg,
-  setHomeboardImg,
-  postHomeboardImg,
-  bookmarkDatas,
-  onClickBookmarkDel,
-  onClickBookmarkSave,
-  preventFadeout,
-  setPreventFadeout,
+  onSearchBarKeyPress,
+  homeboardModule,
+  setIsUpdatingHomboardImgSuccess,
+  setIsUpdatingHomboardImgError,
+  bookmarkData = [],
+  homeboardImgInLocalStorage = "",
 }: HomeboardProps) => {
+  // 검색 여부
+  const isSearched = useRecoilValue(HomeboardState.IsSearchedState);
+  // 검색창 활성화 여부
+  const isSearchBarVisible = useRecoilValue(
+    HomeboardState.IsSearchBarVisibleState,
+  );
+
+  const homeboardImg = useRecoilValue(HomeboardState.HomeboardImgState);
+  const homeboardModalImg = useRecoilValue(
+    HomeboardState.HomeboardModalImgState,
+  );
+
   // homeboard edit modal open 여부
   const [isOpen, setIsOpen] = useState(false);
   // homeboard edit modal x좌표
@@ -64,23 +56,47 @@ const Homeboard = ({
   const windowSize = useWindowSize();
   const settingIconLocation = useRef<HTMLButtonElement>(null);
 
+  // 키 떼어냈을 때
+  // shift + e = 홈보드 수정 모달 열기
+  const handleKeyUp = (e: any) => {
+    if (e.key === "E" && e.shiftKey) {
+      setIsOpen(true);
+    }
+  };
+
+  // 홈보드 수정 모달 x좌표 찾기
   useEffect(() => {
     settingIconLocation.current &&
       setLocationX(settingIconLocation.current.getBoundingClientRect().x);
   }, [windowSize.width]);
 
+  useEffect(() => {
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
   return (
     <HomeboardWrap
       id={id}
       className={className}
+      homeboardImg={homeboardImg || homeboardImgInLocalStorage}
       isSettingIconAtv={isOpen}
-      visible={visible}
+      visible={isSearchBarVisible}
+      isSearched={isSearched && isSearchBarVisible}
     >
       <div className="inner-wrap">
-        {!visible && <DuribunLImg role="img" className="duribun-left" />}
-        {!visible && <DuribunRImg role="img" className="duribun-right" />}
-        {visible && <SearchImg role="img" className="duribun-search" />}
-        {!visible && (
+        {!isSearchBarVisible && (
+          <DuribunLImg role="img" className="duribun-left" />
+        )}
+        {!isSearchBarVisible && (
+          <DuribunRImg role="img" className="duribun-right" />
+        )}
+        {isSearchBarVisible && (
+          <SearchImg role="img" className="duribun-search" />
+        )}
+        {!isSearchBarVisible && homeboardModule && (
           <Icon
             className="setting"
             ref={settingIconLocation}
@@ -91,33 +107,31 @@ const Homeboard = ({
             <SettingIcon className="setting__icon" />
           </Icon>
         )}
-        <SearchBar
-          className="search"
-          visible={visible}
-          setVisible={setVisible}
-          isSearched={isSearched}
-          setIsSearched={setIsSearched}
-          preventFadeout={preventFadeout}
-          setPreventFadeout={setPreventFadeout}
-        />
-        {!visible && (
+        {homeboardModule && (
+          <SearchBar className="search" onKeyPress={onSearchBarKeyPress} />
+        )}
+        {!isSearchBarVisible && (
           <Bookmark
             className="bookmark"
-            datas={bookmarkDatas}
-            onClickSave={onClickBookmarkSave}
-            onClickDel={onClickBookmarkDel}
+            bookmarkData={homeboardModule?.bookmarkData || bookmarkData}
+            onClickCreateBtn={homeboardModule?.createBookmark}
+            onClickDelBtn={homeboardModule?.deleteBookmark}
           />
         )}
       </div>
-      <HomeboardEditModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        value={homeboardModalImg}
-        setValue={setHomeboardModalImg}
-        setHomeboardImg={setHomeboardImg}
-        postHomeboardImg={postHomeboardImg}
-        locationX={locationX - 518 + 36}
-      />
+      {homeboardModalImg !== undefined &&
+        homeboardModule &&
+        setIsUpdatingHomboardImgError &&
+        setIsUpdatingHomboardImgSuccess && (
+          <HomeboardEditModal
+            locationX={locationX - 518 + 36}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            setIsUpdatingSuccess={setIsUpdatingHomboardImgSuccess}
+            setIsUpdatingError={setIsUpdatingHomboardImgError}
+            updateHomeboardImg={homeboardModule.updateHomeboardImg}
+          />
+        )}
     </HomeboardWrap>
   );
 };
@@ -125,13 +139,21 @@ const Homeboard = ({
 export default Homeboard;
 
 interface HomeboardWrapProps {
+  /** homeboard img state */
+  homeboardImg: string;
   isSettingIconAtv: boolean;
-  visible: boolean;
+  visible?: boolean;
+  isSearched?: boolean;
 }
 const HomeboardWrap = styled.section<HomeboardWrapProps>`
   width: 100%;
   height: 210px;
-  background-color: var(--gray_4);
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    ),
+    url("${({ homeboardImg }) => homeboardImg}") center center/ cover,
+    url("/theme_img/img_6.jpg") center center/ cover;
 
   display: flex;
   align-items: center;
@@ -140,6 +162,34 @@ const HomeboardWrap = styled.section<HomeboardWrapProps>`
   ${({ theme }) => theme.media.tablet`
     display: none;
   `}
+
+  ${({ visible }) =>
+    visible
+      ? css`
+          .duribun-search {
+            animation: ${homeboardAnimation.fadeInRule};
+          }
+        `
+      : css`
+          .duribun-left {
+            animation: ${homeboardAnimation.fadeInRule};
+          }
+          .duribun-right {
+            animation: ${homeboardAnimation.fadeInRule};
+          }
+          .setting {
+            animation: ${homeboardAnimation.fadeInRule};
+          }
+          .bookmark {
+            animation: ${homeboardAnimation.fadeInRule};
+          }
+        `};
+  ${({ isSearched }) =>
+    isSearched &&
+    css`
+      height: 87px;
+      background: none;
+    `}
 
   .inner-wrap {
     position: relative;
@@ -169,28 +219,12 @@ const HomeboardWrap = styled.section<HomeboardWrapProps>`
       left: 198px;
       width: 200px;
       height: 168px;
+      ${({ isSearched }) =>
+        isSearched &&
+        css`
+          display: none;
+        `};
     }
-    ${({ visible }) =>
-      visible
-        ? css`
-            .duribun-search {
-              animation: ${homeboardAnimation.fadeInRule};
-            }
-          `
-        : css`
-            .duribun-left {
-              animation: ${homeboardAnimation.fadeInRule};
-            }
-            .duribun-right {
-              animation: ${homeboardAnimation.fadeInRule};
-            }
-            .setting {
-              animation: ${homeboardAnimation.fadeInRule};
-            }
-            .bookmark {
-              animation: ${homeboardAnimation.fadeInRule};
-            }
-          `};
 
     .setting {
       position: absolute;
@@ -201,7 +235,7 @@ const HomeboardWrap = styled.section<HomeboardWrapProps>`
       height: 40px;
       border-radius: 20px;
       background: rgba(243, 243, 243, 0.5);
-      transition: 0.2s all;
+      transition: unset;
 
       ${({ isSettingIconAtv }) =>
         isSettingIconAtv
@@ -236,6 +270,12 @@ const HomeboardWrap = styled.section<HomeboardWrapProps>`
       left: 50%;
       margin-left: 35px;
       transform: translateX(-50%);
+      ${({ isSearched }) =>
+        isSearched &&
+        css`
+          top: 18px;
+          margin-left: 0;
+        `};
     }
 
     .bookmark {

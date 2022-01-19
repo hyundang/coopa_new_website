@@ -1,9 +1,27 @@
-import styled from "styled-components";
-import { Header, ListHeader } from "@components/organisms";
+// assets
 import { EditIcon, EmptyCookieIcon, LinkIcon } from "@assets/icons/common";
+// components
+import { Btn, Floating, Icon, ToastMsg } from "@components/atoms";
+import {
+  DirectoryModal,
+  Header,
+  ListHeader,
+  Footer,
+  DelModal,
+} from "@components/organisms";
 import Cookies from "@components/templates/Cookies";
-import { CookieDataProps } from "@interfaces/cookie";
-import { Btn } from "@components/atoms";
+// interfaces
+import { CreateDirProps, DirDataProps } from "@interfaces/directory";
+// libs
+import { useEffect, useState } from "react";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { useRecoilState } from "recoil";
+import styled, { css } from "styled-components";
+// modules
+import { ToastMsgState } from "@modules/states";
+import DirDetailModule from "@modules/DirDetailModule";
+import CookieModule from "@modules/CookieModule";
+import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
 
 export interface DirDetailProps {
   /** 공유 디렉토리 여부 */
@@ -12,62 +30,227 @@ export interface DirDetailProps {
   imgUrl?: string;
   /** profile nickname */
   nickname: string;
-  /** cookie data */
-  cookies: CookieDataProps[];
-  /** 공유 버튼 눌렀을 때 함수 */
-  shareClick?: React.MouseEventHandler<HTMLButtonElement>;
-  /** 수정 버튼 눌렀을 때 함수 */
-  editClick?: React.MouseEventHandler;
+  /** 디렉토리 상세 모듈 */
+  dirInfo: SimpleDirDataProps;
+  dirDetailModule?: ReturnType<typeof DirDetailModule>;
+  /** directory data */
+  unpinnedDir?: DirDataProps[];
+  /** 고정 디렉토리 */
+  pinnedDir?: DirDataProps[];
+  /** 디렉토리 생성 */
+  createDir?: (e: CreateDirProps) => Promise<number>;
+  /** 쿠키 상세 모듈 */
+  cookieModule: ReturnType<typeof CookieModule>;
+  unpinnedCookieList: CookieDataProps[];
 }
 const DirDetail = ({
   isShared = false,
   imgUrl,
   nickname,
-  cookies,
-  shareClick,
-  editClick,
+  dirInfo,
+  dirDetailModule,
+  unpinnedDir,
+  pinnedDir,
+  createDir,
+  cookieModule,
+  unpinnedCookieList,
 }: DirDetailProps) => {
+  // toast msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
+
+  // 디렉토리 수정 모달 오픈
+  const [isDirEditOpen, setIsDirEditOpen] = useState(false);
+  // 디렉토리 수정 데이터
+  const [newDirData, setNewDirData] = useState<CreateDirProps>({
+    emoji: "",
+    name: "",
+  });
+  // 삭제 모달 오픈
+  const [isDelOpen, setIsDelOpen] = useState(false);
+  // 온보딩 모달 오픈
+  const [isOnboardOpen, setIsOnboardOpen] = useState(false);
+  // 쿠키 추가 모달 오픈
+  const [isCreateCookieModalOpen, setIsCreateCookieModalOpen] = useState(false);
+
+  // toast msg visible handling
+  const handleToastMsgVisible = (
+    key:
+      | "dirEdit"
+      | "cookieDel"
+      | "cookieEdit"
+      | "imgSizeOver"
+      | "copyLink"
+      | "copyShareLink"
+      | "pinnedSizeOver",
+    value: boolean,
+  ) =>
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      [key]: value,
+    });
+
+  const [shareLink, setShareLink] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      const link = await dirDetailModule?.getShareLink();
+      setShareLink(link || "");
+    })();
+  }, []);
+
+  useEffect(() => {
+    setNewDirData({
+      emoji: dirInfo?.emoji || "",
+      name: dirInfo.name,
+    });
+  }, [dirInfo]);
+
   return (
     <>
-      <Header className="header" imgUrl={imgUrl} isMypage />
       <DirDetailCntnr>
-        <ShareCntnr>
-          <Title>
-            <p className="name">
-              playlist
-              {!isShared && (
-                <EditIcon
-                  className="edit-icon"
-                  onClick={editClick ? (e) => editClick(e) : () => {}}
-                />
-              )}
-            </p>
-            <p className="info">
-              <EmptyCookieIcon className="cookie-icon" />
-              8개
-            </p>
-            {!isShared && (
-              <Btn
-                className="share-btn"
-                isDirShare
-                onClick={shareClick ? (e) => shareClick(e) : () => {}}
-              >
-                <LinkIcon className="icon" />
-                디렉토리 공유하기
-              </Btn>
-            )}
-          </Title>
-        </ShareCntnr>
-        <ListHeader
-          type={isShared ? "dirShare" : "dirDetail"}
+        <Header
+          className="header"
           imgUrl={imgUrl}
-          nickname={nickname}
-          filterType="latest"
-          onClickType={() => {}}
-          postDir={() => {}}
+          isOnboardOpen={isOnboardOpen}
+          setIsOnboardOpen={setIsOnboardOpen}
+          isMypageIconExist={!isShared}
+          isSearchIconExist={false}
         />
-        <Cookies isShared={isShared} data={cookies} />
+        <DirDetailWrap>
+          <ShareCntnr>
+            <Title isEditIconAtv={isDirEditOpen}>
+              <p className="name">
+                {`${dirInfo?.emoji || ""} ${dirInfo.name}`}
+                {!isShared && (
+                  <Icon
+                    className="edit-btn"
+                    onClick={() => setIsDirEditOpen(true)}
+                  >
+                    <EditIcon className="edit-icon" />
+                  </Icon>
+                )}
+              </p>
+              <p className="info">
+                <EmptyCookieIcon className="cookie-icon" />
+                {dirInfo.cookieCount || 0}개
+              </p>
+              {!isShared && (
+                <CopyToClipboard text={shareLink || ""}>
+                  <Btn
+                    className="share-btn"
+                    isDirShare
+                    onClick={() =>
+                      setIsToastMsgVisible({
+                        ...isToastMsgVisible,
+                        copyLink: true,
+                      })
+                    }
+                    isAtvBtn
+                  >
+                    <LinkIcon className="icon" />
+                    디렉토리 공유하기
+                  </Btn>
+                </CopyToClipboard>
+              )}
+            </Title>
+          </ShareCntnr>
+          <ListHeader
+            type={isShared ? "dirShare" : "dirDetail"}
+            imgUrl={imgUrl}
+            nickname={nickname}
+            cookieNum={
+              unpinnedCookieList.length +
+              (cookieModule.pinnedCookieData?.length || 0)
+            }
+            filterType={cookieModule.cookieFilter}
+            onClickFilterType={cookieModule.updateAndSaveCookieFilter}
+            isCreateCookieModalOpen={isCreateCookieModalOpen}
+            setIsCreateCookieModalOpen={setIsCreateCookieModalOpen}
+            createCookie={(url) =>
+              cookieModule.createCookie(url, true, dirInfo.id)
+            }
+          />
+          <Cookies
+            type={isShared ? "dirShare" : "dirDetail"}
+            pinnedCookieList={cookieModule.pinnedCookieData || []}
+            unpinnedCookieList={unpinnedCookieList}
+            dirInfo={dirInfo}
+            isLoading={cookieModule.isLoading}
+            unpinnedDir={unpinnedDir || []}
+            pinnedDir={pinnedDir || []}
+            createDir={createDir}
+            setIsOnboardOpen={setIsOnboardOpen}
+            cookieModule={cookieModule}
+          />
+        </DirDetailWrap>
+        <Footer />
       </DirDetailCntnr>
+      <DirectoryModal
+        isOpen={isDirEditOpen}
+        setIsOpen={setIsDirEditOpen}
+        type="edit"
+        initDirData={newDirData}
+        dirId={dirInfo.id}
+        updateDir={dirDetailModule?.editDir}
+        deleteDir={() => {
+          setIsDelOpen(true);
+          setIsDirEditOpen(false);
+        }}
+      />
+      <DelModal
+        type="directory"
+        isOpen={isDelOpen}
+        setIsOpen={setIsDelOpen}
+        onClickDelBtn={async () => dirDetailModule?.deleteDir()}
+      />
+      <ToastMsg
+        isVisible={isToastMsgVisible.copyShareLink}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("copyShareLink", e)}
+      >
+        👏 공유 링크를 복사했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.copyLink}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("copyLink", e)}
+      >
+        👏🏻 링크를 복사했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.dirEdit}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("dirEdit", e)}
+      >
+        👀 디렉토리를 수정했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.cookieDel}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("cookieDel", e)}
+      >
+        ❌ 쿠키를 삭제했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.cookieEdit}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("cookieEdit", e)}
+      >
+        🍪 쿠키를 수정했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.imgSizeOver}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("imgSizeOver", e)}
+        imgSizeOver
+      >
+        😥 더 작은 이미지를 올려주세요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.pinnedSizeOver}
+        setIsVisible={(e: boolean) =>
+          handleToastMsgVisible("pinnedSizeOver", e)
+        }
+        imgSizeOver
+      >
+        😥 최대 15개까지 고정 가능해요!
+      </ToastMsg>
+      <Floating />
     </>
   );
 };
@@ -75,10 +258,16 @@ const DirDetail = ({
 export default DirDetail;
 
 const DirDetailCntnr = styled.div`
-  position: absolute;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const DirDetailWrap = styled.div`
   margin-top: 60px;
-  left: 50%;
-  transform: translateX(-50%);
+  padding-top: 48px;
+  padding-bottom: 130px;
 
   width: 1596px;
   ${({ theme }) => theme.media.desktop_2`
@@ -100,6 +289,8 @@ const DirDetailCntnr = styled.div`
    ${({ theme }) => theme.media.mobile`
     width: 100%;
     padding:0 20px;
+    padding-top: 36px;
+    padding-bottom: 130px;
   `}
 `;
 
@@ -122,11 +313,14 @@ const ShareCntnr = styled.div`
   `}
   /* -599 */
    ${({ theme }) => theme.media.mobile`
-    width: 33.4rem;
+    width: 100%;
   `}
 `;
 
-const Title = styled.article`
+interface TitleProps {
+  isEditIconAtv: boolean;
+}
+const Title = styled.article<TitleProps>`
   position: relative;
   margin-bottom: 4rem;
 
@@ -145,13 +339,35 @@ const Title = styled.article`
 
     color: var(--black_2);
 
-    .edit-icon {
-      margin-left: 0.5rem;
-      width: 2.2rem;
-      height: 2.2rem;
-      path {
-        fill: var(--black_1);
+    .edit-btn {
+      width: 44px;
+      height: 44px;
+      margin-left: 5px;
+      border-radius: 22px;
+      .edit-icon {
+        width: 28px;
+        height: 28px;
+        path {
+          fill: var(--black_1);
+        }
       }
+      ${({ isEditIconAtv }) =>
+        isEditIconAtv
+          ? css`
+              background-color: var(--gray_active);
+              .edit-icon {
+                path {
+                  fill: var(--white);
+                }
+              }
+            `
+          : css`
+              @media (hover: hover) {
+                &:hover {
+                  background-color: var(--gray_hover_1);
+                }
+              }
+            `}
     }
   }
   .info {

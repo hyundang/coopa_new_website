@@ -1,26 +1,62 @@
-import styled, { css } from "styled-components";
+// assets
 import { EmptyCookieIcon, EditIcon } from "@assets/icons/common";
-import {
-  DirectoryDataProps,
-  PostDirectoryProps,
-} from "src/lib/interfaces/directory";
+import { PinAtvIcon, PinIcon } from "@assets/icons/card";
+import { PinImg } from "@assets/imgs/card";
+// components
 import { Icon } from "@components/atoms";
-import { useState } from "react";
-import { DelModal, DirectoryModal } from "..";
+import { DelModal, DirectoryModal } from "@components/organisms";
+// interfaces
+import { DirDataProps, CreateDirProps } from "@interfaces/directory";
+// libs
+import React, { useState } from "react";
+import styled, { css } from "styled-components";
 
 export interface DirectoryProps {
-  dir: DirectoryDataProps;
+  dir: DirDataProps;
+  isSearched?: boolean;
+  /** delete dir */
+  deleteDir: (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  /** update dir */
+  updateDir: (
+    id: number,
+    body: CreateDirProps,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  updateDirPin: (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  refreshCookie: () => void;
 }
-const Directory = ({ dir }: DirectoryProps) => {
-  const [postData, setPostData] = useState<PostDirectoryProps>({
-    name: "",
-    emoji: "",
-  });
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isDeleteOpen, setISDeleteOpen] = useState(false);
+const Directory = ({
+  dir,
+  isSearched = false,
+  deleteDir,
+  updateDir,
+  updateDirPin,
+  refreshCookie,
+}: DirectoryProps) => {
+  const [isUpdateOpen, setisUpdateOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  const handleDeleteDir = async () => {
+    await deleteDir(dir.id, dir.isPinned, isSearched);
+    refreshCookie();
+  };
+
   return (
     <>
-      <DirectoryWrap thumbnail={dir.thumbnail}>
+      <DirectoryWrap
+        thumbnail={dir.thumbnail}
+        onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_blank")}
+      >
+        {dir.isPinned && <StyledPinImg className="pin_img" />}
         <section className="content">
           <h1 className="content__title">
             {dir.emoji ? `${dir.emoji} ${dir.name}` : dir.name}
@@ -31,29 +67,39 @@ const Directory = ({ dir }: DirectoryProps) => {
           </div>
         </section>
         <div className="icon">
-          <Icon onClick={() => setIsEditOpen(true)}>
+          <Icon
+            className="hover_icon"
+            onClick={() => {
+              updateDirPin(dir.id, dir.isPinned, isSearched);
+            }}
+          >
+            {dir.isPinned ? <PinAtvIcon /> : <PinIcon />}
+          </Icon>
+          <Icon className="hover_icon" onClick={() => setisUpdateOpen(true)}>
             <EditIcon />
           </Icon>
         </div>
       </DirectoryWrap>
       <DirectoryModal
         type="edit"
-        isOpen={isEditOpen}
-        setIsOpen={setIsEditOpen}
-        value={postData}
-        setValue={setPostData}
-        postDir={() => {}}
-        putDir={() => {}}
-        delDir={() => {
-          setISDeleteOpen(true);
-          setIsEditOpen(false);
+        isOpen={isUpdateOpen}
+        setIsOpen={setisUpdateOpen}
+        updateDir={(id, body) => updateDir(id, body, dir.isPinned, isSearched)}
+        deleteDir={() => {
+          setIsDeleteOpen(true);
+          setisUpdateOpen(false);
         }}
+        initDirData={{
+          emoji: dir.emoji,
+          name: dir.name,
+        }}
+        dirId={dir.id}
       />
       <DelModal
         type="directory"
         isOpen={isDeleteOpen}
-        setIsOpen={setISDeleteOpen}
-        onClickDel={() => {}}
+        setIsOpen={setIsDeleteOpen}
+        onClickDelBtn={handleDeleteDir}
       />
     </>
   );
@@ -61,10 +107,24 @@ const Directory = ({ dir }: DirectoryProps) => {
 
 export default Directory;
 
+const StyledPinImg = styled(PinImg)`
+  position: absolute;
+  z-index: 2;
+  top: -5px;
+  left: 24px;
+  background-color: transparent;
+  -webkit-filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.1));
+  ${({ theme }) => theme.media.mobile`
+    top: -4px;
+    left: 12px;
+    width: 18px;
+    height: 21px;
+  `}
+`;
+
 export interface DirectoryWrapProps {
   thumbnail?: string;
 }
-
 const DirectoryWrap = styled.article<DirectoryWrapProps>`
   cursor: pointer;
 
@@ -73,12 +133,7 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
 
   width: 100%;
   height: 134px;
-  ${({ theme }) => theme.media.desktop_3`
-    height: 120px;
-  `}
-  ${({ theme }) => theme.media.mobile`
-    height: 73px;
-  `}
+
   background-color: var(--gray_1);
   border-radius: 12px;
   color: var(--black_2);
@@ -91,7 +146,19 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
   &:hover {
     background: rgba(0, 0, 0, 0.7);
     .icon {
-      display: block;
+      display: flex;
+      flex-direction: row;
+      .hover_icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        background-color: transparent;
+        -webkit-filter: drop-shadow(0px 0px 12px rgba(0, 0, 0, 0.9));
+        &:hover {
+          background-color: rgba(243, 243, 243, 0.4);
+          -webkit-filter: none;
+        }
+      }
     }
     .content > * {
       color: var(--white);
@@ -116,7 +183,7 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
         border-radius: 12px;
         top: 0;
         left: 0;
-        background: url(${props.thumbnail}) center center / cover no-repeat;
+        background: url("${props.thumbnail}") center center / cover no-repeat;
         width: 100%;
         height: 100%;
         opacity: 0.15;
@@ -194,12 +261,29 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
         }
       }
     }
+    .cookie-icon {
+      path {
+        fill: var(--gray_7_active);
+      }
+    }
   }
   .icon {
     position: absolute;
-    bottom: 1.7rem;
-    right: 1.7rem;
+    bottom: 1.3rem;
+    right: 1.3rem;
 
     display: none;
   }
+
+  ${({ theme }) => theme.media.desktop_3`
+    height: 120px;
+  `}
+  ${({ theme }) => theme.media.mobile`
+    height: 73px;
+    &:hover {
+      .icon {
+        display: none;
+      }
+    }
+  `}
 `;

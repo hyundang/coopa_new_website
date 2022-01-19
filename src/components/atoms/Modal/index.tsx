@@ -1,20 +1,15 @@
 import { modalAnimation } from "@components/animations";
-import { Dispatch, SetStateAction } from "react";
+import React, {
+  DialogHTMLAttributes,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+} from "react";
 import styled, { css } from "styled-components";
 
-export interface ModalProps {
-  /** id */
-  id?: string;
-  /** className */
-  className?: string;
-  /** modal 안에 들어가는 것 */
-  children?: React.ReactNode;
-  /** 모달 오픈 여부 */
+export interface ModalProps extends DialogHTMLAttributes<HTMLDialogElement> {
   isOpen: boolean;
-  /** 모달 오픈 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  /** 모달 wrap click event handler */
-  onClick?: React.MouseEventHandler<HTMLDialogElement>;
 }
 const Modal = ({
   id,
@@ -24,6 +19,17 @@ const Modal = ({
   setIsOpen,
   onClick,
 }: ModalProps) => {
+  const handleKeyDown = (e: any) => {
+    e.key === "Escape" && setIsOpen(false);
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <>
       {isOpen && (

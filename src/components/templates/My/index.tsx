@@ -7,9 +7,9 @@ import {
   LogoutDuribunImg,
 } from "@assets/imgs/mypage";
 import { mypageAnimation } from "@components/animations";
-import { Btn, Bubble, Icon } from "@components/atoms";
+import { Btn, Bubble, Floating, Icon, ToastMsg } from "@components/atoms";
 import { Footer, Header, ProfileEditModal } from "@components/organisms";
-import { EditUserDataProps, UserDataProps } from "@interfaces/user";
+import { UpdateUserProps, UserDataProps } from "@interfaces/user";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
@@ -21,8 +21,8 @@ export interface MyProps {
   /** 프로필 수정 버튼 클릭 이벤트 핸들러 */
   editProfile: () => void;
   /** 프로필 수정 데이터 */
-  profileData: EditUserDataProps;
-  setProfileData: Dispatch<SetStateAction<EditUserDataProps>>;
+  profileData: UpdateUserProps;
+  setProfileData: Dispatch<SetStateAction<UpdateUserProps>>;
   /** 프로필 수정 모달 오픈 */
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -39,10 +39,20 @@ const My = ({
   const size = useWindowSize();
   const [isTooltipHover, setIsTooltipHover] = useState(false);
   const [isLogoutHover, setIsLogoutHover] = useState(false);
+  // toast msg visible state
+  const [isVisible, setIsVisible] = useState(false);
+  // 온보딩 모달 오픈
+  const [isOnboardOpen, setIsOnboardOpen] = useState(false);
 
   return (
     <Container>
-      <Header imgUrl={userData.profileImage} isMypage />
+      <Header
+        imgUrl={userData.profileImage}
+        isMypage
+        isSearchIconExist={false}
+        isOnboardOpen={isOnboardOpen}
+        setIsOnboardOpen={setIsOnboardOpen}
+      />
       <MyCntnr
         imgUrl={userData.profileImage}
         isLogoutHover={isLogoutHover}
@@ -76,23 +86,25 @@ const My = ({
             />
             <div className="cookie-count">
               👏 지금까지 쿠키
-              {userData.allCookies > 9999 ? (
+              {userData.cookieCount > 9999 ? (
                 <AllCookieNumWrap width={5}>
                   <AllCookieNum num={9999} isOver />
                 </AllCookieNumWrap>
               ) : (
-                <AllCookieNumWrap width={String(userData.allCookies).length}>
-                  <AllCookieNum num={userData.allCookies} />
+                <AllCookieNumWrap width={String(userData.cookieCount).length}>
+                  <AllCookieNum num={userData.cookieCount} />
                 </AllCookieNumWrap>
               )}
               개를 파킹했고
-              {userData.readCount > 9999 ? (
+              {userData.readCookieCnt > 9999 ? (
                 <ReadCookieNumWrap width={5}>
                   <ReadCookieNum num={9999} isOver />
                 </ReadCookieNumWrap>
               ) : (
-                <ReadCookieNumWrap width={String(userData.readCount).length}>
-                  <ReadCookieNum num={userData.readCount} />
+                <ReadCookieNumWrap
+                  width={String(userData.readCookieCnt).length}
+                >
+                  <ReadCookieNum num={userData.readCookieCnt} />
                 </ReadCookieNumWrap>
               )}
               번 읽었어요!
@@ -193,6 +205,10 @@ const My = ({
         setValue={setProfileData}
         editProfile={editProfile}
       />
+      <ToastMsg isVisible={isVisible} setIsVisible={setIsVisible}>
+        👀 프로필을 수정했어요!
+      </ToastMsg>
+      <Floating />
     </Container>
   );
 };
@@ -226,7 +242,7 @@ const MyCntnr = styled.section<MyCntnrProps>`
         margin-right: 41px;
         border-radius: 76px;
         border: 2px solid var(--gray_4);
-        background: url(${({ imgUrl }) => imgUrl}) center center/cover;
+        background: url("${({ imgUrl }) => imgUrl}") center center/cover;
       }
       &__info {
         .name-wrap {
@@ -716,7 +732,7 @@ const AllCookieNumWrap = styled.span<CookieNumWrapProps>`
   `};
 `;
 const ReadCookieNumWrap = styled.span<CookieNumWrapProps>`
-  width: ${(props) => (props.width + 2) * 12}px;
+  width: ${({ width }) => (width + 2) * 12}px;
   height: 40px;
   margin: 0 4px 0 10px;
   border-radius: 30px;
@@ -728,10 +744,10 @@ const ReadCookieNumWrap = styled.span<CookieNumWrapProps>`
   animation: stretchTwo 1.5s;
   @keyframes stretchTwo {
     from {
-      width: ${(props) => props.width * 12}px;
+      width: ${({ width }) => width * 12}px;
     }
     to {
-      width: ${(props) => (props.width + 2) * 12}px;
+      width: ${({ width }) => (width + 2) * 12}px;
     }
   }
   ${({ width, theme }) =>

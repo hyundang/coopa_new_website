@@ -1,45 +1,25 @@
-import Directories from ".";
+import { Meta, Story } from "@storybook/react";
+import Directories, { DirectoriesProps } from ".";
+import { directories } from "@data/dummy/directory";
 
 export default {
   title: "components/templates/Directories",
   component: Directories,
+} as Meta;
+
+const Template: Story<DirectoriesProps> = (args) => {
+  return (
+    <Directories
+      {...args}
+      deleteDir={async () => {}}
+      updateDir={async () => {}}
+      updateDirPin={async () => {}}
+      refreshCookie={() => {}}
+    />
+  );
 };
 
-export const directories = () => {
-  return <Directories data={allDir} />;
-};
-
-const allDir = [
-  {
-    emoji: "😀",
-    id: 2543,
-    name: "3ps1",
-    thumbnail: "https://www.notion.so/images/meta/default.png",
-    cookieCnt: 1,
-  },
-  {
-    emoji: "",
-    id: 2543,
-    name: "3ps2",
-    thumbnail: "https://www.notion.so/images/meta/default.png",
-    cookieCnt: 1,
-  },
-  {
-    emoji: "😀",
-    id: 2543,
-    name: "3ps3",
-    thumbnail: "https://www.notion.so/images/meta/default.png",
-    cookieCnt: 1,
-  },
-  {
-    emoji: "😀",
-    id: 2543,
-    name: "3ps4",
-    thumbnail: "https://www.notion.so/images/meta/default.png",
-    cookieCnt: 1,
-  },
-];
-
-directories.story = {
-  name: "Default",
+export const Default = Template.bind({});
+Default.args = {
+  unpinnedData: directories.common,
 };

@@ -1,21 +1,14 @@
-import { RefObject, forwardRef, Dispatch, SetStateAction } from "react";
+import React, {
+  RefObject,
+  forwardRef,
+  Dispatch,
+  SetStateAction,
+  ButtonHTMLAttributes,
+} from "react";
 import styled from "styled-components";
 
-export interface IconProps {
-  /** id */
-  id?: string;
-  /** className */
-  className?: string;
-  /** icon 안에 들어가는 것 */
-  children?: React.ReactNode;
-  /** button role */
-  role?: string;
-  /** hover 여부 */
+export interface IconProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   setIsHover?: Dispatch<SetStateAction<boolean>>;
-  /** click event handler */
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  /** icon css (width, height, borderRadius...) */
-  style?: React.CSSProperties;
 }
 const Icon = (
   {

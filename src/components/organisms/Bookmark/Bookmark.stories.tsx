@@ -64,3 +64,40 @@ export const ManyBookmark = () => {
     </div>
   );
 };
+
+export const error = () => {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "200px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Bookmark
+        datas={[
+          {
+            id: 1,
+            name: "naver",
+            link: "https://www.naver.com",
+            image: "	https://papago.naver.com/favicon.ico",
+          },
+          {
+            id: 2,
+            name: "naver",
+            link: "https://www.naver.com",
+            image: "	https://papago.naver.com/favicon.ico",
+          },
+          {
+            id: 3,
+            name: "naver",
+            link: "https://www.naver.com",
+            image: "	https://papago.naver.com/favicon.ico",
+          },
+        ]}
+      />
+    </div>
+  );
+};

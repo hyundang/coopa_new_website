@@ -7,42 +7,13 @@ export default {
 };
 
 export const cookieHover = () => {
-  const [cardState, setCardState] = useState("normal");
   const [currDir, setCurrDir] = useState("모든쿠키");
-  const allDir = [
-    {
-      name: "블라블라",
-      emoji: "😀",
-    },
-    {
-      name: "블라블라",
-      emoji: "",
-    },
-    {
-      name: "블라블라",
-      emoji: "😀",
-    },
-    {
-      name: "블라블라",
-      emoji: "",
-    },
-    {
-      name: "블라블라",
-      emoji: "😀",
-    },
-    {
-      name: "블라블라",
-      emoji: "😀",
-    },
-    {
-      name: "블라블라",
-      emoji: "😀",
-    },
-  ];
+
   return (
     <CookieHover
-      allDir={allDir}
-      setCardState={setCardState}
+      unpinnedDir={[]}
+      pinnedDir={[]}
+      setCardState={() => {}}
       currDir={currDir}
       setCurrDir={setCurrDir}
     />
@@ -50,14 +21,14 @@ export const cookieHover = () => {
 };
 
 export const cookieHoverEmpty = () => {
-  const [cardState, setCardState] = useState("normal");
   const [currDir, setCurrDir] = useState("모든쿠키");
   return (
     <CookieHover
-      allDir={[]}
-      setCardState={setCardState}
+      unpinnedDir={[]}
+      setCardState={() => {}}
       currDir={currDir}
       setCurrDir={setCurrDir}
+      pinnedDir={[]}
     />
   );
 };

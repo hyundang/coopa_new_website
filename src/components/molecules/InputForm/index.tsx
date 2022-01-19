@@ -1,38 +1,21 @@
-import { RefObject, forwardRef } from "react";
+import React, { RefObject, forwardRef, InputHTMLAttributes } from "react";
 import styled from "styled-components";
 import { Input } from "@components/atoms";
 
-export interface InputFormProps {
-  /** id */
+export interface InputFormProps extends InputHTMLAttributes<HTMLInputElement> {
   id?: string;
-  /** className */
   className?: string;
-  /** input의 css (width, height...) */
-  inputStyle?: React.CSSProperties;
-  /** label 텍스트 */
-  text: string;
-  /** input에 들어가는 value의 최대 길이 */
-  maxLength: number;
+  labelText: string;
   /** input에 들어가는 value의 길이 */
   length: number;
-  /** input에 들어가는 placeholder */
-  placeholder?: string;
-  /** input tag value */
-  value: string | number | readonly string[] | undefined;
-  /** input tag onChange */
-  onChange: React.ChangeEventHandler<HTMLInputElement> | undefined;
-  /** input key press */
-  onKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
-  /** input key down */
-  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 }
 
 const InputForm = (
   {
     id,
     className,
-    inputStyle,
-    text,
+    style,
+    labelText,
     length,
     maxLength,
     placeholder,
@@ -51,13 +34,13 @@ const InputForm = (
     <Container id={id} className={className}>
       <div className="input-form">
         <label className="input-form__label" htmlFor="input">
-          {text}
+          {labelText}
         </label>
         <span className="input-form__length">{`${length}/${maxLength}`}</span>
       </div>
       <Input
         id="input"
-        style={inputStyle}
+        style={style}
         placeholder={placeholder}
         maxLength={maxLength}
         value={value}

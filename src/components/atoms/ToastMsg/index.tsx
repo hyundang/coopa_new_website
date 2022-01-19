@@ -1,18 +1,10 @@
 import { toastmsgAnimation } from "@components/animations";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import React, { DialogHTMLAttributes, useEffect } from "react";
 import styled from "styled-components";
 
-export interface IProps {
-  /** id */
-  id?: string;
-  /** className */
-  className?: string;
-  /** 토스트 메시지 */
-  children: React.ReactNode;
-  /** 토스트 메시지 렌더링 여부 */
+export interface ToastMsgProps extends DialogHTMLAttributes<HTMLDialogElement> {
   isVisible: boolean;
-  /** isVisible set 함수 */
-  setIsVisible: Dispatch<SetStateAction<boolean>>;
+  setIsVisible: (e: boolean) => void;
   /** 이미지 크기 제한을 넘겼을 때 뜨는 토스트 메세지 여부 */
   imgSizeOver?: boolean;
 }
@@ -23,44 +15,46 @@ const ToastMsg = ({
   isVisible,
   setIsVisible,
   imgSizeOver,
-}: IProps) => {
+}: ToastMsgProps) => {
   useEffect(() => {
-    setTimeout(() => setIsVisible(false), 3000);
-  }, []);
+    isVisible && setTimeout(() => setIsVisible(false), 3000);
+  }, [isVisible]);
 
   return (
-    <Wrap
+    <ToastMsgWrap
       isVisible={isVisible}
       isError={imgSizeOver}
       id={id}
       className={className}
     >
       {children}
-    </Wrap>
+    </ToastMsgWrap>
   );
 };
 
 export default ToastMsg;
 
-interface IWrap {
+interface ToastMsgWrapProps {
   isVisible: boolean;
   isError?: boolean;
 }
-const Wrap = styled.div<IWrap>`
+const ToastMsgWrap = styled.dialog<ToastMsgWrapProps>`
+  all: unset;
+  box-sizing: border-box;
   position: fixed;
   display: table;
   left: 50%;
-  margin-left: -13.6rem;
+  margin-left: -136px;
   z-index: 100;
 
-  width: 27.2rem;
-  height: 6.6rem;
-  border-radius: 3.3rem;
+  width: 272px;
+  height: 66px;
+  border-radius: 33px;
   ${({ theme }) => theme.media.tablet`
-    width: 23rem;
-    height: 5.9rem;
-    border-radius: 2.95rem;
-    margin-left: -11.5rem;
+    width: 230px;
+    height: 59px;
+    border-radius: 29.5px;
+    margin-left: -115px;
   `}
 
   background: var(--white);
@@ -71,7 +65,7 @@ const Wrap = styled.div<IWrap>`
   justify-content: center;
 
   color: var(--black_1);
-  font-size: 1.6rem;
+  font-size: 16px;
   font-weight: 500;
 
   opacity: 0;

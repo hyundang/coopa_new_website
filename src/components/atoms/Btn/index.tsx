@@ -1,39 +1,27 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { ButtonHTMLAttributes, Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
-export interface BtnProps {
-  /** id */
-  id?: string;
-  /** className */
-  className?: string;
-  /** 버튼 안의 내용 */
-  children?: React.ReactNode;
-  /**  버튼 클릭시 실행되는 함수 */
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
+export interface BtnProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** 버튼 색깔 판단 (true -> 주황색 버튼) */
   isOrange?: boolean;
   /** '디렉토리 공유하기' 버튼의 경우 -> true */
   isDirShare?: boolean;
-  /** '디렉토리 공유하기' 버튼의 경우 hover 여부 판단 */
-  setIsHover?: Dispatch<SetStateAction<boolean>>;
   /** 쿠키 카드 디렉토리 안의 '저장' 버튼의 경우 -> true */
   isCookieDirBtn?: boolean;
-  /** 버튼 활성화 여부 (활성화 - >true / 비활성화 -> false) */
+  setIsHover?: Dispatch<SetStateAction<boolean>>;
   isAtvBtn?: boolean;
-  /** role */
-  role?: string;
 }
 const Btn = ({
   id,
   className,
   children,
+  role,
   onClick,
   isOrange,
   isDirShare,
   setIsHover,
   isCookieDirBtn,
   isAtvBtn,
-  role,
 }: BtnProps) => {
   return (
     <BtnWrap
@@ -69,6 +57,10 @@ const BtnWrap = styled.button<BtnWrapProps>`
 
   width: 100%;
   height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   font-weight: 500;
   text-align: center;

@@ -1,17 +1,15 @@
-import { useEffect, useRef } from "react";
-import { Dispatch, SetStateAction } from "react";
+import React, {
+  DialogHTMLAttributes,
+  useEffect,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import styled from "styled-components";
 
-export interface MoveModalProps {
-  /** id */
-  id?: string;
-  /** className */
-  className?: string;
-  /** 내부 */
-  children: React.ReactNode;
-  /** 모달 open 여부 */
+export interface MoveModalProps
+  extends DialogHTMLAttributes<HTMLDialogElement> {
   isOpen: boolean;
-  /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 const MoveModal = ({
@@ -28,11 +26,16 @@ const MoveModal = ({
     if (!isOpen && (!modal.current || !modal.current.contains(e.target)))
       setIsOpen(false);
   };
+  const handleKeyDown = (e: any) => {
+    e.key === "Escape" && setIsOpen(false);
+  };
 
   useEffect(() => {
     window.addEventListener("mousedown", handleCloseModal);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("mousedown", handleCloseModal);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 

@@ -7,10 +7,55 @@ export default {
   component: Homeboard,
 } as Meta;
 
-const Template: Story<HomeboardProps> = (args) => <Homeboard {...args} />;
+const Template: Story<HomeboardProps> = (args) => {
+  const [visible, setVisible] = useState(false);
+  const [isSearched, setIsSearched] = useState(false);
+  const [img, setImg] = useState("");
+  const [toastMsg, setToastMsg] = useState(false);
+  return (
+    <Homeboard
+      {...args}
+      visible={visible}
+      setVisible={setVisible}
+      isSearched={isSearched}
+      setIsSearched={setIsSearched}
+      homeboardModalImg={img}
+      setHomeboardImg={setImg}
+      setHomeboardModalImg={setImg}
+      updateHomeboardImg={async () => "hi"}
+      bookmarkDatas={[
+        {
+          id: 1,
+          name: "naver",
+          link: "https://www.naver.com",
+          image: "	https://papago.naver.com/favicon.ico",
+        },
+        {
+          id: 2,
+          name: "naver",
+          link: "https://www.naver.com",
+          image: "	https://papago.naver.com/favicon.ico",
+        },
+        {
+          id: 3,
+          name: "naver",
+          link: "https://www.naver.com",
+          image: "	https://papago.naver.com/favicon.ico",
+        },
+      ]}
+      onClickBookmarkDel={async () => console.log("hi")}
+      onClickBookmarkSave={async () => console.log("hi")}
+      setIsError={setToastMsg}
+      setIsSuccess={setToastMsg}
+    />
+  );
+};
 
 export const homeboard = Template.bind({});
-homeboard.args = {
+
+export const homeboardWithBackground = Template.bind({});
+homeboardWithBackground.args = {
+  homeboardImg: "/theme_img/img_1.jpg",
   bookmarkDatas: [
     {
       id: 1,
@@ -32,43 +77,3 @@ homeboard.args = {
     },
   ],
 };
-
-// export const homeboard = () => {
-//   const [visible, setVisible] = useState(false);
-//   const [isSearched, setIsSearched] = useState(false);
-//   const [img, setImg] = useState("");
-//   return (
-//     <Homeboard
-//       visible={visible}
-//       setVisible={setVisible}
-//       isSearched={isSearched}
-//       setIsSearched={setIsSearched}
-//       homeboardModalImg={img}
-//       setHomeboardImg={setImg}
-//       setHomeboardModalImg={setImg}
-//       postHomeboardImg={() => "hi"}
-//       bookmarkDatas={[
-//         {
-//           id: 1,
-//           name: "naver",
-//           link: "https://www.naver.com",
-//           image: "	https://papago.naver.com/favicon.ico",
-//         },
-//         {
-//           id: 2,
-//           name: "naver",
-//           link: "https://www.naver.com",
-//           image: "	https://papago.naver.com/favicon.ico",
-//         },
-//         {
-//           id: 3,
-//           name: "naver",
-//           link: "https://www.naver.com",
-//           image: "	https://papago.naver.com/favicon.ico",
-//         },
-//       ]}
-//       onClickBookmarkDel={() => console.log("hi")}
-//       onClickBookmarkSave={() => console.log("hi")}
-//     />
-//   );
-// };

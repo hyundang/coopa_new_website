@@ -1,26 +1,15 @@
-import { Dispatch, SetStateAction } from "react";
-import styled, { css } from "styled-components";
 import { NoThumbImg } from "@assets/imgs/card";
+import React, { Dispatch, HTMLAttributes, SetStateAction } from "react";
+import styled, { css } from "styled-components";
 
-export interface IProps {
-  /** id */
-  id?: string;
-  /** imgbox class name */
-  className?: string;
-  /** 내부에 들어가는 컴포넌트 */
-  children?: React.ReactNode;
-  /** 이미지 박스 스타일 */
-  style?: React.CSSProperties;
+export interface ImgBoxProps extends HTMLAttributes<HTMLDivElement> {
   /** 이미지 url */
   url?: string;
-  /** hover 여부 */
   isHover?: boolean;
-  /** hover 여부 setState */
   setIsHover?: Dispatch<SetStateAction<boolean>>;
-  /** post시 loading 여부 */
   isLoading?: boolean;
-  /** click event handler */
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  /** img input 여부 */
+  isImgInput?: boolean;
 }
 const ImgBox = ({
   id,
@@ -32,9 +21,10 @@ const ImgBox = ({
   setIsHover,
   isLoading,
   onClick,
-}: IProps) => {
+  isImgInput = false,
+}: ImgBoxProps) => {
   return (
-    <Wrap
+    <ImgBoxWrap
       id={id}
       className={className}
       role="img"
@@ -45,31 +35,43 @@ const ImgBox = ({
       onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
       isLoading={isLoading}
       onClick={onClick}
+      isImgInput={isImgInput}
     >
       {children}
-    </Wrap>
+    </ImgBoxWrap>
   );
 };
 
 export default ImgBox;
 
-interface IWrap {
+interface ImgBoxWrapProps {
   url?: string;
   isLoading?: boolean;
   isHover?: boolean;
+  isImgInput: boolean;
 }
-const Wrap = styled.div<IWrap>`
+const ImgBoxWrap = styled.div<ImgBoxWrapProps>`
   cursor: pointer;
   overflow: hidden;
-  background: url(${(props) => props.url}) center center/cover,
-    url(${NoThumbImg}) center center/cover;
 
-  ${(props) =>
-    !props.isLoading &&
-    props.isHover &&
-    css`
-      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-        url(${props.url}) center center/cover,
-        url(${NoThumbImg}) center center/cover;
-    `}
+  ${({ isImgInput, isLoading, isHover, url }) =>
+    isImgInput
+      ? !isLoading && isHover
+        ? css`
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+              url("${url}") center center/cover;
+          `
+        : css`
+            background: url("${url}") center center/cover;
+          `
+      : !isLoading && isHover
+      ? css`
+          background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+            url("${url}") center center/cover,
+            url(${NoThumbImg}) center center/cover;
+        `
+      : css`
+          background: url("${url}") center center/cover,
+            url(${NoThumbImg}) center center/cover;
+        `}
 `;

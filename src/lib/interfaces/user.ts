@@ -1,20 +1,21 @@
 export interface UserDataProps {
+  id: number;
   name: string;
   email: string;
   profileImage?: string;
   introduction?: string;
-  allCookies: number;
-  readCount: number;
+  cookieCount: number;
+  readCookieCnt: number;
 }
 
-export interface PostUserDataProps {
+export interface CreateUserProps {
   name: string;
   email: string;
   googleId: string;
   profileImage: string;
 }
 
-export interface EditUserDataProps {
+export interface UpdateUserProps {
   name: string;
   introduction?: string;
 }

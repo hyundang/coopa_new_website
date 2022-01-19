@@ -1,86 +1,161 @@
-import styled, { css } from "styled-components";
 import { FilterIcon, PlusIcon22 } from "@assets/icons/common";
 import { Icon } from "@components/atoms";
-import { FilterModal } from "@components/molecules";
-import { DirectoryModal } from "@components/organisms";
-import { useState } from "react";
-import { PostDirectoryProps } from "@interfaces/directory";
+import {
+  CookieAddModal,
+  DirectoryModal,
+  FilterModal,
+} from "@components/organisms";
+import { CreateDirProps } from "@interfaces/directory";
+import styled, { css } from "styled-components";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useWindowSize } from "src/hooks";
 
 export interface ListHeaderProps {
-  /** list type */
+  /** header type */
   type: "cookie" | "dir" | "dirDetail" | "dirShare";
+  isSearched?: boolean;
+  cookieNum?: number;
+  dirNum?: number;
   /** profile img */
   imgUrl?: string;
-  /** profile nickname */
   nickname: string;
-  /** filter type */
   filterType: "latest" | "oldest" | "readMost" | "readLeast" | "abc";
-  /** filter type click event handler */
-  onClickType: () => void;
-  /** post dir */
-  postDir: (e: PostDirectoryProps) => void;
+  onClickFilterType: (
+    e: "latest" | "oldest" | "readMost" | "readLeast" | "abc",
+  ) => void;
+  isCreateCookieModalOpen: boolean;
+  setIsCreateCookieModalOpen: Dispatch<SetStateAction<boolean>>;
+  createDir?: (e: CreateDirProps) => void;
+  createCookie: (url: string) => Promise<boolean>;
 }
 const ListHeader = ({
   type,
+  isSearched = false,
+  cookieNum = 0,
+  dirNum = 0,
   imgUrl,
   nickname,
   filterType,
-  onClickType,
-  postDir,
+  onClickFilterType,
+  isCreateCookieModalOpen,
+  setIsCreateCookieModalOpen,
+  createDir,
+  createCookie,
 }: ListHeaderProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [isDirAddOpen, setIsDirAddOpen] = useState(false);
-  const [newDirData, setNewDirData] = useState<PostDirectoryProps>({
-    emoji: "",
-    name: "",
-  });
+
+  // cookie 추가 모달 x좌표
+  const [locationX, setLocationX] = useState(0);
+  const windowSize = useWindowSize();
+  const plusIconLocation = useRef<HTMLButtonElement>(null);
+
+  // 키 떼어냈을 때
+  const handleKeyUp = (e: any) => {
+    // shift + f = 필터 모달
+    if (e.key === "F" && e.shiftKey) {
+      setIsFilterOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    plusIconLocation.current &&
+      setLocationX(plusIconLocation.current.getBoundingClientRect().x);
+  }, [windowSize.width]);
+
+  useEffect(() => {
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   return (
     <>
-      <ListHeaderWrap type={type} nickname={nickname}>
+      <ListHeaderWrap type={type} nickname={nickname} isSearched={isSearched}>
         {(type === "dirDetail" || type === "dirShare") && (
           <User>
             <img alt="profile-img" src={imgUrl} />
             <p>{nickname}</p>
           </User>
         )}
-        {type === "cookie" && <div className="nickname--cookie" />}
-        {type === "dir" && <div className="nickname--dir" />}
-        <div className="button-wrap">
-          {type === "dir" && (
+        {!isSearched ? (
+          <>
+            {type === "cookie" && <div className="nickname--cookie" />}
+            {type === "dir" && <div className="nickname--dir" />}
+          </>
+        ) : (
+          <>
+            {type === "cookie" && (
+              <div className="num">
+                <b className="num--bold">
+                  {cookieNum && cookieNum > 999 ? "999+" : cookieNum}개
+                </b>
+                의 쿠키
+              </div>
+            )}
+            {type === "dir" && (
+              <div className="num">
+                <b className="num--bold">
+                  {dirNum && dirNum > 999 ? "999+" : dirNum}개
+                </b>
+                의 디렉토리
+              </div>
+            )}
+          </>
+        )}
+        {!isSearched && (
+          <div className="button-wrap">
+            {type !== "dirShare" && (
+              <StyledIcon
+                className="create"
+                onClick={() => setIsCreateCookieModalOpen(true)}
+                isAtv={isCreateCookieModalOpen}
+                ref={plusIconLocation}
+              >
+                <PlusIcon22 className="plus-icon" />
+              </StyledIcon>
+            )}
             <StyledIcon
-              className="create"
-              onClick={() => setIsDirAddOpen(true)}
-              isAtv={isDirAddOpen}
+              className="filter"
+              onClick={() => setIsFilterOpen(true)}
+              isAtv={isFilterOpen}
             >
-              <PlusIcon22 className="plus-icon" />
+              <FilterIcon className="filter-icon" />
             </StyledIcon>
-          )}
-          <StyledIcon
-            className="filter"
-            onClick={() => setIsFilterOpen(true)}
-            isAtv={isFilterOpen}
-          >
-            <FilterIcon className="filter-icon" />
-          </StyledIcon>
-          <FilterModal
-            className="filter-modal"
-            isOpen={isFilterOpen}
-            setIsOpen={setIsFilterOpen}
-            type={type === "cookie" ? "cookie" : "dir"}
-            filterType={filterType}
-            onClickType={onClickType}
-          />
-        </div>
+            <FilterModal
+              className="filter-modal"
+              isOpen={isFilterOpen}
+              setIsOpen={setIsFilterOpen}
+              type={type === "dirDetail" ? "cookie" : type}
+              filterType={filterType}
+              onClickType={onClickFilterType}
+            />
+          </div>
+        )}
       </ListHeaderWrap>
-      <DirectoryModal
-        isOpen={isDirAddOpen}
-        setIsOpen={setIsDirAddOpen}
-        type="new"
-        value={newDirData}
-        setValue={setNewDirData}
-        postDir={postDir}
-      />
+      {(type === "cookie" || type === "dirDetail") && (
+        <CookieAddModal
+          isOpen={isCreateCookieModalOpen}
+          setIsOpen={setIsCreateCookieModalOpen}
+          locationX={locationX - 430}
+          type={type}
+          createCookie={createCookie}
+        />
+      )}
+      {type === "dir" && (
+        <DirectoryModal
+          isOpen={type === "dir" && isCreateCookieModalOpen}
+          setIsOpen={setIsCreateCookieModalOpen}
+          type="new"
+          createDir={createDir}
+        />
+      )}
     </>
   );
 };
@@ -90,14 +165,37 @@ export default ListHeader;
 interface ListHeaderWrapProps {
   type: "cookie" | "dir" | "dirDetail" | "dirShare" | "abc";
   nickname: string;
+  isSearched: boolean;
 }
 const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+
   width: 1596px;
-  ${({ type }) =>
-    type === "cookie" || type === "dir"
+  ${({ type, isSearched, theme }) =>
+    isSearched
+      ? css`
+          margin-top: 38px;
+          margin-bottom: 22px;
+          ${theme.media.tablet`
+            margin-top: 32px;
+            margin-bottom: 24px;
+          `}
+          ${theme.media.mobile`
+            margin-top: 28px;
+            margin-bottom: 20px;
+          `}
+        `
+      : type === "cookie" || type === "dir"
       ? css`
           margin-top: 26px;
           margin-bottom: 20px;
+          ${type === "cookie" &&
+          theme.media.mobile`
+            margin-bottom: 0;
+          `}
         `
       : css`
           margin-bottom: 20px;
@@ -117,7 +215,6 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
       content: "${({ nickname }) => nickname}님의 파킹랏";
     }
   }
-
   .nickname--dir {
     font-weight: 700;
     font-size: 22px;
@@ -126,6 +223,17 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
     &:after {
       content: "${({ nickname }) => nickname}님의 디렉토리";
     }
+  }
+
+  .num {
+    font-size: 18px;
+    line-height: 26px;
+    color: var(--gray_6);
+  }
+  .num--bold {
+    font-size: 18px;
+    line-height: 26px;
+    color: var(--orange);
   }
 
   .button-wrap {
@@ -159,6 +267,7 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
   /* -599 */
   ${({ theme }) => theme.media.mobile`
     width: 100%;
+    padding: 0 20px;
     .nickname--cookie {
       &:after {
         content: "모든 쿠키";
@@ -168,6 +277,14 @@ const ListHeaderWrap = styled.section<ListHeaderWrapProps>`
       &:after {
         content: "디렉토리";
       }
+    }
+    .num {
+      font-size: 16px;
+      line-height: 20px;
+    }
+    .num--bold {
+      font-size: 16px;
+      line-height: 20px;
     }
   `}
 `;

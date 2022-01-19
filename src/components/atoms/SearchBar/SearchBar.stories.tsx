@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Meta, Story } from "@storybook/react";
 import SearchBar, { SearchBarProps } from ".";
 
@@ -7,17 +7,10 @@ export default {
   title: "components/atoms/SearchBar",
 } as Meta;
 
-export const Default = () => {
-  const [visible, setVisible] = useState(true);
-  const [isSearched, setIsSearched] = useState(false);
+export const Default: Story<SearchBarProps> = (args) => {
   return (
     <div style={{ width: "100%", padding: "0 20px" }}>
-      <SearchBar
-        visible={visible}
-        setVisible={setVisible}
-        isSearched={isSearched}
-        setIsSearched={setIsSearched}
-      />
+      <SearchBar {...args} />
     </div>
   );
 };

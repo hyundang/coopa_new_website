@@ -1,71 +1,50 @@
-import { getApi, putApi } from "@lib/api";
+// components
 import { My } from "@components/templates";
-import useSWR, { mutate } from "swr";
-import { EditUserDataProps, UserDataProps } from "@interfaces/user";
-import { useRouter } from "next/dist/client/router";
-import { useEffect, useState } from "react";
+// interfaces
+import { UserDataProps } from "@interfaces/user";
+// libs
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { NextPageContext } from "next";
+import nextCookie from "next-cookies";
+// modules
+import UserModule from "@modules/UserModule";
 
-export default function mypage() {
+export default function mypage({
+  initUserData,
+}: {
+  initUserData: UserDataProps;
+}) {
   const router = useRouter();
-  // 유저 데이터 get
-  const { data: userData, error: userDataError } = useSWR<
-    UserDataProps | undefined
-  >("/users", getApi.getUserData, {
-    onErrorRetry: ({ retryCount }) => {
-      console.log(userDataError);
-      // 3번 까지만 재시도함
-      if (retryCount >= 3) return undefined;
-      return true;
-    },
-  });
-  // 프로필 수정 데이터
-  const [profileData, setProfileData] = useState<EditUserDataProps>({
-    name: "",
-    introduction: "",
-  });
-  // 프로필 수정 모달 오픈
-  const [isOpen, setIsOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
-  const handleClickLogout = () => {
-    localStorage.removeItem("x-access-token");
-    router.replace("/login");
-  };
+  const userModule = UserModule({
+    initUserData,
+    router,
+  });
 
-  const handleEditProfile = async () => {
-    mutate(
-      "/users",
-      {
-        ...userData,
-        ...profileData,
-      },
-      false,
-    );
-    await putApi.putUserData(profileData);
+  const initalizeProfileData = () => {
+    userModule.setProfileData({
+      name: userModule.userData?.name || "",
+      introduction: userModule.userData?.introduction,
+    });
   };
 
   useEffect(() => {
-    localStorage.getItem("x-access-token") === null && router.replace("/login");
-  }, []);
-
-  useEffect(() => {
-    isOpen &&
-      setProfileData({
-        name: userData?.name || "",
-        introduction: userData?.introduction,
-      });
-  }, [isOpen]);
+    isUpdateModalOpen && initalizeProfileData();
+  }, [isUpdateModalOpen]);
 
   return (
     <>
-      {userData ? (
+      {userModule.userData ? (
         <My
-          userData={userData}
-          onClickLogout={handleClickLogout}
-          editProfile={handleEditProfile}
-          profileData={profileData}
-          setProfileData={setProfileData}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
+          userData={userModule.userData}
+          onClickLogout={userModule.handleLogout}
+          editProfile={userModule.updateProfile}
+          profileData={userModule.profileData}
+          setProfileData={userModule.setProfileData}
+          isOpen={isUpdateModalOpen}
+          setIsOpen={setIsUpdateModalOpen}
         />
       ) : (
         <div>로딩뷰</div>
@@ -73,3 +52,15 @@ export default function mypage() {
     </>
   );
 }
+
+mypage.getInitialProps = async (ctx: NextPageContext) => {
+  const allCookies = nextCookie(ctx);
+  const userToken = allCookies["x-access-token"];
+
+  // 로그인 안 되어 있을 때
+  if (!userToken) {
+    // 로그인 페이지로 리다이렉트
+    ctx.res?.writeHead(307, { Location: "/login" });
+    ctx.res?.end();
+  }
+};

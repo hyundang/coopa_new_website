@@ -1,11 +1,7 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, HTMLAttributes, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
-export interface TabProps {
-  /** id */
-  id?: string;
-  /** className */
-  className?: string;
+export interface TabProps extends HTMLAttributes<HTMLDivElement> {
   /** 탭 버튼 css */
   tabStyle?: React.CSSProperties;
   /** 탭 버튼 텍스트 */

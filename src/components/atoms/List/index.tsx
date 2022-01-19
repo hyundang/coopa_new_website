@@ -1,26 +1,59 @@
-import styled from "styled-components";
 import { DefaultEmojiIcon } from "@assets/icons/card";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { CreateDirProps } from "@interfaces/directory";
+import React, {
+  Dispatch,
+  HTMLAttributes,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import styled from "styled-components";
 
-export type Dirtype = {
-  emoji?: string;
-  name: string;
-};
-export interface ListProps {
-  /** id */
-  id?: string;
-  /** className */
-  className?: string;
-  /** 현재 디렉토리 변경 setState */
-  setCurrDir: Dispatch<SetStateAction<string>>;
-  /** directory list data */
-  allDir: Dirtype[];
-  /** 하단 블러 처리 표시 여부 setState */
+export interface ListProps extends HTMLAttributes<HTMLUListElement> {
+  /** 검색 중인가 */
+  isSearching: boolean;
+  /** 현재 디렉토리 변경 */
+  setCurrDir: (dir: string) => void;
+  unpinnedDir: CreateDirProps[];
+  pinnedDir: CreateDirProps[];
+  searchedDir: CreateDirProps[];
+  /** 하단 블러 설정 */
   setIsBlur?: Dispatch<SetStateAction<boolean>>;
 }
-const List = ({ id, className, allDir, setCurrDir, setIsBlur }: ListProps) => {
+const List = ({
+  id,
+  className,
+  isSearching,
+  unpinnedDir,
+  pinnedDir,
+  searchedDir,
+  setCurrDir,
+  setIsBlur,
+}: ListProps) => {
   const viewport = useRef<HTMLUListElement>(null);
   const [target, setTarget] = useState<HTMLDivElement>();
+
+  const returnLists = (dirList: CreateDirProps[]) => {
+    return dirList?.map((dir) => (
+      <ListItem
+        className="list-item"
+        key={dir.name}
+        role="menuitem"
+        onClick={(e) => {
+          e.stopPropagation();
+          setCurrDir(dir.name);
+        }}
+      >
+        {dir.emoji ? (
+          <span className="emoji">{dir.emoji}</span>
+        ) : (
+          <DefaultEmojiIcon className="emoji" />
+        )}
+        <span className="name">{dir.name}</span>
+      </ListItem>
+    ));
+  };
 
   useEffect(() => {
     // for bottom shadow
@@ -28,7 +61,7 @@ const List = ({ id, className, allDir, setCurrDir, setIsBlur }: ListProps) => {
       root: viewport.current,
       threshold: 1,
     };
-    const handleIntersection = (entries: any, observer: any) => {
+    const handleIntersection = (entries: any) => {
       setIsBlur &&
         entries.forEach((entry: any) => {
           entry.isIntersecting ? setIsBlur(false) : setIsBlur(true);
@@ -40,26 +73,21 @@ const List = ({ id, className, allDir, setCurrDir, setIsBlur }: ListProps) => {
 
   return (
     <ListWrap id={id} className={className} ref={viewport} role="menu">
-      {allDir?.map((dir) => (
-        <li
-          className="list-item"
-          key={dir.name}
-          role="menuitem"
-          onClick={(e) => {
-            e.stopPropagation();
-            setCurrDir(dir.name);
-          }}
-        >
-          {dir.emoji ? (
-            <span className="list-item__emoji">{dir.emoji}</span>
-          ) : (
-            <DefaultEmojiIcon className="list-item__emoji" />
-          )}
-          <span className="list-item__name">{dir.name}</span>
-        </li>
-      ))}
+      {isSearching ? (
+        <>
+          <span>검색결과</span>
+          {returnLists(searchedDir)}
+        </>
+      ) : (
+        <>
+          {pinnedDir.length !== 0 && <span> 고정됨</span>}
+          {returnLists(pinnedDir)}
+          <span>기본</span>
+          {returnLists(unpinnedDir)}
+        </>
+      )}
       <div
-        style={{ marginTop: "1px", height: "1px" }}
+        style={{ marginTop: "1px", height: "1px", marginBottom: "5px" }}
         ref={(e: HTMLDivElement) => setTarget(e)}
       />
     </ListWrap>
@@ -69,10 +97,22 @@ const List = ({ id, className, allDir, setCurrDir, setIsBlur }: ListProps) => {
 export default List;
 
 const ListWrap = styled.ul`
+  display: flex;
+  flex-direction: column;
   height: 184px;
   padding: 0;
   margin: 0;
   overflow: auto;
+  & > span {
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 13px;
+    color: var(--gray_5);
+    margin: 5px;
+  }
+  @media screen and (min-width: 1600px) {
+    height: 202px;
+  }
   ::-webkit-scrollbar {
     width: 8px;
   }
@@ -84,35 +124,59 @@ const ListWrap = styled.ul`
     border-radius: 5px;
     box-sizing: border-box;
   }
-  .list-item {
-    display: flex;
-    align-items: center;
-    width: 100%;
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--gray_3);
+  }
+`;
+
+const ListItem = styled.li`
+  display: flex;
+  align-items: center;
+  width: 203px;
+  border-radius: 17px;
+  font-size: 14px;
+
+  @media screen and (min-width: 1600px) {
+    font-size: 15px;
+    width: 235px;
     border-radius: 17px;
-    :hover {
-      background: var(--gray_hover_2);
-      /* 오른쪽 동그라미 */
-      ::after {
-        content: "";
-        position: relative;
-        display: block;
-        margin: 10px;
-        margin-left: auto;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--orange);
-      }
+  }
+  :hover {
+    background: var(--gray_hover_2);
+    /* 오른쪽 동그라미 */
+    ::after {
+      content: "";
+      position: relative;
+      display: block;
+      margin: 10px;
+      margin-left: auto;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--orange);
     }
-    &__emoji {
-      margin: 0 8px;
-      font-size: 14px;
+  }
+  .emoji {
+    width: 16px;
+    font-size: 16px;
+    margin: 0 10px;
+    object-fit: fill;
+    @media screen and (min-width: 1600px) {
+      font-size: 18px;
+      width: 18px;
+      margin: 0 13px;
     }
-    &__name {
-      font-style: normal;
-      font-weight: 500;
-      font-size: 14px;
-      margin: 7px 0;
+  }
+  .name {
+    max-width: 145px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    font-style: normal;
+    font-weight: 500;
+    margin: 7px 0;
+    @media screen and (min-width: 1600px) {
+      margin: 9px 0;
     }
   }
 `;

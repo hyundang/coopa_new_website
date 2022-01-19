@@ -1,61 +1,103 @@
-import styled from "styled-components";
-import { ImgBox, Icon } from "@components/atoms";
+// assets
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
-import { DeleteIcon } from "@assets/icons/card";
+import { DeleteIcon, PinAtvIcon, PinIcon } from "@assets/icons/card";
+import { PinImg } from "@assets/imgs/card";
+// components
+import { ImgBox, Icon } from "@components/atoms";
 import { cookieimgAnimation } from "@components/animations";
-import { CookieDataProps, PatchCookieProps } from "@interfaces/cookie";
-import { CookieEditModal, DelModal } from "@components/organisms";
-import { Dispatch, SetStateAction, useState } from "react";
+// interfaces
+import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
+// libs
+import styled from "styled-components";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import React, { Dispatch, SetStateAction, useState } from "react";
 
 export interface CookieImgProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** cookie card state */
   cardState: "hover" | "parking" | "normal" | "input";
-  /** cookie */
-  cookie: CookieDataProps;
+  cookieData?: CookieDataProps;
+  updatedCookieData: UpdateCookieProps;
+  setUpdatedCookieData: Dispatch<SetStateAction<UpdateCookieProps>>;
+  updatedDirectory: {
+    name: string;
+    emoji: string;
+  };
+  copyCookieLink: () => void;
+  updateCookiePin: (cookieId: number, isPinned: boolean) => Promise<void>;
+  setIsUpdateModalOpen: Dispatch<SetStateAction<boolean>>;
+  setIsDeleteModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
-  const [patchData, setPatchData] = useState<PatchCookieProps>({
-    title: cookie.title,
-    content: cookie.content,
-    thumbnail: cookie.thumbnail,
-    cookieId: cookie.id,
-  });
-  const [isError, setIsError] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const isLoading = false;
+const CookieImg = ({
+  id,
+  className,
+  cardState,
+  cookieData,
+  updatedCookieData,
+  setUpdatedCookieData,
+  updatedDirectory,
+  copyCookieLink,
+  updateCookiePin,
+  setIsUpdateModalOpen,
+  setIsDeleteModalOpen,
+}: CookieImgProps) => {
+  // cookie 고정 여부
+  const [isCookiePinned, setIsCookiePinned] = useState(
+    cookieData?.isPinned || false,
+  );
 
-  const editIconClickHandler: React.MouseEventHandler<HTMLButtonElement> = (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => setIsEditOpen(true);
+  const handleClickEditIcon: React.MouseEventHandler<HTMLButtonElement> =
+    () => {
+      setIsUpdateModalOpen(true);
+      setUpdatedCookieData({
+        ...updatedCookieData,
+        cookieId: cookieData?.id || -1,
+      });
+    };
+
+  const handleClickPinIcon = () => {
+    updateCookiePin(cookieData?.id || -1, cookieData?.isPinned || false);
+    setIsCookiePinned(!isCookiePinned);
+  };
 
   return (
     <>
+      {cardState === "hover" && isCookiePinned && (
+        <StyledPinImg className="pin_img" />
+      )}
       <StyledImgBox
         id={id}
         className={className}
-        cookieContent={cookie?.content}
-        url={cookie?.thumbnail}
+        cookieContent={cookieData?.content}
+        url={cookieData?.thumbnail}
         isHover={cardState === "hover"}
       >
         {cardState === "hover" && (
           <HoverDiv>
             <div className="hover_icon_wrap">
-              <Icon className="hover_icon" onClick={editIconClickHandler}>
+              <Icon className="hover_icon" onClick={handleClickPinIcon}>
+                {isCookiePinned ? (
+                  <PinAtvIcon className="hover_icon__pin" />
+                ) : (
+                  <PinIcon className="hover_icon__pin" />
+                )}
+              </Icon>
+              <Icon className="hover_icon" onClick={handleClickEditIcon}>
                 <EditIcon className="hover_icon__edit" />
               </Icon>
-              <Icon className="hover_icon">
-                <LinkIcon32 className="hover_icon__link" />
-              </Icon>
+              <CopyToClipboard
+                text={cookieData?.link || ""}
+                onCopy={copyCookieLink}
+              >
+                <Icon className="hover_icon">
+                  <LinkIcon32 className="hover_icon__link" />
+                </Icon>
+              </CopyToClipboard>
               <Icon className="hover_icon">
                 <DeleteIcon
                   className="hover_icon__delete"
-                  onClick={() => setIsDeleteOpen(true)}
+                  onClick={() => setIsDeleteModalOpen(true)}
                 />
               </Icon>
             </div>
@@ -64,40 +106,19 @@ const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
         {cardState === "parking" && (
           <ParkingDiv>
             <div className="parking--title">
-              {cookie.directoryInfo?.emoji && (
+              {updatedDirectory.emoji && (
                 <div className="parking--title__emoji">
-                  {cookie.directoryInfo.emoji}
+                  {updatedDirectory.emoji}
                 </div>
               )}
               <div className="parking--title__name">
-                {cookie.directoryInfo?.name}
+                {updatedDirectory.name}
               </div>
             </div>
             <div className="parking--desc">에 파킹했어요!</div>
           </ParkingDiv>
         )}
       </StyledImgBox>
-      <CookieEditModal
-        value={patchData}
-        setValue={setPatchData}
-        onClickSave={() => {
-          //data 처리 내용
-          setIsEditOpen(false);
-        }}
-        onClickDel={() => {
-          setIsEditOpen(false);
-          setIsDeleteOpen(true);
-        }}
-        setIsError={setIsError}
-        isOpen={isEditOpen}
-        setIsOpen={setIsEditOpen}
-        isLoading={isLoading}
-      />
-      <DelModal
-        isOpen={isDeleteOpen}
-        setIsOpen={setIsDeleteOpen}
-        onClickDel={() => {}}
-      />
     </>
   );
 };
@@ -105,7 +126,7 @@ const CookieImg = ({ id, className, cardState, cookie }: CookieImgProps) => {
 export default CookieImg;
 
 interface StyledImgBoxProps {
-  cookieContent: string;
+  cookieContent?: string;
 }
 const StyledImgBox = styled(ImgBox)<StyledImgBoxProps>`
   position: relative;
@@ -115,10 +136,19 @@ const StyledImgBox = styled(ImgBox)<StyledImgBoxProps>`
   border-radius: 10px;
 `;
 
+const StyledPinImg = styled(PinImg)`
+  position: absolute;
+  z-index: 2;
+  transform: translate(24px, -5px);
+  background-color: transparent;
+  -webkit-filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.1));
+`;
+
 const HoverDiv = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
+
   .hover_icon_wrap {
     display: flex;
     position: absolute;

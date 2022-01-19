@@ -1,27 +1,6 @@
+import React, { TextareaHTMLAttributes } from "react";
 import styled from "styled-components";
 
-export interface TextAreaProps {
-  /** textarea의 id */
-  id?: string;
-  /** className */
-  className?: string;
-  /** textarea 안의 내용 */
-  children?: React.ReactNode;
-  /** css (width, height, borderRadius, fontSize) */
-  style?: React.CSSProperties;
-  /** placeholder */
-  placeholder?: string;
-  /** 최대 글자수 제한 */
-  maxLength?: number;
-  /** input tag value */
-  value: string | number | readonly string[] | undefined;
-  /** input tag onChange */
-  onChange: React.ChangeEventHandler<HTMLTextAreaElement> | undefined;
-  /** textarea key press */
-  onKeyPress?: React.KeyboardEventHandler<HTMLTextAreaElement>;
-  /** textarea key down */
-  onKeyDown?: React.KeyboardEventHandler<HTMLTextAreaElement>;
-}
 const TextArea = ({
   id,
   className,
@@ -33,7 +12,7 @@ const TextArea = ({
   onChange,
   onKeyPress,
   onKeyDown,
-}: TextAreaProps) => {
+}: TextareaHTMLAttributes<HTMLTextAreaElement>) => {
   return (
     <Container
       id={id}

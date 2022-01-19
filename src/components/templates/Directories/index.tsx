@@ -1,20 +1,112 @@
-import styled from "styled-components";
-import { DirectoryDataProps } from "src/lib/interfaces/directory";
+import { EmptyImg } from "@assets/imgs/error";
+import { PlusIcon } from "@assets/icons/common";
 import Directory from "@components/organisms/Directory";
+import { Empty } from "@components/organisms";
+import { Btn } from "@components/atoms";
+import { DirDataProps, CreateDirProps } from "@interfaces/directory";
+import React, { Dispatch, SetStateAction } from "react";
+import styled from "styled-components";
 
 export interface DirectoriesProps {
-  data: DirectoryDataProps[];
+  unpinnedData: DirDataProps[];
+  /** 고정된 데이터 */
+  pinnedData?: DirDataProps[];
+  /** 검색 디렉토리 여부 */
+  isSearched?: boolean;
+  /** 디렉토리 생성 모달 오픈 여부 */
+  setIsDirAddOpen?: Dispatch<SetStateAction<boolean>>;
+  /** delete dir */
+  deleteDir: (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  /** update dir */
+  updateDir: (
+    id: number,
+    body: CreateDirProps,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  updateDirPin: (
+    dirId: number,
+    isPinned: boolean,
+    isSearched: boolean,
+  ) => Promise<void>;
+  refreshCookie: () => void;
 }
 
-const Directories = ({ data }: DirectoriesProps) => {
+const Directories = ({
+  unpinnedData,
+  pinnedData,
+  isSearched = false,
+  setIsDirAddOpen,
+  deleteDir,
+  updateDir,
+  updateDirPin,
+  refreshCookie,
+}: DirectoriesProps) => {
   return (
-    <DirectoiresWrap>
-      {data.map((dir) => (
-        <Directory key={dir.id} dir={dir} />
-      ))}
-    </DirectoiresWrap>
+    <>
+      {unpinnedData.length !== 0 || pinnedData?.length !== 0 ? (
+        <DirectoiresWrap>
+          {pinnedData?.map((dir) => (
+            <Directory
+              key={dir.id}
+              dir={dir}
+              deleteDir={deleteDir}
+              updateDir={updateDir}
+              updateDirPin={updateDirPin}
+              refreshCookie={refreshCookie}
+            />
+          ))}
+          {unpinnedData.map((dir) => (
+            <Directory
+              key={dir.id}
+              dir={dir}
+              isSearched={isSearched}
+              deleteDir={deleteDir}
+              updateDir={updateDir}
+              updateDirPin={updateDirPin}
+              refreshCookie={refreshCookie}
+            />
+          ))}
+        </DirectoiresWrap>
+      ) : (
+        <>
+          {isSearched ? (
+            <Empty
+              img={EmptyImg}
+              imgWidth={170}
+              text="검색된 디렉토리가 없어요!"
+            />
+          ) : (
+            <StyledEmpty
+              className="empty"
+              img={EmptyImg}
+              imgWidth={170}
+              text="새 디렉토리를 만들어볼까요?"
+              Btn={
+                <Btn
+                  className="empty__button--dir"
+                  isOrange
+                  isAtvBtn
+                  onClick={() => setIsDirAddOpen && setIsDirAddOpen(true)}
+                  role="link"
+                >
+                  <PlusIcon className="plus-icon" />새 디렉토리 만들기
+                </Btn>
+              }
+            />
+          )}
+        </>
+      )}
+    </>
   );
 };
+
+export default Directories;
+
 const DirectoiresWrap = styled.section`
   display: grid;
   justify-content: center;
@@ -39,8 +131,22 @@ const DirectoiresWrap = styled.section`
   `}
   /* -599 */
    ${({ theme }) => theme.media.mobile`
+    padding: 0 20px;
     grid-template-columns: 1fr 1fr;
     grid-gap: 12px;
   `}
 `;
-export default Directories;
+
+const StyledEmpty = styled(Empty)`
+  .empty__button--dir {
+    width: 259px;
+    height: 58px;
+    border-radius: 29px;
+    font-size: 18px;
+    .plus-icon {
+      width: 17px;
+      height: 17px;
+      margin-right: 8px;
+    }
+  }
+`;
