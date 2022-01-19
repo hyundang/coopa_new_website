@@ -2,6 +2,7 @@ import { DefaultEmojiIcon } from "@assets/icons/card";
 import { CreateDirProps } from "@interfaces/directory";
 import React, {
   Dispatch,
+  HTMLAttributes,
   SetStateAction,
   useEffect,
   useRef,
@@ -9,9 +10,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 
-export interface ListProps {
-  id?: string;
-  className?: string;
+export interface ListProps extends HTMLAttributes<HTMLUListElement> {
   /** 검색 중인가 */
   isSearching: boolean;
   /** 현재 디렉토리 변경 */

@@ -90,11 +90,26 @@ const Onboarding = ({ isOpen, setIsOpen }: OnboardingProps) => {
       </TextContainer>
       <SliderContainer currentSlide={currentSlide}>
         <ImgContainer>
-          {currentSlide === 0 && <Slide src={page1.src} />}
-          {currentSlide === 1 && <Slide src={page2.src} />}
-          {currentSlide === 2 && <Slide src={page3.src} />}
-          {currentSlide === 3 && <Slide src={page4.src} />}
-          {currentSlide === 4 && <Slide src={page5.src} />}
+          {
+            //@ts-ignore
+            currentSlide === 0 && <Slide src={page1.src} />
+          }
+          {
+            //@ts-ignore
+            currentSlide === 1 && <Slide src={page2.src} />
+          }
+          {
+            //@ts-ignore
+            currentSlide === 2 && <Slide src={page3.src} />
+          }
+          {
+            //@ts-ignore
+            currentSlide === 3 && <Slide src={page4.src} />
+          }
+          {
+            //@ts-ignore
+            currentSlide === 4 && <Slide src={page5.src} />
+          }
         </ImgContainer>
       </SliderContainer>
       {currentSlide === 0 && <Duribun1 src={duribun1} />}

@@ -1,17 +1,9 @@
 import { toastmsgAnimation } from "@components/animations";
-import { useEffect } from "react";
+import React, { DialogHTMLAttributes, useEffect } from "react";
 import styled from "styled-components";
 
-export interface ToastMsgProps {
-  /** id */
-  id?: string;
-  /** className */
-  className?: string;
-  /** 토스트 메시지 */
-  children: React.ReactNode;
-  /** 토스트 메시지 렌더링 여부 */
+export interface ToastMsgProps extends DialogHTMLAttributes<HTMLDialogElement> {
   isVisible: boolean;
-  /** isVisible set 함수 */
   setIsVisible: (e: boolean) => void;
   /** 이미지 크기 제한을 넘겼을 때 뜨는 토스트 메세지 여부 */
   imgSizeOver?: boolean;

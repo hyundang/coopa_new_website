@@ -1,21 +1,19 @@
+import { CookieIcon, PlusIcon } from "@assets/icons/common";
+import { imgformAnimation } from "@components/animations";
 import { ImgBox } from "@components/atoms";
 import styled from "styled-components";
-import { CookieIcon, PlusIcon } from "@assets/icons/common";
-import { Dispatch, SetStateAction, LegacyRef } from "react";
-import { imgformAnimation } from "@components/animations";
+import React, {
+  Dispatch,
+  SetStateAction,
+  LegacyRef,
+  HTMLAttributes,
+} from "react";
 
-export interface ImgBoxFormProps {
-  /** id */
-  id?: string;
-  /** className */
-  className?: string;
+export interface ImgBoxFormProps extends HTMLAttributes<HTMLDivElement> {
   /** img box 안에 들어가는 img url */
   imgUrl?: string;
-  /** img box hover 여부 */
   isHover: boolean;
-  /** img box hover 여부 setState */
   setIsHover: Dispatch<SetStateAction<boolean>>;
-  /** post시 로딩 여부 */
   isLoading: boolean;
   /** hover시 plus 아이콘 크기 (px) */
   plusSize: number;
@@ -23,7 +21,6 @@ export interface ImgBoxFormProps {
   cookieSize: number;
   /** input을 위한 ref */
   ref: LegacyRef<HTMLInputElement> | undefined;
-  /** input event handling 함수 */
   onChangeImg: React.ChangeEventHandler<HTMLInputElement>;
 }
 

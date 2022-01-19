@@ -1,17 +1,15 @@
-import { useEffect, useRef } from "react";
-import { Dispatch, SetStateAction } from "react";
+import React, {
+  DialogHTMLAttributes,
+  useEffect,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import styled from "styled-components";
 
-export interface MoveModalProps {
-  /** id */
-  id?: string;
-  /** className */
-  className?: string;
-  /** 내부 */
-  children: React.ReactNode;
-  /** 모달 open 여부 */
+export interface MoveModalProps
+  extends DialogHTMLAttributes<HTMLDialogElement> {
   isOpen: boolean;
-  /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 const MoveModal = ({

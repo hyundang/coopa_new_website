@@ -1,4 +1,7 @@
-import {
+import { ImgBoxForm } from "@components/molecules";
+import { ImgBox, MoveModal, Tab } from "@components/atoms";
+import { modalAnimation } from "@components/animations";
+import React, {
   ChangeEvent,
   Dispatch,
   SetStateAction,
@@ -7,9 +10,6 @@ import {
   useEffect,
 } from "react";
 import styled, { css } from "styled-components";
-import { ImgBoxForm } from "@components/molecules";
-import { ImgBox, MoveModal, Tab } from "@components/atoms";
-import { modalAnimation } from "@components/animations";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { HomeboardState } from "@modules/states";
 
@@ -25,21 +25,16 @@ const imgs = [
 ];
 
 export interface HomeboardEditModalProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
   /** location x좌표 */
   locationX: number;
-  /** 모달 open 여부 */
   isOpen: boolean;
-  /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   /** homeboard img 변경 성공 */
-  setIsSuccess: (e: boolean) => void;
+  setIsUpdatingSuccess: (e: boolean) => void;
   /** img input 시 img size 에러 */
-  setIsError: (e: boolean) => void;
-  /** input img post */
+  setIsUpdatingError: (e: boolean) => void;
   updateHomeboardImg: (e: File) => Promise<string>;
 }
 
@@ -49,8 +44,8 @@ const HomeboardEditModal = ({
   locationX,
   isOpen,
   setIsOpen,
-  setIsSuccess,
-  setIsError,
+  setIsUpdatingSuccess,
+  setIsUpdatingError,
   updateHomeboardImg,
 }: HomeboardEditModalProps) => {
   // 탭 선택값
@@ -86,7 +81,7 @@ const HomeboardEditModal = ({
     localStorage.setItem("homeboardImgUrl", e?.target?.id);
     setHomeboardModalImg("");
     setHomeboardImg(`/theme_img/img_${e.target.id}.jpg`);
-    setIsSuccess(true);
+    setIsUpdatingSuccess(true);
   };
 
   // img input event handling 함수
@@ -98,10 +93,13 @@ const HomeboardEditModal = ({
         const imgUrl = await updateHomeboardImg(e.target.files[0]);
         setHomeboardImg(imgUrl);
         setIsLoading(false);
-        setIsSuccess(true);
+        setIsUpdatingSuccess(true);
       } else {
-        setIsError(true);
-        // img_input.current && img_input.current.value = "";
+        setIsUpdatingError(true);
+        img_input.current &&
+          (() => {
+            img_input.current.value = "";
+          })();
       }
     }
   };

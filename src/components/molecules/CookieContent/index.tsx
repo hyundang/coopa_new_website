@@ -4,6 +4,7 @@ import { Icon } from "@components/atoms";
 import { CookieDataProps } from "@interfaces/cookie";
 import CopyToClipboard from "react-copy-to-clipboard";
 import styled from "styled-components";
+import React from "react";
 
 export interface CookieContentProps {
   className?: string;

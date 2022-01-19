@@ -1,7 +1,7 @@
 import { NotiImg } from "@assets/imgs/header";
 import { modalAnimation } from "@components/animations";
 import { Btn, MoveModal } from "@components/atoms";
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
 export interface NotiModalProps {

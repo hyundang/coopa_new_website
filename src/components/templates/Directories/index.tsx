@@ -1,11 +1,11 @@
-import styled from "styled-components";
-import { DirDataProps, CreateDirProps } from "src/lib/interfaces/directory";
-import Directory from "@components/organisms/Directory";
-import { Empty } from "@components/organisms";
 import { EmptyImg } from "@assets/imgs/error";
 import { PlusIcon } from "@assets/icons/common";
+import Directory from "@components/organisms/Directory";
+import { Empty } from "@components/organisms";
 import { Btn } from "@components/atoms";
-import { Dispatch, SetStateAction } from "react";
+import { DirDataProps, CreateDirProps } from "@interfaces/directory";
+import React, { Dispatch, SetStateAction } from "react";
+import styled from "styled-components";
 
 export interface DirectoriesProps {
   unpinnedData: DirDataProps[];

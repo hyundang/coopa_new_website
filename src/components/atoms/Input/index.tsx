@@ -1,18 +1,6 @@
 import React, { RefObject, forwardRef, InputHTMLAttributes } from "react";
 import styled from "styled-components";
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  /** input id */
-  id?: string;
-  /** className */
-  className?: string;
-  /** input 안의 내용 */
-  children?: React.ReactNode;
-  /** css (width, height, borderRadius, fontSize) */
-  style?: React.CSSProperties;
-  /** 타입이 text일 경우 최대 글자수 제한 */
-  maxLength?: number;
-}
 const Input = (
   {
     id,
@@ -28,7 +16,7 @@ const Input = (
     onKeyDown,
     onFocus,
     onBlur,
-  }: InputProps,
+  }: InputHTMLAttributes<HTMLInputElement>,
   ref?:
     | ((instance: HTMLInputElement | null) => void)
     | RefObject<HTMLInputElement>

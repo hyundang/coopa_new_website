@@ -62,7 +62,6 @@ const Header = ({
   const windowSize = useWindowSize();
   const notiIconLocation = useRef<HTMLButtonElement>(null);
 
-  // 검색 아이콘 클릭했을 때
   const handleClickSearchIcon = () => {
     isSearchVisible && setPreventFadeout(false);
     setIsSearchVisible(!isSearchVisible);
@@ -171,13 +170,9 @@ const Header = ({
 export default Header;
 
 interface HeaderWrapProps {
-  /** search icon active 여부 */
   isSearchIconAtv?: boolean;
-  /** info icon active 여부 */
   isInfoIconAtv: boolean;
-  /** noti icon active 여부 */
   isNotiIconAtv: boolean;
-  /** mypage icon active 여부 */
   isMypageIconAtv: boolean;
   imgUrl?: string;
 }
@@ -198,23 +193,23 @@ const HeaderWrap = styled.header<HeaderWrapProps>`
   justify-content: center;
 
   .content {
-    width: 159.6rem;
+    width: 1596px;
     display: flex;
     flex-direction: row;
     align-items: center;
 
     /* responsive */
     ${({ theme }) => theme.media.desktop_2`
-        width: 127.2rem; 
+        width: 1272px; 
     `}
     ${({ theme }) => theme.media.desktop_3`
-        width: 115.2rem;
+        width: 1152px;
     `}
     ${({ theme }) => theme.media.desktop_4`
-        width: 85.8rem;
+        width: 858px;
     `}  
     ${({ theme }) => theme.media.tablet`
-        width: 56.4rem;
+        width: 564px;
         &__logo {
             width: 156px;
         }
@@ -274,19 +269,6 @@ const HeaderWrap = styled.header<HeaderWrapProps>`
               }
             `}
     }
-    /* .search-bubble {
-      position: absolute;
-      top: 50px;
-      &::after {
-        top: 0;
-        border: 6px solid transparent;
-        border-top: 0;
-        border-bottom-color: var(--white);
-        border-width: 6px;
-        margin-top: -6px;
-        margin-left: -6px;
-      }
-    } */
 
     &__info {
       width: 40px;

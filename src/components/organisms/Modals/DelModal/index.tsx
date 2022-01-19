@@ -1,5 +1,5 @@
 import { Btn, Modal } from "@components/atoms";
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 
 export interface DelModalProps {
@@ -7,11 +7,9 @@ export interface DelModalProps {
   className?: string;
   /** modal type */
   type?: "cookie" | "directory";
-  /** modal open */
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  /** delete cookie or directory data */
-  onClickDel: () => Promise<void>;
+  onClickDelBtn: () => Promise<void>;
 }
 const DelModal = ({
   id,
@@ -19,7 +17,7 @@ const DelModal = ({
   type = "cookie",
   isOpen,
   setIsOpen,
-  onClickDel,
+  onClickDelBtn,
 }: DelModalProps) => {
   return (
     <DelModalWrap
@@ -51,7 +49,7 @@ const DelModal = ({
           isAtvBtn
           isOrange
           onClick={() => {
-            onClickDel();
+            onClickDelBtn();
             setIsOpen(false);
           }}
         >

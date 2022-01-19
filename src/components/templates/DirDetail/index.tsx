@@ -71,7 +71,7 @@ const DirDetail = ({
   // 온보딩 모달 오픈
   const [isOnboardOpen, setIsOnboardOpen] = useState(false);
   // 쿠키 추가 모달 오픈
-  const [isCookieAddOpen, setIsCookieAddOpen] = useState(false);
+  const [isCreateCookieModalOpen, setIsCreateCookieModalOpen] = useState(false);
 
   // toast msg visible handling
   const handleToastMsgVisible = (
@@ -164,9 +164,9 @@ const DirDetail = ({
               (cookieModule.pinnedCookieData?.length || 0)
             }
             filterType={cookieModule.cookieFilter}
-            onClickType={cookieModule.updateAndSaveCookieFilter}
-            isAddOpen={isCookieAddOpen}
-            setIsAddOpen={setIsCookieAddOpen}
+            onClickFilterType={cookieModule.updateAndSaveCookieFilter}
+            isCreateCookieModalOpen={isCreateCookieModalOpen}
+            setIsCreateCookieModalOpen={setIsCreateCookieModalOpen}
             createCookie={(url) =>
               cookieModule.createCookie(url, true, dirInfo.id)
             }
@@ -190,10 +190,10 @@ const DirDetail = ({
         isOpen={isDirEditOpen}
         setIsOpen={setIsDirEditOpen}
         type="edit"
-        initValue={newDirData}
+        initDirData={newDirData}
         dirId={dirInfo.id}
-        putDir={dirDetailModule?.editDir}
-        delDir={() => {
+        updateDir={dirDetailModule?.editDir}
+        deleteDir={() => {
           setIsDelOpen(true);
           setIsDirEditOpen(false);
         }}
@@ -202,7 +202,7 @@ const DirDetail = ({
         type="directory"
         isOpen={isDelOpen}
         setIsOpen={setIsDelOpen}
-        onClickDel={async () => dirDetailModule?.deleteDir()}
+        onClickDelBtn={async () => dirDetailModule?.deleteDir()}
       />
       <ToastMsg
         isVisible={isToastMsgVisible.copyShareLink}

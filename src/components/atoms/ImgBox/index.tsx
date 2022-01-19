@@ -1,18 +1,13 @@
 import { NoThumbImg } from "@assets/imgs/card";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, HTMLAttributes, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
-export interface IProps {
-  id?: string;
-  className?: string;
-  children?: React.ReactNode;
-  style?: React.CSSProperties;
+export interface ImgBoxProps extends HTMLAttributes<HTMLDivElement> {
   /** 이미지 url */
   url?: string;
   isHover?: boolean;
   setIsHover?: Dispatch<SetStateAction<boolean>>;
   isLoading?: boolean;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
   /** img input 여부 */
   isImgInput?: boolean;
 }
@@ -27,7 +22,7 @@ const ImgBox = ({
   isLoading,
   onClick,
   isImgInput = false,
-}: IProps) => {
+}: ImgBoxProps) => {
   return (
     <ImgBoxWrap
       id={id}

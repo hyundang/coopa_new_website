@@ -1,47 +1,36 @@
-import React, { useEffect, useRef, useState } from "react";
-import styled, { css } from "styled-components";
-import { CloseIcon } from "src/assets/icons/searchbar";
+// assets
 import { SearchIcon } from "@assets/icons/common";
+import { CloseIcon } from "@assets/icons/searchbar";
+// components
 import { searchbarAnimation } from "@components/animations";
 import { Icon } from "@components/atoms";
-import { HomeboardState } from "@modules/states";
+// libs
+import React, { InputHTMLAttributes, useEffect, useRef, useState } from "react";
+import styled, { css } from "styled-components";
 import { useRecoilState } from "recoil";
-
-export interface SearchBarProps {
-  /** id */
-  id?: string;
-  /** className */
-  className?: string;
-  /** onKeyPress event handler */
-  onKeyPress?: React.KeyboardEventHandler<HTMLInputElement>;
-}
+// modules
+import { HomeboardState } from "@modules/states";
 
 export default function SearchBar({
   id,
   className,
   onKeyPress,
-}: SearchBarProps) {
-  // input focus
+}: InputHTMLAttributes<HTMLInputElement>) {
   const [isFocus, setIsFocus] = useState(false);
-
   // for input refs
   const search_input = useRef<HTMLInputElement>(null);
-
-  // 검색 여부
   const [isSearched, setIsSearched] = useRecoilState(
     HomeboardState.IsSearchedState,
   );
-  // 검색어
   const [searchValue, setSearchValue] = useRecoilState(
     HomeboardState.SearchValueState,
+  );
+  const [isSearchBarVisible, setIsSearchBarVisible] = useRecoilState(
+    HomeboardState.IsSearchBarVisibleState,
   );
   // 불필요한 검색창 렌더링 방지
   const [preventFadeout, setPreventFadeout] = useRecoilState(
     HomeboardState.PreventFadeoutState,
-  );
-  // 검색창 활성화 여부
-  const [isSearchBarVisible, setIsSearchBarVisible] = useRecoilState(
-    HomeboardState.IsSearchBarVisibleState,
   );
 
   // close button click

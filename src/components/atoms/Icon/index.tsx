@@ -1,14 +1,14 @@
-import React, { RefObject, forwardRef, Dispatch, SetStateAction } from "react";
+import React, {
+  RefObject,
+  forwardRef,
+  Dispatch,
+  SetStateAction,
+  ButtonHTMLAttributes,
+} from "react";
 import styled from "styled-components";
 
-export interface IconProps {
-  id?: string;
-  className?: string;
-  style?: React.CSSProperties;
-  children?: React.ReactNode;
-  role?: string;
+export interface IconProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   setIsHover?: Dispatch<SetStateAction<boolean>>;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 const Icon = (
   {

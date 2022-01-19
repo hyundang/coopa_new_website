@@ -25,16 +25,15 @@ const CookieHover = ({
   currDir,
   setCurrDir,
 }: CookieHoverProps) => {
-  // 버튼 활성화 여부
-  const [isActive, setIsActive] = useState(false);
+  const [isBtnActive, setIsBtnActive] = useState(false);
 
   return (
     <CookieHoverWrap
       id={id}
       className={className}
       selectedDir={currDir}
-      isActive={isActive}
-      setIsActive={setIsActive}
+      isActive={isBtnActive}
+      setIsActive={setIsBtnActive}
     >
       <ListContent
         className="list-content"

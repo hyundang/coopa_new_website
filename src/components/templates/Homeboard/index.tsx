@@ -24,8 +24,8 @@ export interface HomeboardProps {
   homeboardModule?: ReturnType<typeof HomebrdModule>;
   setIsUpdatingHomboardImgSuccess?: (e: boolean) => void;
   setIsUpdatingHomboardImgError?: (e: boolean) => void;
-  homeboardImgInLocalStorage: string;
-  bookmarkData: BookmarkDataProps[];
+  homeboardImgInLocalStorage?: string;
+  bookmarkData?: BookmarkDataProps[];
 }
 const Homeboard = ({
   id,
@@ -127,8 +127,8 @@ const Homeboard = ({
             locationX={locationX - 518 + 36}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
-            setIsSuccess={setIsUpdatingHomboardImgError}
-            setIsError={setIsUpdatingHomboardImgSuccess}
+            setIsUpdatingSuccess={setIsUpdatingHomboardImgError}
+            setIsUpdatingError={setIsUpdatingHomboardImgSuccess}
             updateHomeboardImg={homeboardModule.updateHomeboardImg}
           />
         )}

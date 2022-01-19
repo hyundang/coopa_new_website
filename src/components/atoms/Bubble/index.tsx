@@ -1,9 +1,7 @@
+import React, { HTMLAttributes } from "react";
 import styled from "styled-components";
 
-export interface BubbleProps {
-  id?: string;
-  className?: string;
-  children?: React.ReactNode;
+export interface BubbleProps extends HTMLAttributes<HTMLDivElement> {
   isHover?: boolean;
 }
 const Bubble = ({ id, className, isHover, children }: BubbleProps) => {

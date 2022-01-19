@@ -1,6 +1,12 @@
 import { modalAnimation } from "@components/animations";
 import { Btn, Input, MoveModal } from "@components/atoms";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled, { css } from "styled-components";
 
 export interface CookieAddModalProps {

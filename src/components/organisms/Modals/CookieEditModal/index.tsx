@@ -5,34 +5,30 @@ import { ImgBoxForm, InputForm, TextAreaForm } from "@components/molecules";
 import { UpdateCookieProps } from "@interfaces/cookie";
 // libs
 import { useRecoilState } from "recoil";
-import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 // modules
 import { ToastMsgState } from "@modules/states";
 
 export interface CookieEditModalProps {
-  /** id */
   id?: string;
-  /** className */
   className?: string;
-  /** 쿠키 제목, 쿠키 텍스트, 쿠키 썸네일, 쿠키 아이디, 쿠키 썸네일 파일 */
   value: UpdateCookieProps;
-  /** 쿠키 제목, 쿠키 텍스트, 쿠키 썸네일 setState */
   setValue: Dispatch<SetStateAction<UpdateCookieProps>>;
-  /** '삭제' 버튼 클릭 시 event handling 함수 */
-  onClickDel: React.MouseEventHandler<HTMLButtonElement>;
-  /** cookie card set state */
+  onClickDelBtn: React.MouseEventHandler<HTMLButtonElement>;
   setCardState?: Dispatch<
     SetStateAction<"hover" | "parking" | "normal" | "input">
   >;
-  /** 모달 open 여부 */
   isOpen: boolean;
-  /** 모달 open 여부 setState */
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  /** data post 시 loading 여부 */
   isLoading: boolean;
-  /** cookie edit handler */
-  updateCookie: (data: FormData) => Promise<void>;
+  updateCookie: (data: UpdateCookieProps) => Promise<void>;
 }
 
 const CookieEditModal = ({
@@ -40,7 +36,7 @@ const CookieEditModal = ({
   className,
   value,
   setValue,
-  onClickDel,
+  onClickDelBtn,
   setCardState,
   isOpen,
   setIsOpen,
@@ -82,6 +78,12 @@ const CookieEditModal = ({
     }
   };
 
+  const handleClickUpdateBtn = async () => {
+    await updateCookie(value);
+    setIsOpen(false);
+    setCardState ? setCardState("normal") : () => {};
+  };
+
   return (
     <ModalWrap
       id={id}
@@ -105,7 +107,7 @@ const CookieEditModal = ({
       />
       <InputForm
         className="input-title"
-        text="쿠키 제목"
+        labelText="쿠키 제목"
         length={value.title.length}
         maxLength={45}
         placeholder="쿠키 제목을 입력해주세요"
@@ -122,7 +124,7 @@ const CookieEditModal = ({
       />
       <TextAreaForm
         className="input-text"
-        text="쿠키 텍스트"
+        labelText="쿠키 텍스트"
         length={value.content.length}
         maxLength={200}
         placeholder="나만의 코멘트나 메모를 남겨주세요"
@@ -139,7 +141,7 @@ const CookieEditModal = ({
       />
       <div style={{ flexGrow: 1, width: "100%" }} />
       <div className="button-wrap">
-        <Btn className="button" isAtvBtn onClick={onClickDel}>
+        <Btn className="button" isAtvBtn onClick={onClickDelBtn}>
           삭제
         </Btn>
         <span className="button-wrap__inner">
@@ -150,16 +152,7 @@ const CookieEditModal = ({
             className="button"
             isOrange
             isAtvBtn
-            onClick={async () => {
-              const formData = new FormData();
-              formData.append("cookieId", String(value.cookieId));
-              value?.image && formData.append("image", value.image);
-              formData.append("title", value.title);
-              formData.append("content", value.content);
-              await updateCookie(formData);
-              setIsOpen(false);
-              setCardState ? setCardState("normal") : () => {};
-            }}
+            onClick={handleClickUpdateBtn}
           >
             수정
           </Btn>

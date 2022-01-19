@@ -2,15 +2,17 @@
 import { SearchBar, Tab, ToastMsg } from "@components/atoms";
 import { Footer, Header, ListHeader } from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
+// interfaces
+import { CookieDataProps } from "@interfaces/cookie";
 // libs
 import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import { useRecoilState, useRecoilValue } from "recoil";
+// modules
 import { HomeboardState, ToastMsgState } from "@modules/states";
 import HomebrdModule from "@modules/HomebrdModule";
 import CookieModule from "@modules/CookieModule";
 import DirModule from "@modules/DirModule";
-import { CookieDataProps } from "@interfaces/cookie";
 
 export interface NewtablProps {
   /** 프로필 이미지 url */
@@ -48,7 +50,7 @@ const Newtab = ({
   const [tabValue, setTabValue] = useState("모든 쿠키");
 
   // 쿠키or디렉토리 생성 모달 오픈
-  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // 온보딩 모달 오픈
   const [isOnboardOpen, setIsOnboardOpen] = useState(false);
@@ -181,13 +183,13 @@ const Newtab = ({
                   ? cookieModule.cookieFilter
                   : dirModule.dirFilter
               }
-              onClickType={
+              onClickFilterType={
                 tabValue === "모든 쿠키"
                   ? cookieModule.updateAndSaveCookieFilter
                   : dirModule.updateAndSaveDirFilter
               }
-              isAddOpen={isAddOpen}
-              setIsAddOpen={setIsAddOpen}
+              isCreateCookieModalOpen={isCreateModalOpen}
+              setIsCreateCookieModalOpen={setIsCreateModalOpen}
               createDir={dirModule.createDir}
               createCookie={(url) =>
                 cookieModule.createCookie(url, false, undefined)
@@ -237,7 +239,7 @@ const Newtab = ({
                 <Directories
                   pinnedData={dirModule.pinnedDirData}
                   unpinnedData={dirModule.unpinnedDirData}
-                  setIsDirAddOpen={setIsAddOpen}
+                  setIsDirAddOpen={setIsCreateModalOpen}
                   deleteDir={dirModule.deleteDir}
                   updateDir={dirModule.updateDir}
                   updateDirPin={dirModule.updateDirPin}

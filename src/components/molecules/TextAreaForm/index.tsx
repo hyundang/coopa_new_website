@@ -1,36 +1,21 @@
-import styled from "styled-components";
 import { TextArea } from "@components/atoms";
+import styled from "styled-components";
+import React, { TextareaHTMLAttributes } from "react";
 
-export interface TextAreaFormProps {
-  /** id */
+export interface TextAreaFormProps
+  extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   id?: string;
-  /** className */
   className?: string;
-  /** textarea의 css (width, height...) */
-  textareaStyle?: React.CSSProperties;
-  /** label 텍스트 */
-  text: string;
-  /** textarea에 들어가는 value의 최대 길이 */
-  maxLength: number;
+  labelText: string;
   /** textarea에 들어가는 value의 길이 */
   length: number;
-  /** textarea에 들어가는 placeholder */
-  placeholder?: string;
-  /** textarea tag value */
-  value: string | number | readonly string[] | undefined;
-  /** textarea tag onChange */
-  onChange: React.ChangeEventHandler<HTMLTextAreaElement> | undefined;
-  /** textarea key press */
-  onKeyPress?: React.KeyboardEventHandler<HTMLTextAreaElement>;
-  /** textarea key down */
-  onKeyDown?: React.KeyboardEventHandler<HTMLTextAreaElement>;
 }
 
 const TextAreaForm = ({
   id,
   className,
-  textareaStyle,
-  text,
+  style,
+  labelText,
   length,
   maxLength,
   placeholder,
@@ -43,13 +28,13 @@ const TextAreaForm = ({
     <Container id={id} className={className}>
       <div className="textarea-form">
         <label className="textarea-form__label" htmlFor="textarea">
-          {text}
+          {labelText}
         </label>
         <span className="textarea-form__length">{`${length}/${maxLength}`}</span>
       </div>
       <TextArea
         id="textarea"
-        style={textareaStyle}
+        style={style}
         placeholder={placeholder}
         maxLength={maxLength}
         value={value}

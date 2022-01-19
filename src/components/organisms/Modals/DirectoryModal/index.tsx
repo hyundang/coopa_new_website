@@ -2,7 +2,13 @@ import { PlusIcon } from "@assets/icons/common";
 import { Btn, Icon, Modal } from "@components/atoms";
 import { InputForm } from "@components/molecules";
 import { CreateDirProps } from "@interfaces/directory";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled, { css } from "styled-components";
 import dynamic from "next/dynamic";
 import { useWindowSize } from "src/hooks";
@@ -16,17 +22,12 @@ export interface DirectoryModalProps {
   className?: string;
   /** modal type */
   type?: "new" | "edit";
-  /** modal open */
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  /** post directory data */
   createDir?: (e: CreateDirProps) => void;
-  /** put directory data */
-  putDir?: (dirId: number, e: CreateDirProps) => Promise<void>;
-  /** delete directory data */
-  delDir?: () => void;
-  /** directory Data */
-  initValue?: CreateDirProps;
+  updateDir?: (dirId: number, e: CreateDirProps) => Promise<void>;
+  deleteDir?: () => void;
+  initDirData?: CreateDirProps;
   dirId?: number;
 }
 const DirectoryModal = ({
@@ -36,9 +37,9 @@ const DirectoryModal = ({
   isOpen,
   setIsOpen,
   createDir,
-  putDir,
-  delDir,
-  initValue,
+  updateDir,
+  deleteDir,
+  initDirData,
   dirId,
 }: DirectoryModalProps) => {
   const size = useWindowSize();
@@ -80,7 +81,7 @@ const DirectoryModal = ({
       ? (() => {
           type === "new"
             ? createDir && createDir(value)
-            : putDir && dirId && putDir(dirId, value);
+            : updateDir && dirId && updateDir(dirId, value);
           setIsOpen(false);
         })()
       : name_input.current?.focus();
@@ -89,7 +90,7 @@ const DirectoryModal = ({
   // 제일 처음에 link input focus 상태로 설정
   useEffect(() => {
     isOpen && name_input.current?.focus();
-    type === "edit" && initValue && setValue(initValue);
+    type === "edit" && initDirData && setValue(initDirData);
   }, [isOpen]);
 
   return (
@@ -141,7 +142,7 @@ const DirectoryModal = ({
       </div>
       <InputForm
         className="input-name"
-        text="디렉토리 이름"
+        labelText="디렉토리 이름"
         length={value.name.length}
         maxLength={20}
         placeholder="디렉토리 이름을 입력해주세요"
@@ -159,7 +160,7 @@ const DirectoryModal = ({
             className="modal-button"
             isAtvBtn
             onClick={() => {
-              delDir && delDir();
+              deleteDir && deleteDir();
               setIsOpen(false);
             }}
           >

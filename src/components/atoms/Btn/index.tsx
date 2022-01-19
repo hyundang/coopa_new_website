@@ -1,12 +1,7 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { ButtonHTMLAttributes, Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
-export interface BtnProps {
-  id?: string;
-  className?: string;
-  children?: React.ReactNode;
-  role?: string;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+export interface BtnProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** 버튼 색깔 판단 (true -> 주황색 버튼) */
   isOrange?: boolean;
   /** '디렉토리 공유하기' 버튼의 경우 -> true */
@@ -20,13 +15,13 @@ const Btn = ({
   id,
   className,
   children,
+  role,
   onClick,
   isOrange,
   isDirShare,
   setIsHover,
   isCookieDirBtn,
   isAtvBtn,
-  role,
 }: BtnProps) => {
   return (
     <BtnWrap

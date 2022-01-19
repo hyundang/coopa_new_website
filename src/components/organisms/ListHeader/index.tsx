@@ -1,4 +1,3 @@
-import styled, { css } from "styled-components";
 import { FilterIcon, PlusIcon22 } from "@assets/icons/common";
 import { Icon } from "@components/atoms";
 import {
@@ -6,33 +5,32 @@ import {
   DirectoryModal,
   FilterModal,
 } from "@components/organisms";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { CreateDirProps } from "@interfaces/directory";
+import styled, { css } from "styled-components";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useWindowSize } from "src/hooks";
 
 export interface ListHeaderProps {
-  /** list type */
+  /** header type */
   type: "cookie" | "dir" | "dirDetail" | "dirShare";
-  /** 검색 결과 여부 */
   isSearched?: boolean;
-  /** 검색된 쿠키 개수 */
   cookieNum?: number;
-  /** 검색된 디렉토리 개수 */
   dirNum?: number;
   /** profile img */
   imgUrl?: string;
-  /** profile nickname */
   nickname: string;
-  /** filter type */
   filterType: "latest" | "oldest" | "readMost" | "readLeast" | "abc";
-  /** filter type click event handler */
-  onClickType: (
+  onClickFilterType: (
     e: "latest" | "oldest" | "readMost" | "readLeast" | "abc",
   ) => void;
-  /** 생성 모달 오픈 */
-  isAddOpen: boolean;
-  setIsAddOpen: Dispatch<SetStateAction<boolean>>;
-  /** post dir */
+  isCreateCookieModalOpen: boolean;
+  setIsCreateCookieModalOpen: Dispatch<SetStateAction<boolean>>;
   createDir?: (e: CreateDirProps) => void;
   createCookie: (url: string) => Promise<boolean>;
 }
@@ -44,9 +42,9 @@ const ListHeader = ({
   imgUrl,
   nickname,
   filterType,
-  onClickType,
-  isAddOpen,
-  setIsAddOpen,
+  onClickFilterType,
+  isCreateCookieModalOpen,
+  setIsCreateCookieModalOpen,
   createDir,
   createCookie,
 }: ListHeaderProps) => {
@@ -116,8 +114,8 @@ const ListHeader = ({
             {type !== "dirShare" && (
               <StyledIcon
                 className="create"
-                onClick={() => setIsAddOpen(true)}
-                isAtv={isAddOpen}
+                onClick={() => setIsCreateCookieModalOpen(true)}
+                isAtv={isCreateCookieModalOpen}
                 ref={plusIconLocation}
               >
                 <PlusIcon22 className="plus-icon" />
@@ -136,15 +134,15 @@ const ListHeader = ({
               setIsOpen={setIsFilterOpen}
               type={type === "dirDetail" ? "cookie" : type}
               filterType={filterType}
-              onClickType={onClickType}
+              onClickType={onClickFilterType}
             />
           </div>
         )}
       </ListHeaderWrap>
       {(type === "cookie" || type === "dirDetail") && (
         <CookieAddModal
-          isOpen={isAddOpen}
-          setIsOpen={setIsAddOpen}
+          isOpen={isCreateCookieModalOpen}
+          setIsOpen={setIsCreateCookieModalOpen}
           locationX={locationX - 430}
           type={type}
           createCookie={createCookie}
@@ -152,8 +150,8 @@ const ListHeader = ({
       )}
       {type === "dir" && (
         <DirectoryModal
-          isOpen={type === "dir" && isAddOpen}
-          setIsOpen={setIsAddOpen}
+          isOpen={type === "dir" && isCreateCookieModalOpen}
+          setIsOpen={setIsCreateCookieModalOpen}
           type="new"
           createDir={createDir}
         />

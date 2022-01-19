@@ -1,5 +1,5 @@
 // assets
-import { NoThumbImg, PinImg } from "@assets/imgs/card";
+import { PinImg } from "@assets/imgs/card";
 // components
 import { CookieEditModal, DelModal } from "@components/organisms";
 import { CookieContent } from "@components/molecules";
@@ -7,21 +7,21 @@ import { CookieContent } from "@components/molecules";
 import { CookieDataProps } from "@interfaces/cookie";
 // libs
 import styled from "styled-components";
-import React, { SyntheticEvent, RefObject, forwardRef } from "react";
+import React, { RefObject, forwardRef } from "react";
 import CookieHandlers from "@lib/CookieHandlers";
 // modules
 import CookieModule from "@modules/CookieModule";
 import { ImgBox } from "@components/atoms";
 
-export interface CookieMobileProps {
+export interface CookieTabletProps {
   id?: string;
   className?: string;
   type: "normal" | "searched" | "dirDetail" | "dirShare";
   cookieData: CookieDataProps;
   cookieModule: ReturnType<typeof CookieModule>;
 }
-const CookieMobile = (
-  { id, className, type, cookieData, cookieModule }: CookieMobileProps,
+const CookieTablet = (
+  { id, className, type, cookieData, cookieModule }: CookieTabletProps,
   ref?:
     | ((instance: HTMLButtonElement | null) => void)
     | RefObject<HTMLButtonElement>
@@ -67,14 +67,14 @@ const CookieMobile = (
         setIsOpen={cookieHandlers.setIsEditModalOpen}
         value={cookieHandlers.updatedCookieValue}
         setValue={cookieHandlers.setUpdatedCookieValue}
-        updateCookie={(formData) =>
+        updateCookie={() =>
           cookieModule.updateCookie(
-            formData,
+            cookieHandlers.updatedCookieValue,
             cookieData.isPinned,
             type === "searched",
           )
         }
-        onClickDel={() => {
+        onClickDelBtn={() => {
           cookieHandlers.setIsEditModalOpen(false);
           cookieHandlers.setIsDelModalOpen(true);
         }}
@@ -83,7 +83,7 @@ const CookieMobile = (
       <DelModal
         isOpen={cookieHandlers.isDelModalOpen}
         setIsOpen={cookieHandlers.setIsDelModalOpen}
-        onClickDel={() =>
+        onClickDelBtn={() =>
           cookieModule.deleteCookie(
             cookieData.id,
             cookieData.isPinned,
@@ -126,4 +126,4 @@ const StyledPinImg = styled(PinImg)`
   -webkit-filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.1));
 `;
 
-export default forwardRef(CookieMobile);
+export default forwardRef(CookieTablet);

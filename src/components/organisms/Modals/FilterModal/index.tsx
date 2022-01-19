@@ -1,7 +1,7 @@
 import { CheckIcon } from "@assets/icons/common";
 import { modalAnimation } from "@components/animations";
 import { MoveModal } from "@components/atoms";
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import styled, { css } from "styled-components";
 
 const cookieItems = [

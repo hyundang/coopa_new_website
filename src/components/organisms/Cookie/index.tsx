@@ -3,7 +3,7 @@ import { fvcOnErrorImg } from "@assets/icons/card";
 // components
 import { CookieHover, CookieImg } from "@components/molecules";
 // interfaces
-import { CookieDataProps } from "@interfaces/cookie";
+import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
 import {
   DirDataProps,
   CreateCookieToDirProps,
@@ -14,6 +14,7 @@ import styled, { css } from "styled-components";
 import React, { useState, useEffect, forwardRef, RefObject } from "react";
 // modules
 import CookieModule from "@modules/CookieModule";
+import { CookieEditModal, DelModal } from "..";
 
 export interface CookieProps {
   id?: string;
@@ -49,6 +50,17 @@ const Cookie = (
   const [cardState, setCardState] = useState<
     "hover" | "normal" | "parking" | "input"
   >("normal");
+
+  const [updatedCookieData, setUpdatedCookieData] = useState<UpdateCookieProps>(
+    {
+      title: cookieData?.title || "",
+      content: cookieData?.content || "",
+      thumbnail: cookieData?.thumbnail || "",
+      cookieId: cookieData?.id || -1,
+    },
+  );
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   //현재 디렉토리
   const [currDir, setCurrDir] = useState(
@@ -114,83 +126,108 @@ const Cookie = (
   }, [currDir]);
 
   return (
-    <CookieWrap
-      id={id}
-      className={className}
-      onClick={() => {
-        window.open(cookieData.link);
-        cookieModule.updateCookieReadCnt(
-          cookieData.id || -1,
-          cookieData.isPinned || false,
-          type === "searched",
-        );
-      }}
-      onMouseEnter={() => {
-        if (cardState === "normal" && !isLoading) setCardState("hover");
-      }}
-      onMouseLeave={() => {
-        if (cardState === "hover" && !isLoading) setCardState("normal");
-      }}
-      ref={ref}
-    >
-      <CookieImg
-        cardState={type === "dirShare" ? "normal" : cardState}
-        setCardState={setCardState}
-        cookieData={cookieData}
-        updatedDirectory={updatedDir}
-        copyCookieLink={cookieModule.copyCookieLink}
-        deleteCookie={(cookieId) =>
-          cookieModule.deleteCookie(
-            cookieId,
-            cookieData?.isPinned,
+    <>
+      <CookieWrap
+        id={id}
+        className={className}
+        onClick={() => {
+          window.open(cookieData.link);
+          cookieModule.updateCookieReadCnt(
+            cookieData.id || -1,
+            cookieData.isPinned || false,
             type === "searched",
-          )
-        }
-        updateCookie={(cookieId) =>
+          );
+        }}
+        onMouseEnter={() => {
+          if (cardState === "normal" && !isLoading) setCardState("hover");
+        }}
+        onMouseLeave={() => {
+          if (cardState === "hover" && !isLoading) setCardState("normal");
+        }}
+        ref={ref}
+      >
+        <CookieImg
+          cardState={type === "dirShare" ? "normal" : cardState}
+          cookieData={cookieData}
+          updatedCookieData={updatedCookieData}
+          setUpdatedCookieData={setUpdatedCookieData}
+          updatedDirectory={updatedDir}
+          copyCookieLink={cookieModule.copyCookieLink}
+          updateCookiePin={(cookieId, isPinned) =>
+            cookieModule.updateCookiePin(
+              cookieId,
+              isPinned,
+              type === "searched",
+            )
+          }
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+          setIsUpdateModalOpen={setIsUpdateModalOpen}
+        />
+        {type !== "dirShare" &&
+          (cardState === "hover" || cardState === "input") && (
+            <div className="hover-div">
+              <CookieHover
+                unpinnedDir={unpinnedDir}
+                pinnedDir={pinnedDir}
+                setCardState={setCardState}
+                currDir={
+                  cookieData.directoryInfo?.emoji !== null
+                    ? `${cookieData.directoryInfo?.emoji || ""} ${currDir}`
+                    : currDir
+                }
+                setCurrDir={setCurrDir}
+              />
+            </div>
+          )}
+        <CookieContent isLoading={isLoading}>
+          <h1 className="title">{cookieData.title}</h1>
+          <div className="desc">{cookieData.content}</div>
+          <div style={{ flexGrow: 1 }} />
+          <div className="profile">
+            <img
+              className="profile__favicon"
+              src={cookieData.favicon}
+              alt={fvcOnErrorImg}
+              onError={(e) => {
+                e.currentTarget.src = fvcOnErrorImg;
+              }}
+            />
+            <div className="profile__favicon--loading" />
+            <cite className="profile__author">{cookieData.provider}</cite>
+          </div>
+        </CookieContent>
+      </CookieWrap>
+      <CookieEditModal
+        value={updatedCookieData}
+        setValue={setUpdatedCookieData}
+        updateCookie={() =>
           cookieModule.updateCookie(
-            cookieId,
+            updatedCookieData,
             cookieData?.isPinned,
             type === "searched",
           )
         }
-        isUpdateLoading={cookieModule.isUpdateLoading}
-        updateCookiePin={(cookieId, isPinned) =>
-          cookieModule.updateCookiePin(cookieId, isPinned, type === "searched")
+        onClickDelBtn={() => {
+          setIsUpdateModalOpen(false);
+          setIsDeleteModalOpen(true);
+        }}
+        setCardState={setCardState}
+        isOpen={isUpdateModalOpen}
+        setIsOpen={setIsUpdateModalOpen}
+        isLoading={cookieModule.isUpdateLoading}
+      />
+      <DelModal
+        isOpen={isDeleteModalOpen}
+        setIsOpen={setIsDeleteModalOpen}
+        onClickDelBtn={() =>
+          cookieModule.deleteCookie(
+            cookieData?.id || -1,
+            cookieData?.isPinned,
+            type === "searched",
+          )
         }
       />
-      {type !== "dirShare" && (cardState === "hover" || cardState === "input") && (
-        <div className="hover-div">
-          <CookieHover
-            unpinnedDir={unpinnedDir}
-            pinnedDir={pinnedDir}
-            setCardState={setCardState}
-            currDir={
-              cookieData.directoryInfo?.emoji !== null
-                ? `${cookieData.directoryInfo?.emoji || ""} ${currDir}`
-                : currDir
-            }
-            setCurrDir={setCurrDir}
-          />
-        </div>
-      )}
-      <CookieContent isLoading={isLoading}>
-        <h1 className="title">{cookieData.title}</h1>
-        <div className="desc">{cookieData.content}</div>
-        <div style={{ flexGrow: 1 }} />
-        <div className="profile">
-          <img
-            className="profile__favicon"
-            src={cookieData.favicon}
-            alt={fvcOnErrorImg}
-            onError={(e) => {
-              e.currentTarget.src = fvcOnErrorImg;
-            }}
-          />
-          <div className="profile__favicon--loading" />
-          <cite className="profile__author">{cookieData.provider}</cite>
-        </div>
-      </CookieContent>
-    </CookieWrap>
+    </>
   );
 };
 

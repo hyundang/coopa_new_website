@@ -1,6 +1,7 @@
-import styled from "styled-components";
 import { LogoImg } from "@assets/imgs/common";
 import { CopyRight } from "@assets/icons/footer";
+import React from "react";
+import styled from "styled-components";
 
 const Footer = () => {
   return (

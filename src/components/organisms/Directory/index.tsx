@@ -1,11 +1,15 @@
-import styled, { css } from "styled-components";
+// assets
 import { EmptyCookieIcon, EditIcon } from "@assets/icons/common";
 import { PinAtvIcon, PinIcon } from "@assets/icons/card";
 import { PinImg } from "@assets/imgs/card";
-import { DirDataProps, CreateDirProps } from "src/lib/interfaces/directory";
+// components
 import { Icon } from "@components/atoms";
-import { useState } from "react";
-import { DelModal, DirectoryModal } from "..";
+import { DelModal, DirectoryModal } from "@components/organisms";
+// interfaces
+import { DirDataProps, CreateDirProps } from "@interfaces/directory";
+// libs
+import React, { useState } from "react";
+import styled, { css } from "styled-components";
 
 export interface DirectoryProps {
   dir: DirDataProps;
@@ -41,6 +45,11 @@ const Directory = ({
   const [isUpdateOpen, setisUpdateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
+  const handleDeleteDir = async () => {
+    await deleteDir(dir.id, dir.isPinned, isSearched);
+    refreshCookie();
+  };
+
   return (
     <>
       <DirectoryWrap
@@ -75,13 +84,12 @@ const Directory = ({
         type="edit"
         isOpen={isUpdateOpen}
         setIsOpen={setisUpdateOpen}
-        createDir={() => {}}
-        putDir={(id, body) => updateDir(id, body, dir.isPinned, isSearched)}
-        delDir={() => {
+        updateDir={(id, body) => updateDir(id, body, dir.isPinned, isSearched)}
+        deleteDir={() => {
           setIsDeleteOpen(true);
           setisUpdateOpen(false);
         }}
-        initValue={{
+        initDirData={{
           emoji: dir.emoji,
           name: dir.name,
         }}
@@ -91,10 +99,7 @@ const Directory = ({
         type="directory"
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
-        onClickDel={async () => {
-          await deleteDir(dir.id, dir.isPinned, isSearched);
-          refreshCookie();
-        }}
+        onClickDelBtn={handleDeleteDir}
       />
     </>
   );

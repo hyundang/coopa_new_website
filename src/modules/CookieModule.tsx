@@ -1,7 +1,7 @@
 // apis
 import { getApi, delApi, putApi, postApi } from "@api/index";
 // interfaces
-import { CookieDataProps } from "@interfaces/cookie";
+import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
 import {
   CreateCookieToDirProps,
   CreateCookieToDirResProps,
@@ -347,12 +347,22 @@ const CookieModule = ({
   3. shouldrevalidate=true, revalidateAll=false
   -> 수정한 쿠키의 데이터, 위치 안바뀜. initial 쿠키의 경우 데이터, 위치 바뀜.
   */
+  const convertDataToFormData = (updatedData: UpdateCookieProps): FormData => {
+    const formData = new FormData();
+    formData.append("cookieId", String(updatedData.cookieId));
+    updatedData?.image && formData.append("image", updatedData.image);
+    formData.append("title", updatedData.title);
+    formData.append("content", updatedData.content);
+    return formData;
+  };
+
   const updateCookie = async (
-    formData: FormData,
+    updatedData: UpdateCookieProps,
     isPinned: boolean,
     isSearched: boolean,
   ) => {
     setIsUpdateLoading(true);
+    const formData = convertDataToFormData(updatedData);
     const res = await putApi.updateCookie(formData);
     if (res) {
       if (isPinned)

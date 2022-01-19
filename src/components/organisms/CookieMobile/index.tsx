@@ -62,14 +62,14 @@ const CookieMobile = (
         setIsOpen={cookieHandlers.setIsEditModalOpen}
         value={cookieHandlers.updatedCookieValue}
         setValue={cookieHandlers.setUpdatedCookieValue}
-        updateCookie={(formData) =>
+        updateCookie={() =>
           cookieModule.updateCookie(
-            formData,
+            cookieHandlers.updatedCookieValue,
             cookieData.isPinned,
             type === "searched",
           )
         }
-        onClickDel={() => {
+        onClickDelBtn={() => {
           cookieHandlers.setIsEditModalOpen(false);
           cookieHandlers.setIsDelModalOpen(true);
         }}
@@ -78,7 +78,7 @@ const CookieMobile = (
       <DelModal
         isOpen={cookieHandlers.isDelModalOpen}
         setIsOpen={cookieHandlers.setIsDelModalOpen}
-        onClickDel={() =>
+        onClickDelBtn={() =>
           cookieModule.deleteCookie(
             cookieData.id,
             cookieData.isPinned,

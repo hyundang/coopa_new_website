@@ -1,14 +1,14 @@
 import { DropDownIcon } from "@assets/icons/card";
 import { dropdownAnimation } from "@components/animations";
-import React, { Dispatch, MouseEvent, SetStateAction } from "react";
+import React, {
+  Dispatch,
+  HTMLAttributes,
+  MouseEvent,
+  SetStateAction,
+} from "react";
 import styled from "styled-components";
 
-export interface DropDownProps {
-  id?: string;
-  className?: string;
-  style?: React.CSSProperties;
-  children?: React.ReactNode;
-  /** 현재 디렉토리 */
+export interface DropDownProps extends HTMLAttributes<HTMLDivElement> {
   selectedDir: string;
   /** dropdown active state */
   isActive: boolean;
