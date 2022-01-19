@@ -33,6 +33,6 @@
     },
     "types": ["chrome"]
   },
-  "include": ["src", "next.config.js", "next-env.d.ts"],
+  "include": ["src", "next.config.js", "next-env.d.ts", "additional.d.ts"],
   "exclude": ["node_modules", "*.stories.tsx"]
 }
