@@ -1,7 +1,7 @@
 // assets
 import { EditIcon, EmptyCookieIcon, LinkIcon } from "@assets/icons/common";
 // components
-import { Btn, Icon, ToastMsg } from "@components/atoms";
+import { Btn, Floating, Icon, ToastMsg } from "@components/atoms";
 import {
   DirectoryModal,
   Header,
@@ -250,6 +250,7 @@ const DirDetail = ({
       >
         😥 최대 15개까지 고정 가능해요!
       </ToastMsg>
+      <Floating />
     </>
   );
 };

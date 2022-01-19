@@ -69,6 +69,7 @@ const HomebrdModule = ({
       },
     },
   );
+
   // 북마크 post
   const createBookmark = async (newValue: CreateBookmarkProps) => {
     const res = await postApi.postBookmarkData(newValue);

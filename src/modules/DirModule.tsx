@@ -25,9 +25,9 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   const [isToastMsgVisible, setIsToastMsgVisible] =
     useRecoilState(ToastMsgState);
   // 디렉토리 필터
-  const initFilter = reactCookie.load("dirFilter");
+  const initDirFilter = reactCookie.load("dirFilter");
   const [dirFilter, setDirFilter] = useState<"latest" | "oldest" | "abc">(
-    initFilter || "latest",
+    initDirFilter || "latest",
   );
   // 고정 디렉토리
   const [pinnedDirData, setPinnedDirData] = useState<DirDataProps[]>(

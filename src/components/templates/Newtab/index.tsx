@@ -1,5 +1,5 @@
 // components
-import { SearchBar, Tab, ToastMsg } from "@components/atoms";
+import { Floating, SearchBar, Tab, ToastMsg } from "@components/atoms";
 import { Footer, Header, ListHeader } from "@components/organisms";
 import { Homeboard, Cookies, Directories } from "@components/templates";
 // interfaces
@@ -162,11 +162,11 @@ const Newtab = ({
             isSearchVisible &&
             (tabValue === "쿠키" || tabValue === "디렉토리")) ||
             (tabValue === "모든 쿠키" &&
-              cookieModule.pinnedCookieData?.length !== 0 &&
-              unpinnedCookieList.length !== 0) ||
+              (cookieModule.pinnedCookieData?.length !== 0 ||
+                unpinnedCookieList.length !== 0)) ||
             (tabValue === "디렉토리" &&
-              dirModule.unpinnedDirData.length !== 0 &&
-              dirModule.pinnedDirData.length !== 0)) && (
+              (dirModule.unpinnedDirData.length !== 0 ||
+                dirModule.pinnedDirData.length !== 0))) && (
             <ListHeader
               isSearched={isSearched && isSearchVisible}
               cookieNum={cookieModule.searchedCookieData?.length || 0}
@@ -323,6 +323,7 @@ const Newtab = ({
       >
         😥 최대 15개까지 고정 가능해요!
       </ToastMsg>
+      <Floating />
     </>
   );
 };

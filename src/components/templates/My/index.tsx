@@ -7,7 +7,7 @@ import {
   LogoutDuribunImg,
 } from "@assets/imgs/mypage";
 import { mypageAnimation } from "@components/animations";
-import { Btn, Bubble, Icon, ToastMsg } from "@components/atoms";
+import { Btn, Bubble, Floating, Icon, ToastMsg } from "@components/atoms";
 import { Footer, Header, ProfileEditModal } from "@components/organisms";
 import { UpdateUserProps, UserDataProps } from "@interfaces/user";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -208,6 +208,7 @@ const My = ({
       <ToastMsg isVisible={isVisible} setIsVisible={setIsVisible}>
         👀 프로필을 수정했어요!
       </ToastMsg>
+      <Floating />
     </Container>
   );
 };

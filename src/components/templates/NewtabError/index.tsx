@@ -1,5 +1,5 @@
 // components
-import { Btn } from "@components/atoms";
+import { Btn, Floating } from "@components/atoms";
 import { Empty, Footer, Header } from "@components/organisms";
 import { Homeboard } from "@components/templates";
 // interfaces
@@ -96,6 +96,7 @@ const NewtabError = ({
         </main>
       </Container>
       <Footer />
+      <Floating />
     </>
   );
 };

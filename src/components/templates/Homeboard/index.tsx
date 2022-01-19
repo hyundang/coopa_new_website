@@ -127,8 +127,8 @@ const Homeboard = ({
             locationX={locationX - 518 + 36}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
-            setIsUpdatingSuccess={setIsUpdatingHomboardImgError}
-            setIsUpdatingError={setIsUpdatingHomboardImgSuccess}
+            setIsUpdatingSuccess={setIsUpdatingHomboardImgSuccess}
+            setIsUpdatingError={setIsUpdatingHomboardImgError}
             updateHomeboardImg={homeboardModule.updateHomeboardImg}
           />
         )}
