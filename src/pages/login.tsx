@@ -10,15 +10,12 @@ import {
 // api
 import { postApi } from "@lib/api";
 import { CreateUserProps } from "@interfaces/user";
-import { useRouter } from "next/dist/client/router";
 import { setToken } from "@api/TokenManager";
 
 export default function LoginPage() {
   const filter: string =
     "win16|win32|win64|wince|mac|macintel|macppc|mac68k|linux i686|linux armv7l|hp-ux|sunos";
   const [isPC, setIsPC] = useState<boolean>(true);
-
-  const router = useRouter();
 
   function instanceOfGLR(object: any): object is GoogleLoginResponse {
     return true;
@@ -35,21 +32,21 @@ export default function LoginPage() {
         profileImage: response.profileObj.imageUrl,
       };
 
-      const Response = await postApi.postUserData(data);
+      const jwt = await postApi.postUserData(data);
 
-      if (Response) {
+      if (jwt) {
         // 쿠키에 유저 토큰 저장
-        setToken(Response);
+        setToken(jwt);
 
-        // if (isPC) {
-        //   chrome.runtime.sendMessage(
-        //     "gbpliecdabaekbhmncopnbkfpdippdnl",
-        //     { isLogin: true, userToken: Response.data.jwt },
-        //     function (response) {
-        //       if (!response.success) console.log("fail");
-        //     },
-        //   );
-        // }
+        if (isPC) {
+          chrome.runtime.sendMessage(
+            CLIENT_ID,
+            { isLogin: true, userToken: jwt },
+            function (res: any) {
+              if (!res.success) console.log("fail");
+            },
+          );
+        }
 
         document.location.href = `${DOMAIN}`;
       } else {
