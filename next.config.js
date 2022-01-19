@@ -26,7 +26,8 @@ module.exports = {
             : JSON.stringify(process.env.DEV_API_URL),
         HTTP_ONLY: process.env.NODE_ENV === "production" ? "true" : "false",
         COOKIE_PAGE_SIZE: JSON.parse(process.env.COOKIE_PAGE_SIZE),
-        VERSION: JSON.stringify(process.env.VERSION)
+        VERSION: JSON.stringify(process.env.VERSION),
+        CLIENT_ID: JSON.stringify(process.env.CLIENT_ID)
       }),
       new webpack.EnvironmentPlugin(["NODE_ENV"]),
     );

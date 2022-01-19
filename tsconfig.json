@@ -30,8 +30,9 @@
       "@styles/*": ["scr/styles/*"],
       "@modules/*": ["src/modules/*"],
       "@data/*": ["src/data/*"]
-    }
+    },
+    "types": ["chrome"]
   },
-  "include": ["src", "next.config.js", "next-env.d.ts"],
+  "include": ["src", "next.config.js", "next-env.d.ts", "additional.d.ts"],
   "exclude": ["node_modules", "*.stories.tsx"]
 }

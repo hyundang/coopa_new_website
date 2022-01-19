@@ -2,6 +2,7 @@ export interface SimpleDirDataProps {
   emoji?: string | null;
   id: number;
   name: string;
+  cookieCount?: number;
 }
 export interface CookieDataProps {
   content: string;

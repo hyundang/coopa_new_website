@@ -49,6 +49,7 @@ const My = ({
       <Header
         imgUrl={userData.profileImage}
         isMypage
+        isSearchIconExist={false}
         isOnboardOpen={isOnboardOpen}
         setIsOnboardOpen={setIsOnboardOpen}
       />

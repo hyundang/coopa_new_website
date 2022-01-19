@@ -413,13 +413,13 @@ const CookieModule = ({
             changeDataOfSpecificCookieInCookieList(cookieList || [], res),
           false,
         );
-      else
+      else if (cookieFilter !== "oldest")
         unpinnedMutate(
           (outerCookieList) =>
             changeDatafSpecificUnpinnedCookie(outerCookieList, res),
-          true,
+          false,
         );
-
+      else unpinnedMutate(undefined, true);
       return res;
     }
     alert("디렉토리 변경 실패");
