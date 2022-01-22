@@ -24,7 +24,7 @@ export interface CookieImgProps {
     emoji: string;
   };
   copyCookieLink: () => void;
-  updateCookiePin: (cookieId: number, isPinned: boolean) => Promise<void>;
+  updateCookiePin: (cookieId: number, isPinned: boolean) => Promise<boolean>;
   setIsUpdateModalOpen: Dispatch<SetStateAction<boolean>>;
   setIsDeleteModalOpen: Dispatch<SetStateAction<boolean>>;
 }
@@ -56,9 +56,12 @@ const CookieImg = ({
       });
     };
 
-  const handleClickPinIcon = () => {
-    updateCookiePin(cookieData?.id || -1, cookieData?.isPinned || false);
-    setIsCookiePinned(!isCookiePinned);
+  const handleClickPinIcon = async () => {
+    const res = await updateCookiePin(
+      cookieData?.id || -1,
+      cookieData?.isPinned || false,
+    );
+    if (res) setIsCookiePinned(!isCookiePinned);
   };
 
   return (

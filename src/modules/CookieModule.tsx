@@ -474,7 +474,7 @@ const CookieModule = ({
     cookieId: number,
     isPinned: boolean,
     isSearched: boolean,
-  ) => {
+  ): Promise<boolean> => {
     const res = await putApi.updateCookiePin(cookieId, !isPinned);
     if (res) {
       if (!isPinned) {
@@ -515,12 +515,13 @@ const CookieModule = ({
           unpinnedMutate(undefined, true);
         }
       }
-      return;
+      return true;
     }
     setIsToastMsgVisible({
       ...isToastMsgVisible,
       pinnedSizeOver: true,
     });
+    return false;
   };
 
   const refreshCookie = () => {
