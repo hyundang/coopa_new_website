@@ -6,7 +6,7 @@ export default {
   component: Bookmark,
 } as Meta;
 
-export const Default = () => {
+export const Default: Story<BookmarkProps> = (args) => {
   return (
     <div
       style={{
@@ -17,16 +17,12 @@ export const Default = () => {
         justifyContent: "center",
       }}
     >
-      <Bookmark
-        datas={[]}
-        onClickSave={() => console.log("bookmark add")}
-        onClickDel={() => console.log("bookmark del")}
-      />
+      <Bookmark {...args} bookmarkData={[]} />
     </div>
   );
 };
 
-export const ManyBookmark = () => {
+export const ManyBookmark: Story<BookmarkProps> = (args) => {
   return (
     <div
       style={{
@@ -38,7 +34,8 @@ export const ManyBookmark = () => {
       }}
     >
       <Bookmark
-        datas={[
+        {...args}
+        bookmarkData={[
           {
             id: 1,
             name: "naver",
@@ -58,14 +55,12 @@ export const ManyBookmark = () => {
             image: "	https://papago.naver.com/favicon.ico",
           },
         ]}
-        onClickSave={() => console.log("bookmark add")}
-        onClickDel={() => console.log("bookmark del")}
       />
     </div>
   );
 };
 
-export const error = () => {
+export const error: Story<BookmarkProps> = (args) => {
   return (
     <div
       style={{
@@ -77,7 +72,8 @@ export const error = () => {
       }}
     >
       <Bookmark
-        datas={[
+        {...args}
+        bookmarkData={[
           {
             id: 1,
             name: "naver",
