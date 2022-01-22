@@ -130,7 +130,7 @@ const DirectoryModal = ({
           <div className="picker-wrap" onClick={(e) => e.stopPropagation()}>
             <Picker
               pickerStyle={pickerStyle}
-              onEmojiClick={(e, emojiObject) =>
+              onEmojiClick={(_, emojiObject) =>
                 setValue({
                   ...value,
                   emoji: emojiObject.emoji,

@@ -31,7 +31,7 @@ export default function LandingTwo() {
           </a>
         </main>
         <div className="img">
-          <img className="img__gif" src={Landing2Gif.src} alt="gif" />
+          <img className="img__gif" src={Landing2Gif} alt="gif" />
           <img className="img__duribun" src={Landing2Duribun} alt="duribun" />
         </div>
       </div>

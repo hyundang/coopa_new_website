@@ -23,6 +23,10 @@
     "plugin:import/warnings"
   ], //plugin과 extends로 적용된 규칙에 덮어씌워져서 강제 설정할 수 있는 부분
   "rules": {
+    "import/order": "off",
+    "react/jsx-curly-brace-presence": "off",
+    "no-console": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "prettier/prettier": 0,
     "arrow-body-style": "off",
     "prefer-arrow-callback": "off",

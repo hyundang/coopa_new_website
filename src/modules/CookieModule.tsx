@@ -198,8 +198,8 @@ const CookieModule = ({
   };
 
   function isTypeOfObjectEqualCreateCookieToDirResProps(
-    resData: any,
-  ): resData is CreateCookieToDirResProps {
+    _resData: any,
+  ): _resData is CreateCookieToDirResProps {
     return true;
   }
 

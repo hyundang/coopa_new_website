@@ -42,7 +42,7 @@ const DirDetailModule = ({ dirId, initDirInfoData }: DirDetailModuleProps) => {
   const editDir = async (id: number, body: CreateDirProps) => {
     const res = await putApi.updateDirectoryData(id, body);
     if (res) {
-      dirMutate((info) => {
+      dirMutate(() => {
         return {
           id: res.id || -1,
           emoji: res.emoji,

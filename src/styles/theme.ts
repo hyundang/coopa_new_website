@@ -1,4 +1,4 @@
-import { DefaultTheme, css, CSSObject } from "styled-components";
+import { DefaultTheme, css } from "styled-components";
 
 const sizes = {
   desktop_2: 1919,

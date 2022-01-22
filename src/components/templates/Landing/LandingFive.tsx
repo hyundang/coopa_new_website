@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Fade from "react-reveal/Fade";
 import { CookieIcon } from "@assets/icons/common";
-import { ChromeStoreImg, Landing5Mac } from "@assets/imgs/landing";
+import { Landing5Mac } from "@assets/imgs/landing";
 import { WebStoreBtn } from "@components/atoms";
 
 export default function LandingFive() {
