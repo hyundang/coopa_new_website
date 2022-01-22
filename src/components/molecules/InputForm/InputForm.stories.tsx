@@ -10,8 +10,7 @@ export const inputForm = () => {
   const [value, setValue] = useState("");
   return (
     <InputForm
-      inputStyle={{ height: "46px", borderRadius: "12px", fontSize: "15px" }}
-      text="쿠키 제목"
+      labelText="쿠키 제목"
       length={value.length}
       maxLength={45}
       placeholder="쿠키 제목을 입력해주세요"
