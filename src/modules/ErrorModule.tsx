@@ -15,6 +15,7 @@ const ErrorModule = () => {
       onSuccess: async (data) => {
         localStorage.setItem("bookmark", JSON.stringify(data));
       },
+      shouldRetryOnError: false,
     },
   );
 

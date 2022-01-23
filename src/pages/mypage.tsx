@@ -47,7 +47,7 @@ export default function mypage({
           setIsOpen={setIsUpdateModalOpen}
         />
       ) : (
-        <div>로딩뷰</div>
+        <div>login page</div>
       )}
     </>
   );

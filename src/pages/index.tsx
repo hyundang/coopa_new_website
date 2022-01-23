@@ -37,45 +37,11 @@ export default function NewtabPage({
   initBookmarkData,
   initHomeboardImgUrl,
 }: NewtabPageProps) {
-  // 검색 여부
-  const setIsSearched = useSetRecoilState(HomeboardState.IsSearchedState);
-  // 검색어
-  const searchValue = useRecoilValue(HomeboardState.SearchValueState);
-
   // 홈보드 모듈
   const homebrdModule = HomebrdModule({
     initHomeboardImgUrl,
     initBookmarkData,
   });
-
-  // 쿠키 모듈
-  const cookieModule = CookieModule({
-    type: "newtab",
-    initAllPinnedCookieData: initAllPinnedCookieData || [],
-    initAllUnpinnedCookieData: initAllUnpinnedCookieData || [],
-  });
-
-  // 디렉토리 모듈
-  const dirModule = DirModule({
-    initAllDirData: initAllDirData || { common: [], pinned: [] },
-  });
-
-  // 검색창 enter 키 클릭 시
-  const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      setIsSearched(true);
-      mutate(
-        "/cookies/search",
-        await getApi.getSearchedCookieData(searchValue),
-        false,
-      );
-      mutate(
-        "/directories/search",
-        await getApi.getSearchedDirData(searchValue),
-        false,
-      );
-    }
-  };
 
   useEffect(() => {
     // 홈보드, 홈보드 모달 이미지 세팅
@@ -105,40 +71,74 @@ export default function NewtabPage({
       mutate("/users/favorites", JSON.parse(bookmark), false);
   }, []);
 
+  if (isLogin) {
+    // 검색 여부
+    const setIsSearched = useSetRecoilState(HomeboardState.IsSearchedState);
+    // 검색어
+    const searchValue = useRecoilValue(HomeboardState.SearchValueState);
+
+    // 쿠키 모듈
+    const cookieModule = CookieModule({
+      type: "newtab",
+      initAllPinnedCookieData: initAllPinnedCookieData || [],
+      initAllUnpinnedCookieData: initAllUnpinnedCookieData || [],
+    });
+
+    // 디렉토리 모듈
+    const dirModule = DirModule({
+      initAllDirData: initAllDirData || { common: [], pinned: [] },
+    });
+
+    // 검색창 enter 키 클릭 시
+    const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        setIsSearched(true);
+        mutate(
+          "/cookies/search",
+          await getApi.getSearchedCookieData(searchValue),
+          false,
+        );
+        mutate(
+          "/directories/search",
+          await getApi.getSearchedDirData(searchValue),
+          false,
+        );
+      }
+    };
+
+    return (
+      <Newtab
+        // 유저 데이터 관련
+        imgUrl={initUserData?.profileImage}
+        nickname={initUserData?.name}
+        // 홈보드 관련
+        onKeyPress={handleKeyPress}
+        homeboardModule={homebrdModule}
+        // 쿠키 관련
+        cookieModule={cookieModule}
+        unpinnedCookieList={
+          cookieModule.unpinnedCookieData?.reduce(
+            (acc, curr) => curr && acc?.concat(curr),
+            [],
+          ) || []
+        }
+        // 디렉토리 관련
+        dirModule={dirModule}
+      />
+    );
+  }
+
   return (
-    <>
-      {isLogin ? (
-        <Newtab
-          // 유저 데이터 관련
-          imgUrl={initUserData?.profileImage}
-          nickname={initUserData?.name}
-          // 홈보드 관련
-          onKeyPress={handleKeyPress}
-          homeboardModule={homebrdModule}
-          // 쿠키 관련
-          cookieModule={cookieModule}
-          unpinnedCookieList={
-            cookieModule.unpinnedCookieData?.reduce(
-              (acc, curr) => curr && acc?.concat(curr),
-              [],
-            ) || []
-          }
-          // 디렉토리 관련
-          dirModule={dirModule}
-        />
-      ) : (
-        <NewtabError
-          imgUrl={initUserData?.profileImage}
-          homeboardImg={homebrdModule.homeboardImg}
-          bookmarkDatas={homebrdModule.bookmarkData || []}
-          errorImg={NotFoundErrorImg}
-          errorImgWidth={141}
-          text="앗, 로그인이 필요한 페이지에요! 😮"
-          text2="로그인 후 함께하시겠어요?"
-          isLoginError
-        />
-      )}
-    </>
+    <NewtabError
+      imgUrl={initUserData?.profileImage}
+      homeboardImg={homebrdModule.homeboardImg}
+      bookmarkDatas={homebrdModule.bookmarkData || []}
+      errorImg={NotFoundErrorImg}
+      errorImgWidth={141}
+      text="앗, 로그인이 필요한 페이지에요! 😮"
+      text2="로그인 후 함께하시겠어요?"
+      isLoginError
+    />
   );
 }
 

@@ -63,7 +63,11 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   const { data: searchedDirData, mutate: searchedMutate } = useSWR(
     "/directories/search",
     getApi.getSearchedDirData,
-    { revalidateOnFocus: false, revalidateOnMount: false },
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: false,
+      shouldRetryOnError: false,
+    },
   );
 
   const filterSpecificDirInDirList = (

@@ -87,23 +87,21 @@ App.getInitialProps = async ({ ctx, Component }: AppContext) => {
   const allCookies = cookies(ctx);
   const userToken = allCookies["x-access-token"];
 
+  let pageProps = {};
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx);
+  }
+
   // 로그인 되어있을 때
   if (userToken !== undefined) {
     setToken(userToken);
-
     // 유저 데이터
     const initUserData = await getApi.getUserData("/users");
-
-    let pageProps = {};
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx);
-    }
-
     return { pageProps: { ...pageProps, initUserData } };
   }
+
   // 로그인 안 되어 있을 때
-  const pageProps = {};
   return {
-    pageProps,
+    pageProps: { ...pageProps },
   };
 };

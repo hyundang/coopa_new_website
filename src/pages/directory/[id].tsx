@@ -34,54 +34,54 @@ const DirDetailPage = ({
   initAllDirData,
   queryID,
 }: DirDetailPageProps) => {
-  // 쿠키 모듈
-  const cookieModule = CookieModule({
-    type: "dirDetail",
-    dirId: queryID,
-    initAllPinnedCookieData,
-    initAllUnpinnedCookieData,
-  });
+  if (isLogin) {
+    // 쿠키 모듈
+    const cookieModule = CookieModule({
+      type: "dirDetail",
+      dirId: queryID,
+      initAllPinnedCookieData,
+      initAllUnpinnedCookieData,
+    });
 
-  // 디렉토리 상세 모듈
-  const dirDetailModule = DirDetailModule({
-    dirId: queryID,
-    initDirInfoData,
-  });
+    // 디렉토리 상세 모듈
+    const dirDetailModule = DirDetailModule({
+      dirId: queryID,
+      initDirInfoData,
+    });
 
-  // 디렉토리 모듈
-  const dirModule = DirModule({
-    initAllDirData,
-  });
+    // 디렉토리 모듈
+    const dirModule = DirModule({
+      initAllDirData,
+    });
 
-  return (
-    <>
-      <Head>
-        <title>{initDirInfoData.name}</title>
-        <meta name="description" content={initDirInfoData.name} />
-        <meta name="Author" content={initUserData.name} />
-        <meta property="og:title" content={initDirInfoData.name} />
-        <meta property="og:description" content={initDirInfoData.name} />
-        <meta property="og:site_name" content="cookieparking" />
-        <meta
-          property="og:image"
-          content="https://coopa-default.s3.ap-northeast-2.amazonaws.com/og_thumbnail.png"
-        />
-        <meta
-          property="og:url"
-          content={`https://www.cookieparking.com/directory/${queryID}`}
-        />
-        <meta name="twitter:title" content={initDirInfoData.name} />
-        <meta name="twitter:description" content={initDirInfoData.name} />
-        <meta
-          name="twitter:image"
-          content="https://coopa-default.s3.ap-northeast-2.amazonaws.com/og_thumbnail.png"
-        />
-        <meta
-          name="twitter:url"
-          content={`https://www.cookieparking.com/directory/${queryID}`}
-        />
-      </Head>
-      {isLogin ? (
+    return (
+      <>
+        <Head>
+          <title>{initDirInfoData.name}</title>
+          <meta name="description" content={initDirInfoData.name} />
+          <meta name="Author" content={initUserData.name} />
+          <meta property="og:title" content={initDirInfoData.name} />
+          <meta property="og:description" content={initDirInfoData.name} />
+          <meta property="og:site_name" content="cookieparking" />
+          <meta
+            property="og:image"
+            content="https://coopa-default.s3.ap-northeast-2.amazonaws.com/og_thumbnail.png"
+          />
+          <meta
+            property="og:url"
+            content={`https://www.cookieparking.com/directory/${queryID}`}
+          />
+          <meta name="twitter:title" content={initDirInfoData.name} />
+          <meta name="twitter:description" content={initDirInfoData.name} />
+          <meta
+            name="twitter:image"
+            content="https://coopa-default.s3.ap-northeast-2.amazonaws.com/og_thumbnail.png"
+          />
+          <meta
+            name="twitter:url"
+            content={`https://www.cookieparking.com/directory/${queryID}`}
+          />
+        </Head>
         <DirDetail
           // 유저 관련
           imgUrl={initUserData?.profileImage}
@@ -101,12 +101,13 @@ const DirDetailPage = ({
             ) || []
           }
         />
-      ) : (
-        <div>error: login</div>
-      )}
-    </>
-  );
+      </>
+    );
+  }
+
+  return <div>error: login</div>;
 };
+
 export default DirDetailPage;
 
 DirDetailPage.getInitialProps = async (ctx: NextPageContext) => {
