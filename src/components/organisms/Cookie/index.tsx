@@ -1,7 +1,9 @@
 // assets
 import { FaviconIcon } from "@assets/icons/card";
+import { PinImg } from "@assets/imgs/card";
 // components
 import { CookieHover, CookieImg } from "@components/molecules";
+import { CookieEditModal, DelModal } from "..";
 // interfaces
 import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
 import {
@@ -14,7 +16,6 @@ import styled, { css } from "styled-components";
 import React, { useState, useEffect, forwardRef, RefObject } from "react";
 // modules
 import CookieModule from "@modules/CookieModule";
-import { CookieEditModal, DelModal } from "..";
 
 export interface CookieProps {
   id?: string;
@@ -50,6 +51,11 @@ const Cookie = (
   const [cardState, setCardState] = useState<
     "hover" | "normal" | "parking" | "input"
   >("normal");
+
+  // cookie 고정 여부
+  const [isCookiePinned, setIsCookiePinned] = useState(
+    cookieData?.isPinned || false,
+  );
 
   const [updatedCookieData, setUpdatedCookieData] = useState<UpdateCookieProps>(
     {
@@ -146,11 +152,14 @@ const Cookie = (
         }}
         ref={ref}
       >
+        {isCookiePinned && <StyledPinImg className="pin_img" />}
         <CookieImg
           cardState={type === "dirShare" ? "normal" : cardState}
           cookieData={cookieData}
           updatedCookieData={updatedCookieData}
           setUpdatedCookieData={setUpdatedCookieData}
+          isCookiePinned={isCookiePinned}
+          setIsCookiePinned={setIsCookiePinned}
           updatedDirectory={updatedDir}
           copyCookieLink={cookieModule.copyCookieLink}
           updateCookiePin={(cookieId, isPinned) =>
@@ -364,6 +373,14 @@ const CookieContent = styled.section<CookieContentProps>`
             `}
     }
   }
+`;
+
+const StyledPinImg = styled(PinImg)`
+  position: absolute;
+  z-index: 2;
+  transform: translate(24px, -5px);
+  background-color: transparent;
+  -webkit-filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.1));
 `;
 
 export default forwardRef(Cookie);

@@ -1,7 +1,6 @@
 // assets
 import { EditIcon, LinkIcon32 } from "@assets/icons/common";
 import { DeleteIcon, PinAtvIcon, PinIcon } from "@assets/icons/card";
-import { PinImg } from "@assets/imgs/card";
 // components
 import { ImgBox, Icon } from "@components/atoms";
 import { cookieimgAnimation } from "@components/animations";
@@ -10,7 +9,7 @@ import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
 // libs
 import styled from "styled-components";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 export interface CookieImgProps {
   id?: string;
@@ -18,12 +17,14 @@ export interface CookieImgProps {
   cardState: "hover" | "parking" | "normal" | "input";
   cookieData?: CookieDataProps;
   updatedCookieData: UpdateCookieProps;
+  isCookiePinned: boolean;
   setUpdatedCookieData: Dispatch<SetStateAction<UpdateCookieProps>>;
   updatedDirectory: {
     name: string;
     emoji: string;
   };
   copyCookieLink: () => void;
+  setIsCookiePinned: Dispatch<SetStateAction<boolean>>;
   updateCookiePin: (cookieId: number, isPinned: boolean) => Promise<boolean>;
   setIsUpdateModalOpen: Dispatch<SetStateAction<boolean>>;
   setIsDeleteModalOpen: Dispatch<SetStateAction<boolean>>;
@@ -36,17 +37,14 @@ const CookieImg = ({
   cookieData,
   updatedCookieData,
   setUpdatedCookieData,
+  isCookiePinned,
+  setIsCookiePinned,
   updatedDirectory,
   copyCookieLink,
   updateCookiePin,
   setIsUpdateModalOpen,
   setIsDeleteModalOpen,
 }: CookieImgProps) => {
-  // cookie 고정 여부
-  const [isCookiePinned, setIsCookiePinned] = useState(
-    cookieData?.isPinned || false,
-  );
-
   const handleClickEditIcon: React.MouseEventHandler<HTMLButtonElement> =
     () => {
       setIsUpdateModalOpen(true);
@@ -65,64 +63,57 @@ const CookieImg = ({
   };
 
   return (
-    <>
-      {cardState === "hover" && isCookiePinned && (
-        <StyledPinImg className="pin_img" />
-      )}
-      <StyledImgBox
-        id={id}
-        className={className}
-        cookieContent={cookieData?.content}
-        url={cookieData?.thumbnail}
-        isHover={cardState === "hover"}
-      >
-        {cardState === "hover" && (
-          <HoverDiv>
-            <div className="hover_icon_wrap">
-              <Icon className="hover_icon" onClick={handleClickPinIcon}>
-                {isCookiePinned ? (
-                  <PinAtvIcon className="hover_icon__pin" />
-                ) : (
-                  <PinIcon className="hover_icon__pin" />
-                )}
-              </Icon>
-              <Icon className="hover_icon" onClick={handleClickEditIcon}>
-                <EditIcon className="hover_icon__edit" />
-              </Icon>
-              <CopyToClipboard
-                text={cookieData?.link || ""}
-                onCopy={copyCookieLink}
-              >
-                <Icon className="hover_icon">
-                  <LinkIcon32 className="hover_icon__link" />
-                </Icon>
-              </CopyToClipboard>
-              <Icon className="hover_icon">
-                <DeleteIcon
-                  className="hover_icon__delete"
-                  onClick={() => setIsDeleteModalOpen(true)}
-                />
-              </Icon>
-            </div>
-          </HoverDiv>
-        )}
-        {cardState === "parking" && (
-          <ParkingDiv>
-            <div className="parking--title">
-              {updatedDirectory.emoji && (
-                <div className="parking--title__emoji">
-                  {updatedDirectory.emoji}
-                </div>
+    <StyledImgBox
+      id={id}
+      className={className}
+      cookieContent={cookieData?.content}
+      url={cookieData?.thumbnail}
+      isHover={cardState === "hover"}
+    >
+      {cardState === "hover" && (
+        <HoverDiv>
+          <div className="hover_icon_wrap">
+            <Icon className="hover_icon" onClick={handleClickPinIcon}>
+              {isCookiePinned ? (
+                <PinAtvIcon className="hover_icon__pin" />
+              ) : (
+                <PinIcon className="hover_icon__pin" />
               )}
-              <div className="parking--title__name">
-                {updatedDirectory.name}
+            </Icon>
+            <Icon className="hover_icon" onClick={handleClickEditIcon}>
+              <EditIcon className="hover_icon__edit" />
+            </Icon>
+            <CopyToClipboard
+              text={cookieData?.link || ""}
+              onCopy={copyCookieLink}
+            >
+              <Icon className="hover_icon">
+                <LinkIcon32 className="hover_icon__link" />
+              </Icon>
+            </CopyToClipboard>
+            <Icon className="hover_icon">
+              <DeleteIcon
+                className="hover_icon__delete"
+                onClick={() => setIsDeleteModalOpen(true)}
+              />
+            </Icon>
+          </div>
+        </HoverDiv>
+      )}
+      {cardState === "parking" && (
+        <ParkingDiv>
+          <div className="parking--title">
+            {updatedDirectory.emoji && (
+              <div className="parking--title__emoji">
+                {updatedDirectory.emoji}
               </div>
-            </div>
-            <div className="parking--desc">에 파킹했어요!</div>
-          </ParkingDiv>
-        )}
-      </StyledImgBox>
-    </>
+            )}
+            <div className="parking--title__name">{updatedDirectory.name}</div>
+          </div>
+          <div className="parking--desc">에 파킹했어요!</div>
+        </ParkingDiv>
+      )}
+    </StyledImgBox>
   );
 };
 
@@ -137,14 +128,6 @@ const StyledImgBox = styled(ImgBox)<StyledImgBoxProps>`
   padding-bottom: ${({ cookieContent }) =>
     cookieContent === "" ? "calc(180/270*100%)" : "calc(136/270*100%)"};
   border-radius: 10px;
-`;
-
-const StyledPinImg = styled(PinImg)`
-  position: absolute;
-  z-index: 2;
-  transform: translate(24px, -5px);
-  background-color: transparent;
-  -webkit-filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.1));
 `;
 
 const HoverDiv = styled.div`
