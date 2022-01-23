@@ -41,7 +41,7 @@ const UserModule = ({ initUserData, router }: UserModuleProps) => {
   const updateProfile = async () => {
     const res = await putApi.putUserData(profileData);
     if (res) {
-      mutate((e) => {
+      mutate(() => {
         return {
           ...initUserData,
           name: profileData.name,

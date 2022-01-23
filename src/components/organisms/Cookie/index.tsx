@@ -1,5 +1,5 @@
 // assets
-import { fvcOnErrorImg } from "@assets/icons/card";
+import { FaviconIcon } from "@assets/icons/card";
 // components
 import { CookieHover, CookieImg } from "@components/molecules";
 // interfaces
@@ -187,9 +187,9 @@ const Cookie = (
             <img
               className="profile__favicon"
               src={cookieData.favicon}
-              alt={fvcOnErrorImg}
+              alt={FaviconIcon}
               onError={(e) => {
-                e.currentTarget.src = fvcOnErrorImg;
+                e.currentTarget.src = FaviconIcon;
               }}
             />
             <div className="profile__favicon--loading" />

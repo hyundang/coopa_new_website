@@ -112,6 +112,6 @@ export const mockCookieModule: ReturnType<typeof CookieModule> = {
   setIsUpdateLoading: () => {},
   updateDirOfCookie: async () => undefined,
   updateCookieReadCnt: async () => {},
-  updateCookiePin: async () => {},
+  updateCookiePin: async () => false,
   refreshCookie: () => {},
 };

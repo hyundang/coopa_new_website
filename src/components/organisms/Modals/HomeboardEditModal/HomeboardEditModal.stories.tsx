@@ -7,10 +7,7 @@ export default {
 };
 
 export const homeboardEditModal = () => {
-  const [value, setValue] = useState("");
   const [isOpen, setIsOpen] = useState(true);
-  const [isError, setIsError] = useState(false);
-  const [homeboardImg, setHomeboardImg] = useState("");
 
   return (
     <>
@@ -18,11 +15,10 @@ export const homeboardEditModal = () => {
         <HomeboardEditModal
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          setIsError={setIsError}
-          value={value}
-          setValue={setValue}
-          setHomeboardImg={setHomeboardImg}
-          updateHomeboardImg={(e: File) => "hi"}
+          updateHomeboardImg={async () => ""}
+          locationX={0}
+          setIsUpdatingSuccess={async () => {}}
+          setIsUpdatingError={() => {}}
         />
       )}
     </>

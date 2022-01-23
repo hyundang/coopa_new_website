@@ -12,7 +12,7 @@ export default {
 export const btn = () => {
   return (
     <Btn
-      Style={{
+      style={{
         width: "70px",
         height: "48px",
         borderRadius: "24px",
@@ -31,11 +31,9 @@ btn.story = {
 };
 
 export const iconBtn = () => {
-  const [isHover, setIsHover] = useState(false);
-
   return (
     <Btn
-      Style={{
+      style={{
         width: "191px",
         height: "50px",
         borderRadius: "24px",
@@ -65,7 +63,7 @@ export const dirShareBtn = () => {
 
   return (
     <Btn
-      Style={{
+      style={{
         width: "191px",
         height: "50px",
         borderRadius: "24px",

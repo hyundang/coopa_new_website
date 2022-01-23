@@ -64,7 +64,7 @@ const ProfileEditModal = ({
       <h1 className="modal-title">프로필 편집</h1>
       <InputForm
         className="input-nickname"
-        text="닉네임"
+        labelText="닉네임"
         length={value.name.length}
         maxLength={20}
         placeholder="닉네임을 입력해주세요"
@@ -83,7 +83,7 @@ const ProfileEditModal = ({
       />
       <TextAreaForm
         className="input-text"
-        text="한 줄 소개"
+        labelText="한 줄 소개"
         length={value.introduction ? value.introduction.length : 0}
         maxLength={70}
         placeholder="나만의 한 줄 소개를 입력해주세요"

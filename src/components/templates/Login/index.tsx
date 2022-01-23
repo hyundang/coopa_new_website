@@ -30,7 +30,7 @@ const Login = ({ onSuccess, onFailure }: LoginProps) => {
           clientId={String(process.env.CLIENT_ID)}
           responseType="id_token"
           render={(renderProps: {
-            onClick: React.MouseEventHandler<HTMLDivElement>;
+            onClick: React.MouseEventHandler<HTMLButtonElement>;
           }) => <LoginBtn onClick={renderProps.onClick} />}
           onSuccess={onSuccess}
           onFailure={onFailure}

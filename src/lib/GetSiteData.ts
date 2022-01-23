@@ -113,7 +113,7 @@ const convertUTF8 = async (html: BufferSource | undefined) => {
   return enc.decode(html);
 };
 
-const findFavicon = ($: cheerio.Root, url: string) => {
+const findFavicon = ($: any, url: string) => {
   const itemprop = $(`meta[itemprop="image"]`).attr("content") ?? undefined;
   const iconURL = $(`link[rel="icon"]`).attr("href") ?? undefined;
   const shortcutIconURL =

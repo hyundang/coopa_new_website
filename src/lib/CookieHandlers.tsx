@@ -1,6 +1,6 @@
 import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
 import CookieModule from "@modules/CookieModule";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const CookieHandlers = (
   type: "normal" | "searched" | "dirDetail" | "dirShare",

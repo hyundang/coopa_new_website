@@ -22,7 +22,6 @@ export const cookieEditModal: Story<CookieEditModalProps> = (args) => {
     thumbnail: "",
     cookieId: 1,
   });
-  const [isError, setIsError] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const isLoading = false;
 
@@ -33,7 +32,6 @@ export const cookieEditModal: Story<CookieEditModalProps> = (args) => {
           {...args}
           value={value}
           setValue={setValue}
-          setIsError={setIsError}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           isLoading={isLoading}

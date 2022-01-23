@@ -10,7 +10,6 @@ import {
 import useSWR from "swr";
 import reactCookie from "react-cookies";
 import { useState } from "react";
-import { returnDirFilter } from "@lib/filter";
 import { useRecoilState } from "recoil";
 import SaveDataInWebCookie from "@lib/SaveDataInWebCookie";
 // modules
@@ -38,19 +37,19 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
     initAllDirData.common,
   );
 
-  // 모든 디렉토리 데이터 get
-  const { data: allDirData } = useSWR(
-    () => `/directories?filter=${returnDirFilter(dirFilter)}`,
-    getApi.getAllDirData,
-    {
-      initialData: initAllDirData,
-      errorRetryCount: 3,
-      onSuccess: (data) => {
-        setPinnedDirData(data?.pinned || []);
-        setUnpinnedDirData(data?.common || []);
-      },
-    },
-  );
+  // // 모든 디렉토리 데이터 get
+  // const { data: allDirData } = useSWR(
+  //   () => `/directories?filter=${returnDirFilter(dirFilter)}`,
+  //   getApi.getAllDirData,
+  //   {
+  //     initialData: initAllDirData,
+  //     errorRetryCount: 3,
+  //     onSuccess: (data) => {
+  //       setPinnedDirData(data?.pinned || []);
+  //       setUnpinnedDirData(data?.common || []);
+  //     },
+  //   },
+  // );
 
   // 디렉토리 필터 변경
   const updateAndSaveDirFilter = (

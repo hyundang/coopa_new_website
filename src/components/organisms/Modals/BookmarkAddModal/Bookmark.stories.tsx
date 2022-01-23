@@ -24,7 +24,6 @@ export const detfault: Story<BookmarkAddModalProps> = (args) => {
           setValue={setValue}
           // isOpen={isOpen}
           setIsOpen={setIsOpen}
-          onClickSave={() => {}}
         />
       )}
     </>

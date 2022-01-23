@@ -2,7 +2,7 @@
 import { getApi } from "@api/index";
 // libs
 import useSWR, { mutate } from "swr";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const ErrorModule = () => {
   const [homeboardImg, setHomeboardImg] = useState("");

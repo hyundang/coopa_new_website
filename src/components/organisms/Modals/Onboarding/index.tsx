@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 // assets
 import {
   page1,

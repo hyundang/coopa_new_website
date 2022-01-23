@@ -1,4 +1,5 @@
 // assets
+import { fvcOnErrorImg } from "@assets/icons/card";
 import { PlusIcon } from "@assets/icons/common";
 import bookmarkAnimation from "@components/animations/bookmark";
 import React, {
@@ -70,7 +71,7 @@ const BookmarkTile = (
               src={imgUrl}
               alt="favicon"
               onError={(e: SyntheticEvent<HTMLImageElement, Event>) =>
-                (e.currentTarget.src = "/favicon.ico")
+                (e.currentTarget.src = fvcOnErrorImg)
               }
             />
             <cite className="text">{siteName}</cite>

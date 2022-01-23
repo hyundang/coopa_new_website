@@ -17,7 +17,7 @@ export default function LoginPage() {
     "win16|win32|win64|wince|mac|macintel|macppc|mac68k|linux i686|linux armv7l|hp-ux|sunos";
   const [isPC, setIsPC] = useState<boolean>(true);
 
-  function instanceOfGLR(object: any): object is GoogleLoginResponse {
+  function instanceOfGLR(_object: any): _object is GoogleLoginResponse {
     return true;
   }
   // 로그인 성공 시

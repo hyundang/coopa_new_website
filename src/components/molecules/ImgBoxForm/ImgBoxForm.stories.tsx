@@ -18,12 +18,6 @@ export const imgBoxForm = () => {
 
   return (
     <ImgBoxForm
-      imgBoxStyle={{
-        width: "270px",
-        height: "136px",
-        borderRadius: "16px",
-        border: isLoading ? undefined : "1px solid var(--gray_4)",
-      }}
       imgUrl="https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
       isHover={isHover}
       setIsHover={setIsHover}
@@ -52,12 +46,6 @@ export const HomeboardEditImgBoxForm = () => {
 
   return (
     <ImgBoxForm
-      imgBoxStyle={{
-        width: "470px",
-        height: "83px",
-        borderRadius: "8px",
-        border: isLoading ? undefined : "1px solid var(--gray_4)",
-      }}
       imgUrl="https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
       isHover={isHover}
       setIsHover={setIsHover}
