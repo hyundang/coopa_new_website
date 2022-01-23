@@ -40,7 +40,7 @@ export default function LoginPage() {
 
         if (isPC) {
           chrome.runtime.sendMessage(
-            CLIENT_ID,
+            EXTENSION_ID,
             { isLogin: true, userToken: jwt },
             function (res: any) {
               if (!res.success) console.log("fail");
