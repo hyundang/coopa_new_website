@@ -27,7 +27,8 @@ module.exports = {
         HTTP_ONLY: process.env.NODE_ENV === "production" ? "true" : "false",
         COOKIE_PAGE_SIZE: JSON.parse(process.env.COOKIE_PAGE_SIZE),
         VERSION: JSON.stringify(process.env.VERSION),
-        CLIENT_ID: JSON.stringify(process.env.CLIENT_ID)
+        CLIENT_ID: JSON.stringify(process.env.CLIENT_ID),
+        EXTENSION_ID: JSON.stringify(process.env.EXTENSION_ID),
       }),
       new webpack.EnvironmentPlugin(["NODE_ENV"]),
     );
@@ -42,6 +43,7 @@ module.exports = {
     DEV_API_URL: process.env.DEV_API_URL,
     EXPIRE_YEAR: process.env.EXPIRE_YEAR,
     COOKIE_PAGE_SIZE: process.env.COOKIE_PAGE_SIZE,
-    VERSION:process.env.VERSION
+    VERSION:process.env.VERSION,
+    EXTENSION_ID:process.env.EXTENSION_ID
   },
 };
