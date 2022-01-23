@@ -20,12 +20,7 @@ const UserModule = ({ initUserData, router }: UserModuleProps) => {
     mutate,
   } = useSWR("/users", getApi.getUserData, {
     initialData: initUserData,
-    onErrorRetry: ({ retryCount }) => {
-      console.log(userDataError);
-      // 3번 까지만 재시도함
-      if (retryCount >= 3) return undefined;
-      return true;
-    },
+    errorRetryCount: 3,
   });
   // 프로필 수정 데이터
   const [profileData, setProfileData] = useState<UpdateUserProps>({

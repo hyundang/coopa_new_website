@@ -42,9 +42,9 @@ const HomebrdModule = ({
       localStorage.setItem("homeboardImgUrl", homeboardImgUrl);
       setHomeboardImg(homeboardImgUrl);
       setHomeboardModalImg(homeboardImgUrl);
-      return;
+      // return;
     }
-    alert("홈보드 이미지 가져오기 실패!");
+    // alert("홈보드 이미지 가져오기 실패!");
   };
 
   // 홈보드 이미지 edit
@@ -67,6 +67,7 @@ const HomebrdModule = ({
       onSuccess: async (data) => {
         localStorage.setItem("bookmark", JSON.stringify(data));
       },
+      shouldRetryOnError: false,
     },
   );
 
