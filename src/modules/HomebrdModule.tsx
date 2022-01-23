@@ -42,9 +42,10 @@ const HomebrdModule = ({
       localStorage.setItem("homeboardImgUrl", homeboardImgUrl);
       setHomeboardImg(homeboardImgUrl);
       setHomeboardModalImg(homeboardImgUrl);
-      // return;
+      return;
     }
-    // alert("홈보드 이미지 가져오기 실패!");
+    if (localStorage.getItem("x-access-token") !== null)
+      alert("홈보드 이미지 가져오기 실패!");
   };
 
   // 홈보드 이미지 edit
