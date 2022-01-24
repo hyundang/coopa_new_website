@@ -8,11 +8,13 @@ const CheckNotiUpdate = (): boolean => {
   if (!version) {
     SaveDataInWebCookie("version", VERSION);
     SaveDataInWebCookie("isNotiUpdated", true);
+    return true;
   }
   // 업데이트 되었을 때
   if (version !== VERSION) {
     SaveDataInWebCookie("version", VERSION);
     SaveDataInWebCookie("isNotiUpdated", true);
+    return true;
   }
 
   // noti 기간 계산
