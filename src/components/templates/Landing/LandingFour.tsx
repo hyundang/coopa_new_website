@@ -31,7 +31,10 @@ export default function LandingFour() {
           </a>
         </main>
         <div className="img">
-          <img alt="gif" className="img__gif" src={Landing4Gif.src} />
+          {
+            //@ts-ignore
+            <img alt="gif" className="img__gif" src={Landing4Gif.src} />
+          }
           <Fade distance="26px" bottom delay={1100} duration={700}>
             <img alt="duribun" className="img__duribun" src={Landing4Duribun} />
           </Fade>
