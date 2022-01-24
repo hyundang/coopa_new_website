@@ -1,4 +1,4 @@
-export { default as modalAnimation } from "./modal";
+export { default as modalAnimation } from "./Modal";
 export { default as dropdownAnimation } from "./dropdown";
 export { default as searchbarAnimation } from "./searchbar";
 export { default as toastmsgAnimation } from "./toastmsg";
