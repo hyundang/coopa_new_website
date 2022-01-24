@@ -6,7 +6,8 @@ const SaveDataInWebCookie = (key: string, value: any) => {
   reactCookie.save(key, value, {
     path: "/",
     expires,
-    httpOnly: JSON.parse(HTTP_ONLY),
+    // httpOnly: JSON.parse(HTTP_ONLY),
+    httpOnly: false,
   });
 };
 
