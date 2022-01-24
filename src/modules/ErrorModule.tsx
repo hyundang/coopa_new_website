@@ -16,6 +16,8 @@ const ErrorModule = () => {
         localStorage.setItem("bookmark", JSON.stringify(data));
       },
       shouldRetryOnError: false,
+      errorRetryCount: 1,
+      // refreshWhenOffline: false,
     },
   );
 
