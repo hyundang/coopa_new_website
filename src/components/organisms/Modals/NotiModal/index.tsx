@@ -36,7 +36,7 @@ const NotiModal = ({
         className="noti-button"
         isOrange
         isAtvBtn
-        onClick={() => window.open(process.env.NOTICE_URL, "_blank")}
+        onClick={() => window.open(NOTICE_URL, "_blank")}
         role="link"
       >
         더보기
