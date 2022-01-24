@@ -10,7 +10,7 @@ import {
 // api
 import { postApi } from "@lib/api";
 import { CreateUserProps } from "@interfaces/user";
-import { setToken } from "@api/TokenManager";
+import { setToken } from "@lib/TokenManager";
 
 export default function LoginPage() {
   const filter: string =

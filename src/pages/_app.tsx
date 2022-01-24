@@ -5,7 +5,7 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "src/styles/theme";
 import { GlobalStyle } from "src/styles/GlobalStyles";
 import cookies from "next-cookies";
-import { setToken } from "@api/TokenManager";
+import { setToken } from "@lib/TokenManager";
 import getApi from "@api/getApi";
 import { useEffect } from "react";
 // import { useRouterLoading } from "src/hooks";
