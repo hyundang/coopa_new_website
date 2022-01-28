@@ -3,21 +3,16 @@ import { NotFoundErrorImg } from "@assets/imgs/error";
 // apis
 import { getApi } from "@api/index";
 // components
-import { NewtabError, Newtab } from "@components/templates";
+import { NewtabError } from "@components/templates";
 // interfaces
 import { BookmarkDataProps } from "@interfaces/homeboard";
-import { CookieDataProps } from "@interfaces/cookie";
-import { GetAllDirProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 // libs
 import React, { useEffect } from "react";
 import nextCookie from "next-cookies";
 import { mutate } from "swr";
-import { returnCookieFilter, returnDirFilter } from "@lib/filter";
-import { useRecoilValue, useSetRecoilState } from "recoil";
 // modules
-import { CookieModule, DirModule, HomebrdModule } from "@modules/index";
-import { HomeboardState } from "@modules/states";
+import { HomebrdModule } from "@modules/index";
 
 interface NewtabPageProps {
   initUserData: UserDataProps;
