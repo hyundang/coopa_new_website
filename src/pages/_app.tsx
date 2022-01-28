@@ -96,8 +96,12 @@ App.getInitialProps = async ({ ctx, Component }: AppContext) => {
   if (userToken !== undefined) {
     setToken(userToken);
     // 유저 데이터
-    const initUserData = await getApi.getUserData("/users");
-    return { pageProps: { ...pageProps, initUserData } };
+    try {
+      const initUserData = await getApi.getUserData("/users");
+      return { pageProps: { ...pageProps, initUserData } };
+    } catch (e) {
+      return { pageProps: { ...pageProps, initUserData: undefined } };
+    }
   }
 
   // 로그인 안 되어 있을 때
