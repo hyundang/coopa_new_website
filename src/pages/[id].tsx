@@ -131,6 +131,19 @@ NewtabPage.getInitialProps = async (ctx: any) => {
 
   // 로그인 되어 있을 때
   if (userToken) {
+    try {
+      const userData = await getApi.getUserData("/users");
+      // 개인 뉴탭으로 리다이렉트
+      if (userData) {
+        if (Number(ctx.query.id) !== userData.id) {
+          ctx.res?.writeHead(307, { Location: `/${userData.id}` });
+          ctx.res?.end();
+          return {};
+        }
+      }
+    } catch (e) {
+      return {};
+    }
     // 쿠키 데이터
     const initAllPinnedCookieData = await getApi.getAllCookieData(
       `/cookies/pinned?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
