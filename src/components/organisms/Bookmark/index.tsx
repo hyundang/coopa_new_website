@@ -67,7 +67,7 @@ const Bookmark = ({
             }
           />
         ))}
-        {onClickCreateBtn && (
+        {onClickCreateBtn && bookmarkData.length <= 6 && (
           <>
             <BookmarkTile
               isPlusTile
