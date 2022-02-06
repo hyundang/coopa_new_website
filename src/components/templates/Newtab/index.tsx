@@ -205,7 +205,6 @@ const Newtab = ({
                   pinnedCookieList={[]}
                   unpinnedCookieList={cookieModule.searchedCookieData || []}
                   isLoading={false}
-                  isUpdateLoading={false}
                   cookieModule={cookieModule}
                   unpinnedDir={dirModule.unpinnedDirData}
                   pinnedDir={dirModule.pinnedDirData}
@@ -228,7 +227,6 @@ const Newtab = ({
               {tabValue === "모든 쿠키" ? (
                 <Cookies
                   isLoading={cookieModule.isLoading}
-                  isUpdateLoading={cookieModule.isUpdateLoading}
                   pinnedCookieList={cookieModule.pinnedCookieData || []}
                   unpinnedCookieList={unpinnedCookieList}
                   cookieModule={cookieModule}

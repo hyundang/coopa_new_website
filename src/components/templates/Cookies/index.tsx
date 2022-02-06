@@ -30,7 +30,6 @@ export interface CookiesProps {
   dirInfo?: SimpleDirDataProps;
   /** cookie data loading */
   isLoading: boolean;
-  isUpdateLoading: boolean;
   /** 쿠키 모듈 */
   cookieModule: ReturnType<typeof CookieModule>;
   /** 일반 디렉토리 */
@@ -49,7 +48,6 @@ const Cookies = ({
   unpinnedCookieList,
   dirInfo,
   isLoading,
-  isUpdateLoading,
   cookieModule,
   unpinnedDir,
   pinnedDir,
@@ -193,7 +191,7 @@ const Cookies = ({
         </>
       ) : (
         <>
-          {isLoading === true || !isUpdateLoading ? (
+          {isLoading === true || !cookieModule.isUpdateLoading ? (
             type === "dirDetail" ? (
               <Empty
                 img={EmptyImg}
