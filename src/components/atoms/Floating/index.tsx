@@ -30,11 +30,11 @@ const Container = styled.div`
   bottom: 69px;
   width: 80px;
   height: 88.5px;
-  z-index: 100;
+  z-index: 2;
 
   ${({ theme }) => theme.media.mobile`
-    right: 49px;
-    bottom: 49px;
+    right: 20px;
+    bottom: 28px;
   `}
 `;
 
@@ -81,8 +81,8 @@ const IconWrap = styled.div<IconWrapProps>`
   bottom: 69px;
 
   ${({ theme }) => theme.media.mobile`
-    right: 49px;
-    bottom: 49px;
+    right: 20px;
+    bottom: 28px;
   `}
 
   &:hover {

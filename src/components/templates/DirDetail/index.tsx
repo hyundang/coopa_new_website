@@ -425,7 +425,7 @@ const MobileShareBtn = styled(Btn)`
     position: fixed;
     right: 20px;
     bottom: 28px;
-    z-index: 100;
+    z-index: 2;
 
     width: 48px;
     height: 48px;

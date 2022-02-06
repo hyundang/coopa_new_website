@@ -90,7 +90,7 @@ const Cookies = ({
   }, [target]);
 
   return (
-    <Container>
+    <Container className={className}>
       {pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0 ? (
         <>
           {size.width && size.width < 600 ? (
