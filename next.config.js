@@ -1,5 +1,21 @@
 module.exports = {
   reactStrictMode: true,
+  
+  async headers() {
+    return [
+      {
+        source: "/:all*(css|js)",
+        locale: false,
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000",
+          },
+        ],
+      },
+    ];
+  },
+
   webpack(config, { webpack }) {
     config.module.rules.push({
       test: /\.svg$/,
