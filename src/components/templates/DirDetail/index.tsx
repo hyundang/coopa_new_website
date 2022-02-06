@@ -332,10 +332,10 @@ const ShareCntnr = styled.div`
 `;
 
 const StyledCookies = styled(Cookies)`
-  .cookie_mobile_wrap {
+  .cookie-mobile-wrap {
     ${({ theme }) => theme.media.mobile`
-    padding: 0;
-  `}
+      padding: 0; 
+    `}
   }
 `;
 
@@ -421,6 +421,7 @@ const ShareBtn = styled(Btn)`
 `;
 
 const MobileShareBtn = styled(Btn)`
+  display: none;
   ${({ theme }) => theme.media.mobile`
     position: fixed;
     right: 20px;

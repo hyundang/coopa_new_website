@@ -38,7 +38,7 @@ const CookieMobile = (
         onClick={cookieHandlers.handleClickCookieWrap}
         ref={ref}
       >
-        <div className="thumbnail-wrap">
+        <div className="cookie-img">
           {cookieData.isPinned && <StyledPinImg className="pin_img" />}
           <Img
             alt="cookie-thumbnail"
@@ -98,7 +98,7 @@ const CookieWrap = styled.article`
   display: flex;
   flex-direction: row;
 
-  .thumbnail-wrap {
+  .cookie-img {
     width: 108px;
     height: 72px;
     margin-right: 18px;
