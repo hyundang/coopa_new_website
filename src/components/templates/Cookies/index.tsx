@@ -16,11 +16,17 @@ import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
 import { DirDataProps, CreateDirProps } from "@interfaces/directory";
 // libs
 import styled from "styled-components";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  HTMLAttributes,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 // modules
 import CookieModule from "@modules/CookieModule";
 
-export interface CookiesProps {
+export interface CookiesProps extends HTMLAttributes<HTMLDivElement> {
   /** cookie type */
   type?: "normal" | "searched" | "dirDetail" | "dirShare";
   /** pinned cookie data */
@@ -43,6 +49,7 @@ export interface CookiesProps {
 }
 
 const Cookies = ({
+  className,
   type = "normal",
   pinnedCookieList,
   unpinnedCookieList,
@@ -83,11 +90,12 @@ const Cookies = ({
   }, [target]);
 
   return (
-    <Container>
-      {pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0 ? (
+    <Container className={className}>
+      {size.width &&
+      (pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0) ? (
         <>
           {size.width && size.width < 600 ? (
-            <CookieMobileWrap>
+            <CookieMobileWrap className="cookie_mobile_wrap">
               {pinnedCookieList.map((cookie) => (
                 <CookieMobile
                   key={cookie.id}

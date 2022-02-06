@@ -119,16 +119,16 @@ const DirDetail = ({
         />
         <DirDetailWrap>
           <ShareCntnr>
-            <Title isEditIconAtv={isDirEditOpen}>
+            <Title>
               <p className="name">
                 {`${dirInfo?.emoji || ""} ${dirInfo.name}`}
                 {!isShared && (
-                  <Icon
-                    className="edit-btn"
+                  <EditBtn
+                    isEditIconAtv={isDirEditOpen}
                     onClick={() => setIsDirEditOpen(true)}
                   >
                     <EditIcon className="edit-icon" />
-                  </Icon>
+                  </EditBtn>
                 )}
               </p>
               <p className="info">
@@ -137,8 +137,7 @@ const DirDetail = ({
               </p>
               {!isShared && (
                 <CopyToClipboard text={shareLink || ""}>
-                  <Btn
-                    className="share-btn"
+                  <ShareBtn
                     isDirShare
                     onClick={() =>
                       setIsToastMsgVisible({
@@ -150,12 +149,12 @@ const DirDetail = ({
                   >
                     <LinkIcon className="icon" />
                     디렉토리 공유하기
-                  </Btn>
+                  </ShareBtn>
                 </CopyToClipboard>
               )}
             </Title>
           </ShareCntnr>
-          <ListHeader
+          <StyledListHeader
             type={isShared ? "dirShare" : "dirDetail"}
             imgUrl={imgUrl}
             nickname={nickname}
@@ -171,7 +170,7 @@ const DirDetail = ({
               cookieModule.createCookie(url, true, dirInfo.id)
             }
           />
-          <Cookies
+          <StyledCookies
             type={isShared ? "dirShare" : "dirDetail"}
             pinnedCookieList={cookieModule.pinnedCookieData || []}
             unpinnedCookieList={unpinnedCookieList}
@@ -250,7 +249,22 @@ const DirDetail = ({
       >
         😥 최대 15개까지 고정 가능해요!
       </ToastMsg>
-      <Floating />
+      {!isShared && (
+        <CopyToClipboard text={shareLink || ""}>
+          <MobileShareBtn
+            isOrange
+            onClick={() =>
+              setIsToastMsgVisible({
+                ...isToastMsgVisible,
+                copyLink: true,
+              })
+            }
+            isAtvBtn
+          >
+            <LinkIcon className="icon" />
+          </MobileShareBtn>
+        </CopyToClipboard>
+      )}
     </>
   );
 };
@@ -317,10 +331,21 @@ const ShareCntnr = styled.div`
   `}
 `;
 
-interface TitleProps {
-  isEditIconAtv: boolean;
-}
-const Title = styled.article<TitleProps>`
+const StyledCookies = styled(Cookies)`
+  .cookie_mobile_wrap {
+    ${({ theme }) => theme.media.mobile`
+    padding: 0;
+  `}
+  }
+`;
+
+const StyledListHeader = styled(ListHeader)`
+  ${({ theme }) => theme.media.mobile`
+    padding: 0;
+  `}
+`;
+
+const Title = styled.article`
   position: relative;
   margin-bottom: 4rem;
 
@@ -338,38 +363,8 @@ const Title = styled.article<TitleProps>`
     align-items: center;
 
     color: var(--black_2);
-
-    .edit-btn {
-      width: 44px;
-      height: 44px;
-      margin-left: 5px;
-      border-radius: 22px;
-      .edit-icon {
-        width: 28px;
-        height: 28px;
-        path {
-          fill: var(--black_1);
-        }
-      }
-      ${({ isEditIconAtv }) =>
-        isEditIconAtv
-          ? css`
-              background-color: var(--gray_active);
-              .edit-icon {
-                path {
-                  fill: var(--white);
-                }
-              }
-            `
-          : css`
-              @media (hover: hover) {
-                &:hover {
-                  background-color: var(--gray_hover_1);
-                }
-              }
-            `}
-    }
   }
+
   .info {
     margin: 0;
 
@@ -387,35 +382,96 @@ const Title = styled.article<TitleProps>`
       }
     }
   }
-  .share-btn {
-    position: absolute;
-    right: 0;
-    top: 1.2rem;
+`;
 
-    width: 19.1rem;
-    height: 5rem;
-    border-radius: 25px;
+const ShareBtn = styled(Btn)`
+  position: absolute;
+  right: 0;
+  top: 1.2rem;
+
+  width: 19.1rem;
+  height: 5rem;
+  border-radius: 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 26px;
+  :hover {
+    .icon {
+      path {
+        fill: var(--white);
+      }
+    }
+  }
+  .icon {
+    width: 1.9rem;
+    margin-right: 5px;
+    path {
+      fill: var(--orange);
+    }
+  }
+
+  ${({ theme }) => theme.media.mobile`
+    display: none;
+  `}
+`;
+
+const MobileShareBtn = styled(Btn)`
+  ${({ theme }) => theme.media.mobile`
+    position: fixed;
+    right: 20px;
+    bottom: 28px;
+    z-index: 2;
+
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 26px;
-    :hover {
-      .icon {
-        path {
-          fill: var(--white);
-        }
-      }
-    }
     .icon {
-      width: 1.9rem;
-      margin-right: 5px;
-      path {
-        fill: var(--orange);
-      }
+      width: 24px;
+      height: 24px;
+    }
+  `}
+`;
+
+interface EditBtnProps {
+  isEditIconAtv: boolean;
+}
+const EditBtn = styled(Icon)<EditBtnProps>`
+  width: 44px;
+  height: 44px;
+  margin-left: 5px;
+  border-radius: 22px;
+  .edit-icon {
+    width: 28px;
+    height: 28px;
+    path {
+      fill: var(--black_1);
     }
   }
+  ${({ isEditIconAtv }) =>
+    isEditIconAtv
+      ? css`
+          background-color: var(--gray_active);
+          .edit-icon {
+            path {
+              fill: var(--white);
+            }
+          }
+        `
+      : css`
+          @media (hover: hover) {
+            &:hover {
+              background-color: var(--gray_hover_1);
+            }
+          }
+        `}
 `;
