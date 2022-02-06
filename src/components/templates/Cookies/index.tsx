@@ -67,7 +67,8 @@ const Cookies = ({
       entries.forEach((entry: any) => {
         if (entry.isIntersecting) {
           // 쿠키 데이터 get하기
-          cookieModule.unpinnedPageIndex &&
+          !cookieModule.isUpdateLoading &&
+            cookieModule.unpinnedPageIndex &&
             cookieModule.unpinnedPageIndex !== null &&
             cookieModule.setUnpinnedPageIndex(
               cookieModule.unpinnedPageIndex + 1,
@@ -83,8 +84,7 @@ const Cookies = ({
 
   return (
     <Container>
-      {!isLoading &&
-      (pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0) ? (
+      {pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0 ? (
         <>
           {size.width && size.width < 600 ? (
             <CookieMobileWrap>
@@ -191,36 +191,40 @@ const Cookies = ({
         </>
       ) : (
         <>
-          {type === "dirDetail" ? (
-            <Empty
-              img={EmptyImg}
-              imgWidth={170}
-              text="새로운 쿠키를 저장해보세요!"
-            />
-          ) : type === "searched" ? (
-            <Empty
-              img={EmptyImg}
-              imgWidth={170}
-              text="검색된 디렉토리가 없어요!"
-            />
+          {isLoading === true || !cookieModule.isUpdateLoading ? (
+            type === "dirDetail" ? (
+              <Empty
+                img={EmptyImg}
+                imgWidth={170}
+                text="새로운 쿠키를 저장해보세요!"
+              />
+            ) : type === "searched" ? (
+              <Empty
+                img={EmptyImg}
+                imgWidth={170}
+                text="검색된 디렉토리가 없어요!"
+              />
+            ) : (
+              <Empty
+                className="empty"
+                img={EmptyImg}
+                imgWidth={170}
+                text="쿠키를 모으러 가볼까요?"
+                Btn={
+                  <Btn
+                    className="empty__button--cookie"
+                    isOrange
+                    isAtvBtn
+                    onClick={() => setIsOnboardOpen && setIsOnboardOpen(true)}
+                  >
+                    <CookieIcon className="cookie-icon" />
+                    쿠키 저장하는 법 알아보기
+                  </Btn>
+                }
+              />
+            )
           ) : (
-            <Empty
-              className="empty"
-              img={EmptyImg}
-              imgWidth={170}
-              text="쿠키를 모으러 가볼까요?"
-              Btn={
-                <Btn
-                  className="empty__button--cookie"
-                  isOrange
-                  isAtvBtn
-                  onClick={() => setIsOnboardOpen && setIsOnboardOpen(true)}
-                >
-                  <CookieIcon className="cookie-icon" />
-                  쿠키 저장하는 법 알아보기
-                </Btn>
-              }
-            />
+            <div style={{ height: "334px" }} />
           )}
         </>
       )}
