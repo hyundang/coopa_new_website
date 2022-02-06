@@ -1,5 +1,21 @@
 module.exports = {
   reactStrictMode: true,
+
+  async headers() {
+    return [
+      {
+        source: "/:all*(css|js)",
+        locale: false,
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000",
+          },
+        ],
+      },
+    ];
+  },
+
   webpack(config, { webpack }) {
     config.module.rules.push({
       test: /\.svg$/,
@@ -29,7 +45,7 @@ module.exports = {
         VERSION: JSON.stringify(process.env.VERSION),
         CLIENT_ID: JSON.stringify(process.env.CLIENT_ID),
         EXTENSION_ID: JSON.stringify(process.env.EXTENSION_ID),
-        NOTICE_URL: JSON.stringify(process.env.NOTICE_URL)
+        NOTICE_URL: JSON.stringify(process.env.NOTICE_URL),
       }),
       new webpack.EnvironmentPlugin(["NODE_ENV"]),
     );
@@ -45,8 +61,8 @@ module.exports = {
     DEV_API_URL: process.env.DEV_API_URL,
     EXPIRE_YEAR: process.env.EXPIRE_YEAR,
     COOKIE_PAGE_SIZE: process.env.COOKIE_PAGE_SIZE,
-    VERSION:process.env.VERSION,
+    VERSION: process.env.VERSION,
     CLIENT_ID: process.env.CLIENT_ID,
-    EXTENSION_ID:process.env.EXTENSION_ID
+    EXTENSION_ID: process.env.EXTENSION_ID,
   },
 };
