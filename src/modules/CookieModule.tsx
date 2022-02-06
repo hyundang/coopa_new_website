@@ -152,11 +152,6 @@ const CookieModule = ({
           cookieData,
           ...filterSpecificCookieInCookieList(cookieList, cookieData.id),
         ];
-      case "oldest":
-        return [
-          ...filterSpecificCookieInCookieList(cookieList, cookieData.id),
-          cookieData,
-        ];
       default:
         return cookieList.map((cookie) => {
           if (cookie.id === cookieData.id) return cookieData;
@@ -169,12 +164,27 @@ const CookieModule = ({
     outerCookieList: (CookieDataProps[] | undefined)[],
     cookieData: CookieDataProps,
   ): CookieDataProps[][] => {
-    const newOuterCookieList = outerCookieList.map((innerCookieList) => {
-      return changeSequenceOfSpecificCookieInCookieList(
-        innerCookieList || [],
-        cookieData,
-      );
-    });
+    let newOuterCookieList: CookieDataProps[][];
+    switch (cookieFilter) {
+      case "latest":
+        newOuterCookieList = outerCookieList.map((innerCookieList, idx) => {
+          if (idx === 0)
+            return changeSequenceOfSpecificCookieInCookieList(
+              innerCookieList || [],
+              cookieData,
+            );
+          return innerCookieList || [];
+        });
+        break;
+      default:
+        newOuterCookieList = outerCookieList.map((innerCookieList) => {
+          return changeSequenceOfSpecificCookieInCookieList(
+            innerCookieList || [],
+            cookieData,
+          );
+        });
+        break;
+    }
     return newOuterCookieList;
   };
 
@@ -292,7 +302,7 @@ const CookieModule = ({
           false,
         );
       } else {
-        unpinnedMutate(undefined, true);
+        await unpinnedMutate();
       }
       return true;
     }
@@ -318,7 +328,7 @@ const CookieModule = ({
           false,
         );
       else if (isSearched)
-        searchedMutate(async (cookieList) => {
+        searchedMutate((cookieList) => {
           return filterSpecificCookieInCookieList(cookieList || [], cookieId);
         }, false);
       else {
@@ -387,7 +397,7 @@ const CookieModule = ({
             changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
           false,
         );
-      else unpinnedMutate(undefined, true);
+      else await unpinnedMutate();
 
       setIsUpdateLoading(false);
       setIsToastMsgVisible({
@@ -406,6 +416,7 @@ const CookieModule = ({
     isPinned: boolean,
     isSearched: boolean,
   ) => {
+    setIsUpdateLoading(true);
     const res = await postApi.postCookieToDir(body);
     if (res) {
       if (isPinned)
@@ -429,7 +440,8 @@ const CookieModule = ({
             changeDatafSpecificUnpinnedCookie(outerCookieList, res),
           false,
         );
-      else unpinnedMutate(undefined, true);
+      else await unpinnedMutate();
+      setIsUpdateLoading(true);
       return res;
     }
     alert("디렉토리 변경 실패");
@@ -475,46 +487,48 @@ const CookieModule = ({
     isPinned: boolean,
     isSearched: boolean,
   ): Promise<boolean> => {
+    setIsUpdateLoading(true);
     const res = await putApi.updateCookiePin(cookieId, !isPinned);
     if (res) {
       if (!isPinned) {
         if (cookieFilter === "latest" || cookieFilter === "oldest") {
-          pinnedMutate(async (cookieList) => {
+          pinnedMutate((cookieList) => {
             return changeSequenceOfSpecificCookieInCookieList(
               cookieList || initAllPinnedCookieData,
               res,
             );
           }, false);
         } else {
-          pinnedMutate(undefined, true);
+          await pinnedMutate();
         }
-        unpinnedMutate(async (outerCookieList) => {
+        unpinnedMutate((outerCookieList) => {
           return filterSpecificUnpinnedCookie(outerCookieList, cookieId);
         }, false);
       } else if (isSearched) {
-        searchedMutate(async (cookieList) => {
+        searchedMutate((cookieList) => {
           return cookieList?.map((cookie) => {
             if (cookie.id === cookieId) return res;
             return cookie;
           });
         });
       } else {
-        pinnedMutate(async (cookieList) => {
-          return filterSpecificCookieInCookieList(
+        pinnedMutate((cookieList) => {
+          const filteredCookieList = filterSpecificCookieInCookieList(
             cookieList || initAllPinnedCookieData,
             cookieId,
           );
+          return filteredCookieList;
         }, false);
         if (cookieFilter === "latest") {
-          unpinnedMutate(
-            (outerCookieList) =>
-              changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res),
-            false,
-          );
+          unpinnedMutate((outerCookieList) => {
+            console.log(outerCookieList);
+            return changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res);
+          }, false);
         } else {
-          unpinnedMutate(undefined, true);
+          await unpinnedMutate();
         }
       }
+      setIsUpdateLoading(false);
       return true;
     }
     setIsToastMsgVisible({
@@ -525,12 +539,12 @@ const CookieModule = ({
   };
 
   const refreshCookie = () => {
-    pinnedMutate(undefined, true);
-    unpinnedMutate(undefined, true);
+    pinnedMutate();
+    unpinnedMutate();
   };
 
   return {
-    isError: pinnedError && unpinnedError,
+    isError: pinnedError || unpinnedError,
     isLoading:
       !pinnedCookieData &&
       !pinnedError &&
