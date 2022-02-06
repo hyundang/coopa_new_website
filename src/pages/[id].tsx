@@ -16,6 +16,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 // modules
 import { CookieModule, DirModule, HomebrdModule } from "@modules/index";
 import { HomeboardState } from "@modules/states";
+import { NextPageContext } from "next";
 
 interface NewtabPageProps {
   initUserData: UserDataProps;
@@ -123,7 +124,7 @@ export default function NewtabPage({
   );
 }
 
-NewtabPage.getInitialProps = async (ctx: any) => {
+NewtabPage.getInitialProps = async (ctx: NextPageContext) => {
   const allCookies = nextCookie(ctx);
   const userToken = allCookies["x-access-token"];
   const { dirFilter } = allCookies;
@@ -166,6 +167,8 @@ NewtabPage.getInitialProps = async (ctx: any) => {
 
     // 홈보드 이미지
     const initHomeboardImgUrl = await getApi.getHomeboardData();
+
+    ctx.res?.setHeader("Cache-Control", "public, s-maxage=31536000");
 
     return {
       initAllPinnedCookieData,
