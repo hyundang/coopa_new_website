@@ -1,13 +1,14 @@
 // assets
-import { NoThumbImg, PinImg } from "@assets/imgs/card";
+import { PinImg } from "@assets/imgs/card";
 // components
 import { CookieEditModal, DelModal } from "@components/organisms";
 import { CookieContent } from "@components/molecules";
+import { Img } from "@components/atoms";
 // interfaces
 import { CookieDataProps } from "@interfaces/cookie";
 // libs
 import styled from "styled-components";
-import React, { SyntheticEvent, RefObject, forwardRef } from "react";
+import React, { RefObject, forwardRef } from "react";
 import CookieHandlers from "@lib/CookieHandlers";
 // modules
 import CookieModule from "@modules/CookieModule";
@@ -39,13 +40,11 @@ const CookieMobile = (
       >
         <div className="thumbnail-wrap">
           {cookieData.isPinned && <StyledPinImg className="pin_img" />}
-          <img
+          <Img
             alt="cookie-thumbnail"
             className="thumbnail"
+            type="thumbnail"
             src={cookieData.thumbnail}
-            onError={(e: SyntheticEvent<HTMLImageElement, Event>) =>
-              (e.currentTarget.src = NoThumbImg)
-            }
           />
         </div>
         <StyledCookieContent

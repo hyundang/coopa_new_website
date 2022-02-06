@@ -1,9 +1,9 @@
 // assets
-import { FaviconIcon } from "@assets/icons/card";
 import { PinImg } from "@assets/imgs/card";
 // components
 import { CookieHover, CookieImg } from "@components/molecules";
 import { CookieEditModal, DelModal } from "..";
+import { Img } from "@components/atoms";
 // interfaces
 import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
 import {
@@ -193,13 +193,11 @@ const Cookie = (
           <div className="desc">{cookieData.content}</div>
           <div style={{ flexGrow: 1 }} />
           <div className="profile">
-            <img
+            <Img
               className="profile__favicon"
               src={cookieData.favicon}
-              alt={FaviconIcon}
-              onError={(e) => {
-                e.currentTarget.src = FaviconIcon;
-              }}
+              type="favicon"
+              alt="favicon"
             />
             <div className="profile__favicon--loading" />
             <cite className="profile__author">{cookieData.provider}</cite>
