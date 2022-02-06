@@ -249,18 +249,22 @@ const DirDetail = ({
       >
         😥 최대 15개까지 고정 가능해요!
       </ToastMsg>
-      <MobileShareBtn
-        isOrange
-        onClick={() =>
-          setIsToastMsgVisible({
-            ...isToastMsgVisible,
-            copyLink: true,
-          })
-        }
-        isAtvBtn
-      >
-        <LinkIcon className="icon" />
-      </MobileShareBtn>
+      {!isShared && (
+        <CopyToClipboard text={shareLink || ""}>
+          <MobileShareBtn
+            isOrange
+            onClick={() =>
+              setIsToastMsgVisible({
+                ...isToastMsgVisible,
+                copyLink: true,
+              })
+            }
+            isAtvBtn
+          >
+            <LinkIcon className="icon" />
+          </MobileShareBtn>
+        </CopyToClipboard>
+      )}
     </>
   );
 };
