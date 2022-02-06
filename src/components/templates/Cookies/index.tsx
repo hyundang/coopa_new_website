@@ -203,14 +203,14 @@ const Cookies = ({
               )}
             </CookieWrap>
           ) : (
-            <>
+            <CookieWrap>
               {pinnedCookieList.map((cookieData) => (
                 <SkeletonCookie key={cookieData.id} />
               ))}
               {unpinnedCookieList.map((cookieData) => (
                 <SkeletonCookie key={cookieData.id} />
               ))}
-            </>
+            </CookieWrap>
           )}
         </>
       ) : (
