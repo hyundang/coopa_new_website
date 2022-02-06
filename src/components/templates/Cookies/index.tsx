@@ -194,39 +194,37 @@ const Cookies = ({
       ) : (
         <>
           {isLoading === true || !isUpdateLoading ? (
-            <>
-              {type === "dirDetail" ? (
-                <Empty
-                  img={EmptyImg}
-                  imgWidth={170}
-                  text="새로운 쿠키를 저장해보세요!"
-                />
-              ) : type === "searched" ? (
-                <Empty
-                  img={EmptyImg}
-                  imgWidth={170}
-                  text="검색된 디렉토리가 없어요!"
-                />
-              ) : (
-                <Empty
-                  className="empty"
-                  img={EmptyImg}
-                  imgWidth={170}
-                  text="쿠키를 모으러 가볼까요?"
-                  Btn={
-                    <Btn
-                      className="empty__button--cookie"
-                      isOrange
-                      isAtvBtn
-                      onClick={() => setIsOnboardOpen && setIsOnboardOpen(true)}
-                    >
-                      <CookieIcon className="cookie-icon" />
-                      쿠키 저장하는 법 알아보기
-                    </Btn>
-                  }
-                />
-              )}
-            </>
+            type === "dirDetail" ? (
+              <Empty
+                img={EmptyImg}
+                imgWidth={170}
+                text="새로운 쿠키를 저장해보세요!"
+              />
+            ) : type === "searched" ? (
+              <Empty
+                img={EmptyImg}
+                imgWidth={170}
+                text="검색된 디렉토리가 없어요!"
+              />
+            ) : (
+              <Empty
+                className="empty"
+                img={EmptyImg}
+                imgWidth={170}
+                text="쿠키를 모으러 가볼까요?"
+                Btn={
+                  <Btn
+                    className="empty__button--cookie"
+                    isOrange
+                    isAtvBtn
+                    onClick={() => setIsOnboardOpen && setIsOnboardOpen(true)}
+                  >
+                    <CookieIcon className="cookie-icon" />
+                    쿠키 저장하는 법 알아보기
+                  </Btn>
+                }
+              />
+            )
           ) : (
             <div style={{ height: "334px" }} />
           )}
