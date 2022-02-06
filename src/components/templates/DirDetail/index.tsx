@@ -155,7 +155,7 @@ const DirDetail = ({
               )}
             </Title>
           </ShareCntnr>
-          <ListHeader
+          <StyledListHeader
             type={isShared ? "dirShare" : "dirDetail"}
             imgUrl={imgUrl}
             nickname={nickname}
@@ -171,7 +171,7 @@ const DirDetail = ({
               cookieModule.createCookie(url, true, dirInfo.id)
             }
           />
-          <Cookies
+          <StyledCookies
             type={isShared ? "dirShare" : "dirDetail"}
             pinnedCookieList={cookieModule.pinnedCookieData || []}
             unpinnedCookieList={unpinnedCookieList}
@@ -314,6 +314,20 @@ const ShareCntnr = styled.div`
   /* -599 */
    ${({ theme }) => theme.media.mobile`
     width: 100%;
+  `}
+`;
+
+const StyledCookies = styled(Cookies)`
+  .cookie_mobile_wrap {
+    ${({ theme }) => theme.media.mobile`
+    padding: 0;
+  `}
+  }
+`;
+
+const StyledListHeader = styled(ListHeader)`
+  ${({ theme }) => theme.media.mobile`
+    padding: 0;
   `}
 `;
 

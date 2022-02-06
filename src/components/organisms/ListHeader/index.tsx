@@ -9,6 +9,7 @@ import { CreateDirProps } from "@interfaces/directory";
 import styled, { css } from "styled-components";
 import React, {
   Dispatch,
+  HTMLAttributes,
   SetStateAction,
   useEffect,
   useRef,
@@ -16,7 +17,7 @@ import React, {
 } from "react";
 import { useWindowSize } from "src/hooks";
 
-export interface ListHeaderProps {
+export interface ListHeaderProps extends HTMLAttributes<HTMLElement> {
   /** header type */
   type: "cookie" | "dir" | "dirDetail" | "dirShare";
   isSearched?: boolean;
@@ -35,6 +36,7 @@ export interface ListHeaderProps {
   createCookie: (url: string) => Promise<boolean>;
 }
 const ListHeader = ({
+  className,
   type,
   isSearched = false,
   cookieNum = 0,
@@ -77,7 +79,12 @@ const ListHeader = ({
 
   return (
     <>
-      <ListHeaderWrap type={type} nickname={nickname} isSearched={isSearched}>
+      <ListHeaderWrap
+        className={className}
+        type={type}
+        nickname={nickname}
+        isSearched={isSearched}
+      >
         {(type === "dirDetail" || type === "dirShare") && (
           <User>
             <img alt="profile-img" src={imgUrl} />
