@@ -62,6 +62,7 @@ const SkeletonCookieWrap = styled.article`
       height: 20px;
       background-color: var(--gray_3);
       border-radius: 4px;
+      margin-bottom: 7px;
     }
 
     .desc {
