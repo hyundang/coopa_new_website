@@ -1,14 +1,8 @@
 // assets
-import { fvcOnErrorImg } from "@assets/icons/card";
 import { PlusIcon } from "@assets/icons/common";
+import { Img } from "@components/atoms";
 import bookmarkAnimation from "@components/animations/bookmark";
-import React, {
-  Dispatch,
-  SetStateAction,
-  RefObject,
-  forwardRef,
-  SyntheticEvent,
-} from "react";
+import React, { Dispatch, SetStateAction, RefObject, forwardRef } from "react";
 import styled from "styled-components";
 
 export interface BookmarkTileProps {
@@ -66,13 +60,11 @@ const BookmarkTile = (
                 ×
               </DelIcon>
             )}
-            <img
+            <Img
               className="favicon"
               src={imgUrl}
               alt="favicon"
-              onError={(e: SyntheticEvent<HTMLImageElement, Event>) =>
-                (e.currentTarget.src = fvcOnErrorImg)
-              }
+              type="bookmark"
             />
             <cite className="text">{siteName}</cite>
           </TileContent>

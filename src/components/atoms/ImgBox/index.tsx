@@ -1,5 +1,11 @@
 import { NoThumbImg } from "@assets/imgs/card";
-import React, { Dispatch, HTMLAttributes, SetStateAction } from "react";
+import React, {
+  Dispatch,
+  HTMLAttributes,
+  SetStateAction,
+  useState,
+  useEffect,
+} from "react";
 import styled, { css } from "styled-components";
 
 export interface ImgBoxProps extends HTMLAttributes<HTMLDivElement> {
@@ -23,12 +29,18 @@ const ImgBox = ({
   onClick,
   isImgInput = false,
 }: ImgBoxProps) => {
+  const [imgUrl, setImgUrl] = useState<string>();
+
+  useEffect(() => {
+    setImgUrl(url);
+  }, []);
+
   return (
     <ImgBoxWrap
       id={id}
       className={className}
       role="img"
-      url={url}
+      url={imgUrl}
       style={style}
       isHover={isHover}
       onMouseEnter={setIsHover ? () => setIsHover(true) : undefined}
@@ -37,6 +49,14 @@ const ImgBox = ({
       onClick={onClick}
       isImgInput={isImgInput}
     >
+      <img
+        src={imgUrl}
+        alt="hidden_img"
+        onError={() => {
+          setImgUrl(NoThumbImg);
+        }}
+        style={{ display: "none" }}
+      />
       {children}
     </ImgBoxWrap>
   );
@@ -67,11 +87,9 @@ const ImgBoxWrap = styled.div<ImgBoxWrapProps>`
       : !isLoading && isHover
       ? css`
           background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-            url("${url}") center center/cover,
-            url(${NoThumbImg}) center center/cover;
+            url("${url}") center center/cover;
         `
       : css`
-          background: url("${url}") center center/cover,
-            url(${NoThumbImg}) center center/cover;
+          background: url("${url}") center center/cover;
         `}
 `;

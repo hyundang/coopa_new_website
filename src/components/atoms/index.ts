@@ -15,3 +15,4 @@ export { default as Bubble } from "./Bubble";
 export { default as MoveModal } from "./MoveModal";
 export { default as WebStoreBtn } from "./WebStoreBtn";
 export { default as Floating } from "./Floating";
+export { default as Img } from "./Img";
