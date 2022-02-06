@@ -14,7 +14,6 @@ import { mutate } from "swr";
 // modules
 import { HomebrdModule } from "@modules/index";
 import { setToken } from "@lib/TokenManager";
-import { useRouter } from "next/router";
 
 interface NewtabPageProps {
   initUserData: UserDataProps;
@@ -32,15 +31,7 @@ export default function NewtabPage({
     initBookmarkData,
   });
 
-  const router = useRouter();
-
-  const handleLogin = async () => {
-    initUserData?.id && router.replace(`/${initUserData.id}`);
-  };
-
   useEffect(() => {
-    handleLogin();
-
     // 홈보드, 홈보드 모달 이미지 세팅
     const homeboardImgUrl = localStorage.getItem("homeboardImgUrl");
     homeboardImgUrl?.length === 1

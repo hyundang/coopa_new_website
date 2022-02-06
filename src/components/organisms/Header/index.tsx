@@ -62,6 +62,10 @@ const Header = ({
   const windowSize = useWindowSize();
   const notiIconLocation = useRef<HTMLButtonElement>(null);
 
+  const handleClickLogo = () => {
+    window.open(DOMAIN, "_self");
+  };
+
   const handleClickSearchIcon = () => {
     isSearchVisible && setPreventFadeout(false);
     setIsSearchVisible(!isSearchVisible);
@@ -111,11 +115,7 @@ const Header = ({
       imgUrl={imgUrl}
     >
       <div className="content">
-        <Icon
-          className="content__logo"
-          role="link"
-          onClick={() => router.push("/")}
-        >
+        <Icon className="content__logo" role="link" onClick={handleClickLogo}>
           <LogoImg className="logo_img" />
         </Icon>
         <div style={{ flexGrow: 1 }} />
