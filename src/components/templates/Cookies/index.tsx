@@ -69,7 +69,8 @@ const Cookies = ({
       entries.forEach((entry: any) => {
         if (entry.isIntersecting) {
           // 쿠키 데이터 get하기
-          cookieModule.unpinnedPageIndex &&
+          !cookieModule.isUpdateLoading &&
+            cookieModule.unpinnedPageIndex &&
             cookieModule.unpinnedPageIndex !== null &&
             cookieModule.setUnpinnedPageIndex(
               cookieModule.unpinnedPageIndex + 1,
