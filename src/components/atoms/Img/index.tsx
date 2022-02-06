@@ -6,7 +6,7 @@ interface ImgProps extends ImgHTMLAttributes<HTMLImageElement> {
   type: "favicon" | "thumbnail" | "bookmark";
 }
 const Img = ({ className, alt, src, type }: ImgProps) => {
-  const [fvc, setFvc] = useState<string>();
+  const [fvc, setFvc] = useState<string | undefined>(fvcOnErrorImg);
 
   useEffect(() => {
     setFvc(src);

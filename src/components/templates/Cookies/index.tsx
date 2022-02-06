@@ -25,6 +25,7 @@ import React, {
 } from "react";
 // modules
 import CookieModule from "@modules/CookieModule";
+import { SkeletonCookie } from "@components/molecules";
 
 export interface CookiesProps extends HTMLAttributes<HTMLDivElement> {
   /** cookie type */
@@ -91,110 +92,125 @@ const Cookies = ({
 
   return (
     <Container className={className}>
-      {size.width &&
-      (pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0) ? (
+      {pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0 ? (
         <>
-          {size.width && size.width < 600 ? (
-            <CookieMobileWrap className="cookie_mobile_wrap">
-              {pinnedCookieList.map((cookie) => (
-                <CookieMobile
-                  key={cookie.id}
-                  type={type}
-                  cookieData={cookie}
-                  cookieModule={cookieModule}
-                />
-              ))}
-              {unpinnedCookieList.map((cookie, idx) => (
-                <CookieMobile
-                  key={cookie.id}
-                  type={type}
-                  cookieData={
-                    dirInfo
-                      ? {
-                          ...cookie,
-                          directoryInfo: dirInfo,
-                        }
-                      : cookie
-                  }
-                  cookieModule={cookieModule}
-                  ref={
-                    idx === unpinnedCookieList.length - 1
-                      ? (e: HTMLElement | null) => e !== null && setTarget(e)
-                      : undefined
-                  }
-                />
-              ))}
-            </CookieMobileWrap>
-          ) : size.width && size.width < 1024 ? (
+          {size.width ? (
             <CookieWrap>
-              {pinnedCookieList.map((cookie) => (
-                <CookieTablet
-                  key={cookie.id}
-                  type={type}
-                  cookieData={cookie}
-                  cookieModule={cookieModule}
-                />
-              ))}
-              {unpinnedCookieList.map((cookie, idx) => (
-                <CookieTablet
-                  key={cookie.id}
-                  type={type}
-                  cookieData={
-                    dirInfo
-                      ? {
-                          ...cookie,
-                          directoryInfo: dirInfo,
-                        }
-                      : cookie
-                  }
-                  cookieModule={cookieModule}
-                  ref={
-                    idx === unpinnedCookieList.length - 1
-                      ? (e: HTMLElement | null) => e !== null && setTarget(e)
-                      : undefined
-                  }
-                />
-              ))}
+              {size.width && size.width < 600 ? (
+                <>
+                  {pinnedCookieList.map((cookie) => (
+                    <CookieMobile
+                      key={cookie.id}
+                      type={type}
+                      cookieData={cookie}
+                      cookieModule={cookieModule}
+                    />
+                  ))}
+                  {unpinnedCookieList.map((cookie, idx) => (
+                    <CookieMobile
+                      key={cookie.id}
+                      type={type}
+                      cookieData={
+                        dirInfo
+                          ? {
+                              ...cookie,
+                              directoryInfo: dirInfo,
+                            }
+                          : cookie
+                      }
+                      cookieModule={cookieModule}
+                      ref={
+                        idx === unpinnedCookieList.length - 1
+                          ? (e: HTMLElement | null) =>
+                              e !== null && setTarget(e)
+                          : undefined
+                      }
+                    />
+                  ))}
+                </>
+              ) : size.width && size.width < 1024 ? (
+                <>
+                  {pinnedCookieList.map((cookie) => (
+                    <CookieTablet
+                      key={cookie.id}
+                      type={type}
+                      cookieData={cookie}
+                      cookieModule={cookieModule}
+                    />
+                  ))}
+                  {unpinnedCookieList.map((cookie, idx) => (
+                    <CookieTablet
+                      key={cookie.id}
+                      type={type}
+                      cookieData={
+                        dirInfo
+                          ? {
+                              ...cookie,
+                              directoryInfo: dirInfo,
+                            }
+                          : cookie
+                      }
+                      cookieModule={cookieModule}
+                      ref={
+                        idx === unpinnedCookieList.length - 1
+                          ? (e: HTMLElement | null) =>
+                              e !== null && setTarget(e)
+                          : undefined
+                      }
+                    />
+                  ))}
+                </>
+              ) : (
+                <>
+                  {pinnedCookieList.map((cookie) => (
+                    <Cookie
+                      key={cookie.id}
+                      type={type}
+                      cookieData={cookie}
+                      cookieModule={cookieModule}
+                      isLoading={isLoading}
+                      unpinnedDir={unpinnedDir}
+                      pinnedDir={pinnedDir}
+                      createDir={createDir}
+                    />
+                  ))}
+                  {unpinnedCookieList.map((cookie, idx) => (
+                    <Cookie
+                      key={cookie.id}
+                      type={type}
+                      cookieData={
+                        dirInfo
+                          ? {
+                              ...cookie,
+                              directoryInfo: dirInfo,
+                            }
+                          : cookie
+                      }
+                      isLoading={isLoading}
+                      cookieModule={cookieModule}
+                      unpinnedDir={unpinnedDir}
+                      pinnedDir={pinnedDir}
+                      createDir={createDir}
+                      ref={
+                        idx === unpinnedCookieList.length - 1
+                          ? (e: HTMLElement | null) =>
+                              e !== null && setTarget(e)
+                          : undefined
+                      }
+                    />
+                  ))}
+                </>
+              )}
             </CookieWrap>
           ) : (
-            <CookieWrap>
-              {pinnedCookieList.map((cookie) => (
-                <Cookie
-                  key={cookie.id}
-                  type={type}
-                  cookieData={cookie}
-                  cookieModule={cookieModule}
-                  isLoading={isLoading}
-                  unpinnedDir={unpinnedDir}
-                  pinnedDir={pinnedDir}
-                  createDir={createDir}
-                />
+            <>
+              {pinnedCookieList.map((cookieData) => (
+                <SkeletonCookie key={cookieData.id} />
               ))}
-              {unpinnedCookieList.map((cookie, idx) => (
-                <Cookie
-                  key={cookie.id}
-                  type={type}
-                  cookieData={
-                    dirInfo
-                      ? {
-                          ...cookie,
-                          directoryInfo: dirInfo,
-                        }
-                      : cookie
-                  }
-                  isLoading={isLoading}
-                  cookieModule={cookieModule}
-                  unpinnedDir={unpinnedDir}
-                  pinnedDir={pinnedDir}
-                  createDir={createDir}
-                  ref={
-                    idx === unpinnedCookieList.length - 1
-                      ? (e: HTMLElement | null) => e !== null && setTarget(e)
-                      : undefined
-                  }
-                />
+              {unpinnedCookieList.map((cookieData) => (
+                <SkeletonCookie key={cookieData.id} />
               ))}
-            </CookieWrap>
+            </>
           )}
         </>
       ) : (
@@ -286,8 +302,10 @@ const CookieWrap = styled.section`
     grid-template-columns: repeat(2, 27rem);
   `}
   /* -599 */
-   ${({ theme }) => theme.media.mobile`
-    grid-template-columns: repeat(1, auto);
+  ${({ theme }) => theme.media.mobile`
+    display: block;
+    width: 100%;
+    padding: 0 20px;
   `}
 `;
 
