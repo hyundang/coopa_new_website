@@ -91,7 +91,8 @@ const Cookies = ({
 
   return (
     <Container className={className}>
-      {pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0 ? (
+      {size.width &&
+      (pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0) ? (
         <>
           {size.width && size.width < 600 ? (
             <CookieMobileWrap className="cookie_mobile_wrap">
