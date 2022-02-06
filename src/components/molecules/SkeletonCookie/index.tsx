@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const SkeletonCookie = () => {
   return (
-    <CookieWrap>
+    <SkeletonCookieWrap>
       <div className="cookie-img" />
       <div className="cookie-content">
         <div className="title" />
@@ -13,13 +13,13 @@ const SkeletonCookie = () => {
           <div className="profile__author" />
         </div>
       </div>
-    </CookieWrap>
+    </SkeletonCookieWrap>
   );
 };
 
 export default SkeletonCookie;
 
-const CookieWrap = styled.article`
+const SkeletonCookieWrap = styled.article`
   cursor: pointer;
   position: relative;
   width: 100%;
