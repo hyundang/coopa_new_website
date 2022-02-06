@@ -3,8 +3,8 @@ import styled from "styled-components";
 const SkeletonCookie = () => {
   return (
     <SkeletonCookieWrap>
-      <div className="cookie-img" />
-      <div className="cookie-content">
+      <div className="skeleton-cookie-img" />
+      <div className="skeleton-cookie-content">
         <div className="title" />
         <div className="desc" />
         <div style={{ flexGrow: 1 }} />
@@ -27,7 +27,23 @@ const SkeletonCookieWrap = styled.article`
   display: flex;
   flex-direction: column;
 
-  .cookie-img {
+  .hover-div {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  :hover {
+    .cookie-content {
+      .title {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .skeleton-cookie-img {
     position: relative;
     width: 100%;
     padding-bottom: calc(136 / 270 * 100%);
@@ -35,7 +51,7 @@ const SkeletonCookieWrap = styled.article`
     background-color: var(--gray_3);
   }
 
-  .cookie-content {
+  .skeleton-cookie-content {
     padding: 12px 10px 46px 10px;
     display: flex;
     flex-direction: column;
@@ -84,15 +100,21 @@ const SkeletonCookieWrap = styled.article`
     flex-direction: row;
     padding: 28px 0;
 
-    .cookie-img {
+    .skeleton-cookie-img {
         width: 108px;
         height: 72px;
         border-radius: 8px;
         margin-right: 18px;
         padding-bottom: 0;
+        .thumbnail {
+          width: 108px;
+          height: 72px;
+          border-radius: 8px;
+          object-fit: cover;
+        }
     }
 
-    .cookie-content {
+    .skeleton-cookie-content {
         padding: 0;
         display: flex;
         flex-direction: column;

@@ -188,7 +188,7 @@ const Cookie = (
               />
             </div>
           )}
-        <CookieContent>
+        <CookieContent className="cookie-content">
           <h1 className="title">{cookieData.title}</h1>
           <div className="desc">{cookieData.content}</div>
           <div style={{ flexGrow: 1 }} />
@@ -244,11 +244,15 @@ const CookieWrap = styled.article`
   height: 100%;
   display: flex;
   flex-direction: column;
+
   :hover {
-    .cookie--title {
-      text-decoration: underline;
+    .cookie-content {
+      .title {
+        text-decoration: underline;
+      }
     }
   }
+
   .hover-div {
     position: absolute;
     top: 0;

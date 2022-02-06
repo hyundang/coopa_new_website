@@ -95,7 +95,7 @@ const Cookies = ({
       {pinnedCookieList.length !== 0 || unpinnedCookieList.length !== 0 ? (
         <>
           {size.width ? (
-            <CookieWrap>
+            <CookieWrap className="cookie-mobile-wrap">
               {size.width && size.width < 600 ? (
                 <>
                   {pinnedCookieList.map((cookie) => (
@@ -203,7 +203,7 @@ const Cookies = ({
               )}
             </CookieWrap>
           ) : (
-            <CookieWrap>
+            <CookieWrap className="cookie-mobile-wrap">
               {pinnedCookieList.map((cookieData) => (
                 <SkeletonCookie key={cookieData.id} />
               ))}
@@ -307,9 +307,4 @@ const CookieWrap = styled.section`
     width: 100%;
     padding: 0 20px;
   `}
-`;
-
-const CookieMobileWrap = styled.section`
-  width: 100%;
-  padding: 0 20px;
 `;
