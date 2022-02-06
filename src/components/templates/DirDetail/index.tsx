@@ -177,6 +177,7 @@ const DirDetail = ({
             unpinnedCookieList={unpinnedCookieList}
             dirInfo={dirInfo}
             isLoading={cookieModule.isLoading}
+            isUpdateLoading={cookieModule.isUpdateLoading}
             unpinnedDir={unpinnedDir || []}
             pinnedDir={pinnedDir || []}
             createDir={createDir}
