@@ -168,7 +168,7 @@ NewtabPage.getInitialProps = async (ctx: NextPageContext) => {
     // 홈보드 이미지
     const initHomeboardImgUrl = await getApi.getHomeboardData();
 
-    ctx.res?.setHeader("Cache-Control", "public, s-maxage=31536000");
+    // ctx.res?.setHeader("Cache-Control", "public, max-age=0");
 
     return {
       initAllPinnedCookieData,
