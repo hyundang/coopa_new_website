@@ -12,7 +12,7 @@ import {
   CreateDirProps,
 } from "@interfaces/directory";
 // libs
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import React, { useState, useEffect, forwardRef, RefObject } from "react";
 // modules
 import CookieModule from "@modules/CookieModule";
@@ -188,7 +188,7 @@ const Cookie = (
               />
             </div>
           )}
-        <CookieContent isLoading={isLoading}>
+        <CookieContent>
           <h1 className="title">{cookieData.title}</h1>
           <div className="desc">{cookieData.content}</div>
           <div style={{ flexGrow: 1 }} />
@@ -199,7 +199,6 @@ const Cookie = (
               type="favicon"
               alt="favicon"
             />
-            <div className="profile__favicon--loading" />
             <cite className="profile__author">{cookieData.provider}</cite>
           </div>
         </CookieContent>
@@ -259,28 +258,14 @@ const CookieWrap = styled.article`
   }
 `;
 
-interface CookieContentProps {
-  isLoading: boolean;
-}
-const CookieContent = styled.section<CookieContentProps>`
+const CookieContent = styled.section`
   padding: 12px 10px 46px 10px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 
   .title {
-    ${({ isLoading }) =>
-      isLoading
-        ? css`
-            width: 100%;
-            height: 20px;
-            background-color: var(--gray_3);
-            border-radius: 4px;
-          `
-        : css`
-            all: unset;
-          `}
-
+    all: unset;
     color: var(--black_1);
     line-height: 26px;
     font-size: 17px;
@@ -295,17 +280,7 @@ const CookieContent = styled.section<CookieContentProps>`
   }
 
   .desc {
-    ${({ isLoading }) =>
-      isLoading
-        ? css`
-            width: 100%;
-            height: 20px;
-            background-color: var(--gray_2);
-            border-radius: 4px;
-          `
-        : css`
-            all: unset;
-          `}
+    all: unset;
     font-weight: 400;
     line-height: 22px;
     font-size: 14px;
@@ -323,17 +298,7 @@ const CookieContent = styled.section<CookieContentProps>`
     display: flex;
     align-items: center;
     &__author {
-      ${({ isLoading }) =>
-        isLoading
-          ? css`
-              width: 57px;
-              height: 12px;
-              background-color: var(--gray_3);
-              border-radius: 4px;
-            `
-          : css`
-              all: unset;
-            `}
+      all: unset;
       font-size: 13px;
       color: var(--gray_5);
       display: -webkit-box;
@@ -344,31 +309,11 @@ const CookieContent = styled.section<CookieContentProps>`
       word-break: break-all;
     }
     &__favicon {
-      ${({ isLoading }) =>
-        isLoading &&
-        css`
-          display: none;
-        `}
       margin-right: 8px;
       width: 22px;
       height: 22px;
       border-radius: 4px;
       object-fit: cover;
-    }
-    &__favicon--loading {
-      ${({ isLoading }) =>
-        isLoading
-          ? css`
-              display: block;
-              margin-right: 8px;
-              width: 22px;
-              height: 22px;
-              border-radius: 4px;
-              background-color: var(--gray_3);
-            `
-          : css`
-              display: none;
-            `}
     }
   }
 `;
