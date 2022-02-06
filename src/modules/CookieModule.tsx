@@ -521,7 +521,6 @@ const CookieModule = ({
         }, false);
         if (cookieFilter === "latest") {
           unpinnedMutate((outerCookieList) => {
-            console.log(outerCookieList);
             return changeSequenceOfSpecificUnpinnedCookie(outerCookieList, res);
           }, false);
         } else {
