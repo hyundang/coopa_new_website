@@ -13,6 +13,7 @@ import nextCookie from "next-cookies";
 import { mutate } from "swr";
 // modules
 import { HomebrdModule } from "@modules/index";
+import { setToken } from "@lib/TokenManager";
 
 interface NewtabPageProps {
   initUserData: UserDataProps;
@@ -78,6 +79,7 @@ NewtabPage.getInitialProps = async (ctx: any) => {
 
   // 로그인 되어 있을 때
   if (userToken) {
+    setToken(userToken);
     try {
       const userData = await getApi.getUserData("/users");
       // 개인 뉴탭으로 리다이렉트

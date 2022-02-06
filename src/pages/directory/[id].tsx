@@ -11,6 +11,7 @@ import nextCookie from "next-cookies";
 import { NextPageContext } from "next";
 import { returnCookieFilter } from "@lib/filter";
 import Head from "next/head";
+import { setToken } from "@lib/TokenManager";
 // modules
 import DirDetailModule from "@modules/DirDetailModule";
 import DirModule from "@modules/DirModule";
@@ -118,6 +119,7 @@ DirDetailPage.getInitialProps = async (ctx: NextPageContext) => {
 
   // 로그인 되어 있을 때
   if (userToken) {
+    setToken(userToken);
     // 일반 쿠키 데이터
     const initAllUnpinnedCookieData = await getApi.getAllCookieData(
       `/directories/${queryID}/unpinned/cookies?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
