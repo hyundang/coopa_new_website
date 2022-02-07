@@ -53,7 +53,7 @@ const ImgBox = ({
         src={imgUrl}
         alt="hidden_img"
         onError={() => {
-          setImgUrl(NoThumbImg);
+          setImgUrl(isImgInput ? "" : NoThumbImg);
         }}
         style={{ display: "none" }}
       />
