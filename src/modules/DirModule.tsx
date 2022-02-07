@@ -35,11 +35,11 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   );
   // 고정 안 된 디렉토리
   const [unpinnedDirData, setUnpinnedDirData] = useState<DirDataProps[]>(
-    initAllDirData.common,
+    initAllDirData.common || [],
   );
 
   // // 모든 디렉토리 데이터 get
-  const { data: allDirData } = useSWR(
+  const { data: allDirData, error } = useSWR(
     () => `/directories?filter=${returnDirFilter(dirFilter)}`,
     getApi.getAllDirData,
     {
@@ -215,6 +215,8 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   };
 
   return {
+    isLoading: !pinnedDirData && !unpinnedDirData && !error,
+    isError: error,
     dirFilter,
     updateAndSaveDirFilter,
     pinnedDirData,
