@@ -9,6 +9,7 @@ import React, {
   ChangeEvent,
   Dispatch,
   SetStateAction,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -46,13 +47,17 @@ const CookieEditModal = ({
   // img box hover 여부
   const [isHover, setIsHover] = useState(false);
   // file input 시 file value 초기화를 위해 사용
-  const img_input = useRef<HTMLInputElement>(null);
+  const cookie_img_input = useRef<HTMLInputElement>(null);
 
   const [isToastMsgVisible, setIsToastMsgVisible] =
     useRecoilState(ToastMsgState);
 
+  const initializeInputTargetValue = () => {
+    if (cookie_img_input.current) cookie_img_input.current.value = "";
+  };
+
   // img input event handling 함수
-  const handleChangeImg = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeCookieImg = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       if (e.target.files[0].size < 5000001) {
         setValue({
@@ -60,12 +65,13 @@ const CookieEditModal = ({
           thumbnail: URL.createObjectURL(e.target.files[0]),
           image: e.target.files[0],
         });
+        initializeInputTargetValue();
       } else {
         setIsToastMsgVisible({
           ...isToastMsgVisible,
           imgSizeOver: true,
         });
-        if (img_input.current) img_input.current.value = "";
+        initializeInputTargetValue();
       }
     }
   };
@@ -102,8 +108,8 @@ const CookieEditModal = ({
         isLoading={isLoading}
         plusSize={24}
         cookieSize={40}
-        ref={img_input}
-        onChangeImg={handleChangeImg}
+        ref={cookie_img_input}
+        onChangeImg={handleChangeCookieImg}
       />
       <InputForm
         className="input-title"

@@ -84,8 +84,12 @@ const HomeboardEditModal = ({
     setIsUpdatingSuccess(true);
   };
 
+  const initializeInputTargetValue = () => {
+    if (img_input.current) img_input.current.value = "";
+  };
+
   // img input event handling 함수
-  const handleChangeImg = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeHomeboardImg = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       if (e.target.files[0].size < 5000001) {
         setIsLoading(true);
@@ -94,12 +98,10 @@ const HomeboardEditModal = ({
         setHomeboardImg(imgUrl);
         setIsLoading(false);
         setIsUpdatingSuccess(true);
+        initializeInputTargetValue();
       } else {
         setIsUpdatingError(true);
-        img_input.current &&
-          (() => {
-            img_input.current.value = "";
-          })();
+        initializeInputTargetValue();
       }
     }
   };
@@ -154,7 +156,7 @@ const HomeboardEditModal = ({
           plusSize={18}
           cookieSize={36}
           ref={img_input}
-          onChangeImg={handleChangeImg}
+          onChangeImg={handleChangeHomeboardImg}
         />
       )}
     </ModalWrap>
