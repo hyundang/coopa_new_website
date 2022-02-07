@@ -212,11 +212,10 @@ const Newtab = ({
                 />
               ) : (
                 <Directories
+                  isLoading={false}
                   unpinnedData={dirModule.searchedDirData || []}
                   isSearched
-                  deleteDir={dirModule.deleteDir}
-                  updateDir={dirModule.updateDir}
-                  updateDirPin={dirModule.updateDirPin}
+                  dirModule={dirModule}
                   refreshCookie={cookieModule.refreshCookie}
                 />
               )}
@@ -237,12 +236,12 @@ const Newtab = ({
                 />
               ) : (
                 <Directories
+                  isLoading={dirModule.isLoading}
                   pinnedData={dirModule.pinnedDirData}
                   unpinnedData={dirModule.unpinnedDirData}
+                  isDirAddOpen={isCreateModalOpen}
                   setIsDirAddOpen={setIsCreateModalOpen}
-                  deleteDir={dirModule.deleteDir}
-                  updateDir={dirModule.updateDir}
-                  updateDirPin={dirModule.updateDirPin}
+                  dirModule={dirModule}
                   refreshCookie={cookieModule.refreshCookie}
                 />
               )}
