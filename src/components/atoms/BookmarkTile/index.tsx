@@ -1,4 +1,3 @@
-// assets
 import { PlusIcon } from "@assets/icons/common";
 import { Img } from "@components/atoms";
 import bookmarkAnimation from "@components/animations/bookmark";
@@ -16,7 +15,6 @@ export interface BookmarkTileProps {
   onClickPlusTile?: React.MouseEventHandler<HTMLSpanElement>;
   onClickDelBtn?: React.MouseEventHandler<HTMLSpanElement>;
   setIsHover?: Dispatch<SetStateAction<boolean>>;
-  /** 즐겨찾기 추가 타일의 경우 -> true */
   isPlusTile?: boolean;
 }
 const BookmarkTile = (
@@ -37,6 +35,10 @@ const BookmarkTile = (
     | null
     | undefined,
 ) => {
+  const handleClickTile = isPlusTile
+    ? onClickPlusTile
+    : () => window.open(url, "__blank");
+
   return (
     <HoverWrap className={className} isPlusTile={isPlusTile}>
       <Wrap
@@ -45,9 +47,7 @@ const BookmarkTile = (
         role="button"
         onMouseOver={setIsHover ? () => setIsHover(true) : undefined}
         onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
-        onClick={
-          isPlusTile ? onClickPlusTile : () => window.open(url, "__blank")
-        }
+        onClick={handleClickTile}
         isPlusTile={isPlusTile}
         ref={ref}
       >
