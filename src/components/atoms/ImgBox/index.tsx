@@ -33,7 +33,7 @@ const ImgBox = ({
 
   useEffect(() => {
     setImgUrl(url);
-  }, []);
+  }, [url]);
 
   return (
     <ImgBoxWrap

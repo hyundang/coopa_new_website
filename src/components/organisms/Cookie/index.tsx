@@ -78,6 +78,15 @@ const Cookie = (
     emoji: cookieData.directoryInfo?.emoji || "",
   });
 
+  const initializeModal = () =>
+    isUpdateModalOpen &&
+    setUpdatedCookieData({
+      title: cookieData?.title || "",
+      content: cookieData?.content || "",
+      thumbnail: cookieData?.thumbnail || "",
+      cookieId: cookieData?.id || -1,
+    });
+
   const findDirId = (): number => {
     let selectedDir = pinnedDir.filter((dir) => dir.name === currDir);
     if (selectedDir.length > 0) return selectedDir[0].id;
@@ -126,10 +135,12 @@ const Cookie = (
   };
 
   useEffect(() => {
-    (async () => {
-      await createAndUpdateDirOfCookie();
-    })();
+    createAndUpdateDirOfCookie();
   }, [currDir]);
+
+  useEffect(() => {
+    initializeModal();
+  }, [isUpdateModalOpen]);
 
   return (
     <>

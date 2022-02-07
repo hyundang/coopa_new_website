@@ -7,6 +7,7 @@ import React, {
   SetStateAction,
   LegacyRef,
   HTMLAttributes,
+  forwardRef,
 } from "react";
 
 export interface ImgBoxFormProps extends HTMLAttributes<HTMLDivElement> {
@@ -19,7 +20,6 @@ export interface ImgBoxFormProps extends HTMLAttributes<HTMLDivElement> {
   plusSize: number;
   /** 로딩뷰의 cookie 아이콘 크기 (px) */
   cookieSize: number;
-  /** input을 위한 ref */
   ref: LegacyRef<HTMLInputElement> | undefined;
   onChangeImg: React.ChangeEventHandler<HTMLInputElement>;
 }
@@ -77,7 +77,7 @@ const ImgBoxForm = ({
   );
 };
 
-export default ImgBoxForm;
+export default forwardRef(ImgBoxForm);
 
 interface ImgBoxFormWrapProps {
   cookieSize: number;
