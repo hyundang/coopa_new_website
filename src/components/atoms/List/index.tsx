@@ -80,9 +80,9 @@ const List = ({
         </>
       ) : (
         <>
-          {pinnedDir.length !== 0 && <span> 고정됨</span>}
+          {pinnedDir.length !== 0 && <span>고정됨</span>}
           {returnLists(pinnedDir)}
-          <span>기본</span>
+          {unpinnedDir.length !== 0 && <span>기본</span>}
           {returnLists(unpinnedDir)}
         </>
       )}

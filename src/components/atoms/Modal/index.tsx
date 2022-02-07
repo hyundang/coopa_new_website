@@ -2,6 +2,7 @@ import { modalAnimation } from "@components/animations";
 import React, {
   DialogHTMLAttributes,
   Dispatch,
+  MouseEvent,
   SetStateAction,
   useEffect,
 } from "react";
@@ -21,6 +22,11 @@ const Modal = ({
 }: ModalProps) => {
   const handleKeyDown = (e: any) => {
     e.key === "Escape" && setIsOpen(false);
+  };
+
+  const handleClick = (e: MouseEvent<HTMLDialogElement>) => {
+    e.stopPropagation();
+    onClick && onClick(e);
   };
 
   useEffect(() => {
@@ -44,10 +50,7 @@ const Modal = ({
             id={id}
             className={className}
             isOpen={isOpen}
-            onClick={(e) => {
-              e.stopPropagation();
-              onClick ? onClick(e) : () => {};
-            }}
+            onClick={handleClick}
           >
             {children}
           </ModalWrap>
