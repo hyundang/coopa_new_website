@@ -537,9 +537,11 @@ const CookieModule = ({
     return false;
   };
 
-  const refreshCookie = () => {
-    pinnedMutate();
-    unpinnedMutate();
+  const refreshCookie = async () => {
+    setIsUpdateLoading(true);
+    await pinnedMutate();
+    await unpinnedMutate();
+    setIsUpdateLoading(false);
   };
 
   return {
