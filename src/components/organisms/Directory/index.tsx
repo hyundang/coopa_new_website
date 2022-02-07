@@ -10,52 +10,53 @@ import { DirDataProps, CreateDirProps } from "@interfaces/directory";
 // libs
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
+// modules
+import DirModule from "@modules/DirModule";
 
 export interface DirectoryProps {
   dir: DirDataProps;
   isSearched?: boolean;
-  /** delete dir */
-  deleteDir: (
-    dirId: number,
-    isPinned: boolean,
-    isSearched: boolean,
-  ) => Promise<void>;
-  /** update dir */
-  updateDir: (
-    id: number,
-    body: CreateDirProps,
-    isPinned: boolean,
-    isSearched: boolean,
-  ) => Promise<void>;
-  updateDirPin: (
-    dirId: number,
-    isPinned: boolean,
-    isSearched: boolean,
-  ) => Promise<void>;
-  refreshCookie: () => void;
+  dirModule: ReturnType<typeof DirModule>;
+  refreshCookie: () => Promise<void>;
 }
 const Directory = ({
   dir,
   isSearched = false,
-  deleteDir,
-  updateDir,
-  updateDirPin,
+  dirModule,
   refreshCookie,
 }: DirectoryProps) => {
   const [isUpdateOpen, setisUpdateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const initDirData = {
+    emoji: dir.emoji,
+    name: dir.name,
+  };
+
+  const handleOpenDir = () =>
+    window.open(`${DOMAIN}/directory/${dir.id}`, "_blank");
 
   const handleDeleteDir = async () => {
-    await deleteDir(dir.id, dir.isPinned, isSearched);
-    refreshCookie();
+    await dirModule.deleteDir(dir.id, dir.isPinned, isSearched);
+    await refreshCookie();
+  };
+
+  const handleClickPinIcon = () => {
+    dirModule.updateDirPin(dir.id, dir.isPinned, isSearched);
+  };
+
+  const handleClickEditBtn = () => setisUpdateOpen(true);
+
+  const handleClickEditBtnInModal = (id: number, body: CreateDirProps) =>
+    dirModule.updateDir(id, body, dir.isPinned, isSearched);
+
+  const handleClickDeleteBtn = () => {
+    setIsDeleteOpen(true);
+    setisUpdateOpen(false);
   };
 
   return (
     <>
-      <DirectoryWrap
-        thumbnail={dir.thumbnail}
-        onClick={() => window.open(`${DOMAIN}/directory/${dir.id}`, "_blank")}
-      >
+      <DirectoryWrap thumbnail={dir.thumbnail} onClick={handleOpenDir}>
         {dir.isPinned && <StyledPinImg className="pin_img" />}
         <section className="content">
           <h1 className="content__title">
@@ -66,16 +67,11 @@ const Directory = ({
             <span>{dir.cookieCnt}개</span>
           </div>
         </section>
-        <div className="icon">
-          <Icon
-            className="hover_icon"
-            onClick={() => {
-              updateDirPin(dir.id, dir.isPinned, isSearched);
-            }}
-          >
+        <div className="hover_icon_wrap">
+          <Icon className="hover_icon" onClick={handleClickPinIcon}>
             {dir.isPinned ? <PinAtvIcon /> : <PinIcon />}
           </Icon>
-          <Icon className="hover_icon" onClick={() => setisUpdateOpen(true)}>
+          <Icon className="hover_icon" onClick={handleClickEditBtn}>
             <EditIcon />
           </Icon>
         </div>
@@ -84,15 +80,9 @@ const Directory = ({
         type="edit"
         isOpen={isUpdateOpen}
         setIsOpen={setisUpdateOpen}
-        updateDir={(id, body) => updateDir(id, body, dir.isPinned, isSearched)}
-        deleteDir={() => {
-          setIsDeleteOpen(true);
-          setisUpdateOpen(false);
-        }}
-        initDirData={{
-          emoji: dir.emoji,
-          name: dir.name,
-        }}
+        updateDir={handleClickEditBtnInModal}
+        deleteDir={handleClickDeleteBtn}
+        initDirData={initDirData}
         dirId={dir.id}
       />
       <DelModal
@@ -145,9 +135,11 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
   transition: 0.2s;
   &:hover {
     background: rgba(0, 0, 0, 0.7);
-    .icon {
+    .hover_icon_wrap {
       display: flex;
-      flex-direction: row;
+      position: absolute;
+      bottom: 13px;
+      right: 13px;
       .hover_icon {
         width: 40px;
         height: 40px;
@@ -173,6 +165,7 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
       }
     }
   }
+
   ${(props) =>
     props.thumbnail &&
     css`
@@ -190,6 +183,7 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
         z-index: -1;
       }
     `}
+
   .content {
     position: absolute;
     top: 46px;
@@ -261,17 +255,8 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
         }
       }
     }
-    .cookie-icon {
-      path {
-        fill: var(--gray_7_active);
-      }
-    }
   }
-  .icon {
-    position: absolute;
-    bottom: 1.3rem;
-    right: 1.3rem;
-
+  .hover_icon_wrap {
     display: none;
   }
 
