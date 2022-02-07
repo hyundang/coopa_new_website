@@ -9,10 +9,9 @@ export interface BookmarkAddModalProps {
   className?: string;
   value: CreateBookmarkProps;
   setValue: Dispatch<SetStateAction<CreateBookmarkProps>>;
-  onClickCreateBtn: () => void;
+  onClickCreateBtn: (link: string) => void;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  /** x 좌표 */
   locationX: number;
 }
 
@@ -30,14 +29,29 @@ const BookmarkAddModal = ({
   const link_input = useRef<HTMLInputElement>(null);
   const name_input = useRef<HTMLInputElement>(null);
 
+  const initializeModal = () => {
+    setTimeout(() => {
+      link_input.current?.focus();
+    }, 300);
+    setValue({
+      name: "",
+      link: "",
+    });
+  };
+
+  const createBookmark = () => {
+    let { link } = value;
+    if (link[link.length - 1] !== "/") link = `${link}/`;
+    if (!link.includes("https://")) link = `https://${value.link}`;
+    onClickCreateBtn(link);
+    setIsOpen(false);
+  };
+
   // 생성 클릭시
   const handleClickCreateBtn = () => {
     value.link !== ""
       ? value.name !== ""
-        ? (() => {
-            onClickCreateBtn();
-            setIsOpen(false);
-          })()
+        ? createBookmark()
         : name_input.current?.focus()
       : link_input.current?.focus();
   };
@@ -55,16 +69,7 @@ const BookmarkAddModal = ({
 
   // 제일 처음에 link input focus 상태로 설정
   useEffect(() => {
-    isOpen &&
-      (() => {
-        setTimeout(() => {
-          link_input.current?.focus();
-        }, 300);
-        setValue({
-          name: "",
-          link: "",
-        });
-      })();
+    isOpen && initializeModal();
   }, [isOpen]);
 
   return (

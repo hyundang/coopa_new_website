@@ -1,3 +1,4 @@
+import { mockDirModule } from "@data/dummy/directory";
 import Directory from ".";
 
 export default {
@@ -17,10 +18,8 @@ export const directory = () => {
           thumbnail: "https://www.notion.so/images/meta/default.png",
           cookieCnt: 1,
         }}
-        deleteDir={async () => {}}
-        updateDir={async () => {}}
-        updateDirPin={async () => {}}
-        refreshCookie={() => {}}
+        dirModule={mockDirModule}
+        refreshCookie={async () => {}}
       />
     </div>
   );

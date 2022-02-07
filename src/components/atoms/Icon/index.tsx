@@ -4,6 +4,7 @@ import React, {
   Dispatch,
   SetStateAction,
   ButtonHTMLAttributes,
+  MouseEvent,
 } from "react";
 import styled from "styled-components";
 
@@ -26,6 +27,11 @@ const Icon = (
     | null
     | undefined,
 ) => {
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onClick && onClick(e);
+  };
+
   return (
     <IconWrap
       id={id}
@@ -33,10 +39,7 @@ const Icon = (
       ref={ref}
       role={role}
       style={style}
-      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation();
-        onClick ? onClick(e) : () => {};
-      }}
+      onClick={handleClick}
       onMouseOver={setIsHover ? () => setIsHover(true) : undefined}
       onMouseLeave={setIsHover ? () => setIsHover(false) : undefined}
     >

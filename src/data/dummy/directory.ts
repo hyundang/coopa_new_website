@@ -1,3 +1,5 @@
+import DirModule from "@modules/DirModule";
+
 export const directories = {
   common: [
     { id: 770, isPinned: false, name: "최고", cookieCnt: 0 },
@@ -76,4 +78,18 @@ export const directories = {
     },
     { id: 742, isPinned: true, name: "535352", emoji: "", cookieCnt: 0 },
   ],
+};
+
+export const mockDirModule: ReturnType<typeof DirModule> = {
+  isError: false,
+  isLoading: false,
+  dirFilter: "latest",
+  updateAndSaveDirFilter: () => {},
+  pinnedDirData: [],
+  unpinnedDirData: [],
+  searchedDirData: [],
+  createDir: async () => -1,
+  deleteDir: async () => {},
+  updateDir: async () => {},
+  updateDirPin: async () => {},
 };

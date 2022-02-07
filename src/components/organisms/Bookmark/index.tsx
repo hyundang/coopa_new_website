@@ -1,7 +1,7 @@
 import { BookmarkTile, Bubble } from "@components/atoms";
 import { BookmarkAddModal } from "@components/organisms";
 import { BookmarkDataProps, CreateBookmarkProps } from "@interfaces/homeboard";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, MouseEvent } from "react";
 import styled, { css } from "styled-components";
 
 export interface BookmarkProps {
@@ -25,6 +25,14 @@ const Bookmark = ({
     name: "",
     link: "",
   });
+
+  const handleClickDelBtn = (e: MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    onClickDelBtn && onClickDelBtn(Number(e.currentTarget.id));
+  };
+
+  const handleClickCreateBtn = (link: string) =>
+    onClickCreateBtn && onClickCreateBtn({ name: newBookmark.name, link });
 
   // 키 떼어냈을 때
   const handleKeyUp = (e: any) => {
@@ -57,17 +65,10 @@ const Bookmark = ({
             siteName={bookmark.name}
             url={bookmark.link}
             imgUrl={bookmark.image}
-            onClickDelBtn={
-              onClickDelBtn
-                ? (e: any) => {
-                    e.stopPropagation();
-                    onClickDelBtn(Number(e.target.id));
-                  }
-                : undefined
-            }
+            onClickDelBtn={handleClickDelBtn}
           />
         ))}
-        {onClickCreateBtn && bookmarkData.length < 6 && (
+        {bookmarkData.length < 6 && (
           <>
             <BookmarkTile
               isPlusTile
@@ -77,7 +78,7 @@ const Bookmark = ({
             <BookmarkAddModal
               value={newBookmark}
               setValue={setNewBookmark}
-              onClickCreateBtn={() => onClickCreateBtn(newBookmark)}
+              onClickCreateBtn={handleClickCreateBtn}
               isOpen={isCreateModalOpen}
               setIsOpen={setIsCreateModalOpen}
               locationX={-150 + 40}

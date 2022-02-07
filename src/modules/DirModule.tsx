@@ -14,6 +14,7 @@ import { useRecoilState } from "recoil";
 import SaveDataInWebCookie from "@lib/SaveDataInWebCookie";
 // modules
 import { ToastMsgState } from "./states";
+import { returnDirFilter } from "@lib/filter";
 
 interface DirModuleProps {
   /** initial directory datas */
@@ -34,22 +35,22 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   );
   // 고정 안 된 디렉토리
   const [unpinnedDirData, setUnpinnedDirData] = useState<DirDataProps[]>(
-    initAllDirData.common,
+    initAllDirData.common || [],
   );
 
   // // 모든 디렉토리 데이터 get
-  // const { data: allDirData } = useSWR(
-  //   () => `/directories?filter=${returnDirFilter(dirFilter)}`,
-  //   getApi.getAllDirData,
-  //   {
-  //     initialData: initAllDirData,
-  //     errorRetryCount: 3,
-  //     onSuccess: (data) => {
-  //       setPinnedDirData(data?.pinned || []);
-  //       setUnpinnedDirData(data?.common || []);
-  //     },
-  //   },
-  // );
+  const { data: allDirData, error } = useSWR(
+    () => `/directories?filter=${returnDirFilter(dirFilter)}`,
+    getApi.getAllDirData,
+    {
+      initialData: initAllDirData,
+      errorRetryCount: 3,
+      onSuccess: (data) => {
+        setPinnedDirData(data?.pinned || []);
+        setUnpinnedDirData(data?.common || []);
+      },
+    },
+  );
 
   // 디렉토리 필터 변경
   const updateAndSaveDirFilter = (
@@ -214,6 +215,8 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   };
 
   return {
+    isLoading: !pinnedDirData && !unpinnedDirData && !error,
+    isError: error,
     dirFilter,
     updateAndSaveDirFilter,
     pinnedDirData,

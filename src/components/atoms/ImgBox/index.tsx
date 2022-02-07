@@ -33,7 +33,7 @@ const ImgBox = ({
 
   useEffect(() => {
     setImgUrl(url);
-  }, []);
+  }, [url]);
 
   return (
     <ImgBoxWrap
@@ -52,9 +52,7 @@ const ImgBox = ({
       <img
         src={imgUrl}
         alt="hidden_img"
-        onError={() => {
-          setImgUrl(NoThumbImg);
-        }}
+        onError={() => setImgUrl(isImgInput ? "" : NoThumbImg)}
         style={{ display: "none" }}
       />
       {children}

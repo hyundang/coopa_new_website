@@ -7,7 +7,7 @@ import { CookieContent } from "@components/molecules";
 import { CookieDataProps } from "@interfaces/cookie";
 // libs
 import styled from "styled-components";
-import React, { RefObject, forwardRef } from "react";
+import React, { RefObject, forwardRef, useEffect } from "react";
 import CookieHandlers from "@lib/CookieHandlers";
 // modules
 import CookieModule from "@modules/CookieModule";
@@ -30,19 +30,44 @@ const CookieTablet = (
 ) => {
   const cookieHandlers = CookieHandlers(type, cookieData, cookieModule);
 
+  const initializeModal = () =>
+    cookieHandlers.isEditModalOpen &&
+    cookieHandlers.setUpdatedCookieValue({
+      title: cookieData?.title || "",
+      content: cookieData?.content || "",
+      thumbnail: cookieData?.thumbnail || "",
+      cookieId: cookieData?.id || -1,
+    });
+
+  const handleUpdateCookie = () =>
+    cookieModule.updateCookie(
+      cookieHandlers.updatedCookieValue,
+      cookieData.isPinned,
+      type === "searched",
+    );
+
+  const handleClickDelBtnInEditModal = () => {
+    cookieHandlers.setIsEditModalOpen(false);
+    cookieHandlers.setIsDelModalOpen(true);
+  };
+
+  const handleClickDelBtnInDelModal = () =>
+    cookieModule.deleteCookie(
+      cookieData.id,
+      cookieData.isPinned,
+      type === "searched",
+    );
+
+  useEffect(() => {
+    initializeModal();
+  }, [cookieHandlers.isEditModalOpen]);
+
   return (
     <>
       <CookieWrap
         id={id}
         className={className}
-        onClick={() => {
-          cookieModule.updateCookieReadCnt(
-            cookieData.id,
-            cookieData.isPinned,
-            type === "searched",
-          );
-          window.open(cookieData.link);
-        }}
+        onClick={cookieHandlers.handleClickCookieWrap}
         ref={ref}
       >
         {cookieData.isPinned && <StyledPinImg className="pin_img" />}
@@ -67,33 +92,20 @@ const CookieTablet = (
         setIsOpen={cookieHandlers.setIsEditModalOpen}
         value={cookieHandlers.updatedCookieValue}
         setValue={cookieHandlers.setUpdatedCookieValue}
-        updateCookie={() =>
-          cookieModule.updateCookie(
-            cookieHandlers.updatedCookieValue,
-            cookieData.isPinned,
-            type === "searched",
-          )
-        }
-        onClickDelBtn={() => {
-          cookieHandlers.setIsEditModalOpen(false);
-          cookieHandlers.setIsDelModalOpen(true);
-        }}
+        updateCookie={handleUpdateCookie}
+        onClickDelBtn={handleClickDelBtnInEditModal}
         isLoading={cookieModule.isUpdateLoading}
       />
       <DelModal
         isOpen={cookieHandlers.isDelModalOpen}
         setIsOpen={cookieHandlers.setIsDelModalOpen}
-        onClickDelBtn={() =>
-          cookieModule.deleteCookie(
-            cookieData.id,
-            cookieData.isPinned,
-            type === "searched",
-          )
-        }
+        onClickDelBtn={handleClickDelBtnInDelModal}
       />
     </>
   );
 };
+
+export default forwardRef(CookieTablet);
 
 const CookieWrap = styled.article`
   cursor: pointer;
@@ -125,5 +137,3 @@ const StyledPinImg = styled(PinImg)`
   background-color: transparent;
   -webkit-filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.1));
 `;
-
-export default forwardRef(CookieTablet);

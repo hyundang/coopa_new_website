@@ -1,49 +1,36 @@
+// assets
 import { EmptyImg } from "@assets/imgs/error";
 import { PlusIcon } from "@assets/icons/common";
-import Directory from "@components/organisms/Directory";
-import { Empty } from "@components/organisms";
+// components
+import { Empty, Directory, DirectoryModal } from "@components/organisms";
 import { Btn } from "@components/atoms";
-import { DirDataProps, CreateDirProps } from "@interfaces/directory";
+// interfaces
+import { DirDataProps } from "@interfaces/directory";
+// libs
 import React, { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
+// modules
+import { DirModule } from "@modules/index";
 
 export interface DirectoriesProps {
+  isLoading: boolean;
   unpinnedData: DirDataProps[];
-  /** 고정된 데이터 */
   pinnedData?: DirDataProps[];
-  /** 검색 디렉토리 여부 */
   isSearched?: boolean;
-  /** 디렉토리 생성 모달 오픈 여부 */
+  isDirAddOpen?: boolean;
   setIsDirAddOpen?: Dispatch<SetStateAction<boolean>>;
-  /** delete dir */
-  deleteDir: (
-    dirId: number,
-    isPinned: boolean,
-    isSearched: boolean,
-  ) => Promise<void>;
-  /** update dir */
-  updateDir: (
-    id: number,
-    body: CreateDirProps,
-    isPinned: boolean,
-    isSearched: boolean,
-  ) => Promise<void>;
-  updateDirPin: (
-    dirId: number,
-    isPinned: boolean,
-    isSearched: boolean,
-  ) => Promise<void>;
-  refreshCookie: () => void;
+  dirModule: ReturnType<typeof DirModule>;
+  refreshCookie: () => Promise<void>;
 }
 
 const Directories = ({
+  isLoading,
   unpinnedData,
   pinnedData,
   isSearched = false,
-  setIsDirAddOpen,
-  deleteDir,
-  updateDir,
-  updateDirPin,
+  isDirAddOpen = false,
+  setIsDirAddOpen = () => {},
+  dirModule,
   refreshCookie,
 }: DirectoriesProps) => {
   return (
@@ -54,9 +41,7 @@ const Directories = ({
             <Directory
               key={dir.id}
               dir={dir}
-              deleteDir={deleteDir}
-              updateDir={updateDir}
-              updateDirPin={updateDirPin}
+              dirModule={dirModule}
               refreshCookie={refreshCookie}
             />
           ))}
@@ -65,39 +50,46 @@ const Directories = ({
               key={dir.id}
               dir={dir}
               isSearched={isSearched}
-              deleteDir={deleteDir}
-              updateDir={updateDir}
-              updateDirPin={updateDirPin}
+              dirModule={dirModule}
               refreshCookie={refreshCookie}
             />
           ))}
         </DirectoiresWrap>
       ) : (
         <>
-          {isSearched ? (
+          {isLoading === true ? (
+            <div style={{ height: "120px" }} />
+          ) : isSearched ? (
             <Empty
               img={EmptyImg}
               imgWidth={170}
               text="검색된 디렉토리가 없어요!"
             />
           ) : (
-            <StyledEmpty
-              className="empty"
-              img={EmptyImg}
-              imgWidth={170}
-              text="새 디렉토리를 만들어볼까요?"
-              Btn={
-                <Btn
-                  className="empty__button--dir"
-                  isOrange
-                  isAtvBtn
-                  onClick={() => setIsDirAddOpen && setIsDirAddOpen(true)}
-                  role="link"
-                >
-                  <PlusIcon className="plus-icon" />새 디렉토리 만들기
-                </Btn>
-              }
-            />
+            <>
+              <StyledEmpty
+                className="empty"
+                img={EmptyImg}
+                imgWidth={170}
+                text="새 디렉토리를 만들어볼까요?"
+                Btn={
+                  <Btn
+                    className="empty__button--dir"
+                    isOrange
+                    isAtvBtn
+                    onClick={() => setIsDirAddOpen && setIsDirAddOpen(true)}
+                  >
+                    <PlusIcon className="plus-icon" />새 디렉토리 만들기
+                  </Btn>
+                }
+              />
+              <DirectoryModal
+                isOpen={isDirAddOpen}
+                setIsOpen={setIsDirAddOpen}
+                type="new"
+                createDir={dirModule.createDir}
+              />
+            </>
           )}
         </>
       )}

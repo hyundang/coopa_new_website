@@ -46,11 +46,6 @@ const BtnWrap = styled.a`
     background-color: var(--gray_hover_1);
   }
 
-  .google_icon {
-    width: 28px;
-    height: 28px;
-  }
-
   .button_text {
     font-size: 18px;
     font-weight: 500;

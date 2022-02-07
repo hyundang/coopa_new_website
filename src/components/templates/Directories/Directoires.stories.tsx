@@ -1,6 +1,6 @@
 import { Meta, Story } from "@storybook/react";
 import Directories, { DirectoriesProps } from ".";
-import { directories } from "@data/dummy/directory";
+import { directories, mockDirModule } from "@data/dummy/directory";
 
 export default {
   title: "components/templates/Directories",
@@ -11,10 +11,8 @@ const Template: Story<DirectoriesProps> = (args) => {
   return (
     <Directories
       {...args}
-      deleteDir={async () => {}}
-      updateDir={async () => {}}
-      updateDirPin={async () => {}}
-      refreshCookie={() => {}}
+      dirModule={mockDirModule}
+      refreshCookie={async () => {}}
     />
   );
 };

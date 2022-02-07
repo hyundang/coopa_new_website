@@ -100,6 +100,7 @@ const SkeletonCookieWrap = styled.article`
     display: flex;
     flex-direction: row;
     padding: 28px 0;
+    border-bottom: 1px solid var(--gray_3);
 
     .skeleton-cookie-img {
         width: 108px;
@@ -112,6 +113,7 @@ const SkeletonCookieWrap = styled.article`
           height: 72px;
           border-radius: 8px;
           object-fit: cover;
+          background-color: var(--white);
         }
     }
 
