@@ -1,4 +1,5 @@
 import { DefaultEmojiIcon } from "@assets/icons/card";
+import { EmptyImg } from "@assets/imgs/error";
 import { CreateDirProps } from "@interfaces/directory";
 import React, {
   Dispatch,
@@ -78,6 +79,11 @@ const List = ({
           <span>검색결과</span>
           {returnLists(searchedDir)}
         </>
+      ) : pinnedDir.length === 0 && unpinnedDir.length === 0 ? (
+        <EmptyWrap>
+          <img className="empty_img" alt="empty_img" src={EmptyImg} />
+          <p>저장된 디렉토리가 없어요!</p>
+        </EmptyWrap>
       ) : (
         <>
           {pinnedDir.length !== 0 && <span>고정됨</span>}
@@ -178,5 +184,26 @@ const ListItem = styled.li`
     @media screen and (min-width: 1600px) {
       margin: 9px 0;
     }
+  }
+`;
+
+const EmptyWrap = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  .empty_img {
+    width: 120px;
+    padding-top: 20px;
+    margin-right: 20px;
+  }
+  p {
+    padding: 0;
+    margin-top: 12px;
+    color: var(--gray_5);
+    font-weight: 500;
+    font-size: 12px;
   }
 `;
