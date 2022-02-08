@@ -266,7 +266,7 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
   ${({ theme }) => theme.media.mobile`
     height: 73px;
     &:hover {
-      .icon {
+      .hover_icon_wrap {
         display: none;
       }
     }
