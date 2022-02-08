@@ -2,18 +2,12 @@
 import { NetworkErrorImg } from "@assets/imgs/error";
 // components
 import { NewtabError } from "@components/templates";
-// interfaces
-import { UserDataProps } from "@interfaces/user";
 // libs
 import React, { useEffect } from "react";
 // modules
 import ErrorModule from "@modules/ErrorModule";
 
-export default function InternalServerError({
-  initUserData,
-}: {
-  initUserData: UserDataProps;
-}) {
+export default function InternalServerError() {
   const errorModule = ErrorModule();
 
   useEffect(() => {
@@ -23,7 +17,6 @@ export default function InternalServerError({
 
   return (
     <NewtabError
-      imgUrl={initUserData?.profileImage}
       homeboardImg={errorModule.homeboardImg}
       bookmarkDatas={errorModule.bookmarkData || []}
       errorImg={NetworkErrorImg}
