@@ -68,7 +68,7 @@ const Bookmark = ({
             onClickDelBtn={handleClickDelBtn}
           />
         ))}
-        {bookmarkData.length < 6 && (
+        {onClickCreateBtn && bookmarkData.length < 6 && (
           <>
             <BookmarkTile
               isPlusTile
