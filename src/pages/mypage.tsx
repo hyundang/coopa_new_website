@@ -1,12 +1,15 @@
+// apis
+import getApi from "@api/getApi";
 // components
 import { My } from "@components/templates";
 // interfaces
 import { UserDataProps } from "@interfaces/user";
 // libs
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { NextPageContext } from "next";
 import nextCookie from "next-cookies";
+import { setToken } from "@lib/TokenManager";
 // modules
 import UserModule from "@modules/UserModule";
 
@@ -53,14 +56,26 @@ export default function mypage({
   );
 }
 
-mypage.getInitialProps = async (ctx: NextPageContext) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const allCookies = nextCookie(ctx);
   const userToken = allCookies["x-access-token"];
 
-  // 로그인 안 되어 있을 때
-  if (!userToken) {
+  if (userToken) {
+    setToken(userToken);
+    try {
+      const initUserData = await getApi.getUserData("/users");
+      return { props: { initUserData } };
+    } catch (e) {
+      return { props: {} };
+    }
+  } else {
+    // 로그인 안 되어 있을 때
     // 로그인 페이지로 리다이렉트
-    ctx.res?.writeHead(307, { Location: "/login" });
-    ctx.res?.end();
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
   }
 };

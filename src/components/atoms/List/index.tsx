@@ -77,7 +77,14 @@ const List = ({
       {isSearching ? (
         <>
           <span>검색결과</span>
-          {returnLists(searchedDir)}
+          {searchedDir.length === 0 ? (
+            <EmptyWrap>
+              <img className="empty_img" alt="empty_img" src={EmptyImg} />
+              <p>검색된 디렉토리가 없어요!</p>
+            </EmptyWrap>
+          ) : (
+            returnLists(searchedDir)
+          )}
         </>
       ) : pinnedDir.length === 0 && unpinnedDir.length === 0 ? (
         <EmptyWrap>
@@ -196,7 +203,7 @@ const EmptyWrap = styled.div`
   justify-content: center;
   .empty_img {
     width: 120px;
-    padding-top: 20px;
+    padding-top: 15px;
     margin-right: 20px;
   }
   p {

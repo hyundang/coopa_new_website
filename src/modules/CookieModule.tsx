@@ -152,6 +152,11 @@ const CookieModule = ({
           cookieData,
           ...filterSpecificCookieInCookieList(cookieList, cookieData.id),
         ];
+      case "oldest":
+        return [
+          ...filterSpecificCookieInCookieList(cookieList, cookieData.id),
+          cookieData,
+        ];
       default:
         return cookieList.map((cookie) => {
           if (cookie.id === cookieData.id) return cookieData;
@@ -316,6 +321,7 @@ const CookieModule = ({
     isPinned: boolean,
     isSearched: boolean,
   ) => {
+    setIsUpdateLoading(true);
     const res = await delApi.delCookieData(cookieId);
     if (res) {
       if (isPinned)
@@ -342,6 +348,7 @@ const CookieModule = ({
         ...isToastMsgVisible,
         cookieDel: true,
       });
+      setIsUpdateLoading(false);
       return;
     }
     alert("쿠키 삭제 실패");
@@ -539,8 +546,8 @@ const CookieModule = ({
 
   const refreshCookie = async () => {
     setIsUpdateLoading(true);
-    await pinnedMutate();
-    await unpinnedMutate();
+    pinnedMutate();
+    unpinnedMutate();
     setIsUpdateLoading(false);
   };
 

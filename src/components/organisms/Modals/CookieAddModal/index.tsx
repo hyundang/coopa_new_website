@@ -31,6 +31,13 @@ const CookieAddModal = ({
   const link_input = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState<string>("");
 
+  const initializeModal = () => {
+    setTimeout(() => {
+      link_input.current?.focus();
+    }, 300);
+    setValue("");
+  };
+
   // enter 키 클릭 시
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.key === "Enter" && handleClickAddBtn();
@@ -42,25 +49,23 @@ const CookieAddModal = ({
     }
   };
 
+  const handleCookieLinkAndCreateCookie = async () => {
+    let link = value;
+    if (link[link.length - 1] !== "/") link = `${link}/`;
+    if (!link.includes("https://")) link = `https://${link}`;
+    const res = await createCookie(link);
+    res ? setIsOpen(false) : link_input.current?.focus();
+  };
+
   const handleClickAddBtn = () => {
     value !== ""
-      ? (async () => {
-          // 링크로 부터 데이터 얻기, post cookie
-          const res = await createCookie(value);
-          res ? setIsOpen(false) : link_input.current?.focus();
-        })()
+      ? handleCookieLinkAndCreateCookie()
       : link_input.current?.focus();
   };
 
   // 제일 처음에 link input focus 상태로 설정
   useEffect(() => {
-    isOpen &&
-      (() => {
-        setTimeout(() => {
-          link_input.current?.focus();
-        }, 300);
-        setValue("");
-      })();
+    isOpen && initializeModal();
   }, [isOpen]);
 
   return (

@@ -8,7 +8,7 @@ import { GetAllDirProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 // libs
 import nextCookie from "next-cookies";
-import { NextPageContext } from "next";
+import { GetServerSideProps } from "next";
 import { returnCookieFilter } from "@lib/filter";
 import Head from "next/head";
 import { setToken } from "@lib/TokenManager";
@@ -111,7 +111,7 @@ const DirDetailPage = ({
 
 export default DirDetailPage;
 
-DirDetailPage.getInitialProps = async (ctx: NextPageContext) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const allCookies = nextCookie(ctx);
   const userToken = allCookies["x-access-token"];
   const queryID = ctx.query.id;
@@ -120,37 +120,46 @@ DirDetailPage.getInitialProps = async (ctx: NextPageContext) => {
   // 로그인 되어 있을 때
   if (userToken) {
     setToken(userToken);
-    // 일반 쿠키 데이터
-    const initAllUnpinnedCookieData = await getApi.getAllCookieData(
-      `/directories/${queryID}/unpinned/cookies?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
-        cookieFilter,
-      )}`,
-    );
-    // 고정 쿠키 데이터
-    const initAllPinnedCookieData = await getApi.getAllCookieData(
-      `/directories/${queryID}/pinned/cookies`,
-    );
-    // 디렉토리 상세 데이터
-    const initDirInfoData = await getApi.getDirInfo(
-      `/directories/${queryID}/info`,
-    );
-    // 디렉토리 데이터
-    const initAllDirData = await getApi.getAllDirData("/directories");
+    try {
+      const initUserData = await getApi.getUserData("/users");
+      // 일반 쿠키 데이터
+      const initAllUnpinnedCookieData = await getApi.getAllCookieData(
+        `/directories/${queryID}/unpinned/cookies?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
+          cookieFilter,
+        )}`,
+      );
+      // 고정 쿠키 데이터
+      const initAllPinnedCookieData = await getApi.getAllCookieData(
+        `/directories/${queryID}/pinned/cookies`,
+      );
+      // 디렉토리 상세 데이터
+      const initDirInfoData = await getApi.getDirInfo(
+        `/directories/${queryID}/info`,
+      );
+      // 디렉토리 데이터
+      const initAllDirData = await getApi.getAllDirData("/directories");
 
-    return {
-      isLogin: true,
-      initAllPinnedCookieData,
-      initAllUnpinnedCookieData,
-      initDirInfoData,
-      initAllDirData,
-      queryID,
-    };
+      return {
+        props: {
+          initUserData,
+          isLogin: true,
+          initAllPinnedCookieData,
+          initAllUnpinnedCookieData,
+          initDirInfoData,
+          initAllDirData,
+          queryID,
+        },
+      };
+    } catch (e) {
+      return { props: {} };
+    }
   }
   // 로그인 안 되어 있을 때
   // 로그인 페이지로 리다이렉트
-  ctx.res?.writeHead(307, { Location: "/login" });
-  ctx.res?.end();
   return {
-    isLogin: false,
+    redirect: {
+      destination: "/login",
+      permanent: false,
+    },
   };
 };

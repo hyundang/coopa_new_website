@@ -213,6 +213,7 @@ const Newtab = ({
               ) : (
                 <Directories
                   isLoading={false}
+                  pinnedData={[]}
                   unpinnedData={dirModule.searchedDirData || []}
                   isSearched
                   dirModule={dirModule}

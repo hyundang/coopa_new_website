@@ -4,10 +4,8 @@ import { NotFoundErrorImg } from "@assets/imgs/error";
 import { getApi } from "@api/index";
 // components
 import { NewtabError } from "@components/templates";
-// interfaces
-import { BookmarkDataProps } from "@interfaces/homeboard";
-import { UserDataProps } from "@interfaces/user";
 // libs
+import { GetServerSideProps } from "next";
 import React, { useEffect } from "react";
 import nextCookie from "next-cookies";
 import { mutate } from "swr";
@@ -15,20 +13,11 @@ import { mutate } from "swr";
 import { HomebrdModule } from "@modules/index";
 import { setToken } from "@lib/TokenManager";
 
-interface NewtabPageProps {
-  initUserData: UserDataProps;
-  initBookmarkData: BookmarkDataProps[];
-  initHomeboardImgUrl?: string;
-}
-export default function NewtabPage({
-  initUserData,
-  initBookmarkData,
-  initHomeboardImgUrl,
-}: NewtabPageProps) {
+const NewtabPage = () => {
   // 홈보드 모듈
   const homebrdModule = HomebrdModule({
-    initHomeboardImgUrl,
-    initBookmarkData,
+    initHomeboardImgUrl: undefined,
+    initBookmarkData: [],
   });
 
   useEffect(() => {
@@ -44,24 +33,21 @@ export default function NewtabPage({
             "",
           );
         })()
-      : !initHomeboardImgUrl &&
-        (homeboardImgUrl !== null
-          ? (() => {
-              homebrdModule.setHomeboardImg(homeboardImgUrl);
-              homebrdModule.setHomeboardModalImg(homeboardImgUrl);
-            })()
-          : homebrdModule.getHomeboardImg());
+      : homeboardImgUrl !== null
+      ? (() => {
+          homebrdModule.setHomeboardImg(homeboardImgUrl);
+          homebrdModule.setHomeboardModalImg(homeboardImgUrl);
+        })()
+      : homebrdModule.getHomeboardImg();
 
     // 북마크 세팅
     const bookmark = localStorage.getItem("bookmark");
-    !initBookmarkData &&
-      bookmark !== null &&
+    bookmark !== null &&
       mutate("/users/favorites", JSON.parse(bookmark), false);
   }, []);
 
   return (
     <NewtabError
-      imgUrl={initUserData?.profileImage}
       homeboardImg={homebrdModule.homeboardImg}
       bookmarkDatas={homebrdModule.bookmarkData || []}
       errorImg={NotFoundErrorImg}
@@ -71,9 +57,11 @@ export default function NewtabPage({
       isLoginError
     />
   );
-}
+};
 
-NewtabPage.getInitialProps = async (ctx: any) => {
+export default NewtabPage;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const allCookies = nextCookie(ctx);
   const userToken = allCookies["x-access-token"];
 
@@ -81,16 +69,20 @@ NewtabPage.getInitialProps = async (ctx: any) => {
   if (userToken) {
     setToken(userToken);
     try {
-      const userData = await getApi.getUserData("/users");
+      const initUserData = await getApi.getUserData("/users");
       // 개인 뉴탭으로 리다이렉트
-      if (userData) {
-        ctx.res?.writeHead(307, { Location: `/${userData.id}` });
-        ctx.res?.end();
+      if (initUserData) {
+        return {
+          redirect: {
+            destination: `/${initUserData.id}`,
+            permanent: false,
+          },
+        };
       }
     } catch (e) {
-      return {};
+      return { props: {} };
     }
   }
   // 로그인 안 되어 있을 때
-  return {};
+  return { props: {} };
 };

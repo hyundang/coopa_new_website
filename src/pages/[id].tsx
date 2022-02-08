@@ -8,6 +8,7 @@ import { CookieDataProps } from "@interfaces/cookie";
 import { GetAllDirProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 // libs
+import { GetServerSideProps } from "next";
 import React, { useEffect } from "react";
 import nextCookie from "next-cookies";
 import { mutate } from "swr";
@@ -16,7 +17,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 // modules
 import { CookieModule, DirModule, HomebrdModule } from "@modules/index";
 import { HomeboardState } from "@modules/states";
-import { NextPageContext } from "next";
+import { setToken } from "@lib/TokenManager";
 
 interface NewtabPageProps {
   initUserData: UserDataProps;
@@ -124,7 +125,7 @@ export default function NewtabPage({
   );
 }
 
-NewtabPage.getInitialProps = async (ctx: NextPageContext) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const allCookies = nextCookie(ctx);
   const userToken = allCookies["x-access-token"];
   const { dirFilter } = allCookies;
@@ -132,54 +133,64 @@ NewtabPage.getInitialProps = async (ctx: NextPageContext) => {
 
   // 로그인 되어 있을 때
   if (userToken) {
+    setToken(userToken);
     try {
-      const userData = await getApi.getUserData("/users");
-      // 개인 뉴탭으로 리다이렉트
-      if (userData) {
-        if (Number(ctx.query.id) !== userData.id) {
-          ctx.res?.writeHead(307, { Location: `/${userData.id}` });
-          ctx.res?.end();
-          return {};
+      const initUserData = await getApi.getUserData("/users");
+      if (initUserData) {
+        // 개인 뉴탭으로 리다이렉트
+        if (Number(ctx.query.id) !== initUserData.id) {
+          return {
+            redirect: {
+              destination: `/${initUserData.id}`,
+              permanent: false,
+            },
+          };
         }
+        // 쿠키 데이터
+        const initAllPinnedCookieData = await getApi.getAllCookieData(
+          `/cookies/pinned?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
+            cookieFilter,
+          )}`,
+        );
+        const initAllUnpinnedCookieData = await getApi.getAllCookieData(
+          `/cookies?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
+            cookieFilter,
+          )}`,
+        );
+
+        // 디렉토리 데이터
+        const initAllDirData = await getApi.getAllDirData(
+          `/directories?filter=${returnDirFilter(dirFilter)}`,
+        );
+
+        // 북마크 데이터
+        const initBookmarkData = await getApi.getBookmarkData(
+          "/users/favorites",
+        );
+
+        // 홈보드 이미지
+        const initHomeboardImgUrl = await getApi.getHomeboardData();
+
+        return {
+          props: {
+            initUserData,
+            initAllPinnedCookieData,
+            initAllUnpinnedCookieData,
+            initAllDirData,
+            initBookmarkData,
+            initHomeboardImgUrl,
+          },
+        };
       }
     } catch (e) {
-      return {};
+      return { props: {} };
     }
-    // 쿠키 데이터
-    const initAllPinnedCookieData = await getApi.getAllCookieData(
-      `/cookies/pinned?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
-        cookieFilter,
-      )}`,
-    );
-    const initAllUnpinnedCookieData = await getApi.getAllCookieData(
-      `/cookies?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
-        cookieFilter,
-      )}`,
-    );
-
-    // 디렉토리 데이터
-    const initAllDirData = await getApi.getAllDirData(
-      `/directories?filter=${returnDirFilter(dirFilter)}`,
-    );
-
-    // 북마크 데이터
-    const initBookmarkData = await getApi.getBookmarkData("/users/favorites");
-
-    // 홈보드 이미지
-    const initHomeboardImgUrl = await getApi.getHomeboardData();
-
-    // ctx.res?.setHeader("Cache-Control", "public, max-age=0");
-
-    return {
-      initAllPinnedCookieData,
-      initAllUnpinnedCookieData,
-      initAllDirData,
-      initBookmarkData,
-      initHomeboardImgUrl,
-    };
   }
   // 로그인 안 되어 있을 때
   return {
-    isLogin: false,
+    redirect: {
+      destination: "/",
+      permanent: false,
+    },
   };
 };

@@ -2,18 +2,12 @@
 import { NotFoundErrorImg } from "@assets/imgs/error";
 // components
 import { NewtabError } from "@components/templates";
-// interfaces
-import { UserDataProps } from "@interfaces/user";
 // libs
 import React, { useEffect } from "react";
 // modules
 import ErrorModule from "@modules/ErrorModule";
 
-export default function Error({
-  initUserData,
-}: {
-  initUserData: UserDataProps;
-}) {
+export default function Error() {
   const errorModule = ErrorModule();
 
   useEffect(() => {
@@ -23,7 +17,6 @@ export default function Error({
 
   return (
     <NewtabError
-      imgUrl={initUserData?.profileImage}
       homeboardImg={errorModule.homeboardImg}
       bookmarkDatas={errorModule.bookmarkData || []}
       errorImg={NotFoundErrorImg}

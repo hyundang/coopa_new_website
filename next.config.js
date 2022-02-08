@@ -13,26 +13,6 @@ module.exports = {
           },
         ],
       },
-      {
-        source: "/landing",
-        locale: false,
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000",
-          },
-        ],
-      },
-      {
-        source: "/login",
-        locale: false,
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000",
-          },
-        ],
-      },
     ];
   },
 

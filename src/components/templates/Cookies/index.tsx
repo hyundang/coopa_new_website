@@ -224,11 +224,7 @@ const Cookies = ({
               text="새로운 쿠키를 저장해보세요!"
             />
           ) : type === "searched" ? (
-            <Empty
-              img={EmptyImg}
-              imgWidth={170}
-              text="검색된 디렉토리가 없어요!"
-            />
+            <Empty img={EmptyImg} imgWidth={170} text="검색된 쿠키가 없어요!" />
           ) : (
             <Empty
               className="empty"
