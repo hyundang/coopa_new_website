@@ -152,6 +152,11 @@ const CookieModule = ({
           cookieData,
           ...filterSpecificCookieInCookieList(cookieList, cookieData.id),
         ];
+      case "oldest":
+        return [
+          ...filterSpecificCookieInCookieList(cookieList, cookieData.id),
+          cookieData,
+        ];
       default:
         return cookieList.map((cookie) => {
           if (cookie.id === cookieData.id) return cookieData;
@@ -539,8 +544,8 @@ const CookieModule = ({
 
   const refreshCookie = async () => {
     setIsUpdateLoading(true);
-    await pinnedMutate();
-    await unpinnedMutate();
+    pinnedMutate();
+    unpinnedMutate();
     setIsUpdateLoading(false);
   };
 
