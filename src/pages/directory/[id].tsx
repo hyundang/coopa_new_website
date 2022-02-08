@@ -151,7 +151,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         },
       };
     } catch (e) {
-      return { props: {} };
+      // query id 잘못되었을 때
+      return { notFound: true };
     }
   }
   // 로그인 안 되어 있을 때

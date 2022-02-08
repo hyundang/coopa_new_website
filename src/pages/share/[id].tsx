@@ -115,6 +115,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       props: { initAllCookieData, initSharedDirInfoData, queryID },
     };
   } catch (e) {
-    return { props: {} };
+    // share token 잘못되었을 때
+    return { notFound: true };
   }
 };
