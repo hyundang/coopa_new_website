@@ -321,6 +321,7 @@ const CookieModule = ({
     isPinned: boolean,
     isSearched: boolean,
   ) => {
+    setIsUpdateLoading(true);
     const res = await delApi.delCookieData(cookieId);
     if (res) {
       if (isPinned)
@@ -347,6 +348,7 @@ const CookieModule = ({
         ...isToastMsgVisible,
         cookieDel: true,
       });
+      setIsUpdateLoading(false);
       return;
     }
     alert("쿠키 삭제 실패");
