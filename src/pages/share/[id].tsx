@@ -5,6 +5,7 @@ import { DirDetail } from "@components/templates";
 // interfaces
 import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
 //libs
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 //modules
 import CookieModule from "@modules/CookieModule";
@@ -93,24 +94,27 @@ const SharePage = ({
     </>
   );
 };
+
 export default SharePage;
 
-SharePage.getInitialProps = async (ctx: any) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const queryID = ctx.query.id;
 
-  // 쿠키 데이터
-  const initAllCookieData = await getApi.getSharedDirectoryData(
-    `/share/${queryID}/cookies`,
-  );
+  try {
+    // 쿠키 데이터
+    const initAllCookieData = await getApi.getSharedDirectoryData(
+      `/share/${queryID}/cookies`,
+    );
 
-  // 디렉토리 상세 정보
-  const initSharedDirInfoData = await getApi.getSharedDirectoryData(
-    `/share/${queryID}/info`,
-  );
+    // 디렉토리 상세 정보
+    const initSharedDirInfoData = await getApi.getSharedDirectoryData(
+      `/share/${queryID}/info`,
+    );
 
-  return {
-    initAllCookieData,
-    initSharedDirInfoData,
-    queryID,
-  };
+    return {
+      props: { initAllCookieData, initSharedDirInfoData, queryID },
+    };
+  } catch (e) {
+    return { props: {} };
+  }
 };

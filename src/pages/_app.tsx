@@ -1,15 +1,10 @@
-import type { AppContext, AppProps } from "next/app";
+import type { AppProps } from "next/app";
 import Head from "next/head";
 import { RecoilRoot } from "recoil";
 import { ThemeProvider } from "styled-components";
 import { theme } from "src/styles/theme";
 import { GlobalStyle } from "src/styles/GlobalStyles";
-import cookies from "next-cookies";
-import { setToken } from "@lib/TokenManager";
-import getApi from "@api/getApi";
 import { useEffect } from "react";
-// import { useRouterLoading } from "src/hooks";
-// import { useEffect } from "react";
 
 function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -69,11 +64,7 @@ function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <RecoilRoot>
           <GlobalStyle />
-          {/* {isLoading ? (
-            <h1 style={{ fontSize: "100px" }}>...loading</h1>
-          ) : ( */}
           <Component {...pageProps} />
-          {/* )} */}
         </RecoilRoot>
       </ThemeProvider>
     </>
@@ -81,31 +72,3 @@ function App({ Component, pageProps }: AppProps) {
 }
 
 export default App;
-
-App.getInitialProps = async ({ ctx, Component }: AppContext) => {
-  // 토큰
-  const allCookies = cookies(ctx);
-  const userToken = allCookies["x-access-token"];
-
-  let pageProps = {};
-  if (Component.getInitialProps) {
-    pageProps = await Component.getInitialProps(ctx);
-  }
-
-  // 로그인 되어있을 때
-  if (userToken !== undefined) {
-    setToken(userToken);
-    // 유저 데이터
-    try {
-      const initUserData = await getApi.getUserData("/users");
-      return { pageProps: { ...pageProps, initUserData } };
-    } catch (e) {
-      return { pageProps: { ...pageProps, initUserData: undefined } };
-    }
-  }
-
-  // 로그인 안 되어 있을 때
-  return {
-    pageProps: { ...pageProps },
-  };
-};
