@@ -42,7 +42,7 @@ export default function LoginPage() {
           chrome.runtime.sendMessage(
             EXTENSION_ID,
             { isLogin: true, userToken: jwt },
-            function (res: any) {
+            (res: any) => {
               if (!res.success) console.log("fail");
             },
           );

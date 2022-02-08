@@ -1,7 +1,7 @@
 // assets
 import { EditIcon, EmptyCookieIcon, LinkIcon } from "@assets/icons/common";
 // components
-import { Btn, Floating, Icon, ToastMsg } from "@components/atoms";
+import { Btn, Icon, ToastMsg } from "@components/atoms";
 import {
   DirectoryModal,
   Header,
