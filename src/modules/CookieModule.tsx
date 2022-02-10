@@ -330,7 +330,7 @@ const CookieModule = ({
           return filterSpecificCookieInCookieList(cookieList || [], cookieId);
         }, false);
       // 고정 쿠키의 경우
-      else if (isPinned)
+      if (isPinned)
         pinnedMutate(
           (cookieList) =>
             filterSpecificCookieInCookieList(
@@ -396,7 +396,7 @@ const CookieModule = ({
           });
         }, false);
       // 고정 쿠키의 경우
-      else if (isPinned) {
+      if (isPinned) {
         pinnedMutate(
           (cookieList) =>
             changeSequenceOfSpecificCookieInCookieList(
@@ -443,7 +443,7 @@ const CookieModule = ({
           false,
         );
       // 고정 쿠키의 경우
-      else if (isPinned)
+      if (isPinned)
         pinnedMutate(
           (cookieList) =>
             changeDataOfSpecificCookieInCookieList(
@@ -481,7 +481,7 @@ const CookieModule = ({
             changeDataOfSpecificCookieInCookieList(cookieList || [], res),
           false,
         );
-      else if (isPinned)
+      if (isPinned)
         pinnedMutate(
           (cookieList) =>
             changeDataOfSpecificCookieInCookieList(
@@ -520,7 +520,7 @@ const CookieModule = ({
         }, false);
       }
       // 핀 해제 시
-      else if (!isPinned) {
+      if (!isPinned) {
         if (cookieFilter === "latest" || cookieFilter === "oldest") {
           pinnedMutate((cookieList) => {
             return changeSequenceOfSpecificCookieInCookieList(
@@ -534,8 +534,6 @@ const CookieModule = ({
         unpinnedMutate((outerCookieList) => {
           return filterSpecificUnpinnedCookie(outerCookieList, cookieId);
         }, false);
-        setIsUpdateLoading(false);
-        return true;
       }
       // 핀 설정 시
       else {
