@@ -136,14 +136,19 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   ) => {
     const res = await delApi.delDirData(dirId);
     if (res) {
-      if (isPinned)
-        setPinnedDirData(filterSpecificDirInDirList(pinnedDirData, dirId));
-      else if (isSearched)
-        searchedMutate(async (dirList) =>
-          filterSpecificDirInDirList(dirList || [], dirId),
+      // 검색된 디렉토리의 경우
+      if (isSearched)
+        searchedMutate(
+          async (dirList) => filterSpecificDirInDirList(dirList || [], dirId),
+          false,
         );
+      // 고정 디렉토리의 경우
+      else if (isPinned)
+        setPinnedDirData(filterSpecificDirInDirList(pinnedDirData, dirId));
+      // 비고정 디렉토리의 경우
       else
         setUnpinnedDirData(filterSpecificDirInDirList(unpinnedDirData, dirId));
+
       setIsToastMsgVisible({
         ...isToastMsgVisible,
         dirDel: true,
@@ -162,18 +167,24 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   ) => {
     const res = await putApi.updateDirectoryData(id, body);
     if (res) {
-      if (isPinned)
+      // 검색된 디렉토리의 경우
+      if (isSearched)
+        searchedMutate(
+          async (dirList) =>
+            changeDataOfSpecificDirInDirList(dirList || [], res),
+          false,
+        );
+      // 고정 디렉토리의 경우
+      else if (isPinned)
         setPinnedDirData(
           changeSequenceOfSpecificDirInDirList(pinnedDirData, res),
         );
-      else if (isSearched)
-        searchedMutate(async (dirList) =>
-          changeDataOfSpecificDirInDirList(dirList || [], res),
-        );
+      // 비고정 디렉토리의 경우
       else
         setUnpinnedDirData(
           changeSequenceOfSpecificDirInDirList(unpinnedDirData, res),
         );
+
       setIsToastMsgVisible({
         ...isToastMsgVisible,
         dirEdit: true,
@@ -191,16 +202,23 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   ) => {
     const res = await putApi.updateDirectoryPin(dirId, !isPinned);
     if (res) {
-      if (!isPinned) {
+      // 검색된 디렉토리의 경우
+      if (isSearched) {
+        searchedMutate(
+          async (dirList) =>
+            changeDataOfSpecificDirInDirList(dirList || [], res),
+          false,
+        );
+      }
+      // 디렉토리 핀 해제 시
+      else if (!isPinned) {
         setPinnedDirData(
           changeSequenceOfSpecificDirInDirList(pinnedDirData, res),
         );
         setUnpinnedDirData(filterSpecificDirInDirList(unpinnedDirData, dirId));
-      } else if (isSearched) {
-        searchedMutate(async (dirList) =>
-          changeDataOfSpecificDirInDirList(dirList || [], res),
-        );
-      } else {
+      }
+      // 디렉토리 핀 설정 시
+      else {
         setPinnedDirData(filterSpecificDirInDirList(pinnedDirData, dirId));
         setUnpinnedDirData(
           changeSequenceOfSpecificDirInDirList(unpinnedDirData, res),
