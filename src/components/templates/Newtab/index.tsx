@@ -209,6 +209,7 @@ const Newtab = ({
                   unpinnedDir={dirModule.unpinnedDirData}
                   pinnedDir={dirModule.pinnedDirData}
                   createDir={dirModule.createDir}
+                  refreshDir={dirModule.refreshDir}
                 />
               ) : (
                 <Directories
@@ -234,6 +235,7 @@ const Newtab = ({
                   pinnedDir={dirModule.pinnedDirData}
                   setIsOnboardOpen={setIsOnboardOpen}
                   createDir={dirModule.createDir}
+                  refreshDir={dirModule.refreshDir}
                 />
               ) : (
                 <Directories

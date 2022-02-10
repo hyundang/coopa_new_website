@@ -28,6 +28,7 @@ export interface CookieProps {
   unpinnedDir?: DirDataProps[];
   pinnedDir?: DirDataProps[];
   createDir?: (data: CreateDirProps) => Promise<number>;
+  refreshDir?: () => Promise<void>;
 }
 const Cookie = (
   {
@@ -40,6 +41,7 @@ const Cookie = (
     unpinnedDir = [],
     pinnedDir = [],
     createDir = async () => -1,
+    refreshDir = async () => {},
   }: CookieProps,
   ref?:
     | ((instance: HTMLButtonElement | null) => void)
@@ -113,6 +115,7 @@ const Cookie = (
         });
         setCardState("parking");
         setTimeout(() => setCardState("normal"), 1500);
+        await refreshDir();
       }
     }
   };

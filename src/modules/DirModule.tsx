@@ -39,7 +39,11 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   );
 
   // // 모든 디렉토리 데이터 get
-  const { data: allDirData, error } = useSWR(
+  const {
+    data: allDirData,
+    error,
+    mutate: dirMutate,
+  } = useSWR(
     () => `/directories?filter=${returnDirFilter(dirFilter)}`,
     getApi.getAllDirData,
     {
@@ -136,14 +140,19 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   ) => {
     const res = await delApi.delDirData(dirId);
     if (res) {
+      // 검색된 디렉토리의 경우
+      if (isSearched)
+        searchedMutate(
+          async (dirList) => filterSpecificDirInDirList(dirList || [], dirId),
+          false,
+        );
+      // 고정 디렉토리의 경우
       if (isPinned)
         setPinnedDirData(filterSpecificDirInDirList(pinnedDirData, dirId));
-      else if (isSearched)
-        searchedMutate(async (dirList) =>
-          filterSpecificDirInDirList(dirList || [], dirId),
-        );
+      // 비고정 디렉토리의 경우
       else
         setUnpinnedDirData(filterSpecificDirInDirList(unpinnedDirData, dirId));
+
       setIsToastMsgVisible({
         ...isToastMsgVisible,
         dirDel: true,
@@ -162,18 +171,24 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   ) => {
     const res = await putApi.updateDirectoryData(id, body);
     if (res) {
+      // 검색된 디렉토리의 경우
+      if (isSearched)
+        searchedMutate(
+          async (dirList) =>
+            changeDataOfSpecificDirInDirList(dirList || [], res),
+          false,
+        );
+      // 고정 디렉토리의 경우
       if (isPinned)
         setPinnedDirData(
           changeSequenceOfSpecificDirInDirList(pinnedDirData, res),
         );
-      else if (isSearched)
-        searchedMutate(async (dirList) =>
-          changeDataOfSpecificDirInDirList(dirList || [], res),
-        );
+      // 비고정 디렉토리의 경우
       else
         setUnpinnedDirData(
           changeSequenceOfSpecificDirInDirList(unpinnedDirData, res),
         );
+
       setIsToastMsgVisible({
         ...isToastMsgVisible,
         dirEdit: true,
@@ -191,16 +206,23 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   ) => {
     const res = await putApi.updateDirectoryPin(dirId, !isPinned);
     if (res) {
+      // 검색된 디렉토리의 경우
+      if (isSearched) {
+        searchedMutate(
+          async (dirList) =>
+            changeDataOfSpecificDirInDirList(dirList || [], res),
+          false,
+        );
+      }
+      // 디렉토리 핀 해제 시
       if (!isPinned) {
         setPinnedDirData(
           changeSequenceOfSpecificDirInDirList(pinnedDirData, res),
         );
         setUnpinnedDirData(filterSpecificDirInDirList(unpinnedDirData, dirId));
-      } else if (isSearched) {
-        searchedMutate(async (dirList) =>
-          changeDataOfSpecificDirInDirList(dirList || [], res),
-        );
-      } else {
+      }
+      // 디렉토리 핀 설정 시
+      else {
         setPinnedDirData(filterSpecificDirInDirList(pinnedDirData, dirId));
         setUnpinnedDirData(
           changeSequenceOfSpecificDirInDirList(unpinnedDirData, res),
@@ -212,6 +234,10 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
       ...isToastMsgVisible,
       pinnedSizeOver: true,
     });
+  };
+
+  const refreshDir = async () => {
+    await dirMutate();
   };
 
   return {
@@ -226,6 +252,7 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
     deleteDir,
     updateDir,
     updateDirPin,
+    refreshDir,
   };
 };
 

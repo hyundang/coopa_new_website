@@ -324,6 +324,12 @@ const CookieModule = ({
     setIsUpdateLoading(true);
     const res = await delApi.delCookieData(cookieId);
     if (res) {
+      // 검색된 쿠키의 경우
+      if (isSearched)
+        searchedMutate((cookieList) => {
+          return filterSpecificCookieInCookieList(cookieList || [], cookieId);
+        }, false);
+      // 고정 쿠키의 경우
       if (isPinned)
         pinnedMutate(
           (cookieList) =>
@@ -333,10 +339,7 @@ const CookieModule = ({
             ),
           false,
         );
-      else if (isSearched)
-        searchedMutate((cookieList) => {
-          return filterSpecificCookieInCookieList(cookieList || [], cookieId);
-        }, false);
+      // 비고정 쿠키의 경우
       else {
         unpinnedMutate(
           (outerCookieList) =>
@@ -344,6 +347,7 @@ const CookieModule = ({
           false,
         );
       }
+
       setIsToastMsgVisible({
         ...isToastMsgVisible,
         cookieDel: true,
@@ -351,6 +355,7 @@ const CookieModule = ({
       setIsUpdateLoading(false);
       return;
     }
+    setIsUpdateLoading(false);
     alert("쿠키 삭제 실패");
   };
 
@@ -382,7 +387,16 @@ const CookieModule = ({
     const formData = convertDataToFormData(updatedData);
     const res = await putApi.updateCookie(formData);
     if (res) {
-      if (isPinned)
+      // 검색된 쿠키의 경우
+      if (isSearched)
+        searchedMutate((cookieList) => {
+          return cookieList?.map((cookie) => {
+            if (cookie.id === res.id) return res;
+            return cookie;
+          });
+        }, false);
+      // 고정 쿠키의 경우
+      if (isPinned) {
         pinnedMutate(
           (cookieList) =>
             changeSequenceOfSpecificCookieInCookieList(
@@ -391,13 +405,8 @@ const CookieModule = ({
             ),
           false,
         );
-      else if (isSearched)
-        searchedMutate((cookieList) => {
-          return cookieList?.map((cookie) => {
-            if (cookie.id === res.id) return res;
-            return cookie;
-          });
-        }, false);
+      }
+      // 비고정 쿠키의 경우
       else if (cookieFilter !== "oldest")
         unpinnedMutate(
           (outerCookieList) =>
@@ -426,6 +435,14 @@ const CookieModule = ({
     setIsUpdateLoading(true);
     const res = await postApi.postCookieToDir(body);
     if (res) {
+      // 검색한 쿠키의 경우
+      if (isSearched)
+        searchedMutate(
+          (cookieList) =>
+            changeDataOfSpecificCookieInCookieList(cookieList || [], res),
+          false,
+        );
+      // 고정 쿠키의 경우
       if (isPinned)
         pinnedMutate(
           (cookieList) =>
@@ -435,12 +452,7 @@ const CookieModule = ({
             ),
           true,
         );
-      else if (isSearched)
-        searchedMutate(
-          (cookieList) =>
-            changeDataOfSpecificCookieInCookieList(cookieList || [], res),
-          false,
-        );
+      // 비고정 쿠키의 경우
       else if (cookieFilter !== "oldest")
         unpinnedMutate(
           (outerCookieList) =>
@@ -448,9 +460,10 @@ const CookieModule = ({
           false,
         );
       else await unpinnedMutate();
-      setIsUpdateLoading(true);
+      setIsUpdateLoading(false);
       return res;
     }
+    setIsUpdateLoading(false);
     alert("디렉토리 변경 실패");
   };
 
@@ -462,6 +475,12 @@ const CookieModule = ({
   ) => {
     const res = await postApi.postCookieReadCount(cookieId);
     if (res) {
+      if (isSearched)
+        searchedMutate(
+          (cookieList) =>
+            changeDataOfSpecificCookieInCookieList(cookieList || [], res),
+          false,
+        );
       if (isPinned)
         pinnedMutate(
           (cookieList) =>
@@ -470,12 +489,6 @@ const CookieModule = ({
               res,
             ),
           true,
-        );
-      else if (isSearched)
-        searchedMutate(
-          (cookieList) =>
-            changeDataOfSpecificCookieInCookieList(cookieList || [], res),
-          false,
         );
       else
         unpinnedMutate(
@@ -497,6 +510,16 @@ const CookieModule = ({
     setIsUpdateLoading(true);
     const res = await putApi.updateCookiePin(cookieId, !isPinned);
     if (res) {
+      // 검색한 쿠키의 경우
+      if (isSearched) {
+        searchedMutate((cookieList) => {
+          return cookieList?.map((cookie) => {
+            if (cookie.id === cookieId) return res;
+            return cookie;
+          });
+        }, false);
+      }
+      // 핀 해제 시
       if (!isPinned) {
         if (cookieFilter === "latest" || cookieFilter === "oldest") {
           pinnedMutate((cookieList) => {
@@ -511,14 +534,9 @@ const CookieModule = ({
         unpinnedMutate((outerCookieList) => {
           return filterSpecificUnpinnedCookie(outerCookieList, cookieId);
         }, false);
-      } else if (isSearched) {
-        searchedMutate((cookieList) => {
-          return cookieList?.map((cookie) => {
-            if (cookie.id === cookieId) return res;
-            return cookie;
-          });
-        });
-      } else {
+      }
+      // 핀 설정 시
+      else {
         pinnedMutate((cookieList) => {
           const filteredCookieList = filterSpecificCookieInCookieList(
             cookieList || initAllPinnedCookieData,
@@ -541,6 +559,7 @@ const CookieModule = ({
       ...isToastMsgVisible,
       pinnedSizeOver: true,
     });
+    setIsUpdateLoading(false);
     return false;
   };
 
