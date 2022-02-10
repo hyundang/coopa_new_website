@@ -92,4 +92,5 @@ export const mockDirModule: ReturnType<typeof DirModule> = {
   deleteDir: async () => {},
   updateDir: async () => {},
   updateDirPin: async () => {},
+  refreshDir: async () => {},
 };
