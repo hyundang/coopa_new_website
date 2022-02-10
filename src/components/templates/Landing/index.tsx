@@ -3,6 +3,7 @@ import LandingTwo from "./LandingTwo";
 import LandingThree from "./LandingThree";
 import LandingFour from "./LandingFour";
 import LandingFive from "./LandingFive";
+import { Footer } from "@components/organisms";
 
 export default function Landing() {
   return (
@@ -12,6 +13,7 @@ export default function Landing() {
       <LandingThree />
       <LandingFour />
       <LandingFive />
+      <Footer />
     </>
   );
 }
