@@ -47,6 +47,7 @@ export interface CookiesProps extends HTMLAttributes<HTMLDivElement> {
   setIsOnboardOpen?: Dispatch<SetStateAction<boolean>>;
   /** add dir */
   createDir?: (body: CreateDirProps) => Promise<number>;
+  refreshDir?: () => Promise<void>;
 }
 
 const Cookies = ({
@@ -61,6 +62,7 @@ const Cookies = ({
   pinnedDir,
   setIsOnboardOpen,
   createDir,
+  refreshDir,
 }: CookiesProps) => {
   const size = useWindowSize();
 
@@ -172,6 +174,7 @@ const Cookies = ({
                       unpinnedDir={unpinnedDir}
                       pinnedDir={pinnedDir}
                       createDir={createDir}
+                      refreshDir={refreshDir}
                     />
                   ))}
                   {unpinnedCookieList.map((cookie, idx) => (
@@ -197,6 +200,7 @@ const Cookies = ({
                               e !== null && setTarget(e)
                           : undefined
                       }
+                      refreshDir={refreshDir}
                     />
                   ))}
                 </>

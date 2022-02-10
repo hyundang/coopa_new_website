@@ -39,7 +39,11 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
   );
 
   // // 모든 디렉토리 데이터 get
-  const { data: allDirData, error } = useSWR(
+  const {
+    data: allDirData,
+    error,
+    mutate: dirMutate,
+  } = useSWR(
     () => `/directories?filter=${returnDirFilter(dirFilter)}`,
     getApi.getAllDirData,
     {
@@ -232,6 +236,10 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
     });
   };
 
+  const refreshDir = async () => {
+    await dirMutate();
+  };
+
   return {
     isLoading: !pinnedDirData && !unpinnedDirData && !error,
     isError: error,
@@ -244,6 +252,7 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
     deleteDir,
     updateDir,
     updateDirPin,
+    refreshDir,
   };
 };
 
