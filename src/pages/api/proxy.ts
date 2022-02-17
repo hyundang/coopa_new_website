@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
+// @ts-ignore
 function isTypeOfUrlString(url: any): url is string {
   return true;
 }
