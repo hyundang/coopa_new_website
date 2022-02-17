@@ -61,7 +61,7 @@ const returnHTML = async (url: string): Promise<string | undefined> => {
 const getHTML = async (url: string): Promise<string | undefined> => {
   try {
     const response = await axios.request({
-      url,
+      url: `/api/proxy?url=${encodeURIComponent(url)}`,
       method: "GET",
       responseType: "arraybuffer",
       responseEncoding: "binary",
