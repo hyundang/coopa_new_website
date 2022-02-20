@@ -1,0 +1,11 @@
+export { default as Landing1Duribun1 } from "./img_landing1_duribun_1.svg";
+export { default as Landing1Duribun2 } from "./img_landing1_duribun_2.svg";
+export { default as Landing1Duribun3 } from "./img_landing1_duribun_3.svg";
+export { default as Landing2Duribun } from "./img_landing2_duribun.svg";
+export { default as Landing2Gif } from "./img_landing2_gif.gif";
+export { default as Landing3Duribun } from "./img_landing3_duribun.svg";
+export { default as Landing3Gif } from "./img_landing3_gif.gif";
+export { default as Landing4Duribun } from "./img_landing4_duribun.svg";
+export { default as Landing4Gif } from "./img_landing4_gif.gif";
+export { default as Landing5Mac } from "./img_landing5_mac.svg";
+export { default as ChromeStoreImg } from "./img_chromestore.svg";

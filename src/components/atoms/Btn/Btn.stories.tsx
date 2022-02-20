@@ -1,28 +1,18 @@
-import Btn from "./Btn";
-// assets
-import { ReactComponent as Clip } from "@assets/icons/btn/clip_orange.svg";
-import cookie from "@assets/icons/common/cookie_white.svg";
+import { LinkIcon, CookieIcon } from "@assets/icons/common";
+
 import styled from "styled-components";
 import { useState } from "react";
-
-// type IconType = keyof typeof icons;
-// export const iconTypes: IconType[] = Object.keys(icons) as any[];
+import Btn from ".";
 
 export default {
-  title: "components | Btn",
+  title: "components/atoms/Btn",
   component: Btn,
 };
 
 export const btn = () => {
   return (
     <Btn
-      pcStyle={{
-        width: "70px",
-        height: "48px",
-        borderRadius: "24px",
-        fontSize: "16px",
-      }}
-      mobileStyle={{
+      style={{
         width: "70px",
         height: "48px",
         borderRadius: "24px",
@@ -41,19 +31,11 @@ btn.story = {
 };
 
 export const iconBtn = () => {
-  const [isHover, setIsHover] = useState(false);
-
   return (
     <Btn
-      pcStyle={{
+      style={{
         width: "191px",
         height: "50px",
-        borderRadius: "24px",
-        fontSize: "16px",
-      }}
-      mobileStyle={{
-        width: "70px",
-        height: "48px",
         borderRadius: "24px",
         fontSize: "16px",
       }}
@@ -67,9 +49,7 @@ export const iconBtn = () => {
           justifyContent: "center",
         }}
       >
-        <img
-          src={cookie}
-          alt="cookie_icon"
+        <CookieIcon
           style={{ width: "18px", height: "18px", marginRight: "5px" }}
         />
         <span>로그인하기</span>
@@ -83,15 +63,9 @@ export const dirShareBtn = () => {
 
   return (
     <Btn
-      pcStyle={{
+      style={{
         width: "191px",
         height: "50px",
-        borderRadius: "24px",
-        fontSize: "16px",
-      }}
-      mobileStyle={{
-        width: "70px",
-        height: "48px",
         borderRadius: "24px",
         fontSize: "16px",
       }}
@@ -101,7 +75,7 @@ export const dirShareBtn = () => {
       setIsHover={setIsHover}
     >
       <Wrap isHover={isHover}>
-        <Clip
+        <LinkIcon
           style={{
             width: "19px",
             height: "19px",
@@ -126,10 +100,7 @@ const Wrap = styled.div<IWrap>`
   .icon {
     path {
       transition: 0.2s;
-      fill: ${(props) =>
-        props.isHover
-          ? ({ theme }) => theme.colors.white
-          : ({ theme }) => theme.colors.orange};
+      fill: ${(props) => (props.isHover ? "var(--white)" : "var(--orange)")};
     }
   }
 `;

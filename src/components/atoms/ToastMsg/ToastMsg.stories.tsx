@@ -1,8 +1,8 @@
 import { useState } from "react";
-import ToastMsg from "./ToastMsg";
+import ToastMsg from ".";
 
 export default {
-  title: "components | ToastMsg",
+  title: "components/atoms/ToastMsg",
   component: ToastMsg,
 };
 
