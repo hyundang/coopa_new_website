@@ -20,10 +20,8 @@ const postUserData = async (
         data: { jwt },
       },
     } = await axios.post(`/auth/google`, body, { baseURL: API_DOMAIN });
-    console.log("[SUCCESS] POST USER DATA", jwt);
     return jwt;
   } catch (e) {
-    console.log("[FAIL] POST USER DATA", e);
     return undefined;
   }
 };
@@ -35,10 +33,8 @@ const postBookmarkData = async (
     const {
       data: { data },
     } = await client.post(`/users/favorites`, body);
-    console.log("[SUCCESS] POST BOOKMARK DATA", data);
     return data;
   } catch (e) {
-    console.log("[FAIL] POST BOOKMARK DATA", e);
     return undefined;
   }
 };
@@ -50,10 +46,8 @@ const postShareToken = async (
     const {
       data: { data },
     } = await client.post(`/share`, { directoryId });
-    console.log("[SUCCESS] POST SHARE TOKEN", data);
     return data;
   } catch (e) {
-    console.log("[FAIL] POST SHARE TOKEN", e);
     return undefined;
   }
 };
@@ -65,10 +59,8 @@ const postDirectoryData = async (
     const {
       data: { data },
     } = await client.post(`/directories`, body);
-    console.log("[SUCCESS] POST DIRECTORY DATA", data);
     return data;
   } catch (e) {
-    console.log("[FAIL] POST DIRECTORY DATA", e);
     return undefined;
   }
 };
@@ -80,10 +72,9 @@ const postCookieToDir = async (
     const {
       data: { data },
     } = await client.post(`/directories/add/cookie`, body);
-    console.log("[SUCCESS] POST ADD COOKIE DATA", data);
     return data;
   } catch (e) {
-    console.log("[FAIL] POST ADD COOKIE DATA", e);
+    return undefined;
   }
 };
 
@@ -92,10 +83,9 @@ const postCookieReadCount = async (
 ): Promise<CreateReadCntResProps | undefined> => {
   try {
     const { data } = await client.post(`/cookies/${id}/read`);
-    console.log("[SUCCESS] POST ADD COOKIE COUNT", data);
     return data;
   } catch (e) {
-    console.log("[FAIL] POST ADD COOKIE COUNT", e);
+    return undefined;
   }
 };
 
@@ -104,10 +94,9 @@ const postCookie = async (
 ): Promise<CookieDataProps | undefined> => {
   try {
     const { data } = await client.post(`/cookies`, body);
-    console.log("[SUCCESS] POST ADD COOKIE", data);
     return data.data;
   } catch (e) {
-    console.log("[FAIL] POST ADD COOKIE", e);
+    return undefined;
   }
 };
 

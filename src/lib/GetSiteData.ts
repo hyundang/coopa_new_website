@@ -70,7 +70,7 @@ const getHTML = async (url: string): Promise<string | undefined> => {
     const decoded = await convertUTF8(response.data);
     return decoded;
   } catch (error) {
-    console.log("[GET HTML] ERROR: ", error);
+    alert("사이트 가져오기 실패!");
   }
 };
 
