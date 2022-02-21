@@ -519,7 +519,7 @@ const CookieModule = ({
           });
         }, false);
       }
-      // 핀 해제 시
+      // 핀 고정 시
       if (!isPinned) {
         if (cookieFilter === "latest" || cookieFilter === "oldest") {
           pinnedMutate((cookieList) => {
@@ -535,7 +535,7 @@ const CookieModule = ({
           return filterSpecificUnpinnedCookie(outerCookieList, cookieId);
         }, false);
       }
-      // 핀 설정 시
+      // 핀 해제 시
       else {
         pinnedMutate((cookieList) => {
           const filteredCookieList = filterSpecificCookieInCookieList(
