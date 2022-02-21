@@ -77,9 +77,13 @@ const CookieEditModal = ({
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+    isInput: boolean,
   ) => {
     if (e.key === "Escape") {
       setIsOpen(false);
+    }
+    if (e.key === "Enter" && isInput) {
+      handleClickUpdateBtn();
     }
   };
 
@@ -125,7 +129,7 @@ const CookieEditModal = ({
               })
             : () => {}
         }
-        onKeyDown={handleKeyDown}
+        onKeyDown={(e) => handleKeyDown(e, true)}
       />
       <TextAreaForm
         className="input-text"
@@ -142,7 +146,7 @@ const CookieEditModal = ({
               })
             : () => {}
         }
-        onKeyDown={handleKeyDown}
+        onKeyDown={(e) => handleKeyDown(e, false)}
       />
       <div style={{ flexGrow: 1, width: "100%" }} />
       <div className="button-wrap">
