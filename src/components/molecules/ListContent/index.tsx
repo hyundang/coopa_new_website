@@ -28,13 +28,13 @@ const ListContent = ({
   const [inputText, setInputText] = useState("");
   const [searchedDir, setSearchedDir] = useState<DirDataProps[]>([]);
   const [isBlur, setIsBlur] = useState(true);
-  const [isInputError, setIsInputError] = useState(false);
+  const [isExist, setIsExist] = useState(false);
 
   const findDirInDirListAndSetSearchedDirList = () => {
     unpinnedDir.find((dir) => dir.name === inputText) ||
     pinnedDir.find((dir) => dir.name === inputText)
-      ? setIsInputError(true)
-      : setIsInputError(false);
+      ? setIsExist(true)
+      : setIsExist(false);
     setSearchedDir(
       inputText === ""
         ? []
@@ -72,26 +72,22 @@ const ListContent = ({
             placeholder="검색 혹은 새 디랙토리 생성"
             maxLength={13}
             value={inputText}
-            isInputError={isInputError}
             onFocus={() => setCardState("input")}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setInputText(e.target.value)
             }
             onKeyPress={(e) => (e.key === "Enter" ? setCurrDir(inputText) : {})}
-            onBlur={(e) =>
+            onBlurCapture={(e) =>
               e.target.className !== "form" && setCardState("normal")
             }
           />
-          {isInputError && (
-            <div className="alert">동일한 이름의 디렉토리가 있습니다</div>
-          )}
         </InputWrapper>
         <Btn
           className="directory-form__button"
           onClick={() => setCurrDir(inputText)}
           isOrange
           isCookieDirBtn
-          isAtvBtn={!!inputText.length}
+          isAtvBtn={!!inputText.length && !isExist}
         >
           만들기
         </Btn>
@@ -136,11 +132,7 @@ const Wrap = styled.div<ListContentWrapProps>`
   }
 `;
 
-type CookieInputProps = {
-  isInputError?: boolean;
-};
-
-const CookieInput = styled(Input)<CookieInputProps>`
+const CookieInput = styled(Input)`
   width: 170px;
   height: 40px;
   border-radius: 8px;
@@ -154,27 +146,8 @@ const CookieInput = styled(Input)<CookieInputProps>`
     font-size: 12px;
     line-height: 11px;
   `};
-  ${({ isInputError }) =>
-    isInputError &&
-    `
-        border-color:#FF2E00;
-        box-shadow: 0px 0px 5px rgba(255, 0, 0, 0.35);
-    `};
 `;
 
 const InputWrapper = styled.div`
   position: relative;
-  & > .alert {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: -42px;
-    width: 100%;
-    padding: 10px 0;
-    border-radius: 10px;
-    color: #ff2e00;
-    background-color: var(--orange_sub);
-    box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.12);
-  }
 `;

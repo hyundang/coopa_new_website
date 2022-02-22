@@ -68,7 +68,7 @@ const CookieImg = ({
       className={className}
       cookieContent={cookieData?.content}
       url={cookieData?.thumbnail}
-      isHover={cardState === "hover"}
+      isHover={cardState === "hover" || cardState === "input"}
     >
       {cardState === "hover" && (
         <HoverDiv>

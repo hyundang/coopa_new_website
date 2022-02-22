@@ -104,7 +104,7 @@ const DirectoryModal = ({
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       onClick={() => setIsPickerOpen(false)}
-      isEmojiExist={value.emoji !== ""}
+      isEmojiExist={!!value.emoji}
     >
       <h1 className="modal-title">
         디렉토리 {type === "new" ? "생성" : "수정"}
@@ -119,7 +119,7 @@ const DirectoryModal = ({
             setIsPickerOpen(true);
           }}
         >
-          {value.emoji !== "" ? (
+          {value.emoji ? (
             <>
               <span className="emoji-hover">
                 <PlusIcon className="emoji-hover__icon" />
