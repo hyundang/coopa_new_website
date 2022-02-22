@@ -338,7 +338,7 @@ const CookieContent = styled.section`
 
 const StyledPinImg = styled(PinImg)`
   position: absolute;
-  z-index: 2;
+  z-index: 6;
   transform: translate(24px, -5px);
   background-color: transparent;
   -webkit-filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.1));
