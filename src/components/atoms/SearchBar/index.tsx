@@ -40,19 +40,14 @@ export default function SearchBar({
     setIsSearchBarVisible(false);
   };
 
-  // 키 클릭 시
   // esc = 검색창 닫기
+  // ctrl + shift + s = 검색창 열기
   const handleKeyDown = async (e: any) => {
     if (e.key === "Escape" && isSearchBarVisible) {
       setPreventFadeout(false);
       setIsSearchBarVisible(false);
     }
-  };
-
-  // 키 떼어냈을 때
-  // shift + s = 검색창 열기
-  const handleKeyUp = (e: any) => {
-    if (e.key === "S" && e.shiftKey && !isSearchBarVisible) {
+    if (e.key === "S" && e.shiftKey && e.ctrlKey && !isSearchBarVisible) {
       setIsSearchBarVisible(true);
       setSearchValue("");
       setIsSearched(false);
@@ -63,10 +58,8 @@ export default function SearchBar({
   useEffect(() => {
     isSearchBarVisible && search_input.current?.focus();
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
     };
   }, [isSearchBarVisible]);
 

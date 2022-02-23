@@ -34,7 +34,7 @@ export interface FilterModalProps {
     e: "latest" | "oldest" | "readMost" | "readLeast" | "abc",
   ) => void;
 }
-const NotiModal = ({
+const FilterModal = ({
   id,
   className,
   isOpen,
@@ -83,7 +83,7 @@ const NotiModal = ({
   );
 };
 
-export default NotiModal;
+export default FilterModal;
 
 const FilterModalWrap = styled(MoveModal)`
   position: fixed;

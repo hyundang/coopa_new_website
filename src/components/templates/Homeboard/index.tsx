@@ -56,26 +56,11 @@ const Homeboard = ({
   const windowSize = useWindowSize();
   const settingIconLocation = useRef<HTMLButtonElement>(null);
 
-  // 키 떼어냈을 때
-  // shift + e = 홈보드 수정 모달 열기
-  const handleKeyUp = (e: any) => {
-    if (e.key === "E" && e.shiftKey) {
-      setIsOpen(true);
-    }
-  };
-
   // 홈보드 수정 모달 x좌표 찾기
   useEffect(() => {
     settingIconLocation.current &&
       setLocationX(settingIconLocation.current.getBoundingClientRect().x);
   }, [windowSize.width]);
-
-  useEffect(() => {
-    window.addEventListener("keyup", handleKeyUp);
-    return () => {
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, []);
 
   return (
     <HomeboardWrap
