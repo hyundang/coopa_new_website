@@ -57,25 +57,10 @@ const ListHeader = ({
   const windowSize = useWindowSize();
   const plusIconLocation = useRef<HTMLButtonElement>(null);
 
-  // 키 떼어냈을 때
-  const handleKeyUp = (e: any) => {
-    // shift + f = 필터 모달
-    if (e.key === "F" && e.shiftKey) {
-      setIsFilterOpen(true);
-    }
-  };
-
   useEffect(() => {
     plusIconLocation.current &&
       setLocationX(plusIconLocation.current.getBoundingClientRect().x);
   }, [windowSize.width]);
-
-  useEffect(() => {
-    window.addEventListener("keyup", handleKeyUp);
-    return () => {
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, []);
 
   return (
     <>

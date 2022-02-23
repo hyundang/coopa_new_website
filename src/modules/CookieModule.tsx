@@ -80,12 +80,9 @@ const CookieModule = ({
 
   const getPinnedCookieSwRKey = () => {
     // 뉴탭 쿠키
-    if (type === "newtab")
-      return `/cookies/pinned?filter=${returnCookieFilter(cookieFilter)}`;
+    if (type === "newtab") return `/cookies/pinned?filter=1`;
     // 디렉토리 상세 쿠키
-    return `/directories/${dirId}/pinned/cookies?filter=${returnCookieFilter(
-      cookieFilter,
-    )}`;
+    return `/directories/${dirId}/pinned/cookies?filter=1`;
   };
   // 고정 쿠키 데이터 get
   const {
@@ -397,14 +394,17 @@ const CookieModule = ({
         }, false);
       // 고정 쿠키의 경우
       if (isPinned) {
-        pinnedMutate(
-          (cookieList) =>
-            changeSequenceOfSpecificCookieInCookieList(
-              cookieList || initAllPinnedCookieData,
-              res,
-            ),
-          false,
-        );
+        pinnedMutate((cookieList) => {
+          if (cookieList)
+            return cookieList.map((cookie) => {
+              if (cookie.id === res.id) return res;
+              return cookie;
+            });
+          return initAllPinnedCookieData.map((cookie) => {
+            if (cookie.id === res.id) return res;
+            return cookie;
+          });
+        }, false);
       }
       // 비고정 쿠키의 경우
       else if (cookieFilter !== "oldest")
@@ -519,7 +519,7 @@ const CookieModule = ({
           });
         }, false);
       }
-      // 핀 해제 시
+      // 핀 고정 시
       if (!isPinned) {
         if (cookieFilter === "latest" || cookieFilter === "oldest") {
           pinnedMutate((cookieList) => {
@@ -535,7 +535,7 @@ const CookieModule = ({
           return filterSpecificUnpinnedCookie(outerCookieList, cookieId);
         }, false);
       }
-      // 핀 설정 시
+      // 핀 해제 시
       else {
         pinnedMutate((cookieList) => {
           const filteredCookieList = filterSpecificCookieInCookieList(

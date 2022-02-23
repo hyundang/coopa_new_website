@@ -87,6 +87,20 @@ const DirectoryModal = ({
       : name_input.current?.focus();
   };
 
+  const handleKeyUp = (e: any) => {
+    // ctrl + shift + v = 쿠키/디렉토리 생성 모달
+    if (e.key === "V" && e.shiftKey && e.ctrlKey) {
+      type === "new" && setIsOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
   // 제일 처음에 link input focus 상태로 설정
   useEffect(() => {
     isOpen &&

@@ -180,9 +180,7 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
         );
       // 고정 디렉토리의 경우
       if (isPinned)
-        setPinnedDirData(
-          changeSequenceOfSpecificDirInDirList(pinnedDirData, res),
-        );
+        setPinnedDirData(changeDataOfSpecificDirInDirList(pinnedDirData, res));
       // 비고정 디렉토리의 경우
       else
         setUnpinnedDirData(
@@ -214,14 +212,15 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
           false,
         );
       }
-      // 디렉토리 핀 해제 시
-      if (!isPinned) {
-        setPinnedDirData(
-          changeSequenceOfSpecificDirInDirList(pinnedDirData, res),
-        );
+      if (dirFilter === "abc") {
+        dirMutate();
+      }
+      // 디렉토리 핀 고정 시
+      else if (!isPinned) {
+        setPinnedDirData([res, ...pinnedDirData]);
         setUnpinnedDirData(filterSpecificDirInDirList(unpinnedDirData, dirId));
       }
-      // 디렉토리 핀 설정 시
+      // 디렉토리 핀 해제 시
       else {
         setPinnedDirData(filterSpecificDirInDirList(pinnedDirData, dirId));
         setUnpinnedDirData(

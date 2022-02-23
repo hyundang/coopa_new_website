@@ -89,6 +89,15 @@ const Cookie = (
       cookieId: cookieData?.id || -1,
     });
 
+  const handleClickCookieCard = () => {
+    window.open(cookieData.link);
+    cookieModule.updateCookieReadCnt(
+      cookieData.id || -1,
+      cookieData.isPinned || false,
+      type === "searched",
+    );
+  };
+
   const findDirId = (): number => {
     let selectedDir = pinnedDir.filter((dir) => dir.name === currDir);
     if (selectedDir.length > 0) return selectedDir[0].id;
@@ -150,14 +159,7 @@ const Cookie = (
       <CookieWrap
         id={id}
         className={className}
-        onClick={() => {
-          window.open(cookieData.link);
-          cookieModule.updateCookieReadCnt(
-            cookieData.id || -1,
-            cookieData.isPinned || false,
-            type === "searched",
-          );
-        }}
+        onClick={handleClickCookieCard}
         onMouseEnter={() => {
           if (cardState === "normal" && !isLoading) setCardState("hover");
         }}

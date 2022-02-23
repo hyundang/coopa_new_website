@@ -34,10 +34,9 @@ const Bookmark = ({
   const handleClickCreateBtn = (link: string) =>
     onClickCreateBtn && onClickCreateBtn({ name: newBookmark.name, link });
 
-  // 키 떼어냈을 때
   const handleKeyUp = (e: any) => {
-    // shift + b = 북마크 추가 모달
-    if (e.key === "B" && e.shiftKey) {
+    // ctrl + shift + f = 북마크 추가 모달
+    if (e.key === "F" && e.shiftKey && e.ctrlKey) {
       setIsCreateModalOpen(true);
     }
   };

@@ -83,14 +83,14 @@ const Newtab = ({
 
   // 키 떼어냈을 때
   const handleKeyUp = (e: any) => {
-    // shift + c = 모든 쿠키 탭
-    if (e.key === "C" && e.shiftKey) {
+    // ctrl + shift + z = 모든 쿠키 탭
+    if (e.key === "Z" && e.shiftKey && e.ctrlKey) {
       isSearched && isSearchVisible
         ? setTabValue("쿠키")
         : setTabValue("모든 쿠키");
     }
-    // shift + d = 디렉토리 탭
-    if (e.key === "D" && e.shiftKey) {
+    // ctrl + shift + x = 디렉토리 탭
+    if (e.key === "X" && e.shiftKey && e.ctrlKey) {
       setTabValue("디렉토리");
     }
   };

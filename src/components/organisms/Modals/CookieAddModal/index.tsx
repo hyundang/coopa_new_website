@@ -68,6 +68,20 @@ const CookieAddModal = ({
     isOpen && initializeModal();
   }, [isOpen]);
 
+  const handleKeyUp = (e: any) => {
+    // ctrl + shift + v = 쿠키 생성 모달
+    if (e.key === "V" && e.shiftKey && e.ctrlKey) {
+      setIsOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
   return (
     <CookieAddModalWrap
       id={id}
@@ -120,7 +134,7 @@ const CookieAddModalWrap = styled(MoveModal)<CookieAddModalWrapProps>`
   position: absolute;
   top: ${({ type }) => (type === "cookie" ? 412 : 287)}px;
   left: ${({ locationX }) => locationX}px;
-  z-index: 3;
+  z-index: 7;
 
   width: 484px;
   height: 197px;

@@ -9,7 +9,7 @@ import { UserDataProps } from "@interfaces/user";
 // libs
 import nextCookie from "next-cookies";
 import { GetServerSideProps } from "next";
-import { returnCookieFilter } from "@lib/filter";
+import { returnCookieFilter, returnDirFilter } from "@lib/filter";
 import Head from "next/head";
 import { setToken } from "@lib/TokenManager";
 // modules
@@ -116,6 +116,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const userToken = allCookies["x-access-token"];
   const queryID = ctx.query.id;
   const { cookieFilter } = allCookies;
+  const { dirFilter } = allCookies;
 
   // 로그인 되어 있을 때
   if (userToken) {
@@ -137,7 +138,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         `/directories/${queryID}/info`,
       );
       // 디렉토리 데이터
-      const initAllDirData = await getApi.getAllDirData("/directories");
+      const initAllDirData = await getApi.getAllDirData(
+        `/directories?filter=${returnDirFilter(dirFilter)}`,
+      );
 
       return {
         props: {

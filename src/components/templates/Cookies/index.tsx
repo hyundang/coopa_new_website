@@ -168,7 +168,14 @@ const Cookies = ({
                     <Cookie
                       key={cookie.id}
                       type={type}
-                      cookieData={cookie}
+                      cookieData={
+                        dirInfo
+                          ? {
+                              ...cookie,
+                              directoryInfo: dirInfo,
+                            }
+                          : cookie
+                      }
                       cookieModule={cookieModule}
                       isLoading={isLoading}
                       unpinnedDir={unpinnedDir}
