@@ -6,6 +6,7 @@ import React, {
   SetStateAction,
   useEffect,
   useState,
+  useRef,
 } from "react";
 import styled from "styled-components";
 
@@ -29,6 +30,7 @@ const ListContent = ({
   const [searchedDir, setSearchedDir] = useState<DirDataProps[]>([]);
   const [isBlur, setIsBlur] = useState(true);
   const [isExist, setIsExist] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   const findDirInDirListAndSetSearchedDirList = () => {
     unpinnedDir.find((dir) => dir.name === inputText) ||
@@ -54,8 +56,23 @@ const ListContent = ({
     findDirInDirListAndSetSearchedDirList();
   }, [inputText]);
 
+  useEffect(() => {
+    const listener = (event: Event) => {
+      const el = ref?.current;
+      const isClickOutside =
+        el && !el.contains((event?.target as Node) || null);
+      if (isClickOutside) {
+        setCardState("normal");
+      }
+    };
+    setTimeout(() => document.addEventListener("click", listener), 100);
+    return () => {
+      document.removeEventListener("click", listener);
+    };
+  }, []);
+
   return (
-    <Wrap className={className} isBlur={isBlur}>
+    <Wrap className={className} isBlur={isBlur} ref={ref}>
       <List
         className="directory-list"
         isSearching={!!inputText}
@@ -77,9 +94,6 @@ const ListContent = ({
               setInputText(e.target.value)
             }
             onKeyPress={(e) => (e.key === "Enter" ? setCurrDir(inputText) : {})}
-            onBlurCapture={(e) =>
-              e.target.className !== "form" && setCardState("normal")
-            }
           />
         </InputWrapper>
         <Btn
