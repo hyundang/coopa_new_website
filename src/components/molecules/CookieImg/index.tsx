@@ -160,7 +160,7 @@ const ParkingDiv = styled.div`
   justify-content: center;
   border-radius: 12px;
   position: absolute;
-  z-index: 5;
+  z-index: 3;
   background: rgba(0, 0, 0, 0.55);
   width: 100%;
   height: 100%;

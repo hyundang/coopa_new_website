@@ -58,7 +58,7 @@ const ImgBoxForm = (
           </div>
         ) : (
           <label className="img-box__wrap" htmlFor="img_input">
-            <PlusIcon className="plus-icon" />
+            {isHover && <PlusIcon className="plus-icon" />}
             <input
               type="file"
               id="img_input"
