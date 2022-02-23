@@ -57,19 +57,17 @@ const ImgBoxForm = (
             <CookieIcon className="cookie-icon" />
           </div>
         ) : (
-          isHover && (
-            <label className="img-box__wrap" htmlFor="img_input">
-              <PlusIcon className="plus-icon" />
-              <input
-                type="file"
-                id="img_input"
-                accept="image/jpeg, image/jpg, image/png"
-                ref={ref}
-                onChange={onChangeImg}
-                style={{ width: "0", height: "0" }}
-              />
-            </label>
-          )
+          <label className="img-box__wrap" htmlFor="img_input">
+            <PlusIcon className="plus-icon" />
+            <input
+              type="file"
+              id="img_input"
+              accept="image/jpeg, image/jpg, image/png"
+              ref={ref}
+              onChange={onChangeImg}
+              style={{ width: "0", height: "0" }}
+            />
+          </label>
         )}
       </ImgBox>
       <span className="description">
