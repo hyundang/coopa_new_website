@@ -119,9 +119,11 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
         cookieCnt: 0,
         isPinned: false,
       };
-      setUnpinnedDirData(
-        changeSequenceOfSpecificDirInDirList(unpinnedDirData, newDir),
-      );
+      if (dirFilter === "abc") dirMutate();
+      else
+        setUnpinnedDirData(
+          changeSequenceOfSpecificDirInDirList(unpinnedDirData, newDir),
+        );
       setIsToastMsgVisible({
         ...isToastMsgVisible,
         dirCreate: true,
