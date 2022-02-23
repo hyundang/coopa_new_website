@@ -232,9 +232,6 @@ const CookieModule = ({
           };
         return {
           ...cookie,
-          title: cookieData.title,
-          content: cookieData.content,
-          thumbnail: cookieData.thumbnail,
           readCnt: cookieData.readCnt,
         };
       }
