@@ -26,7 +26,10 @@ function App({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/favicon.ico" />
         <link rel="shortcut icon" href="/favicon.ico" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1, shrink-to-fit=no"
+        />
         <meta name="theme-color" content="#000000" />
         <title>쿠키파킹 | 성장하는 사람들의 가장 간편한 콘텐츠 파킹랏</title>
         <meta
