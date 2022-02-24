@@ -5,8 +5,8 @@ const useWindowSize = () => {
 
   const getSize = () => {
     return {
-      width: isClient ? window.innerWidth || window.screen.width : undefined,
-      height: isClient ? window.innerHeight || window.screen.height : undefined,
+      width: isClient ? window.innerWidth : undefined,
+      height: isClient ? window.innerHeight : undefined,
     };
   };
 

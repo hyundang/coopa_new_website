@@ -26,25 +26,23 @@ const media: Media = {
   desktop_4: () => undefined,
 };
 
-Object.keys(sizes).reduce((acc: Media, label: string) => {
-  if (
-    label === "desktop_2" ||
-    label === "desktop_3" ||
-    label === "desktop_4" ||
-    label === "tablet" ||
-    label === "mobile"
-  ) {
-    acc[label] = (...args: BackQuoteArgs) => css`
-      @media only screen and (max-width: ${sizes[label]}px) {
-        ${args}
-      }
-    `;
-  }
-  return acc;
-}, media);
-
 const theme: DefaultTheme = {
-  media,
+  media: Object.keys(sizes).reduce((acc: Media, label: string) => {
+    if (
+      label === "desktop_2" ||
+      label === "desktop_3" ||
+      label === "desktop_4" ||
+      label === "tablet" ||
+      label === "mobile"
+    ) {
+      acc[label] = (...args) => css`
+        @media (max-width: ${sizes[label]}px) {
+          ${args};
+        }
+      `;
+    }
+    return acc;
+  }, media),
 };
 
 export { theme };
