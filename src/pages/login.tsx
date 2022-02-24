@@ -43,12 +43,14 @@ export default function LoginPage() {
             EXTENSION_ID,
             { isLogin: true, userToken: jwt },
             (res: any) => {
-              if (!res.success) console.log("fail");
+              if (!res?.success) {
+                alert("로그인 실패");
+                return;
+              }
+              document.location.href = `${DOMAIN}`;
             },
           );
         }
-
-        document.location.href = `${DOMAIN}`;
       } else {
         alert("로그인 실패");
       }

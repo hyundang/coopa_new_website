@@ -45,9 +45,6 @@ const Onboarding = ({ isOpen, setIsOpen }: OnboardingProps) => {
     setCurrentSlide(0);
   };
 
-  // useEffect(() => {
-  //   console.log(page1);
-  // }, []);
   return (
     <ModalWrap
       isOpen={isOpen}

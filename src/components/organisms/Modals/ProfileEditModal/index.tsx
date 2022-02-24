@@ -39,9 +39,13 @@ const ProfileEditModal = ({
   // esc 키 클릭 시
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+    isInput: boolean,
   ) => {
     if (e.key === "Escape") {
       setIsOpen(false);
+    }
+    if (e.key === "Enter" && isInput) {
+      handleClickEdit();
     }
   };
 
@@ -77,7 +81,7 @@ const ProfileEditModal = ({
               })
             : undefined
         }
-        onKeyDown={handleKeyDown}
+        onKeyDown={(e) => handleKeyDown(e, true)}
         onKeyPress={handleKeyPress}
         ref={nickname_input}
       />
@@ -96,7 +100,7 @@ const ProfileEditModal = ({
               })
             : undefined
         }
-        onKeyDown={handleKeyDown}
+        onKeyDown={(e) => handleKeyDown(e, false)}
       />
       <div style={{ flexGrow: 1, width: "100%" }} />
       <div className="button-wrap">
