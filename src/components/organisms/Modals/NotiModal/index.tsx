@@ -29,7 +29,8 @@ const NotiModal = ({
     >
       <NotiImg className="noti-img" role="img" />
       <span className="noti-text">
-        쿠키파킹이 <b className="noti-text--bold">업데이트</b> 되었어요 🎉
+        오랜만에 <b className="noti-text--bold">새로운 기능</b>이
+        출시되었어요!⭐
         {"\n더 보기를 눌러 자세히 살펴보세요!"}
       </span>
       <Btn
@@ -55,7 +56,7 @@ const NotiModalWrap = styled(MoveModal)<NotiModalWrapProps>`
   top: 56px;
   left: ${({ locationX }) => locationX}px;
 
-  width: 396px;
+  width: 432px;
   height: 104px;
   padding: 24px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.13);

@@ -143,7 +143,7 @@ const Header = ({
         <NotiModal
           isOpen={isNotiOpen}
           setIsOpen={setIsNotiOpen}
-          locationX={locationX - 335}
+          locationX={locationX - 371}
         />
         <Onboarding isOpen={isOnboardOpen} setIsOpen={setIsOnboardOpen} />
       </div>
