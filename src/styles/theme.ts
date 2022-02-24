@@ -37,7 +37,10 @@ const theme: DefaultTheme = {
     ) {
       acc[label] = (...args) => css`
         @media (max-width: ${sizes[label]}px) {
-          ${args};
+          ${
+            // @ts-ignore
+            css(...args)
+          }
         }
       `;
     }
