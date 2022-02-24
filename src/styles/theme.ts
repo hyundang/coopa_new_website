@@ -27,49 +27,18 @@ const media: Media = {
 };
 
 Object.keys(sizes).reduce((acc: Media, label: string) => {
-  switch (label) {
-    case "desktop_4":
-      acc.desktop_4 = (...args: BackQuoteArgs) =>
-        css`
-          @media only screen and (max-width: ${sizes.desktop_4}px) {
-            ${args}
-          }
-        `;
-      break;
-    case "desktop_3":
-      acc.desktop_3 = (...args: BackQuoteArgs) =>
-        css`
-          @media only screen and (max-width: ${sizes.desktop_3}px) {
-            ${args}
-          }
-        `;
-      break;
-    case "desktop_2":
-      acc.desktop_2 = (...args: BackQuoteArgs) =>
-        css`
-          @media only screen and (max-width: ${sizes.desktop_2}px) {
-            ${args}
-          }
-        `;
-      break;
-    case "tablet":
-      acc.tablet = (...args: BackQuoteArgs) =>
-        css`
-          @media only screen and (max-width: ${sizes.tablet}px) {
-            ${args}
-          }
-        `;
-      break;
-    case "mobile":
-      acc.mobile = (...args: BackQuoteArgs) =>
-        css`
-          @media only screen and (max-width: ${sizes.mobile}px) {
-            ${args}
-          }
-        `;
-      break;
-    default:
-      break;
+  if (
+    label === "desktop_2" ||
+    label === "desktop_3" ||
+    label === "desktop_4" ||
+    label === "tablet" ||
+    label === "mobile"
+  ) {
+    acc[label] = (...args: BackQuoteArgs) => css`
+      @media only screen and (max-width: ${sizes[label]}px) {
+        ${args}
+      }
+    `;
   }
   return acc;
 }, media);

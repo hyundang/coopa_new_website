@@ -1,27 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const useWindowSize = () => {
-  if (typeof window === "undefined") {
-    return { width: 1200, height: 800 };
-  }
+  const isClient = typeof window === "object";
 
-  const isSSR = typeof window === "undefined";
-  const [windowSize, setWindowSize] = useState({
-    width: isSSR ? 1200 : window.innerWidth || window.screen.width,
-    height: isSSR ? 800 : window.innerHeight || window.screen.height,
-  });
+  const getSize = () => {
+    return {
+      width: isClient ? window.innerWidth || window.screen.width : undefined,
+      height: isClient ? window.innerHeight || window.screen.height : undefined,
+    };
+  };
 
-  function changeWindowSize() {
-    setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-  }
+  const getSizeCallBack = useCallback(getSize, [isClient]);
+
+  const [windowSize, setWindowSize] = useState(getSizeCallBack);
 
   useEffect(() => {
-    window.addEventListener("resize", changeWindowSize);
+    if (!isClient) {
+      return;
+    }
 
+    function handleResize() {
+      setWindowSize(getSizeCallBack());
+    }
+
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener("resize", changeWindowSize);
+      window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [getSizeCallBack, isClient]);
 
   return windowSize;
 };
