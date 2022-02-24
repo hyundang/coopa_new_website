@@ -19,11 +19,11 @@ interface Media {
 }
 
 const media: Media = {
-  mobile: (...args: BackQuoteArgs) => undefined,
-  tablet: (...args: BackQuoteArgs) => undefined,
-  desktop_2: (...args: BackQuoteArgs) => undefined,
-  desktop_3: (...args: BackQuoteArgs) => undefined,
-  desktop_4: (...args: BackQuoteArgs) => undefined,
+  mobile: () => undefined,
+  tablet: () => undefined,
+  desktop_2: () => undefined,
+  desktop_3: () => undefined,
+  desktop_4: () => undefined,
 };
 
 Object.keys(sizes).reduce((acc: Media, label: string) => {
