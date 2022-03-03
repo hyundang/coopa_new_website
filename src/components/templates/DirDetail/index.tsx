@@ -22,6 +22,7 @@ import { ToastMsgState } from "@modules/states";
 import DirDetailModule from "@modules/DirDetailModule";
 import CookieModule from "@modules/CookieModule";
 import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
+import { ToastMsgs } from "..";
 
 export interface DirDetailProps {
   /** 공유 디렉토리 여부 */
@@ -74,17 +75,7 @@ const DirDetail = ({
   const [isCreateCookieModalOpen, setIsCreateCookieModalOpen] = useState(false);
 
   // toast msg visible handling
-  const handleToastMsgVisible = (
-    key:
-      | "dirEdit"
-      | "cookieDel"
-      | "cookieEdit"
-      | "imgSizeOver"
-      | "copyLink"
-      | "copyShareLink"
-      | "pinnedSizeOver",
-    value: boolean,
-  ) =>
+  const handleToastMsgVisible = (key: "copyShareLink", value: boolean) =>
     setIsToastMsgVisible({
       ...isToastMsgVisible,
       [key]: value,
@@ -209,46 +200,7 @@ const DirDetail = ({
       >
         👏 공유 링크를 복사했어요!
       </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.copyLink}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("copyLink", e)}
-      >
-        👏🏻 링크를 복사했어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.dirEdit}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("dirEdit", e)}
-      >
-        👀 디렉토리를 수정했어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.cookieDel}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("cookieDel", e)}
-      >
-        ❌ 쿠키를 삭제했어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.cookieEdit}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("cookieEdit", e)}
-      >
-        🍪 쿠키를 수정했어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.imgSizeOver}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("imgSizeOver", e)}
-        imgSizeOver
-      >
-        😥 더 작은 이미지를 올려주세요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.pinnedSizeOver}
-        setIsVisible={(e: boolean) =>
-          handleToastMsgVisible("pinnedSizeOver", e)
-        }
-        imgSizeOver
-      >
-        😥 최대 15개까지 고정 가능해요!
-      </ToastMsg>
+      <ToastMsgs />
       {!isShared && (
         <CopyToClipboard text={shareLink || ""}>
           <MobileShareBtn
