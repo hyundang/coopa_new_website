@@ -10,7 +10,9 @@ import { mypageAnimation } from "@components/animations";
 import { Btn, Bubble, Floating, Icon, ToastMsg } from "@components/atoms";
 import { Footer, Header, ProfileEditModal } from "@components/organisms";
 import { UpdateUserProps, UserDataProps } from "@interfaces/user";
+import { ToastMsgState } from "@modules/states";
 import { Dispatch, SetStateAction, useState } from "react";
+import { useRecoilState } from "recoil";
 import { useWindowSize } from "src/hooks";
 import styled, { css } from "styled-components";
 
@@ -39,10 +41,22 @@ const My = ({
   const size = useWindowSize();
   const [isTooltipHover, setIsTooltipHover] = useState(false);
   const [isLogoutHover, setIsLogoutHover] = useState(false);
-  // toast msg visible state
-  const [isVisible, setIsVisible] = useState(false);
   // 온보딩 모달 오픈
   const [isOnboardOpen, setIsOnboardOpen] = useState(false);
+
+  // tost msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
+
+  // toast msg visible handling
+  const handleToastMsgVisible = (
+    key: "profileEdit" | "profileEditError" | "networkError",
+    value: boolean,
+  ) =>
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      [key]: value,
+    });
 
   return (
     <Container>
@@ -205,8 +219,25 @@ const My = ({
         setValue={setProfileData}
         editProfile={editProfile}
       />
-      <ToastMsg isVisible={isVisible} setIsVisible={setIsVisible}>
+      <ToastMsg
+        isVisible={isToastMsgVisible.profileEdit}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("profileEdit", e)}
+      >
         👀 프로필을 수정했어요!
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.profileEditError}
+        setIsVisible={(e: boolean) =>
+          handleToastMsgVisible("profileEditError", e)
+        }
+      >
+        😯 프로필 수정에 실패했어요. 다시 시도해볼까요?
+      </ToastMsg>
+      <ToastMsg
+        isVisible={isToastMsgVisible.networkError}
+        setIsVisible={(e: boolean) => handleToastMsgVisible("networkError", e)}
+      >
+        😯 네트워크 오류가 발생했어요. 다시 시도해볼까요?
       </ToastMsg>
       <Floating />
     </Container>

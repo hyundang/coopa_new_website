@@ -7,12 +7,19 @@ import { useState } from "react";
 import useSWR from "swr";
 import cookie from "react-cookies";
 import { NextRouter } from "next/router";
+import { useRecoilState } from "recoil";
+// modules
+import { ToastMsgState } from "./states";
 
 interface UserModuleProps {
   initUserData: UserDataProps;
   router: NextRouter;
 }
 const UserModule = ({ initUserData, router }: UserModuleProps) => {
+  // toast msg
+  const [isToastMsgVisible, setIsToastMsgVisible] =
+    useRecoilState(ToastMsgState);
+
   const filter: string =
     "win16|win32|win64|wince|mac|macintel|macppc|mac68k|linux i686|linux armv7l|hp-ux|sunos";
   const [isPC, setIsPC] = useState<boolean>(true);
@@ -39,7 +46,11 @@ const UserModule = ({ initUserData, router }: UserModuleProps) => {
         EXTENSION_ID,
         { isLogin: false },
         (res: any) => {
-          if (!res.success) alert("로그아웃 실패!");
+          if (!res.success)
+            setIsToastMsgVisible({
+              ...isToastMsgVisible,
+              networkError: true,
+            });
         },
       );
     }
@@ -56,9 +67,16 @@ const UserModule = ({ initUserData, router }: UserModuleProps) => {
           introduction: profileData.introduction,
         };
       }, false);
+      setIsToastMsgVisible({
+        ...isToastMsgVisible,
+        profileEdit: true,
+      });
       return;
     }
-    alert("프로필 수정 실패!");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      profileEditError: true,
+    });
   };
 
   return {

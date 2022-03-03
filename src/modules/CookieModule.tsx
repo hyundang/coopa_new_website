@@ -308,7 +308,10 @@ const CookieModule = ({
       }
       return true;
     }
-    alert("쿠키 추가 실패!");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      cookieCreateError: true,
+    });
     return false;
   };
 
@@ -353,7 +356,10 @@ const CookieModule = ({
       return;
     }
     setIsUpdateLoading(false);
-    alert("쿠키 삭제 실패");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      cookieDelError: true,
+    });
   };
 
   // 쿠키 edit
@@ -423,7 +429,10 @@ const CookieModule = ({
       return;
     }
     setIsUpdateLoading(false);
-    alert("쿠키 수정 실패");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      cookieEditError: true,
+    });
   };
 
   // 쿠키의 디렉토리 변경
@@ -464,7 +473,10 @@ const CookieModule = ({
       return res;
     }
     setIsUpdateLoading(false);
-    alert("디렉토리 변경 실패");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      cookieDirEditError: true,
+    });
   };
 
   // 쿠키 읽은 횟수 갱신
@@ -496,9 +508,7 @@ const CookieModule = ({
             changeDatafSpecificUnpinnedCookie(outerCookieList, res),
           true,
         );
-      return;
     }
-    alert("쿠키 읽기 실패");
   };
 
   // 쿠키 고정

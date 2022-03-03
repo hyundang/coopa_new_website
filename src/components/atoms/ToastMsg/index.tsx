@@ -44,18 +44,13 @@ const ToastMsgWrap = styled.dialog<ToastMsgWrapProps>`
   position: fixed;
   display: table;
   left: 50%;
-  margin-left: -136px;
+  transform: translateX(-50%);
   z-index: 100;
 
-  width: 272px;
+  padding: 0 55px;
+  width: fit-content;
   height: 66px;
   border-radius: 33px;
-  ${({ theme }) => theme.media.tablet`
-    width: 230px;
-    height: 59px;
-    border-radius: 29.5px;
-    margin-left: -115px;
-  `}
 
   background: var(--white);
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.28);
@@ -74,4 +69,15 @@ const ToastMsgWrap = styled.dialog<ToastMsgWrapProps>`
       ? toastmsgAnimation.ErrorFadeInOutRule
       : toastmsgAnimation.fadeInOutRule};
   animation-fill-mode: forwards;
+
+  ${({ theme }) => theme.media.tablet`
+    padding: 0 32px;
+    height: 59px;
+    border-radius: 29.5px;
+    font-size: 15px;
+  `}
+
+  ${({ theme }) => theme.media.mobile`
+    font-size: 13px;
+  `}
 `;

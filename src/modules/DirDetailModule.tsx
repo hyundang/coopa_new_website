@@ -35,7 +35,10 @@ const DirDetailModule = ({ dirId, initDirInfoData }: DirDetailModuleProps) => {
       window.open(DOMAIN, "_self");
       return;
     }
-    alert("디렉토리 삭제 실패");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      dirDelError: true,
+    });
   };
 
   // 디렉토리 edit
@@ -55,7 +58,10 @@ const DirDetailModule = ({ dirId, initDirInfoData }: DirDetailModuleProps) => {
       });
       return;
     }
-    alert("디렉토리 수정 실패");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      dirEditError: true,
+    });
   };
 
   // 디렉토리 공유 링크 생성

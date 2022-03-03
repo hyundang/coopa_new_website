@@ -13,6 +13,7 @@ import { HomeboardState, ToastMsgState } from "@modules/states";
 import HomebrdModule from "@modules/HomebrdModule";
 import CookieModule from "@modules/CookieModule";
 import DirModule from "@modules/DirModule";
+import ToastMsgs from "../ToastMsgs";
 
 export interface NewtablProps {
   /** 프로필 이미지 url */
@@ -61,19 +62,7 @@ const Newtab = ({
 
   // toast msg visible handling
   const handleToastMsgVisible = (
-    key:
-      | "dirCreate"
-      | "dirDel"
-      | "dirEdit"
-      | "cookieDel"
-      | "cookieEdit"
-      | "bookmarkDel"
-      | "bookmarkCreate"
-      | "homeboardEdit"
-      | "imgSizeOver"
-      | "copyLink"
-      | "copyShareLink"
-      | "pinnedSizeOver",
+    key: "homeboardEdit" | "imgSizeOver",
     value: boolean,
   ) =>
     setIsToastMsgVisible({
@@ -253,78 +242,7 @@ const Newtab = ({
         </main>
       </Container>
       <Footer />
-      <ToastMsg
-        isVisible={isToastMsgVisible.dirCreate}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("dirCreate", e)}
-      >
-        🤘 디렉토리를 만들었어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.dirEdit}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("dirEdit", e)}
-      >
-        👀 디렉토리를 수정했어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.dirDel}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("dirDel", e)}
-      >
-        ❌ 디렉토리를 삭제했어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.copyLink}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("copyLink", e)}
-      >
-        👏🏻 링크를 복사했어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.cookieDel}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("cookieDel", e)}
-      >
-        ❌ 쿠키를 삭제했어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.cookieEdit}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("cookieEdit", e)}
-      >
-        🍪 쿠키를 수정했어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.bookmarkDel}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("bookmarkDel", e)}
-      >
-        ❌ 즐겨찾기를 삭제했어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.bookmarkCreate}
-        setIsVisible={(e: boolean) =>
-          handleToastMsgVisible("bookmarkCreate", e)
-        }
-      >
-        🤘 즐겨찾기를 만들었어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.homeboardEdit}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("homeboardEdit", e)}
-      >
-        🤘 홈보드 이미지를 변경했어요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.imgSizeOver}
-        setIsVisible={(e: boolean) => handleToastMsgVisible("imgSizeOver", e)}
-        imgSizeOver
-      >
-        😥 더 작은 이미지를 올려주세요!
-      </ToastMsg>
-      <ToastMsg
-        isVisible={isToastMsgVisible.pinnedSizeOver}
-        setIsVisible={(e: boolean) =>
-          handleToastMsgVisible("pinnedSizeOver", e)
-        }
-        imgSizeOver
-      >
-        😥 최대 15개까지 고정 가능해요!
-      </ToastMsg>
+      <ToastMsgs />
       <Floating />
     </>
   );
