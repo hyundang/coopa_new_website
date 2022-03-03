@@ -12,10 +12,28 @@ const ToastMsgState = atom<ToastMsgVisibleStateProps>({
     bookmarkDel: false,
     bookmarkCreate: false,
     homeboardEdit: false,
-    imgSizeOver: false,
     copyLink: false,
     copyShareLink: false,
+    profileEdit: false,
+    // cookie
+    cookieCreateError: false,
+    cookieUrlError: false,
+    cookieDelError: false,
+    cookieEditError: false,
+    cookieDirEditError: false,
+    // directory
+    dirCreateError: false,
+    dirDelError: false,
+    dirEditError: false,
     pinnedSizeOver: false,
+    // homeboard
+    bookmarkCreateError: false,
+    bookmarkDelError: false,
+    homeboardImgError: false,
+    imgSizeOver: false,
+    // etc
+    profileEditError: false,
+    networkError: false,
   },
 });
 

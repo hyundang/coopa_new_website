@@ -7,8 +7,27 @@ export interface ToastMsgVisibleStateProps {
   bookmarkDel: boolean;
   bookmarkCreate: boolean;
   homeboardEdit: boolean;
-  imgSizeOver: boolean;
   copyLink: boolean;
   copyShareLink: boolean;
+  profileEdit: boolean;
+  // error
+  // cookie
+  cookieCreateError: boolean;
+  cookieUrlError: boolean;
+  cookieDelError: boolean;
+  cookieEditError: boolean;
+  cookieDirEditError: boolean;
+  // directory
+  dirCreateError: boolean;
+  dirDelError: boolean;
+  dirEditError: boolean;
   pinnedSizeOver: boolean;
+  // homeboard
+  bookmarkCreateError: boolean;
+  bookmarkDelError: boolean;
+  homeboardImgError: boolean;
+  imgSizeOver: boolean;
+  // etc
+  profileEditError: boolean;
+  networkError: boolean;
 }
