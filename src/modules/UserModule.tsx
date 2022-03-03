@@ -3,7 +3,7 @@ import { getApi, putApi } from "@api/index";
 // interfaces
 import { UpdateUserProps, UserDataProps } from "@interfaces/user";
 // libs
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import cookie from "react-cookies";
 import { NextRouter } from "next/router";
@@ -78,6 +78,15 @@ const UserModule = ({ initUserData, router }: UserModuleProps) => {
       profileEditError: true,
     });
   };
+
+  // 접속 기기 확인
+  useEffect(() => {
+    if (navigator.platform) {
+      if (filter.indexOf(navigator.platform.toLowerCase()) < 0) {
+        setIsPC(false);
+      }
+    }
+  }, []);
 
   return {
     userData,

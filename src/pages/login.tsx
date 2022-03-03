@@ -42,10 +42,10 @@ export default function LoginPage() {
           chrome.runtime.sendMessage(
             EXTENSION_ID,
             { isLogin: true, userToken: jwt },
-            (res: any) => {
-              document.location.href = `${DOMAIN}`;
-            },
+            () => (document.location.href = `${DOMAIN}`),
           );
+        } else {
+          document.location.href = `${DOMAIN}`;
         }
       } else {
         alert("로그인 실패");
