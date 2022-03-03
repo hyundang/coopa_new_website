@@ -45,7 +45,10 @@ const HomebrdModule = ({
       return;
     }
     if (localStorage.getItem("x-access-token") !== null)
-      alert("홈보드 이미지 가져오기 실패!");
+      setIsToastMsgVisible({
+        ...isToastMsgVisible,
+        homeboardImgError: true,
+      });
   };
 
   // 홈보드 이미지 edit
@@ -55,7 +58,10 @@ const HomebrdModule = ({
       localStorage.setItem("homeboardImgUrl", String(homeboardImgUrl));
       return String(homeboardImgUrl);
     }
-    alert("홈보드 이미지 수정 실패!");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      homeboardImgError: true,
+    });
     return homeboardImg;
   };
 
@@ -83,7 +89,10 @@ const HomebrdModule = ({
       });
       return;
     }
-    alert("북마크 생성 실패!");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      bookmarkCreateError: true,
+    });
   };
 
   // 북마크 delete
@@ -101,7 +110,10 @@ const HomebrdModule = ({
       });
       return;
     }
-    alert("북마크 삭제 실패!");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      bookmarkDelError: true,
+    });
   };
 
   return {

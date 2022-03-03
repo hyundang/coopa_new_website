@@ -130,7 +130,10 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
       });
       return res.directoryId;
     }
-    alert("디렉토리 생성 실패!");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      dirCreateError: true,
+    });
     return -1;
   };
 
@@ -161,7 +164,10 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
       });
       return;
     }
-    alert("디렉토리 삭제 실패!");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      dirDelError: true,
+    });
   };
 
   // 디렉토리 edit
@@ -195,7 +201,10 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
       });
       return;
     }
-    alert("디렉토리 수정 실패!");
+    setIsToastMsgVisible({
+      ...isToastMsgVisible,
+      dirEditError: true,
+    });
   };
 
   // 디렉토리 pin
