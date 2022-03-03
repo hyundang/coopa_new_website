@@ -39,14 +39,12 @@ export default function LoginPage() {
         setToken(jwt);
 
         if (isPC) {
-          chrome.runtime.sendMessage(
-            EXTENSION_ID,
-            { isLogin: true, userToken: jwt },
-            () => (document.location.href = `${DOMAIN}`),
-          );
-        } else {
-          document.location.href = `${DOMAIN}`;
+          chrome.runtime.sendMessage(EXTENSION_ID, {
+            isLogin: true,
+            userToken: jwt,
+          });
         }
+        document.location.href = `${DOMAIN}`;
       } else {
         alert("로그인 실패");
       }
