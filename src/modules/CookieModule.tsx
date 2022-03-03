@@ -531,16 +531,10 @@ const CookieModule = ({
       }
       // 핀 고정 시
       if (!isPinned) {
-        if (cookieFilter === "latest" || cookieFilter === "oldest") {
-          pinnedMutate((cookieList) => {
-            return changeSequenceOfSpecificCookieInCookieList(
-              cookieList || initAllPinnedCookieData,
-              res,
-            );
-          }, false);
-        } else {
-          await pinnedMutate();
-        }
+        pinnedMutate((cookieList) => {
+          if (cookieList) return [...cookieList, res];
+          return [res];
+        }, false);
         unpinnedMutate((outerCookieList) => {
           return filterSpecificUnpinnedCookie(outerCookieList, cookieId);
         }, false);

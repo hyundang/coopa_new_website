@@ -228,7 +228,7 @@ const DirModule = ({ initAllDirData }: DirModuleProps) => {
       }
       // 디렉토리 핀 고정 시
       else if (!isPinned) {
-        setPinnedDirData([res, ...pinnedDirData]);
+        setPinnedDirData([...pinnedDirData, res]);
         setUnpinnedDirData(filterSpecificDirInDirList(unpinnedDirData, dirId));
       }
       // 디렉토리 핀 해제 시
