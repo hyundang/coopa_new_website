@@ -131,7 +131,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       );
       // 고정 쿠키 데이터
       const initAllPinnedCookieData = await getApi.getAllCookieData(
-        `/directories/${queryID}/pinned/cookies`,
+        `/directories/${queryID}/pinned/cookies?filter=2`,
       );
       // 디렉토리 상세 데이터
       const initDirInfoData = await getApi.getDirInfo(

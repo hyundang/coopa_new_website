@@ -80,9 +80,9 @@ const CookieModule = ({
 
   const getPinnedCookieSwRKey = () => {
     // 뉴탭 쿠키
-    if (type === "newtab") return `/cookies/pinned?filter=1`;
+    if (type === "newtab") return `/cookies/pinned?filter=2`;
     // 디렉토리 상세 쿠키
-    return `/directories/${dirId}/pinned/cookies?filter=1`;
+    return `/directories/${dirId}/pinned/cookies?filter=2`;
   };
   // 고정 쿠키 데이터 get
   const {
@@ -533,7 +533,7 @@ const CookieModule = ({
       if (!isPinned) {
         pinnedMutate((cookieList) => {
           if (cookieList) return [...cookieList, res];
-          return [res];
+          return [...initAllPinnedCookieData, res];
         }, false);
         unpinnedMutate((outerCookieList) => {
           return filterSpecificUnpinnedCookie(outerCookieList, cookieId);
