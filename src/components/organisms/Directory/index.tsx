@@ -59,7 +59,7 @@ const Directory = ({
       <DirectoryWrap onClick={handleOpenDir}>
         <img
           className="dir_thumbnail"
-          alt="dir_thumbnail"
+          alt=""
           src={dir.thumbnail}
           loading="lazy"
         />
