@@ -1,7 +1,9 @@
 // apis
 import { getApi } from "@api/index";
+// assets
+import { NetworkErrorImg } from "@assets/imgs/error";
 // components
-import { Newtab } from "@components/templates";
+import { Newtab, NewtabError } from "@components/templates";
 // interfaces
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import { CookieDataProps } from "@interfaces/cookie";
@@ -14,6 +16,7 @@ import nextCookie from "next-cookies";
 import { mutate } from "swr";
 import { returnCookieFilter, returnDirFilter } from "@lib/filter";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { Offline, Online } from "react-detect-offline";
 // modules
 import { CookieModule, DirModule, HomebrdModule } from "@modules/index";
 import { HomeboardState } from "@modules/states";
@@ -104,24 +107,38 @@ export default function NewtabPage({
   };
 
   return (
-    <Newtab
-      // 유저 데이터 관련
-      imgUrl={initUserData?.profileImage}
-      nickname={initUserData?.name}
-      // 홈보드 관련
-      onKeyPress={handleKeyPress}
-      homeboardModule={homebrdModule}
-      // 쿠키 관련
-      cookieModule={cookieModule}
-      unpinnedCookieList={
-        cookieModule.unpinnedCookieData?.reduce(
-          (acc, curr) => curr && acc?.concat(curr),
-          [],
-        ) || []
-      }
-      // 디렉토리 관련
-      dirModule={dirModule}
-    />
+    <>
+      <Offline>
+        <NewtabError
+          homeboardImg={homebrdModule.homeboardImg}
+          bookmarkDatas={homebrdModule.bookmarkData || []}
+          errorImg={NetworkErrorImg}
+          errorImgWidth={183}
+          text="앗, 인터넷 연결을 확인해주세요! 😮"
+          text2="확인 후 다시 도전하시겠어요?"
+        />
+      </Offline>
+      <Online>
+        <Newtab
+          // 유저 데이터 관련
+          imgUrl={initUserData?.profileImage}
+          nickname={initUserData?.name}
+          // 홈보드 관련
+          onKeyPress={handleKeyPress}
+          homeboardModule={homebrdModule}
+          // 쿠키 관련
+          cookieModule={cookieModule}
+          unpinnedCookieList={
+            cookieModule.unpinnedCookieData?.reduce(
+              (acc, curr) => curr && acc?.concat(curr),
+              [],
+            ) || []
+          }
+          // 디렉토리 관련
+          dirModule={dirModule}
+        />
+      </Online>
+    </>
   );
 }
 

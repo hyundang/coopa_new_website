@@ -1,7 +1,9 @@
 // apis
 import { getApi } from "@api/index";
+// assets
+import { NetworkErrorImg } from "@assets/imgs/error";
 // components
-import { DirDetail } from "@components/templates";
+import { DirDetail, NewtabError } from "@components/templates";
 // interfaces
 import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
 import { GetAllDirProps } from "@interfaces/directory";
@@ -12,10 +14,13 @@ import { GetServerSideProps } from "next";
 import { returnCookieFilter, returnDirFilter } from "@lib/filter";
 import Head from "next/head";
 import { setToken } from "@lib/TokenManager";
+import { Offline, Online } from "react-detect-offline";
 // modules
 import DirDetailModule from "@modules/DirDetailModule";
 import DirModule from "@modules/DirModule";
 import CookieModule from "@modules/CookieModule";
+import ErrorModule from "@modules/ErrorModule";
+import { useEffect } from "react";
 
 interface DirDetailPageProps {
   isLogin: boolean;
@@ -55,6 +60,13 @@ const DirDetailPage = ({
       initAllDirData,
     });
 
+    const errorModule = ErrorModule();
+
+    useEffect(() => {
+      errorModule.setHomeboardImgUrl();
+      errorModule.setBookmark();
+    }, []);
+
     return (
       <>
         <Head>
@@ -83,25 +95,37 @@ const DirDetailPage = ({
             content={`https://www.cookieparking.com/directory/${queryID}`}
           />
         </Head>
-        <DirDetail
-          // 유저 관련
-          imgUrl={initUserData?.profileImage}
-          nickname={initUserData?.name || ""}
-          // 디렉토리 관련
-          dirDetailModule={dirDetailModule}
-          dirInfo={dirDetailModule.dirInfo || { name: "", id: -1 }}
-          unpinnedDir={dirModule.unpinnedDirData}
-          pinnedDir={dirModule.pinnedDirData}
-          createDir={dirModule.createDir}
-          // 쿠키 관련
-          cookieModule={cookieModule}
-          unpinnedCookieList={
-            cookieModule.unpinnedCookieData?.reduce(
-              (acc, curr) => curr && acc?.concat(curr),
-              [],
-            ) || []
-          }
-        />
+        <Offline>
+          <NewtabError
+            homeboardImg={errorModule.homeboardImg}
+            bookmarkDatas={errorModule.bookmarkData || []}
+            errorImg={NetworkErrorImg}
+            errorImgWidth={183}
+            text="앗, 인터넷 연결을 확인해주세요! 😮"
+            text2="확인 후 다시 도전하시겠어요?"
+          />
+        </Offline>
+        <Online>
+          <DirDetail
+            // 유저 관련
+            imgUrl={initUserData?.profileImage}
+            nickname={initUserData?.name || ""}
+            // 디렉토리 관련
+            dirDetailModule={dirDetailModule}
+            dirInfo={dirDetailModule.dirInfo || { name: "", id: -1 }}
+            unpinnedDir={dirModule.unpinnedDirData}
+            pinnedDir={dirModule.pinnedDirData}
+            createDir={dirModule.createDir}
+            // 쿠키 관련
+            cookieModule={cookieModule}
+            unpinnedCookieList={
+              cookieModule.unpinnedCookieData?.reduce(
+                (acc, curr) => curr && acc?.concat(curr),
+                [],
+              ) || []
+            }
+          />
+        </Online>
       </>
     );
   }
