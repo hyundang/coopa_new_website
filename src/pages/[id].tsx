@@ -148,9 +148,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         }
         // 쿠키 데이터
         const initAllPinnedCookieData = await getApi.getAllCookieData(
-          `/cookies/pinned?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
-            cookieFilter,
-          )}`,
+          `/cookies/pinned?filter=2`,
         );
         const initAllUnpinnedCookieData = await getApi.getAllCookieData(
           `/cookies?size=${COOKIE_PAGE_SIZE}&page=0&filter=${returnCookieFilter(
