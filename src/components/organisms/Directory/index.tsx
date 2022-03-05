@@ -56,7 +56,13 @@ const Directory = ({
 
   return (
     <>
-      <DirectoryWrap thumbnail={dir.thumbnail} onClick={handleOpenDir}>
+      <DirectoryWrap onClick={handleOpenDir}>
+        <img
+          className="dir_thumbnail"
+          alt="dir_thumbnail"
+          src={dir.thumbnail}
+          loading="lazy"
+        />
         {dir.isPinned && <StyledPinImg className="pin_img" />}
         <section className="content">
           <h1 className="content__title">
@@ -112,10 +118,7 @@ const StyledPinImg = styled(PinImg)`
   `}
 `;
 
-export interface DirectoryWrapProps {
-  thumbnail?: string;
-}
-const DirectoryWrap = styled.article<DirectoryWrapProps>`
+const DirectoryWrap = styled.article`
   cursor: pointer;
 
   position: relative;
@@ -166,23 +169,19 @@ const DirectoryWrap = styled.article<DirectoryWrapProps>`
     }
   }
 
-  ${(props) =>
-    props.thumbnail &&
-    css`
-      ::after {
-        content: "";
-        display: block;
-        position: absolute;
-        border-radius: 12px;
-        top: 0;
-        left: 0;
-        background: url("${props.thumbnail}") center center / cover no-repeat;
-        width: 100%;
-        height: 100%;
-        opacity: 0.15;
-        z-index: -1;
-      }
-    `}
+  .dir_thumbnail {
+    display: block;
+    position: absolute;
+    z-index: -1;
+    border-radius: 12px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.15;
+    object-fit: cover;
+    text-indent: -9999px;
+  }
 
   .content {
     position: absolute;
