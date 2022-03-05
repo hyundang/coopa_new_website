@@ -28,10 +28,7 @@ const NewtabPage = () => {
           homebrdModule.setHomeboardImg(
             `/theme_img/img_${homeboardImgUrl}.jpg`,
           );
-          homebrdModule.setHomeboardModalImg(
-            // `/theme_img/img_${homeboardImgUrl}.jpg`,
-            "",
-          );
+          homebrdModule.setHomeboardModalImg("");
         })()
       : homeboardImgUrl !== null
       ? (() => {

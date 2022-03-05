@@ -42,7 +42,6 @@ const ToastMsgWrap = styled.dialog<ToastMsgWrapProps>`
   all: unset;
   box-sizing: border-box;
   position: fixed;
-  display: table;
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;

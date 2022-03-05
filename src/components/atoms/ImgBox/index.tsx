@@ -52,6 +52,7 @@ const ImgBox = ({
       <img
         src={imgUrl}
         alt="hidden_img"
+        loading="lazy"
         onError={() => setImgUrl(isImgInput ? "" : NoThumbImg)}
         style={{ display: "none" }}
       />
