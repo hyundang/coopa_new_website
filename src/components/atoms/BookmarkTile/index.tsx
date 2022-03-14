@@ -37,7 +37,7 @@ const BookmarkTile = (
 ) => {
   const handleClickTile = isPlusTile
     ? onClickPlusTile
-    : () => window.open(url, "__blank");
+    : () => window.open(url, "_blank");
 
   return (
     <HoverWrap className={className} isPlusTile={isPlusTile}>
