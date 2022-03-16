@@ -1,7 +1,7 @@
 import {
-  BubbleImg,
   FloatMeerkatImg,
   FloatMeerkatImgHAtv,
+  ShortcutKeyImg,
 } from "@assets/imgs/floating";
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
@@ -30,7 +30,7 @@ const Container = styled.div`
   bottom: 69px;
   width: 80px;
   height: 88.5px;
-  z-index: 2;
+  z-index: 4;
 
   ${({ theme }) => theme.media.mobile`
     right: 20px;
@@ -38,14 +38,14 @@ const Container = styled.div`
   `}
 `;
 
-const Float = styled(BubbleImg)<IconWrapProps>`
+const Float = styled(ShortcutKeyImg)<IconWrapProps>`
   ${({ theme }) => theme.media.mobile`
     display: none;
   `}
 
   position: absolute;
-  top: 0;
-  left: 0;
+  top: -172px;
+  left: -214px;
 
   transition: opacity 0.3s, visibility 0.3s;
   ${({ isHover }) =>
