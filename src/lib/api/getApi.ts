@@ -9,10 +9,12 @@ import axios from "axios";
 import { UserDataProps } from "../interfaces/user";
 import client from "./client";
 
-const getUserData = (url: string): Promise<UserDataProps | undefined> =>
-  client.get(url).then((res) => {
-    return res.data.data;
-  });
+const getUserData = async (url: string): Promise<UserDataProps | undefined> => {
+  const {
+    data: { data },
+  } = await client.get(url);
+  return data;
+};
 
 const getHomeboardData = async (): Promise<string | undefined> => {
   try {
@@ -27,24 +29,32 @@ const getHomeboardData = async (): Promise<string | undefined> => {
   }
 };
 
-const getBookmarkData = (
+const getBookmarkData = async (
   url: string,
-): Promise<BookmarkDataProps[] | undefined> =>
-  client.get(url).then((res) => {
-    return res.data.data;
-  });
+): Promise<BookmarkDataProps[] | undefined> => {
+  const {
+    data: { data },
+  } = await client.get(url);
+  return data;
+};
 
-const getAllCookieData = (
+const getAllCookieData = async (
   url: string,
-): Promise<CookieDataProps[] | undefined> =>
-  client.get(url).then((res) => {
-    return res.data.data;
-  });
+): Promise<CookieDataProps[] | undefined> => {
+  const {
+    data: { data },
+  } = await client.get(url);
+  return data;
+};
 
-const getAllDirData = (url: string): Promise<GetAllDirProps | undefined> =>
-  client.get(url).then((res) => {
-    return res.data.data;
-  });
+const getAllDirData = async (
+  url: string,
+): Promise<GetAllDirProps | undefined> => {
+  const {
+    data: { data },
+  } = await client.get(url);
+  return data;
+};
 
 const getSearchedCookieData = async (
   word: string,
@@ -72,15 +82,21 @@ const getSearchedDirData = async (
   }
 };
 
-const getDirInfo = (url: string): Promise<SimpleDirDataProps | undefined> =>
-  client.get(url).then((res) => {
-    return res.data.data;
-  });
+const getDirInfo = async (
+  url: string,
+): Promise<SimpleDirDataProps | undefined> => {
+  const {
+    data: { data },
+  } = await client.get(url);
+  return data;
+};
 
-const getSharedDirectoryData = (url: string): Promise<any> =>
-  axios.get(url, { baseURL: API_DOMAIN }).then((res) => {
-    return res.data.data;
-  });
+const getSharedDirectoryData = async (url: string): Promise<any> => {
+  const {
+    data: { data },
+  } = await axios.get(url, { baseURL: API_DOMAIN });
+  return data;
+};
 
 const getApi = {
   getUserData,
