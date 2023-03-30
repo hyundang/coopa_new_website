@@ -11,7 +11,12 @@ import {
 } from "@components/organisms";
 import Cookies from "@components/templates/Cookies";
 // interfaces
-import { CreateDirProps, DirDataProps } from "@interfaces/directory";
+import { CookieDataProps } from "@interfaces/cookie";
+import {
+  CreateDirProps,
+  DirDataProps,
+  SimpleDirDataProps,
+} from "@interfaces/directory";
 // libs
 import { useEffect, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -21,7 +26,6 @@ import styled, { css } from "styled-components";
 import { ToastMsgState } from "@modules/states";
 import DirDetailModule from "@modules/DirDetailModule";
 import CookieModule from "@modules/CookieModule";
-import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
 import { ToastMsgs } from "..";
 
 export interface DirDetailProps {

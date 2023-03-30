@@ -5,8 +5,8 @@ import { NetworkErrorImg } from "@assets/imgs/error";
 // components
 import { DirDetail, NewtabError } from "@components/templates";
 // interfaces
-import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
-import { GetAllDirProps } from "@interfaces/directory";
+import { CookieDataProps } from "@interfaces/cookie";
+import { GetAllDirProps, SimpleDirDataProps } from "@interfaces/directory";
 import { UserDataProps } from "@interfaces/user";
 // libs
 import nextCookie from "next-cookies";

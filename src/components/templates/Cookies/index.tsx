@@ -12,8 +12,12 @@ import {
 // hooks
 import { useWindowSize } from "src/hooks";
 // interfaces
-import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
-import { DirDataProps, CreateDirProps } from "@interfaces/directory";
+import { CookieDataProps } from "@interfaces/cookie";
+import {
+  DirDataProps,
+  CreateDirProps,
+  SimpleDirDataProps,
+} from "@interfaces/directory";
 // libs
 import styled from "styled-components";
 import React, {

@@ -1,9 +1,12 @@
-export interface UserDataProps {
-  id: number;
+interface EditableUserInfoProps {
   name: string;
+  introduction?: string;
+}
+
+export interface UserDataProps extends EditableUserInfoProps {
+  id: number;
   email: string;
   profileImage?: string;
-  introduction?: string;
   cookieCount: number;
   readCookieCnt: number;
 }
@@ -15,7 +18,4 @@ export interface CreateUserProps {
   profileImage: string;
 }
 
-export interface UpdateUserProps {
-  name: string;
-  introduction?: string;
-}
+export interface UpdateUserProps extends EditableUserInfoProps {}

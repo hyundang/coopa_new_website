@@ -1,10 +1,13 @@
-import { CookieDataProps, CreateCookieProps } from "@interfaces/cookie";
+import {
+  CookieDataProps,
+  CreateCookieProps,
+  CreateCookieToDirResProps,
+  CreateReadCntResProps,
+} from "@interfaces/cookie";
 import {
   CreateCookieToDirProps,
-  CreateCookieToDirResProps,
   CreateDirProps,
   CreateDirectoryResProps,
-  CreateReadCntResProps,
 } from "@interfaces/directory";
 import { BookmarkDataProps, CreateBookmarkProps } from "@interfaces/homeboard";
 import { CreateUserProps } from "@interfaces/user";

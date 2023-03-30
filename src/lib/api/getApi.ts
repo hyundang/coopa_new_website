@@ -1,5 +1,9 @@
-import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
-import { DirDataProps, GetAllDirProps } from "@interfaces/directory";
+import { CookieDataProps } from "@interfaces/cookie";
+import {
+  DirDataProps,
+  GetAllDirProps,
+  SimpleDirDataProps,
+} from "@interfaces/directory";
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import axios from "axios";
 import { UserDataProps } from "../interfaces/user";

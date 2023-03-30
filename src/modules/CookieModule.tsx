@@ -1,12 +1,13 @@
 // apis
 import { getApi, delApi, putApi, postApi } from "@api/index";
 // interfaces
-import { CookieDataProps, UpdateCookieProps } from "@interfaces/cookie";
 import {
-  CreateCookieToDirProps,
+  CookieDataProps,
   CreateCookieToDirResProps,
   CreateReadCntResProps,
-} from "@interfaces/directory";
+  UpdateCookieProps,
+} from "@interfaces/cookie";
+import { CreateCookieToDirProps } from "@interfaces/directory";
 // libs
 import { returnCookieFilter } from "@lib/filter";
 import SaveDataInWebCookie from "@lib/SaveDataInWebCookie";
@@ -209,19 +210,13 @@ const CookieModule = ({
     ];
   };
 
-  function isTypeOfObjectEqualCreateCookieToDirResProps(
-    _resData: any,
-  ): _resData is CreateCookieToDirResProps {
-    return true;
-  }
-
   const changeDataOfSpecificCookieInCookieList = (
     cookieList: CookieDataProps[],
     cookieData: CreateCookieToDirResProps | CreateReadCntResProps,
   ): CookieDataProps[] => {
     return cookieList.map((cookie) => {
       if (cookie.id === cookieData.cookieId) {
-        if (isTypeOfObjectEqualCreateCookieToDirResProps(cookieData))
+        if ("directoryId" in cookieData)
           return {
             ...cookie,
             directoryInfo: {

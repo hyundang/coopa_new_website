@@ -1,47 +1,46 @@
-export interface SimpleDirDataProps {
-  emoji?: string | null;
-  id: number;
-  name: string;
-  cookieCount?: number;
-}
-export interface CookieDataProps {
+import { SimpleDirDataProps } from "./directory";
+
+interface EditableCookieInfoProps {
+  title: string;
   content: string;
-  directoryInfo: SimpleDirDataProps | null;
+  thumbnail: string;
+}
+
+interface CookieInfoProps extends EditableCookieInfoProps {
   favicon: string;
-  id: number;
   link: string;
   provider: string;
+}
+
+export interface CookieDataProps extends CookieInfoProps {
+  id: number;
+  directoryInfo: SimpleDirDataProps | null;
   readCnt: number;
-  thumbnail: string;
-  title: string;
   isPinned: boolean;
 }
-export interface DeleteCookieProps {
-  content: string;
+
+export interface DeleteCookieProps extends CookieInfoProps {
   cookieId: number;
   deleted: boolean;
-  favicon: string;
-  link: string;
-  provider: string;
-  thumbnail: string;
-  title: string;
 }
 
 /** 쿠키 추가 */
-export interface CreateCookieProps {
-  content: string;
-  favicon: string;
-  link: string;
-  provider: string;
-  thumbnail: string;
-  title: string;
-}
+export interface CreateCookieProps extends CookieInfoProps {}
 
 /** 쿠키 수정 */
-export interface UpdateCookieProps {
-  title: string;
-  content: string;
-  thumbnail: string;
+export interface UpdateCookieProps extends EditableCookieInfoProps {
   cookieId: number;
   image?: File;
+}
+
+export interface CreateCookieToDirResProps extends CookieInfoProps {
+  cookieId: number;
+  directoryId: number;
+  directoryName: string;
+  directoryEmoji: string | null;
+}
+
+export interface CreateReadCntResProps extends CookieInfoProps {
+  cookieId: number;
+  readCnt: number;
 }

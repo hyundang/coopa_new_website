@@ -1,8 +1,7 @@
 // apis
 import { getApi, delApi, putApi, postApi } from "@api/index";
 // interfaces
-import { SimpleDirDataProps } from "@interfaces/cookie";
-import { CreateDirProps } from "@interfaces/directory";
+import { CreateDirProps, SimpleDirDataProps } from "@interfaces/directory";
 // libs
 import useSWR from "swr";
 import { useRecoilState } from "recoil";

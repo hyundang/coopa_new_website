@@ -58,7 +58,13 @@
     "import/no-extraneous-dependencies": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "consistent-return": "off",
-    "no-return-assign": "off"
+    "no-return-assign": "off",
+    "@typescript-eslint/no-empty-interface": [
+      "error",
+      {
+        "allowSingleExtends": true
+      }
+    ]
   },
   "settings": {
     "react": {

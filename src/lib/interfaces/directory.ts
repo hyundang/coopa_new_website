@@ -1,26 +1,29 @@
+interface DirInfoProps {
+  name: string;
+  emoji?: string | null;
+}
+
 export interface GetAllDirProps {
   common: DirDataProps[];
   pinned?: DirDataProps[];
 }
 
-export interface DirDataProps {
-  emoji?: string;
+export interface DirDataProps extends DirInfoProps {
   id: number;
-  name: string;
   thumbnail?: string;
   cookieCnt: number;
   isPinned: boolean;
 }
 
-export interface CreateDirProps {
-  name: string;
-  emoji?: string;
+export interface SimpleDirDataProps extends DirInfoProps {
+  id: number;
+  cookieCount?: number;
 }
 
-export interface CreateDirectoryResProps {
+export interface CreateDirProps extends DirInfoProps {}
+
+export interface CreateDirectoryResProps extends DirInfoProps {
   directoryId: number;
-  name: string;
-  emoji?: string;
 }
 
 export interface DeleteDirProps {
@@ -31,28 +34,4 @@ export interface DeleteDirProps {
 export interface CreateCookieToDirProps {
   directoryId: number;
   cookieId: number;
-}
-
-export interface CreateCookieToDirResProps {
-  content: string;
-  cookieId: number;
-  directoryId: number;
-  directoryName: string;
-  directoryEmoji: string | null;
-  title: string;
-  link: string;
-  thumbnail: string;
-  favicon: string;
-  provider: string;
-}
-
-export interface CreateReadCntResProps {
-  content: string;
-  cookieId: number;
-  readCnt: number;
-  title: string;
-  link: string;
-  thumbnail: string;
-  favicon: string;
-  provider: string;
 }

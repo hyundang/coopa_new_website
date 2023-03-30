@@ -5,7 +5,8 @@ import { NetworkErrorImg } from "@assets/imgs/error";
 //components
 import { DirDetail, NewtabError } from "@components/templates";
 // interfaces
-import { CookieDataProps, SimpleDirDataProps } from "@interfaces/cookie";
+import { CookieDataProps } from "@interfaces/cookie";
+import { SimpleDirDataProps } from "@interfaces/directory";
 //libs
 import { GetServerSideProps } from "next";
 import Head from "next/head";
