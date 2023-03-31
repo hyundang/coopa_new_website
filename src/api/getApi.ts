@@ -6,7 +6,7 @@ import {
 } from "@interfaces/directory";
 import { BookmarkDataProps } from "@interfaces/homeboard";
 import axios from "axios";
-import { UserDataProps } from "../interfaces/user";
+import { UserDataProps } from "../types/interfaces/user";
 import client from "./client";
 
 const getUserData = async (url: string): Promise<UserDataProps | undefined> => {

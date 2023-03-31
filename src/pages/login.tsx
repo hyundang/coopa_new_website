@@ -8,7 +8,7 @@ import {
   GoogleLoginResponseOffline,
 } from "react-google-login";
 // api
-import { postApi } from "@lib/api";
+import { postApi } from "@api/index";
 import { CreateUserProps } from "@interfaces/user";
 import { setToken } from "@lib/TokenManager";
 

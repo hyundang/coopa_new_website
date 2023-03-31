@@ -1,5 +1,5 @@
 // apis
-import getApi from "@api/getApi";
+import { getApi } from "@api/index";
 // components
 import { My } from "@components/templates";
 // interfaces

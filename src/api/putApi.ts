@@ -1,6 +1,6 @@
 import { CookieDataProps } from "@interfaces/cookie";
 import { CreateDirProps, DirDataProps } from "@interfaces/directory";
-import { UpdateUserProps } from "../interfaces/user";
+import { UpdateUserProps } from "../types/interfaces/user";
 import client from "./client";
 
 const putUserData = async (body: UpdateUserProps): Promise<boolean> => {

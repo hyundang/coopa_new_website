@@ -1,4 +1,4 @@
-import postApi from "@api/postApi";
+import { postApi } from "@api/index";
 import { CreateCookieProps, CookieDataProps } from "@interfaces/cookie";
 import axios from "axios";
 import cheerio from "cheerio";

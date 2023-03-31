@@ -1,5 +1,5 @@
 // apis
-import getApi from "@api/getApi";
+import { getApi } from "@api/index";
 // assets
 import { NetworkErrorImg } from "@assets/imgs/error";
 //components
