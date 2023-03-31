@@ -4,6 +4,7 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "@styles/theme";
 import { GlobalStyle } from "@styles/GlobalStyles";
 import { RecoilRoot } from "recoil";
+import { initialize, mswDecorator } from "msw-storybook-addon";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -15,6 +16,8 @@ export const parameters = {
   },
 };
 
+initialize();
+
 export const decorators = [
   (Story) => (
     <>
@@ -24,6 +27,7 @@ export const decorators = [
       </RecoilRoot>
     </>
   ),
+  mswDecorator,
 ];
 
 const Themes = [theme];
