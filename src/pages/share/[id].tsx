@@ -6,7 +6,7 @@ import { NetworkErrorImg } from "@assets/imgs/error";
 import { DirDetail, NewtabError } from "@components/templates";
 // interfaces
 import { CookieDataProps } from "@interfaces/cookie";
-import { SimpleDirDataProps } from "@interfaces/directory";
+import { SharedDirDetailDataProps } from "@interfaces/directory";
 //libs
 import { GetServerSideProps } from "next";
 import Head from "next/head";
@@ -14,17 +14,9 @@ import { Offline, Online } from "react-detect-offline";
 //modules
 import CookieModule from "@modules/CookieModule";
 
-interface SharedDirDetailInfoProps {
-  directoryInfo: SimpleDirDataProps;
-  userInfo: {
-    name: string;
-    profileImage: string;
-  };
-}
-
 interface SharePageProps {
   initAllCookieData: CookieDataProps[];
-  initSharedDirInfoData: SharedDirDetailInfoProps;
+  initSharedDirInfoData: SharedDirDetailDataProps;
   queryID: number;
 }
 const SharePage = ({

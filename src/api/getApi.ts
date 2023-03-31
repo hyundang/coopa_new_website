@@ -2,6 +2,7 @@ import { CookieDataProps } from "@interfaces/cookie";
 import {
   DirDataProps,
   GetAllDirProps,
+  SharedDirDetailDataProps,
   SimpleDirDataProps,
 } from "@interfaces/directory";
 import { BookmarkDataProps } from "@interfaces/homeboard";
@@ -91,7 +92,9 @@ const getDirInfo = async (
   return data;
 };
 
-const getSharedDirectoryData = async (url: string): Promise<any> => {
+const getSharedDirectoryData = async (
+  url: string,
+): Promise<SharedDirDetailDataProps> => {
   const {
     data: { data },
   } = await axios.get(url, { baseURL: API_DOMAIN });

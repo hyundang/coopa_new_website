@@ -12,11 +12,18 @@ interface CookieInfoProps extends EditableCookieInfoProps {
   provider: string;
 }
 
+export interface SearchedCookieDataProps extends CookieInfoProps {
+  id: number;
+  directoryInfo?: SimpleDirDataProps;
+  isPinned: boolean;
+}
+
 export interface CookieDataProps extends CookieInfoProps {
   id: number;
-  directoryInfo: SimpleDirDataProps | null;
+  directoryInfo?: SimpleDirDataProps;
   readCnt: number;
   isPinned: boolean;
+  pinnedAt: string | null;
 }
 
 export interface DeleteCookieProps extends CookieInfoProps {

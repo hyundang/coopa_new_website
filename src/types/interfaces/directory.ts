@@ -20,6 +20,14 @@ export interface SimpleDirDataProps extends DirInfoProps {
   cookieCount?: number;
 }
 
+export interface SharedDirDetailDataProps {
+  directoryInfo: SimpleDirDataProps;
+  userInfo: {
+    name: string;
+    profileImage: string;
+  };
+}
+
 export interface CreateDirProps extends DirInfoProps {}
 
 export interface CreateDirectoryResProps extends DirInfoProps {
