@@ -64,7 +64,8 @@
       {
         "allowSingleExtends": true
       }
-    ]
+    ],
+    "global-require": "off"
   },
   "settings": {
     "react": {

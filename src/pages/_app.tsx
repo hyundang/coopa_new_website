@@ -2,9 +2,13 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { RecoilRoot } from "recoil";
 import { ThemeProvider } from "styled-components";
-import { theme } from "src/styles/theme";
-import { GlobalStyle } from "src/styles/GlobalStyles";
+import { theme } from "@styles/theme";
+import { GlobalStyle } from "@styles/GlobalStyles";
 import { useEffect } from "react";
+
+if (process.env.NODE_ENV === "development") {
+  require("@api/mocks");
+}
 
 function App({ Component, pageProps }: AppProps) {
   useEffect(() => {

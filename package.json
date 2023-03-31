@@ -66,8 +66,12 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "msw": "^1.2.1",
     "prettier": "^2.3.2",
     "react-docgen-typescript-loader": "^3.7.2",
     "storybook-addon-styled-component-theme": "^2.0.0"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }
