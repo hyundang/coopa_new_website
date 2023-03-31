@@ -101,6 +101,13 @@ const getSharedDirectoryData = async (
   return data;
 };
 
+const getSharedCookieData = async (url: string): Promise<CookieDataProps[]> => {
+  const {
+    data: { data },
+  } = await axios.get(url, { baseURL: API_DOMAIN });
+  return data;
+};
+
 const getApi = {
   getUserData,
   getHomeboardData,
@@ -111,6 +118,7 @@ const getApi = {
   getSearchedDirData,
   getDirInfo,
   getSharedDirectoryData,
+  getSharedCookieData,
 };
 
 export default getApi;

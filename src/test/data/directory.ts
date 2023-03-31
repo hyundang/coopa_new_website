@@ -154,7 +154,7 @@ export const sharedDirectory: SharedDirDetailDataProps = {
   userInfo: {
     name: "Hyunjin Lee",
     profileImage:
-      "https://lh5.googleusercontent.com/-iKH4kcTU298/AAA…MZuucnofwea1DKUZyF7cjUeO12bCL9LpA/s96-c/photo.jpg",
+      "https://lh5.googleusercontent.com/-iKH4kcTU298/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucnofwea1DKUZyF7cjUeO12bCL9LpA/s96-c/photo.jpg",
   },
 };
 

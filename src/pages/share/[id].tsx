@@ -110,7 +110,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   try {
     // 쿠키 데이터
-    const initAllCookieData = await getApi.getSharedDirectoryData(
+    const initAllCookieData = await getApi.getSharedCookieData(
       `/share/${queryID}/cookies`,
     );
 

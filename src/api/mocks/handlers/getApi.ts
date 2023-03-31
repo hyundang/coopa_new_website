@@ -1,11 +1,5 @@
 import { rest } from "msw";
-import {
-  cookies,
-  cookieWithDirectory,
-  cookieWithoutDirectory,
-  pinnedCookies,
-  searchedCookies,
-} from "src/test/data/cookie";
+import { cookies, pinnedCookies, searchedCookies } from "src/test/data/cookie";
 import {
   directories,
   directoryInfo,
@@ -67,13 +61,42 @@ const getAllCookieData = rest.get(`${API_DOMAIN}/cookies`, (req, res, ctx) => {
       statusCode: 200,
       status: "OK",
       data: cookies.slice(size * page, size * (page + 1)),
-      //   data: [cookieWithDirectory, cookieWithoutDirectory],
     }),
   );
 });
+const getAllCookieInDirectoryData = rest.get(
+  `${API_DOMAIN}/directories/:dirId/unpinned/cookies`,
+  (req, res, ctx) => {
+    const size = Number(req.url.searchParams.get("size"));
+    const page = Number(req.url.searchParams.get("page"));
+    const filter = req.url.searchParams.get("filter");
+    return res(
+      ctx.status(200),
+      ctx.json({
+        statusCode: 200,
+        status: "OK",
+        data: cookies.slice(size * page, size * (page + 1)),
+      }),
+    );
+  },
+);
 
 const getPinnedCookieData = rest.get(
   `${API_DOMAIN}/cookies/pinned`,
+  (req, res, ctx) => {
+    const filter = req.url.searchParams.get("filter");
+    return res(
+      ctx.status(200),
+      ctx.json({
+        statusCode: 200,
+        status: "OK",
+        data: pinnedCookies,
+      }),
+    );
+  },
+);
+const getPinnedCookieInDirectoryData = rest.get(
+  `${API_DOMAIN}/directories/:dirId/pinned/cookies`,
   (req, res, ctx) => {
     const filter = req.url.searchParams.get("filter");
     return res(
@@ -159,15 +182,35 @@ const getSharedDirectoryData = rest.get(
   },
 );
 
+const getSharedAllCookieData = rest.get(
+  `${API_DOMAIN}/share/:queryID/cookies`,
+  (req, res, ctx) => {
+    const size = Number(req.url.searchParams.get("size"));
+    const page = Number(req.url.searchParams.get("page"));
+    const { queryID } = req.params;
+    return res(
+      ctx.status(200),
+      ctx.json({
+        statusCode: 200,
+        status: "OK",
+        data: cookies.slice(15 * page, 15 * (page + 1)),
+      }),
+    );
+  },
+);
+
 export const getApi = [
   getUserData,
   getHomeboardData,
   getBookmarkData,
   getAllCookieData,
+  getAllCookieInDirectoryData,
   getPinnedCookieData,
+  getPinnedCookieInDirectoryData,
   getAllDirData,
   getSearchedCookieData,
   getSearchedDirData,
   getDirInfo,
   getSharedDirectoryData,
+  getSharedAllCookieData,
 ];
