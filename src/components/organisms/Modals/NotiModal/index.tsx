@@ -29,8 +29,7 @@ const NotiModal = ({
     >
       <NotiImg className="noti-img" role="img" />
       <span className="noti-text">
-        오랜만에 <b className="noti-text--bold">새로운 기능</b>이
-        출시되었어요!⭐
+        <b className="noti-text--bold">업데이트 사항</b>이 있어요!⭐
         {"\n더 보기를 눌러 자세히 살펴보세요!"}
       </span>
       <Btn

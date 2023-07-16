@@ -18,7 +18,7 @@ const Footer = () => {
         </a>
         <a
           className="desc__h2"
-          href="https://www.notion.so/6b6fb48a08ac41118914bd57e55bbc4d"
+          href="https://noisy-cesium-9a6.notion.site/421dda856c7a4898b57a4867c5390fda"
           target="_blank"
           rel="noreferrer"
         >
